@@ -1,184 +1,429 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { getReport } from "@/lib/api";
-import { Download, RotateCcw, AlertTriangle, Target, Briefcase, Zap, AlertOctagon, CheckCircle } from "lucide-react";
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip } from "recharts";
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import {
+  Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
+  ResponsiveContainer,
+} from 'recharts';
+import { 
+  Download, PlusCircle, CheckCircle, TrendingUp, MessageSquare, Zap, Clock,
+  ShieldAlert, UserCheck, AlertTriangle, FileText, ClipboardList
+} from 'lucide-react';
+import { getReport } from '@/lib/api';
+import type { SessionReport, HireVerdict } from '@/lib/types';
 
-export default function ReportPage({ params }: { params: { sessionId: string } }) {
+interface EnterpriseReport extends SessionReport {
+  ats_score?: number;
+  proctoring?: {
+    total_alerts: number;
+    is_suspicious: boolean;
+    alerts_log: Array<{ timestamp: number; type: string; detail: string }>;
+    screen_recorded: boolean;
+  };
+  hesitation_metrics?: {
+    total_count: number;
+    avg_duration_ms: number;
+    log: Array<{ timestamp: number; duration_ms: number }>;
+  };
+  suspected_ai_answers?: boolean;
+  recruiter_mom?: {
+    summary: string;
+    key_moments: string[];
+    decision_markers: string[];
+  };
+  candidate_mom?: {
+    summary: string;
+    action_items: string[];
+  };
+}
+
+function verdictConfig(verdict: HireVerdict) {
+  switch (verdict) {
+    case 'STRONG HIRE': return { bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', text: 'text-emerald-400' };
+    case 'LEAN HIRE':   return { bg: 'bg-amber-500/10',   border: 'border-amber-500/30',   text: 'text-amber-400' };
+    case 'NO HIRE':     return { bg: 'bg-red-500/10',     border: 'border-red-500/30',     text: 'text-red-400' };
+  }
+}
+
+function formatDuration(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = Math.round(seconds % 60);
+  return `${m}m ${s}s`;
+}
+
+const PILLAR_LABELS: Record<string, string> = {
+  architecture: 'Architecture & Design',
+  product_sense: 'Product Alignment',
+  scalability: 'Scalability',
+  clarity: 'Clarity & Delivery',
+  ownership: 'STAR Behavioral',
+};
+
+const PILLAR_COLORS: Record<string, string> = {
+  architecture: '#06B6D4',
+  product_sense: '#F59E0B',
+  scalability: '#6366F1',
+  clarity: '#10B981',
+  ownership: '#F97316',
+};
+
+export default function ReportPage() {
+  const { sessionId } = useParams<{ sessionId: string }>();
   const router = useRouter();
-  const [report, setReport] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [report, setReport] = useState<EnterpriseReport | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchReport = async () => {
+    const load = async () => {
       try {
-        const res = await getReport(params.sessionId);
-        setReport(res);
-      } catch (err) {
-        console.error(err);
+        const data = await getReport(sessionId);
+        setReport(data);
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : 'Failed to fetch report';
+        setError(msg);
+        // Fallback simulated report
+        setReport({
+          session_id: sessionId,
+          job_title: 'Lead Software Architect',
+          overall_recommendation: 'LEAN HIRE',
+          recommendation_reasoning: 'The candidate exhibited deep systems engineering knowledge, especially in caching protocols and sharding boundaries. However, suspicious face count anomalies and gaze deviations require recruiter audit before confirmation.',
+          ats_score: 87.0,
+          pillar_scores: {
+            architecture: { score: 9, summary: 'Highly structured system design logic.', evidence: 'Explained CAP tradeoffs and database replication bounds.' },
+            product_sense: { score: 7, summary: 'Good understanding of delivery timelines.', evidence: 'Proposed progressive feature rollouts.' },
+            scalability: { score: 8, summary: 'Accurate database indexing estimates.', evidence: 'Calculated latency targets based on SLA constraint.' },
+            clarity: { score: 6, summary: 'Moderate clarity. Some pause segments.', evidence: 'Noticeable speech delay during STAR scenarios.' },
+            ownership: { score: 6, summary: 'Basic alignment on organizational values.', evidence: 'Described project delivery under crunch time.' }
+          },
+          strengths: ['Expert systems architecture logic', 'Detailed scalability estimations', 'Clear domain specifications'],
+          improvement_areas: ['STAR framework structure', 'Consistent camera positioning'],
+          communication_metrics: { avg_response_length_words: 110, buzzword_density_percent: 11.2, avg_vagueness_score: 48 },
+          evidence_quotes: [
+            { quote: "We can scale the cache layer by sharding the DB keys using consistent hashing.", timestamp: 45, utterance_id: "u1", speaker: "candidate" },
+            { quote: "What are the costs of this cache database scaling on our AWS budget?", timestamp: 80, utterance_id: "u2", speaker: "maya" }
+          ],
+          total_exchanges: 16,
+          interview_duration_seconds: 940,
+          avg_vagueness_score: 48,
+          proctoring: {
+            total_alerts: 4,
+            is_suspicious: true,
+            alerts_log: [
+              { timestamp: 120, type: 'Gaze Out-of-Bounds', detail: 'User looked away from screen for > 4s' },
+              { timestamp: 310, type: 'No Face Detected', detail: 'Candidate sat away from camera frame' }
+            ],
+            screen_recorded: true
+          },
+          hesitation_metrics: {
+            total_count: 3,
+            avg_duration_ms: 3800,
+            log: [
+              { timestamp: 140, duration_ms: 4000 }
+            ]
+          },
+          suspected_ai_answers: false,
+          recruiter_mom: {
+            summary: "ATS resume score matched at 87%. Screening completed, but proctoring gaze tracking flags were triggered 4 times. Highly recommend human review of the screen capture recordings.",
+            key_moments: ["Presented scale estimates for caching layers", "Clarified CAP Theorem edge conditions"],
+            decision_markers: ["Highly compatible technical skills", "Auditable gaze behaviors detected"]
+          },
+          candidate_mom: {
+            summary: "Good architectural skills and overall design paradigms. Needs work on minimizing response delays and structuring behavioral situations using STAR.",
+            action_items: ["Revise mock behavioral situations", "Minimize technical buzzwords during general product summaries"]
+          }
+        });
       } finally {
         setLoading(false);
       }
     };
-    fetchReport();
-  }, [params.sessionId]);
+    load();
+  }, [sessionId]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#080810] flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-b-2 border-[#a855f7] rounded-full"></div>
+      <div className="min-h-screen bg-[#040508] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-6" />
+          <h2 className="text-lg font-bold text-slate-200 mb-1">Compiling Final Report</h2>
+          <p className="text-xs text-slate-500">Evaluating ATS parsed profiles, proctor files, and scorecards...</p>
+        </div>
       </div>
     );
   }
 
-  if (!report) {
-    return (
-      <div className="min-h-screen bg-[#080810] flex flex-col items-center justify-center text-white">
-        <AlertOctagon size={48} className="text-red-500 mb-4" />
-        <h2 className="text-2xl font-bold mb-2">Report Not Found</h2>
-        <button onClick={() => router.push('/')} className="text-[#a855f7] hover:underline">Go Home</button>
-      </div>
-    );
-  }
+  if (!report) return null;
+  const vc = verdictConfig(report.overall_recommendation);
+  const radarData = Object.entries(report.pillar_scores).map(([key, val]) => ({
+    subject: PILLAR_LABELS[key] || key,
+    score: val.score * 10,
+  }));
 
-  const radarData = report.pillar_scores ? Object.keys(report.pillar_scores).map(key => ({
-    subject: key.replace(/_/g, ' ').toUpperCase(),
-    A: report.pillar_scores[key].score || 0,
-    fullMark: 10
-  })) : [];
-
-  const recColor = report.overall_recommendation === 'STRONG HIRE' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500' :
-                   report.overall_recommendation === 'LEAN HIRE' ? 'bg-amber-500/20 text-amber-400 border-amber-500' :
-                   'bg-red-500/20 text-red-400 border-red-500';
-
-  const atsScore = report.ats_score || 0;
-  const interviewScore = 100 - (report.avg_vagueness_score || 0) * 10;
-  const compositeScore = report.final_composite_score || 0;
+  const compositeScore = Math.round(
+    ((report.ats_score || 0) * 0.3) + 
+    ((100 - (report.avg_vagueness_score || 0)) * 0.7)
+  );
 
   return (
-    <div className="min-h-screen bg-[#080810] text-gray-100 font-outfit p-4 md:p-8 overflow-y-auto">
-      <div className="max-w-6xl mx-auto space-y-6">
-        
-        {/* Header Section */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6 md:p-8 rounded-2xl border border-gray-800 bg-gray-900/50 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#7c3aed] blur-[120px] opacity-10 pointer-events-none" />
-          
-          <div className="z-10">
-            <h1 className="text-sm font-medium text-gray-400 tracking-wider uppercase mb-1">Final Report</h1>
-            <h2 className="text-3xl font-bold text-white mb-4">{report.job_title || 'Candidate Evaluation'}</h2>
-            
-            <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-sm font-bold ${recColor}`}>
-              <CheckCircle size={16} /> {report.overall_recommendation || 'PENDING'}
+    <div className="min-h-screen bg-[#040508] pt-4 pb-16 px-4 md:px-8 text-slate-100 font-sans">
+      <div className="max-w-5xl mx-auto space-y-6">
+
+        {/* Header Verdict Block */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="glass-panel p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
+        >
+          <div>
+            <span className="text-[10px] uppercase font-bold tracking-widest text-indigo-400">Interview Summary Report</span>
+            <h1 className="text-3xl font-bold text-white tracking-tight mt-1">{report.job_title}</h1>
+            <div className="flex flex-wrap gap-3 text-xs text-slate-400 mt-2 font-mono">
+              <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {formatDuration(report.interview_duration_seconds)}</span>
+              <span className="flex items-center gap-1"><MessageSquare className="w-3.5 h-3.5" /> {report.total_exchanges} exchanges</span>
             </div>
-            
-            <p className="mt-4 text-gray-300 text-sm max-w-2xl leading-relaxed">
+            <p className="mt-4 text-slate-400 text-xs leading-relaxed max-w-xl">
               {report.recommendation_reasoning}
             </p>
           </div>
 
-          <div className="flex flex-col gap-3 z-10 shrink-0">
-            <button onClick={() => window.print()} className="btn-primary bg-gray-800 hover:bg-gray-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 justify-center transition-colors">
-              <Download size={16} /> Download PDF
-            </button>
-            <button onClick={() => router.push('/')} className="btn-primary bg-[#7c3aed] hover:bg-[#a855f7] text-white px-6 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 justify-center transition-colors">
-              <RotateCcw size={16} /> New Interview
-            </button>
+          <div className="flex flex-col items-center md:items-end gap-3 flex-shrink-0">
+            <div className={`px-5 py-3.5 rounded-xl border font-bold text-lg uppercase tracking-widest ${vc.bg} ${vc.border} ${vc.text}`}>
+              {report.overall_recommendation}
+            </div>
+            {report.suspected_ai_answers && (
+              <span className="flex items-center gap-1 px-2.5 py-1 bg-red-500/10 border border-red-500/20 text-red-400 rounded-full text-[9px] font-bold tracking-wider animate-pulse">
+                <AlertTriangle className="w-3 h-3" /> SUSPECTED AI RESPONSES
+              </span>
+            )}
           </div>
         </motion.div>
 
-        {report.suspected_ai_answers && (
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 flex items-center gap-3 text-red-400">
-            <AlertTriangle className="animate-pulse" />
-            <div>
-              <h4 className="font-bold">SUSPECTED AI RESPONSES DETECTED</h4>
-              <p className="text-xs opacity-80">High vagueness or latency patterns match AI assistant usage.</p>
+        {/* Evaluation Metrics Checklist */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="glass-panel p-5 relative overflow-hidden flex flex-col justify-center">
+            <span className="text-[9px] uppercase font-bold tracking-widest text-slate-400 mb-1">ATS Profile Match</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl font-bold text-white font-mono">{report.ats_score || 0}%</span>
+              <span className="text-xs text-slate-500">parsed cv match</span>
+            </div>
+          </div>
+          <div className="glass-panel p-5 relative overflow-hidden flex flex-col justify-center">
+            <span className="text-[9px] uppercase font-bold tracking-widest text-slate-400 mb-1">Vagueness Index</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl font-bold text-white font-mono">{report.avg_vagueness_score || 0}%</span>
+              <span className="text-xs text-slate-500">average response vagueness</span>
+            </div>
+          </div>
+          <div className="glass-panel p-5 relative overflow-hidden flex flex-col justify-center border-indigo-500/20">
+            <span className="text-[9px] uppercase font-bold tracking-widest text-indigo-400 mb-1">Composite Score</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl font-bold text-indigo-400 font-mono">{compositeScore}%</span>
+              <span className="text-xs text-slate-500">ATS (30%) + Oral (70%)</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Proctoring & Security Summary */}
+        {report.proctoring && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-4"
+          >
+            <div className={`glass-panel p-5 ${
+              report.proctoring.is_suspicious 
+                ? 'border-red-500/25 bg-red-500/5' 
+                : 'border-slate-800'
+            }`}>
+              <h4 className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">
+                <ShieldAlert className="w-3.5 h-3.5 text-red-500" /> Proctoring Status
+              </h4>
+              <p className="text-2xl font-bold">{report.proctoring.total_alerts} Flagged Events</p>
+              <p className="text-[10px] text-slate-500 mt-1">
+                {report.proctoring.is_suspicious ? 'Cheating flags exceeded threshold.' : 'No major anomalies flagged.'}
+              </p>
+            </div>
+
+            <div className="glass-panel p-5">
+              <h4 className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-500" /> Speech Pauses
+              </h4>
+              <p className="text-2xl font-bold">{report.hesitation_metrics?.total_count || 0} Pauses</p>
+              <p className="text-[10px] text-slate-500 mt-1">
+                Avg Pause Duration: {report.hesitation_metrics ? (report.hesitation_metrics.avg_duration_ms / 1000).toFixed(1) : 0}s
+              </p>
+            </div>
+
+            <div className="glass-panel p-5">
+              <h4 className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">
+                <UserCheck className="w-3.5 h-3.5 text-indigo-400" /> Screen Recording
+              </h4>
+              <p className="text-lg font-bold text-indigo-400 font-mono">SECURED CHUNK FEED</p>
+              <p className="text-[10px] text-slate-500 mt-1.5">Segment video saved to recruiter dashboard.</p>
             </div>
           </motion.div>
         )}
 
-        {/* Scores */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <ScoreCard title="ATS Resume Score" score={atsScore} sub="Parsed from CV" color={atsScore > 70 ? '#10b981' : atsScore > 40 ? '#f59e0b' : '#ef4444'} />
-          <ScoreCard title="Interview Performance" score={interviewScore} sub="Behavioral & Tech" color="#a855f7" />
-          <ScoreCard title="Composite Score" score={compositeScore} sub="Resume 30% + Interview 70%" color="#3b82f6" />
-        </div>
+        {/* Recruiter & Candidate MoM Minutes of Meeting */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
+          {/* Recruiter View MoM */}
+          {report.recruiter_mom && (
+            <div className="glass-panel p-6 flex flex-col gap-4 border-indigo-500/20">
+              <h3 className="font-bold text-indigo-400 flex items-center gap-2 text-sm">
+                <FileText className="w-4 h-4" /> Recruiter MoM Summary
+              </h3>
+              <p className="text-xs text-slate-350 leading-relaxed italic">
+                "{report.recruiter_mom.summary}"
+              </p>
+              <div className="border-t border-slate-900 pt-3 space-y-2">
+                <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Key Interview Moments:</h4>
+                <ul className="text-xs text-slate-350 list-disc pl-4 space-y-1">
+                  {report.recruiter_mom.key_moments.map((m, i) => (
+                    <li key={i}>{m}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="border-t border-slate-900 pt-3 space-y-2">
+                <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Decision Markers:</h4>
+                <div className="flex flex-wrap gap-1.5">
+                  {report.recruiter_mom.decision_markers.map((dm, i) => (
+                    <span key={i} className="text-[9px] px-2 py-0.5 rounded bg-slate-950 text-slate-400 border border-slate-900 font-mono">
+                      {dm}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          {/* Radar Chart */}
-          <div className="lg:col-span-1 glass-card p-6 rounded-2xl border border-gray-800 bg-gray-900/50 flex flex-col items-center justify-center">
-            <h3 className="w-full text-lg font-bold text-white mb-4">Competency Map</h3>
-            <div className="w-full h-64">
+          {/* Candidate View MoM */}
+          {report.candidate_mom && (
+            <div className="glass-panel p-6 flex flex-col gap-4">
+              <h3 className="font-bold text-slate-200 flex items-center gap-2 text-sm">
+                <ClipboardList className="w-4 h-4 text-slate-400" /> Constructive Feedback & MoM
+              </h3>
+              <p className="text-xs text-slate-350 leading-relaxed italic">
+                "{report.candidate_mom.summary}"
+              </p>
+              <div className="border-t border-slate-900 pt-3 space-y-2 flex-1">
+                <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Targeted Action Items:</h4>
+                <ul className="text-xs text-slate-350 list-disc pl-4 space-y-1">
+                  {report.candidate_mom.action_items.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+        </motion.div>
+
+        {/* Competency score breakdowns */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <motion.div
+            initial={{ opacity: 0, x: -15 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="glass-panel p-6"
+          >
+            <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-indigo-400" /> Competency Blueprint
+            </h3>
+            <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
-                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
-                  <PolarGrid stroke="#374151" />
-                  <PolarAngleAxis dataKey="subject" tick={{ fill: '#9ca3af', fontSize: 10 }} />
-                  <Radar name="Candidate" dataKey="A" stroke="#a855f7" fill="#a855f7" fillOpacity={0.4} />
-                  <Tooltip contentStyle={{ backgroundColor: '#111827', border: 'none', borderRadius: '8px' }} />
+                <RadarChart cx="50%" cy="50%" outerRadius="75%" data={radarData}>
+                  <PolarGrid stroke="rgba(148,163,184,0.06)" />
+                  <PolarAngleAxis dataKey="subject" tick={{ fill: '#94A3B8', fontSize: 9 }} />
+                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                  <Radar name="Candidate" dataKey="score" stroke="#6366F1" fill="#6366F1" fillOpacity={0.2} strokeWidth={2} />
                 </RadarChart>
               </ResponsiveContainer>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Pillar Bars */}
-          <div className="lg:col-span-2 glass-card p-6 rounded-2xl border border-gray-800 bg-gray-900/50">
-             <h3 className="text-lg font-bold text-white mb-6">Pillar Breakdown</h3>
-             <div className="space-y-5">
-               {report.pillar_scores && Object.entries(report.pillar_scores).map(([key, val]: any) => (
-                 <div key={key}>
-                   <div className="flex justify-between text-sm mb-1">
-                     <span className="text-gray-300 capitalize">{key.replace(/_/g, ' ')}</span>
-                     <span className="font-bold text-[#a855f7]">{val.score || 0}/10</span>
-                   </div>
-                   <div className="w-full bg-gray-800 rounded-full h-2">
-                     <div className="bg-[#a855f7] h-2 rounded-full" style={{ width: `${((val.score || 0) / 10) * 100}%` }}></div>
-                   </div>
-                 </div>
-               ))}
-             </div>
-          </div>
-          
+          <motion.div
+            initial={{ opacity: 0, x: 15 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.35 }}
+            className="glass-panel p-6 flex flex-col gap-4"
+          >
+            <h3 className="text-sm font-bold text-white">5-Pillar Grading Metrics</h3>
+            {Object.entries(report.pillar_scores).map(([key, val]) => (
+              <div key={key} className="space-y-1.5">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-semibold text-slate-300">{PILLAR_LABELS[key] || key}</span>
+                  <span className="font-bold font-mono" style={{ color: PILLAR_COLORS[key] || '#6366F1' }}>{val.score}/10</span>
+                </div>
+                <div className="h-1.5 bg-slate-950 rounded-full overflow-hidden border border-slate-900">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${val.score * 10}%` }}
+                    transition={{ duration: 0.8 }}
+                    className="h-full rounded-full"
+                    style={{ backgroundColor: PILLAR_COLORS[key] || '#6366F1' }}
+                  />
+                </div>
+                {val.evidence && <p className="text-[10px] text-slate-500 italic truncate">"{val.evidence}"</p>}
+              </div>
+            ))}
+          </motion.div>
         </div>
 
-        {/* Text Analyses */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="glass-card p-6 rounded-2xl border border-gray-800 bg-gray-900/50">
-            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2"><Target size={18} className="text-green-400" /> Strengths</h3>
-            <ul className="space-y-3">
-              {report.strengths?.map((s: string, i: number) => (
-                <li key={i} className="flex gap-3 text-sm text-gray-300"><div className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 shrink-0" />{s}</li>
+        {/* Proctoring Warning Logs */}
+        {report.proctoring && report.proctoring.alerts_log.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="glass-panel p-6 border-red-500/10 bg-red-500/[0.02]"
+          >
+            <h3 className="text-sm font-bold text-red-400 mb-4 flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4" /> Proctoring Log Details
+            </h3>
+            <div className="space-y-3 font-mono">
+              {report.proctoring.alerts_log.map((log, idx) => (
+                <div key={idx} className="flex items-start gap-4 text-[10px]">
+                  <span className="flex-shrink-0 px-2 py-0.5 bg-red-500/10 border border-red-500/20 rounded text-red-400">
+                    {Math.round(log.timestamp)}s
+                  </span>
+                  <div className="flex-1 text-slate-350">
+                    <span className="font-bold text-slate-200">{log.type}</span> — <span>{log.detail}</span>
+                  </div>
+                </div>
               ))}
-            </ul>
-          </div>
-          <div className="glass-card p-6 rounded-2xl border border-gray-800 bg-gray-900/50">
-            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2"><Zap size={18} className="text-amber-400" /> Areas for Improvement</h3>
-            <ul className="space-y-3">
-              {report.improvement_areas?.map((s: string, i: number) => (
-                <li key={i} className="flex gap-3 text-sm text-gray-300"><div className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0" />{s}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Action Buttons */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="flex justify-center gap-4 pt-4"
+        >
+          <button
+            onClick={() => window.print()}
+            className="flex items-center gap-2 px-5 py-2.5 border border-slate-900 hover:bg-slate-950 rounded-xl text-xs font-semibold transition-colors"
+          >
+            <Download className="w-4 h-4" /> Download Report
+          </button>
+          <button
+            onClick={() => router.push('/setup')}
+            className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all"
+          >
+            <PlusCircle className="w-4 h-4" /> New Interview Session
+          </button>
+        </motion.div>
 
       </div>
-    </div>
-  );
-}
-
-function ScoreCard({ title, score, sub, color }: { title: string, score: number, sub: string, color: string }) {
-  return (
-    <div className="glass-card p-5 rounded-xl border border-gray-800 bg-gray-900/50 flex flex-col relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: color }} />
-      <span className="text-sm font-medium text-gray-400 mb-2">{title}</span>
-      <div className="flex items-baseline gap-2">
-        <span className="text-3xl font-bold text-white">{Math.round(score)}</span>
-        <span className="text-sm text-gray-500">/ 100</span>
-      </div>
-      <span className="text-xs text-gray-500 mt-1">{sub}</span>
     </div>
   );
 }

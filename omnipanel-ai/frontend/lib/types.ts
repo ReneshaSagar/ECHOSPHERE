@@ -14,7 +14,7 @@ export interface RoundConfig {
   type: 'oa' | 'technical' | 'hr' | 'portfolio' | 'creative' | 'culture' | 'custom';
   label: string;
   personas: DynamicPersona[];
-  platform_url: string | null;
+  platform_url: string | null; // for OA rounds
 }
 
 export interface RubricPillar {
@@ -74,7 +74,12 @@ export interface SessionReport {
     buzzword_density_percent: number;
     avg_vagueness_score: number;
   };
-  evidence_quotes: Array<{ quote: string; timestamp: number; utterance_id: string; speaker: string }>;
+  evidence_quotes: Array<{
+    quote: string;
+    timestamp: number;
+    utterance_id: string;
+    speaker: string;
+  }>;
   total_exchanges: number;
   interview_duration_seconds: number;
   avg_vagueness_score: number;
@@ -92,8 +97,15 @@ export interface SessionReport {
     log: Array<{ timestamp: number; duration_ms: number }>;
   };
   suspected_ai_answers?: boolean;
-  recruiter_mom?: { summary: string; key_moments: string[]; decision_markers: string[] };
-  candidate_mom?: { summary: string; action_items: string[] };
+  recruiter_mom?: {
+    summary: string;
+    key_moments: string[];
+    decision_markers: string[];
+  };
+  candidate_mom?: {
+    summary: string;
+    action_items: string[];
+  };
 }
 
 export interface TranscriptEntry {
@@ -108,6 +120,7 @@ export interface WSTelemetryEvent {
   type: string;
   session_id?: string;
   event?: Record<string, any>;
+  payload?: Record<string, any>;
 }
 
 export interface UploadResumeResponse {
@@ -115,5 +128,4 @@ export interface UploadResumeResponse {
   ats_score: number;
   page_count: number;
   word_count: number;
-  extraction_method?: string;
 }

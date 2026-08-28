@@ -1,20 +1,19 @@
 # OmniPanel AI 🎙️
 
-> **Autonomous, Dynamic Multi-Persona Voice Interview Panel with Proctoring & ATS Scoring**  
-> Built for the **EchoSphere: Agora Conversational AI Hackathon** (Grand Finale Ready & Enterprise SaaS Grade)
+> **Autonomous, Multi-Persona Voice Interview Panel with Dynamic Cross-Examination**  
+> Built for the **EchoSphere: Agora Conversational AI Hackathon**
 
 ---
 
 ## What is OmniPanel AI?
 
-OmniPanel AI is an advanced automated screening platform. Instead of generic single-agent bots, it places candidates in a real-time, low-latency voice room with a **dynamically generated panel of AI interviewers** tailored to the Job Description (JD). 
+OmniPanel AI places a candidate inside a real-time, ultra-low-latency voice room with a 3-member autonomous AI panel powered by **Agora Conversational AI**:
 
-### Key Features
-1. **Dynamic Round Planning & Personas**: No more hardcoded interviewers. The system generates $N$ rounds (e.g., Online Assessment, Portfolio Review, Deep Technical, Case Study, HR/Behavioral) and corresponding contextual personas (e.g., Lead Architect, PM, Design Director, Culture Advocate) matching the job requirements.
-2. **ATS Resume Scoring (30% weight)**: Real PDF file upload with OCR (using `pdfminer.six` and `pytesseract` fallback) to extract resume content and calculate a parsed ATS match score.
-3. **Multi-Persona Voice Room (70% weight)**: Live multi-persona interview powered by **Agora Conversational AI** and **Agora SD-RTN™** with a centralized proxy turn arbiter coordinating speaker turn-taking and tag-team interruptions.
-4. **MediaPipe & Screen Share Proctoring**: Real-time webcam eye-gaze tracking, multi-face detection, and automatic proctored screen recording.
-5. **Minutes of Meeting (MoM)**: AI-generated post-interview Minutes of Meeting (MoM) customized for both recruiters (summary, decision markers, proctoring log) and candidates (constructive feedback, learning action items).
+| Persona | Role | Color | Focus |
+|---------|------|-------|-------|
+| **Alex** | Staff Systems Architect | Cyan `#06B6D4` | Distributed systems, latency, fault tolerance, CAP theorem |
+| **Maya** | VP of Product | Amber `#F59E0B` | ROI, user friction, implementation velocity, business impact |
+| **David** | Engineering Director | Emerald `#10B981` | Ownership, STAR method, buzzword detection, behavioral depth |
 
 ---
 
@@ -22,18 +21,21 @@ OmniPanel AI is an advanced automated screening platform. Instead of generic sin
 
 ```
 [ Candidate WebRTC Client ] → [ Agora SD-RTN™ Audio Channel ]
-  • MediaPipe eye gaze tracker           ↙                    ↘
-  • Automatic screen recording    [Agora Conversational AI]  [Agora RTM Signaling]
-                                         ↓                            ↓
-                           [FastAPI Orchestration Proxy]    [Telemetry WebSocket]
-                                  ↙              ↘
-                         [Turn Arbiter]     [Sidecar Scorer]
-                         • Shared context   • Gaze/hesitation alerts
-                         • Cooldown rule    • Jargon & vagueness scoring
-                         • Rubric pillar evaluations
-                                         ↘              ↙
-                                     [In-Memory Session Store]
-                                     (ATS score, rounds, scorecard)
+                                    ↙                    ↘
+         [Agora Conversational AI Engine]     [Agora RTM 2.x Signaling]
+         • Sub-250ms VAD Barge-in            • Live transcript streaming
+         • Native Multi-Voice TTS             • Active speaker indicators
+         • Utterance detection               • Vagueness radar telemetry
+                    ↓
+        [OmniPanel FastAPI Orchestrator]
+             ↙              ↘
+  [Turn Arbiter]    [Sidecar Rubric Evaluator]
+  • Shared context  • Vagueness scoring (0-100)
+  • Hand-off logic  • Buzzword detection
+  • Persona routing • 5-Pillar scoring
+             ↘              ↙
+          [In-Memory Session Store]
+          (Transcripts, Rubrics, Scorecards)
 ```
 
 ---
@@ -45,36 +47,39 @@ omnipanel-ai/
 ├── backend/                         # FastAPI Python backend
 │   ├── app/
 │   │   ├── api/
-│   │   │   ├── agora_routes.py      # RTC/RTM token + dynamic agent lifecycle
-│   │   │   ├── interview_routes.py  # Session CRUD + dynamic round plan & rubric generator
-│   │   │   ├── llm_routes.py        # Centralized LLM proxy for Conversational AI agents
-│   │   │   ├── upload_routes.py     # PDF Resume upload, OCR extraction & ATS scoring
-│   │   │   └── report_routes.py     # Post-interview MoM & final report generation
+│   │   │   ├── agora_routes.py      # RTC/RTM token + Convo AI agent lifecycle
+│   │   │   ├── interview_routes.py  # Session CRUD + LLM rubric generation + orchestration
+│   │   │   └── report_routes.py     # Post-interview analytics & evaluation
 │   │   ├── core/
-│   │   │   ├── config.py            # Pydantic Settings (Requesty base URL)
-│   │   │   ├── agora_client.py      # RTC Token Builder v2 + Convo AI client
-│   │   │   └── session_store.py     # Async in-memory session store (multiround state)
+│   │   │   ├── config.py            # Pydantic Settings (env var loading)
+│   │   │   ├── agora_client.py      # RTC Token Builder v2 + Convo AI REST client
+│   │   │   └── session_store.py     # Async in-memory session state
 │   │   ├── engine/
-│   │   │   ├── arbiter.py           # LLM-powered dynamic turn-taking arbiter
-│   │   │   └── evaluator.py         # Real-time vagueness, hesitation & rubric evaluator
-│   │   └── main.py                  # FastAPI server + WebSocket telemetry broadcaster
+│   │   │   ├── personas.py          # Alex / Maya / David prompt definitions
+│   │   │   ├── arbiter.py           # LLM-powered turn-taking router
+│   │   │   └── evaluator.py         # Real-time vagueness + rubric scorer
+│   │   └── main.py                  # FastAPI app + WebSocket telemetry
 │   ├── requirements.txt
-│   └── .env
+│   └── .env.example
 │
 └── frontend/                        # Next.js 15 frontend
     ├── app/
-    │   ├── page.tsx                 # Minimalist vibey landing page
-    │   ├── setup/page.tsx           # 4-step wizard (JD, PDF Upload + ATS, Round Plan, Devices)
-    │   ├── room/[sessionId]/page.tsx# Real-time interview room (OA + Video Grid + Gaze vectors)
-    │   └── report/[sessionId]/page.tsx # Composite scorecard + Radar chart + MoMs
+    │   ├── page.tsx                 # Landing page
+    │   ├── setup/page.tsx           # 4-step setup wizard
+    │   ├── room/[sessionId]/page.tsx# Live interview room
+    │   └── report/[sessionId]/page.tsx # Post-interview report
     ├── components/
-    │   └── room/
-    │       ├── AvatarCard.tsx       # Dynamic persona avatar cards with glowing states
-    │       ├── AudioVisualizer.tsx  # Canvas waveform audio visualizer
-    │       └── LiveTranscript.tsx   # Streaming chat transcripts with hashed colors
+    │   ├── room/
+    │   │   ├── AvatarCard.tsx       # Animated persona cards with glow states
+    │   │   ├── AudioVisualizer.tsx  # Canvas waveform visualizer
+    │   │   ├── LiveTranscript.tsx   # Auto-scroll streaming transcript
+    │   │   └── VaguenessRadar.tsx   # Real-time SVG gauge + pillar checklist
+    │   ├── ui/ (Button, Card, Badge)
+    │   ├── Navbar.tsx
+    │   └── ThemeToggle.tsx
     ├── lib/
-    │   ├── agora.ts                 # Agora RTC SDK helper (mute/unmute, volume indicators)
-    │   ├── api.ts                   # Type-safe API client (uploadResume, createSession, etc.)
+    │   ├── agora.ts                 # Agora RTC/RTM wrapper (SSR-safe dynamic import)
+    │   ├── api.ts                   # Type-safe fetch client
     │   └── types.ts                 # Shared TypeScript interfaces
     └── package.json
 ```
@@ -84,20 +89,20 @@ omnipanel-ai/
 ## Quick Start
 
 ### Prerequisites
-- Python 3.10+
+- Python 3.11+
 - Node.js 18+
-- Agora developer account (App ID + Certificate + Customer credentials)
-- Requesty API key (or OpenAI compatible key)
+- Agora account (App ID + Certificate + Conversational AI access)
+- OpenAI API key
 
 ### 1. Backend Setup
 
 ```bash
 cd omnipanel-ai/backend
 
-# Create .env and enter your credentials (see variables below)
-touch .env
+# Copy env file and fill in your credentials
+cp .env.example .env
 
-# Install dependencies (includes pdfminer.six, pytesseract, pillow)
+# Install dependencies
 pip install -r requirements.txt
 
 # Start the API server
@@ -111,13 +116,14 @@ Verify: `curl http://localhost:8000/health`
 ```bash
 cd omnipanel-ai/frontend
 
-# Create .env.local
-touch .env.local
+# Copy env file
+cp .env.local.example .env.local
+# Edit .env.local and set NEXT_PUBLIC_AGORA_APP_ID
 
 # Install dependencies
 npm install
 
-# Start next.js app
+# Start the development server
 npm run dev
 ```
 
@@ -130,38 +136,61 @@ Open: `http://localhost:3000`
 ### Backend `.env`
 
 ```env
-# Agora App Credentials
-AGORA_APP_ID=b4ad06d39e1d4b26b3897a4d8120a59e
-AGORA_APP_CERTIFICATE=fe6593a213a141fba29d061e87a7b33f
+# Agora
+AGORA_APP_ID=your_agora_app_id_here
+AGORA_APP_CERTIFICATE=your_agora_app_certificate_here
+AGORA_CUSTOMER_ID=your_agora_customer_id_here
+AGORA_CUSTOMER_SECRET=your_agora_customer_secret_here
 
-# Agora REST Gateway Credentials (Basic Auth)
-AGORA_CUSTOMER_ID=eaaf2817a23e46a791aa7240c8e19138
-AGORA_CUSTOMER_SECRET=b2e97c4073d243d8a407b0dea0250864
+# AI
+OPENAI_API_KEY=your_openai_api_key_here
 
-# LLM Gateway (Requesty compatible proxy)
-OPENAI_API_KEY=rqsty-sk-jMUUawhwT2moRKZCaGHxpvulFKJTohN7CkE/WWODaec0lLQCv2KukFtZP+Vf68iVP80eo548+4gUru38Q5bnt1bM4q6L1tL4Ol7bw60ESQQ=
-OPENAI_API_BASE=https://router.requesty.ai/v1
-
-# Server Settings
+# Server
 PORT=8000
 ENVIRONMENT=development
 FRONTEND_URL=http://localhost:3000
-PUBLIC_BACKEND_URL=
 ```
 
 ### Frontend `.env.local`
 
 ```env
-NEXT_PUBLIC_AGORA_APP_ID=b4ad06d39e1d4b26b3897a4d8120a59e
+NEXT_PUBLIC_AGORA_APP_ID=your_agora_app_id_here
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
 ---
 
-## Technical Features & API
+## API Reference
 
-- **PDF upload / OCR**: Real extraction using `pdfminer.six` and fallback OCR scanning using `pytesseract`.
-- **Centralized LLM completions proxy**: Every persona accesses completions from the FastAPI proxy (`/api/llm/{session_id}/chat/completions`). The proxy reads the calling persona's name from the system prompt dynamically and silences other agents (`" "` response) to prevent cross-talking.
-- **WebSocket Telemetry**: Heartbeat ping/pong (every 25 seconds) keeps live connection active while streaming cheating alerts, gaze details, and active speaker status.
-- **Unified Score Formula**:
-  $$\text{Final Score} = (\text{ATS Score} \times 0.3) + (\text{Interview Performance} \times 0.7)$$
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/sessions/create` | Create session + LLM-generated rubric |
+| `POST` | `/api/agora/token` | Get RTC + RTM tokens |
+| `POST` | `/api/agora/agents/start` | Start all 3 AI panel agents |
+| `POST` | `/api/sessions/{id}/orchestrate` | Submit utterance → get next speaker |
+| `GET`  | `/api/sessions/{id}/status` | Live session metadata |
+| `GET`  | `/api/sessions/{id}/report` | Full evaluation report |
+| `POST` | `/api/sessions/{id}/end` | End session + stop agents |
+| `WS`   | `/ws/telemetry/{id}` | Real-time speaker + vagueness stream |
+
+---
+
+## Hackathon Compliance
+
+| Requirement | Implementation |
+|------------|----------------|
+| ✅ Real-time voice | Agora SD-RTN™ < 250ms |
+| ✅ Natural interruption | Agora AI-VAD barge-in |
+| ✅ Contextual memory | Shared session store across all 3 agents |
+| ✅ Multi-persona turn-taking | GPT-4o-mini turn arbiter |
+| ✅ Evidence-linked scoring | Timestamped transcript evidence quotes |
+| ✅ AI disclosure | Alex opens with explicit AI panel announcement |
+
+---
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, TypeScript, Tailwind CSS, Framer Motion, Recharts, Agora RTC/RTM SDK
+- **Backend**: FastAPI, Python 3.11, AsyncIO, Pydantic v2, HTTPX, OpenAI SDK
+- **Agora**: SD-RTN™ RTC, Conversational AI Gateway, RTM 2.x Signaling
+- **AI**: GPT-4o (report) + GPT-4o-mini (turn routing + evaluation)

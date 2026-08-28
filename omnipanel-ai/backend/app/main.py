@@ -6,10 +6,9 @@ import json
 import time
 from app.core.config import settings
 from app.api import agora_routes, interview_routes, report_routes, llm_routes
-from app.api import upload_routes
 from app.core.session_store import session_store
 
-
+# WebSocket connection manager
 class ConnectionManager:
     def __init__(self):
         self.active_connections: dict[str, list[WebSocket]] = {}
@@ -22,81 +21,59 @@ class ConnectionManager:
 
     def disconnect(self, session_id: str, websocket: WebSocket):
         if session_id in self.active_connections:
-            try:
-                self.active_connections[session_id].remove(websocket)
-            except ValueError:
-                pass
+            self.active_connections[session_id].remove(websocket)
 
     async def broadcast(self, session_id: str, message: dict):
         if session_id in self.active_connections:
             dead = []
-            for ws in list(self.active_connections[session_id]):
+            for ws in self.active_connections[session_id]:
                 try:
                     await ws.send_json(message)
                 except Exception:
                     dead.append(ws)
             for ws in dead:
-                try:
-                    self.active_connections[session_id].remove(ws)
-                except ValueError:
-                    pass
-
+                self.active_connections[session_id].remove(ws)
 
 manager = ConnectionManager()
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("OmniPanel AI backend starting...")
+    print('OmniPanel AI backend starting...')
     yield
-    print("OmniPanel AI backend shutting down...")
-
+    print('OmniPanel AI backend shutting down...')
 
 app = FastAPI(
-    title="OmniPanel AI",
-    description="Autonomous Multi-Persona Voice Interview Platform",
-    version="2.0.0",
+    title='OmniPanel AI',
+    description='Autonomous Multi-Persona Voice Interview Platform',
+    version='1.0.0',
     lifespan=lifespan,
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=['*'],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=['*'],
+    allow_headers=['*'],
 )
 
-app.include_router(agora_routes.router, prefix="/api/agora", tags=["Agora"])
-app.include_router(interview_routes.router, prefix="/api", tags=["Interview"])
-app.include_router(report_routes.router, prefix="/api", tags=["Report"])
-app.include_router(llm_routes.router, prefix="/api", tags=["LLM Proxy"])
-app.include_router(upload_routes.router, prefix="/api/upload", tags=["Upload"])
+app.include_router(agora_routes.router, prefix='/api/agora', tags=['Agora'])
+app.include_router(interview_routes.router, prefix='/api', tags=['Interview'])
+app.include_router(report_routes.router, prefix='/api', tags=['Report'])
+app.include_router(llm_routes.router, prefix='/api', tags=['LLM Proxy'])
 
-
-@app.get("/health")
+@app.get('/health')
 async def health_check():
-    return {"status": "ok", "service": "OmniPanel AI", "version": "2.0.0"}
+    return {'status': 'ok', 'service': 'OmniPanel AI', 'version': '1.0.0'}
 
-
-@app.websocket("/ws/telemetry/{session_id}")
+@app.websocket('/ws/telemetry/{session_id}')
 async def telemetry_websocket(websocket: WebSocket, session_id: str):
     await manager.connect(session_id, websocket)
-    ping_task = None
-
-    async def send_pings():
-        while True:
-            await asyncio.sleep(25)
-            try:
-                await websocket.send_json({"type": "ping"})
-            except Exception:
-                break
-
     try:
-        ping_task = asyncio.create_task(send_pings())
-
         while True:
             data = await websocket.receive_json()
+            
+            # Persist incoming proctoring and state events to session store
             session = await session_store.get_session(session_id)
             if session:
                 event_type = data.get("type")
@@ -104,38 +81,26 @@ async def telemetry_websocket(websocket: WebSocket, session_id: str):
                     session.cheating_alerts.append({
                         "timestamp": time.time() - session.start_time,
                         "type": data.get("alert_type", "unknown"),
-                        "detail": data.get("detail", ""),
+                        "detail": data.get("detail", "No details")
                     })
                 elif event_type == "hesitation_alert":
                     session.hesitations.append({
                         "timestamp": time.time() - session.start_time,
-                        "duration_ms": int(data.get("duration_ms", 1000)),
+                        "duration_ms": int(data.get("duration_ms", 1000))
                     })
-                elif event_type == "advance_round":
-                    new_idx = await session_store.advance_round(session_id)
-                    await manager.broadcast(session_id, {
-                        "type": "round_advanced",
-                        "round_index": new_idx,
-                    })
-                elif event_type == "pong":
-                    pass  # heartbeat acknowledged
-
-            # Broadcast back to all connections
+                elif event_type == "change_round":
+                    session.current_round = int(data.get("round_index", 1))
+                    print(f"[WebSocket] Room {session_id} switched to Round {session.current_round}")
+            
+            # Broadcast telemetry event to all connections in room
             await manager.broadcast(session_id, {
-                "type": "telemetry",
-                "session_id": session_id,
-                "event": data,
+                'type': 'telemetry',
+                'session_id': session_id,
+                'event': data,
             })
-
     except WebSocketDisconnect:
-        pass
-    except Exception as e:
-        print(f"[WS] Error in telemetry handler: {e}")
-    finally:
-        if ping_task:
-            ping_task.cancel()
         manager.disconnect(session_id, websocket)
 
-
+# Export manager for use in routes
 def get_connection_manager() -> ConnectionManager:
     return manager

@@ -12,75 +12,25 @@ from typing import Optional
 from app.core.config import settings
 
 # ─────────────────────────────────────────
-# RTC Token Builder (Token v2 / HMAC-SHA256)
+# RTC Token Builder (agora-token-builder)
 # ─────────────────────────────────────────
-
-VERSION = '007'
-ROLE_PUBLISHER = 1
-ROLE_SUBSCRIBER = 2
-
-PRIVILEGE_JOIN_CHANNEL = 1
-PRIVILEGE_PUBLISH_AUDIO_STREAM = 2
-PRIVILEGE_PUBLISH_VIDEO_STREAM = 3
-PRIVILEGE_PUBLISH_DATA_STREAM = 4
-
-def _pack_uint16(x: int) -> bytes:
-    return struct.pack('<H', x)
-
-def _pack_uint32(x: int) -> bytes:
-    return struct.pack('<I', x)
-
-def _pack_int32(x: int) -> bytes:
-    return struct.pack('<i', x)
-
-def _pack_string(s: str) -> bytes:
-    bs = s.encode('utf-8')
-    return _pack_uint16(len(bs)) + bs
-
-def _pack_map_uint32(m: dict) -> bytes:
-    result = _pack_uint16(len(m))
-    for k, v in sorted(m.items()):
-        result += _pack_uint16(k) + _pack_uint32(v)
-    return result
+from agora_token_builder import RtcTokenBuilder
 
 def build_rtc_token(
     channel_name: str,
     uid: int,
-    role: int = ROLE_PUBLISHER,
+    role: int = 1,  # Role_Publisher = 1
     expire_seconds: int = 3600
 ) -> str:
-    """Generate an Agora RTC Token v2."""
+    """Generate an official Agora RTC Token using the RtcTokenBuilder SDK."""
     app_id = settings.AGORA_APP_ID
     app_cert = settings.AGORA_APP_CERTIFICATE
-    now = int(time.time())
-    expire_ts = now + expire_seconds
-    salt = random.randint(1, 0xFFFFFFFF)
+    expire_ts = int(time.time()) + expire_seconds
     
-    privileges = {
-        PRIVILEGE_JOIN_CHANNEL: expire_ts,
-        PRIVILEGE_PUBLISH_AUDIO_STREAM: expire_ts,
-        PRIVILEGE_PUBLISH_VIDEO_STREAM: expire_ts,
-        PRIVILEGE_PUBLISH_DATA_STREAM: expire_ts,
-    }
-    
-    msg = (
-        _pack_uint32(salt)
-        + _pack_uint32(now)
-        + _pack_uint32(expire_ts)
-        + _pack_map_uint32(privileges)
+    token = RtcTokenBuilder.buildTokenWithUid(
+        app_id, app_cert, channel_name, uid, role, expire_ts
     )
-    
-    signing_key = hmac.new(
-        app_cert.encode('utf-8'),
-        (app_id + channel_name + str(uid)).encode('utf-8'),
-        hashlib.sha256
-    ).digest()
-    
-    signature = hmac.new(signing_key, msg, hashlib.sha256).digest()
-    
-    token_body = _pack_string(app_id) + _pack_string(channel_name) + _pack_uint32(uid) + msg + _pack_string(signature.hex())
-    version_str = VERSION + base64.b64encode(token_body).decode('utf-8')
-    return version_str
+    return token
 
 def build_rtm_token(user_id: str, expire_seconds: int = 3600) -> str:
     """Generate Agora RTM Token using JWT-style signing."""
