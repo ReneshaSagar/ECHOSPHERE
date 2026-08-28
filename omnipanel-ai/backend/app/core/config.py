@@ -7,12 +7,12 @@ class Settings(BaseSettings):
     AGORA_CUSTOMER_ID: str = ""
     AGORA_CUSTOMER_SECRET: str = ""
     OPENAI_API_KEY: str = ""
-    GEMINI_API_KEY: Optional[str] = None
+    OPENAI_API_BASE: str = "https://router.requesty.ai/v1"
     PORT: int = 8000
-    ENVIRONMENT: str = 'development'
-    FRONTEND_URL: str = 'http://localhost:3000'
+    ENVIRONMENT: str = "development"
+    FRONTEND_URL: str = "http://localhost:3000"
     PUBLIC_BACKEND_URL: str = ""
 
-    model_config = SettingsConfigDict(env_file='.env', extra='ignore')
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 settings = Settings()

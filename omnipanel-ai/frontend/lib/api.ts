@@ -1,8 +1,13 @@
 /**
  * OmniPanel AI — Type-safe API client
- * Communicates with the FastAPI backend at NEXT_PUBLIC_API_URL
  */
-import type { OrchestrationResponse, SessionReport } from './types';
+import type {
+  OrchestrationResponse,
+  SessionReport,
+  TokenResponse,
+  CreateSessionResponse,
+  UploadResumeResponse,
+} from './types';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
 
@@ -21,46 +26,48 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-// ── Session management ──────────────────────────────────────────────────────
+// ── Resume Upload ──────────────────────────────────────────────
 
-export interface CreateSessionResponse {
-  session_id: string;
-  job_title: string;
-  rubric: Record<string, {
-    label: string;
-    description: string;
-    key_signals: string[];
-  }>;
+/** Upload a PDF resume file; returns extracted text + ATS score. */
+export async function uploadResume(file: File): Promise<UploadResumeResponse> {
+  const form = new FormData();
+  form.append('file', file);
+  return apiFetch<UploadResumeResponse>('/api/upload/resume', {
+    method: 'POST',
+    body: form,
+  });
 }
 
-/**
- * Create a new interview session. Returns session_id + LLM-generated rubric.
- * Uses multipart form data as the backend expects Form fields.
- */
+// ── Session management ─────────────────────────────────────────
+
+/** Create a new interview session. Returns session_id + rubric + round_plan. */
 export async function createSession(params: {
   job_title: string;
   jd_text: string;
-  resume_text: string;
+  resume_text?: string;
+  ats_score?: number;
 }): Promise<CreateSessionResponse> {
   const formData = new FormData();
   formData.append('job_title', params.job_title);
   formData.append('jd_text', params.jd_text);
-  formData.append('resume_text', params.resume_text);
-
+  formData.append('resume_text', params.resume_text ?? '');
+  formData.append('ats_score', String(params.ats_score ?? 0));
   return apiFetch<CreateSessionResponse>('/api/sessions/create', {
     method: 'POST',
     body: formData,
   });
 }
 
-// ── Agora ───────────────────────────────────────────────────────────────────
-
-export interface TokenResponse {
-  rtc_token: string;
-  rtm_token: string;
-  uid: number;
-  channel_name: string;
+/** Advance session to the next round. */
+export async function advanceRound(sessionId: string): Promise<{
+  status: string;
+  round_index: number;
+  round?: import('./types').RoundConfig;
+}> {
+  return apiFetch(`/api/sessions/${sessionId}/advance_round`, { method: 'POST' });
 }
+
+// ── Agora ──────────────────────────────────────────────────────
 
 /** Fetch RTC + RTM tokens for an Agora channel. */
 export async function getToken(params: {
@@ -74,25 +81,25 @@ export async function getToken(params: {
   });
 }
 
-export interface StartAgentsResponse {
-  agent_ids: Record<string, string>;
-}
-
-/** Start all 3 AI panel agents in the Agora channel. */
+/** Start AI panel agents for the current round (personas from session). */
 export async function startAgents(params: {
   session_id: string;
   channel_name: string;
-  personas?: string[];
-}): Promise<StartAgentsResponse> {
-  return apiFetch<StartAgentsResponse>('/api/agora/agents/start', {
+  round_index?: number;
+}): Promise<{ agent_ids: Record<string, string>; round_type?: string }> {
+  return apiFetch('/api/agora/agents/start', {
     method: 'POST',
-    body: JSON.stringify({ personas: ['alex', 'maya', 'david'], ...params }),
+    body: JSON.stringify(params),
   });
 }
 
-// ── Orchestration ───────────────────────────────────────────────────────────
+/** Stop a specific Agora agent. */
+export async function stopAgent(agentId: string): Promise<void> {
+  await apiFetch(`/api/agora/agents/${agentId}`, { method: 'DELETE' });
+}
 
-/** Submit candidate utterance and get next speaker + question. */
+// ── Orchestration ──────────────────────────────────────────────
+
 export async function orchestrateTurn(
   sessionId: string,
   params: { candidate_utterance: string; utterance_id: string },
@@ -103,32 +110,32 @@ export async function orchestrateTurn(
   });
 }
 
-// ── Session lifecycle ───────────────────────────────────────────────────────
+// ── Session lifecycle ──────────────────────────────────────────
 
-export interface SessionStatus {
-  session_id: string;
-  job_title: string;
-  current_persona: string | null;
-  transcript_count: number;
-  status: 'active' | 'ended';
-  elapsed_seconds: number;
-}
-
-/** End the interview session and stop AI agents. */
 export async function endSession(sessionId: string): Promise<{ success: boolean }> {
   return apiFetch<{ success: boolean }>(`/api/sessions/${sessionId}/end`, {
     method: 'POST',
   });
 }
 
-/** Get live session status. */
-export async function getSessionStatus(sessionId: string): Promise<SessionStatus> {
-  return apiFetch<SessionStatus>(`/api/sessions/${sessionId}/status`);
+export async function getSessionStatus(sessionId: string) {
+  return apiFetch<{
+    session_id: string;
+    job_title: string;
+    current_persona: string | null;
+    transcript_count: number;
+    status: string;
+    elapsed_seconds: number;
+    current_round_index: number;
+    current_round: import('./types').RoundConfig;
+    round_plan: import('./types').RoundConfig[];
+    rubric: Record<string, import('./types').RubricPillar>;
+    ats_score: number;
+  }>(`/api/sessions/${sessionId}/status`);
 }
 
-// ── Report ──────────────────────────────────────────────────────────────────
+// ── Report ─────────────────────────────────────────────────────
 
-/** Fetch the full post-interview evaluation report. */
 export async function getReport(sessionId: string): Promise<SessionReport> {
   return apiFetch<SessionReport>(`/api/sessions/${sessionId}/report`);
 }

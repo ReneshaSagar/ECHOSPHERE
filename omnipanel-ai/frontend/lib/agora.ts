@@ -1,91 +1,126 @@
 'use client';
-import type AgoraRTC from 'agora-rtc-sdk-ng';
-import type { IAgoraRTCClient, IMicrophoneAudioTrack, IAgoraRTCRemoteUser } from 'agora-rtc-sdk-ng';
 
-// Export type alias for use in pages
-export type IAgoraRTCClientType = IAgoraRTCClient;
+// Agora RTC SDK — properly handles mic, volume indicators, and teardown.
+// Import is dynamic to avoid SSR issues.
 
-let AgoraRTCInstance: typeof AgoraRTC | null = null;
-let rtcClient: IAgoraRTCClient | null = null;
-let localMicTrack: IMicrophoneAudioTrack | null = null;
-let audioLevelInterval: ReturnType<typeof setInterval> | null = null;
+let _AgoraRTC: any = null;
+let _client: any = null;
+let _localMicTrack: any = null;
+let _volumeInterval: ReturnType<typeof setInterval> | null = null;
+let _isMuted = false;
 
-async function getAgoraRTC(): Promise<typeof AgoraRTC> {
-  if (!AgoraRTCInstance) {
-    AgoraRTCInstance = (await import('agora-rtc-sdk-ng')).default;
+async function getAgoraRTC() {
+  if (!_AgoraRTC) {
+    const mod = await import('agora-rtc-sdk-ng');
+    _AgoraRTC = mod.default;
+    _AgoraRTC.setLogLevel(3); // warnings only
   }
-  return AgoraRTCInstance;
+  return _AgoraRTC;
 }
 
+/**
+ * Initialize and join Agora RTC channel.
+ * @param appId    - Agora App ID (pass from env at runtime, NOT module level)
+ * @param channel  - Channel name (= sessionId)
+ * @param uid      - Numeric UID for this user
+ * @param token    - RTC token from backend
+ * @param onUserPublished  - Called when a remote user starts publishing
+ * @param onUserUnpublished - Called when a remote user stops publishing
+ * @param onVolumeIndicator - Called every 200ms with {uid, level} for all remote speakers
+ */
 export async function initRTC(
   appId: string,
   channel: string,
   uid: number,
   token: string,
-  onUserPublished: (user: IAgoraRTCRemoteUser, mediaType: 'audio' | 'video') => void,
-  onUserUnpublished: (user: IAgoraRTCRemoteUser) => void,
-  onAudioLevel: (uid: number, level: number) => void,
-): Promise<IAgoraRTCClient> {
+  onUserPublished: (user: any, mediaType: string) => void,
+  onUserUnpublished: (user: any) => void,
+  onVolumeIndicator: (uid: number, level: number) => void,
+): Promise<any> {
   const AgoraRTC = await getAgoraRTC();
-  AgoraRTC.setLogLevel(3); // warn only
-  
-  rtcClient = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
-  
-  rtcClient.on('user-published', async (user, mediaType) => {
-    if (mediaType !== 'audio' && mediaType !== 'video') return;
-    await rtcClient!.subscribe(user, mediaType);
+
+  // Create client
+  _client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
+
+  // Subscribe to remote audio automatically
+  _client.on('user-published', async (user: any, mediaType: string) => {
+    await _client.subscribe(user, mediaType);
     if (mediaType === 'audio') {
       user.audioTrack?.play();
     }
     onUserPublished(user, mediaType);
   });
-  
-  rtcClient.on('user-unpublished', onUserUnpublished);
-  
-  await rtcClient.join(appId, channel, token, uid);
-  
-  localMicTrack = await AgoraRTC.createMicrophoneAudioTrack();
-  await rtcClient.publish([localMicTrack]);
-  
-  // Audio level monitoring
-  audioLevelInterval = setInterval(() => {
-    const levels = rtcClient!.getRemoteAudioStats();
-    Object.entries(levels).forEach(([uidStr, stats]) => {
-      onAudioLevel(parseInt(uidStr), (stats as any).receiveLevel ?? 0);
+
+  _client.on('user-unpublished', (user: any) => {
+    onUserUnpublished(user);
+  });
+
+  // Enable volume indicator
+  _client.enableAudioVolumeIndicator();
+  _client.on('volume-indicator', (volumes: Array<{ uid: number; level: number }>) => {
+    volumes.forEach(({ uid: remoteUid, level }) => {
+      onVolumeIndicator(remoteUid, level);
     });
-  }, 100);
-  
-  return rtcClient;
+  });
+
+  // Join channel — token can be null for testing (but real app needs it)
+  await _client.join(appId, channel, token || null, uid);
+
+  // Create and publish local microphone track
+  try {
+    _localMicTrack = await AgoraRTC.createMicrophoneAudioTrack({
+      encoderConfig: 'music_standard',
+    });
+    await _client.publish([_localMicTrack]);
+    _isMuted = false;
+  } catch (err) {
+    console.warn('[Agora] Could not create mic track:', err);
+  }
+
+  return _client;
 }
 
+/** Toggle local microphone mute. Returns new isMuted state. */
 export async function toggleMic(): Promise<boolean> {
-  if (!localMicTrack) return false;
-  const isMuted = localMicTrack.muted;
-  await localMicTrack.setMuted(!isMuted);
-  return !isMuted;
+  if (!_localMicTrack) return _isMuted;
+  _isMuted = !_isMuted;
+  await _localMicTrack.setMuted(_isMuted);
+  return _isMuted;
 }
 
+/** Get current mic muted state. */
+export function getMicMuted(): boolean {
+  return _isMuted;
+}
+
+/** Stop all tracks and leave the channel. */
 export async function teardownRTC(): Promise<void> {
-  if (audioLevelInterval) {
-    clearInterval(audioLevelInterval);
-    audioLevelInterval = null;
+  if (_volumeInterval) {
+    clearInterval(_volumeInterval);
+    _volumeInterval = null;
   }
-  if (localMicTrack) {
-    localMicTrack.stop();
-    localMicTrack.close();
-    localMicTrack = null;
+  if (_localMicTrack) {
+    _localMicTrack.stop();
+    _localMicTrack.close();
+    _localMicTrack = null;
   }
-  if (rtcClient) {
-    await rtcClient.leave();
-    rtcClient = null;
+  if (_client) {
+    try {
+      await _client.leave();
+    } catch (_) {}
+    _client = null;
   }
+  _AgoraRTC = null;
+  _isMuted = false;
 }
 
+/** List available microphones. */
 export async function getAudioInputDevices(): Promise<MediaDeviceInfo[]> {
   const AgoraRTC = await getAgoraRTC();
   return AgoraRTC.getMicrophones();
 }
 
+/** Quick mic permission test (creates + immediately destroys a track). */
 export async function testMicAccess(): Promise<boolean> {
   try {
     const AgoraRTC = await getAgoraRTC();
@@ -93,7 +128,7 @@ export async function testMicAccess(): Promise<boolean> {
     track.stop();
     track.close();
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 }
