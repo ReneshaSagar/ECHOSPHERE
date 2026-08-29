@@ -36,8 +36,12 @@ async def start_agents(req: AgentStartRequest):
         raise HTTPException(status_code=404, detail="Session not found")
         
     # 1. Determine the target LLM completions URL
-    llm_url = 'https://api.openai.com/v1/chat/completions'
-    if settings.PUBLIC_BACKEND_URL:
+    # Default to Requesty (or whatever BASE_URL is set in config) instead of hardcoding OpenAI,
+    # so that the Agora cloud servers don't get 401 Unauthorized when using our Requesty key.
+    base_url = getattr(settings, "OPENAI_BASE_URL", "https://api.openai.com/v1")
+    llm_url = f"{base_url.rstrip('/')}/chat/completions"
+    
+    if getattr(settings, "PUBLIC_BACKEND_URL", None):
         # Route through our FastAPI central completions orchestrator
         llm_url = f"{settings.PUBLIC_BACKEND_URL.rstrip('/')}/api/llm/{req.session_id}/chat/completions"
         print(f"[Agora AI Agent Startup] Exposing local LLM proxy URL: {llm_url}")
@@ -60,11 +64,15 @@ async def start_agents(req: AgentStartRequest):
             import hashlib
             uid_hash = int(hashlib.md5(persona_name.encode()).hexdigest(), 16) % 10000 + 2000
             
+            # Inject context directly into the system prompt since we are bypassing the local proxy
+            base_prompt = ag_data.get("system_prompt", f"You are {persona_name}. Conduct a professional interview.")
+            rich_prompt = f"{base_prompt}\n\nContext:\nJob Title: {session.job_title}\nResume snippet:\n{session.resume_text[:1000]}"
+            
             res = await agora_client.start_convo_agent(
                 channel_name=req.channel_name,
                 agent_uid=uid_hash,
                 persona_name=persona_name,
-                system_prompt=ag_data.get("system_prompt", f"You are {persona_name}. Conduct a professional interview."),
+                system_prompt=rich_prompt,
                 voice_id=ag_data.get("voice_id", "nova"),
                 llm_url=llm_url
             )
