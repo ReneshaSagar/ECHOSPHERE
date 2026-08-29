@@ -375,8 +375,8 @@ export default function RoomPage() {
     initAgora();
     startCamera();
     
-    // Automatically trigger the first voice round
-    switchRound(1);
+    // Automatically trigger the voice round initialization since OA is bypassed
+    switchRound(2);
 
     return () => {
       wsRef.current?.close();
@@ -401,8 +401,13 @@ export default function RoomPage() {
       // Fetch dynamic round info from backend session status
       const { getSessionStatus } = await import('@/lib/api');
       const status = await getSessionStatus(sessionId);
-      if (status.rounds && status.rounds.length >= roundNum) {
-        const agents = status.rounds[roundNum - 1].agents || [];
+      
+      // Map frontend roundNum (2+) to backend rounds array (0-indexed)
+      // Since frontend round 1 is the bypassed OA, frontend round 2 is backend round 0.
+      const backendRoundIndex = roundNum - 2;
+      
+      if (status.rounds && status.rounds.length > backendRoundIndex && backendRoundIndex >= 0) {
+        const agents = status.rounds[backendRoundIndex].agents || [];
         setDynamicPersonas(agents);
         dynamicPersonasRef.current = agents;
         
@@ -415,7 +420,7 @@ export default function RoomPage() {
           personas: agentNames
         });
       } else {
-        console.warn(`Round ${roundNum} not found in session blueprint.`);
+        console.warn(`Backend round ${backendRoundIndex} not found in session blueprint.`);
       }
     } catch(err) {
       console.warn("Failed to fetch session rounds or start agents", err);
