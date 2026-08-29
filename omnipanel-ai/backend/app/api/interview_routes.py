@@ -59,6 +59,10 @@ async def create_session(
     # 1. Orchestrator dynamically generates the Blueprint (Rounds + Agents)
     blueprint = await orchestrator.generate_blueprint(job_title, jd_text, final_resume_text)
     
+    if blueprint.get("is_valid_input") is False:
+        reason = blueprint.get("rejection_reason", "Invalid job description or resume.")
+        raise HTTPException(status_code=400, detail=f"Gibberish detected: {reason}")
+    
     rubric = blueprint.get("rubric", {})
     opening_question = blueprint.get("opening_question", "Can you introduce yourself?")
     rounds = blueprint.get("rounds", [])

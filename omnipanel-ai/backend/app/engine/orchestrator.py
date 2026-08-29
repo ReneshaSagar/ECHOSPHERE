@@ -30,10 +30,14 @@ class RubricConfig(BaseModel):
     clarity: PillarConfig
     ownership: PillarConfig
 
+from typing import List, Optional
+
 class InterviewBlueprint(BaseModel):
-    rubric: RubricConfig = Field(..., description="Evaluation rubric tailored to JD")
-    opening_question: str = Field(..., description="First question to ask the candidate")
-    rounds: List[RoundConfig] = Field(..., description="Dynamically generated interview rounds based on JD")
+    is_valid_input: bool = Field(..., description="Set to false if the JD or Resume is literal gibberish, completely irrelevant, or nonsensical.")
+    rejection_reason: Optional[str] = Field(None, description="If is_valid_input is false, explain why (e.g. 'The Job Description is gibberish').")
+    rubric: Optional[RubricConfig] = Field(None, description="Evaluation rubric tailored to JD")
+    opening_question: Optional[str] = Field(None, description="First question to ask the candidate")
+    rounds: Optional[List[RoundConfig]] = Field(None, description="Dynamically generated interview rounds based on JD")
 
 class Orchestrator:
     async def generate_blueprint(self, job_title: str, jd_text: str, resume_text: str) -> dict:
@@ -49,9 +53,10 @@ Job Description: {jd_text[:2000]}
 Candidate Resume: {resume_text[:2000]}
 
 Instructions:
-1. Generate a custom 5-pillar rubric based on the core requirements of the JD.
-2. Formulate a strong, open-ended opening question.
-3. Design the interview 'rounds'. You can create 1 to 3 rounds depending on the seniority of the role.
+1. FIRST, check if the Job Description and Resume actually make sense. If they are literal gibberish (e.g., "asdf asdf") or completely nonsensical, set `is_valid_input` to false, provide a `rejection_reason`, and omit the rest.
+2. If valid, set `is_valid_input` to true, and generate a custom 5-pillar rubric based on the core requirements of the JD.
+3. Formulate a strong, open-ended opening question.
+4. Design the interview 'rounds'. You can create 1 to 3 rounds depending on the seniority of the role.
    - For each round, create a panel of 'agents'. You can have 1 to 3 agents per round.
    - Assign them distinct, realistic personas (e.g., a detail-oriented Data Engineer, a big-picture PM, a culture-focused HR Lead).
    - Ensure 'agent_id' is unique across the entire blueprint (e.g., 'agent_1', 'agent_2').

@@ -586,6 +586,13 @@ export default function SetupPage() {
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Failed to create session';
       setError(msg);
+      
+      // If it's a 400 Bad Request (gibberish detected), stop and don't proceed to demo mode
+      if (msg.includes('400') || msg.toLowerCase().includes('gibberish')) {
+        setLoading(false);
+        return;
+      }
+      
       setSessionId(`demo_${Date.now()}`);
       setRubric({
         architecture:  { label: 'Architecture & System Design', description: 'Probe distributed system knowledge.', key_signals: ['CAP theorem', 'Sharding', 'Fault tolerance'] },
@@ -667,9 +674,10 @@ export default function SetupPage() {
 
         {/* ── Error banner */}
         {error && (
-          <div className="mb-4 p-3 border border-amber-400/30 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-500 text-sm flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 flex-shrink-0" />
-            API unavailable — using demo mode. {error}
+          <div className="mb-4 text-xs font-semibold text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-4 py-2 text-center rounded">
+            {(error.includes('400') || error.toLowerCase().includes('gibberish')) 
+              ? error 
+              : `API unavailable — using demo mode. ${error}`}
           </div>
         )}
 
