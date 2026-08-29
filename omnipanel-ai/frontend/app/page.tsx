@@ -11,7 +11,11 @@ const GRID_SIZE = 18;
 
 export default function LandingPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isTextScratched, setIsTextScratched] = useState(false);
+  const [isTopTextScratched, setIsTopTextScratched] = useState(false);
+  const [isTitleScratched, setIsTitleScratched] = useState(false);
+  const [isPrimaryBtnScratched, setIsPrimaryBtnScratched] = useState(false);
+  const [isSecondaryBtnScratched, setIsSecondaryBtnScratched] = useState(false);
+  const [isRightTextScratched, setIsRightTextScratched] = useState(false);
 
   const sizeCanvas = useCallback(() => {
     const canvas = canvasRef.current;
@@ -23,7 +27,11 @@ export default function LandingPage() {
     canvas.height = Math.floor(bounds.height * pixelRatio);
     const context = canvas.getContext('2d');
     context?.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    setIsTextScratched(false);
+    setIsTopTextScratched(false);
+    setIsTitleScratched(false);
+    setIsPrimaryBtnScratched(false);
+    setIsSecondaryBtnScratched(false);
+    setIsRightTextScratched(false);
   }, []);
 
   useEffect(() => {
@@ -33,7 +41,6 @@ export default function LandingPage() {
   }, [sizeCanvas]);
 
   const scratch = useCallback((clientX: number, clientY: number) => {
-    setIsTextScratched(true);
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -70,13 +77,19 @@ export default function LandingPage() {
         <section className="flex min-h-[calc(100vh-10rem)] flex-col justify-between py-8 sm:py-12">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.12fr_0.88fr] lg:items-end">
             <div className="max-w-4xl">
-              <div className={`mb-8 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.22em] transition-colors duration-500 ${isTextScratched ? 'text-white' : 'text-[#00AEEF]'}`}>
-                <span className={`grid h-6 w-6 place-items-center transition-colors duration-500 ${isTextScratched ? 'bg-white text-[#00AEEF]' : 'bg-[#00AEEF] text-white'}`}>+</span>
+              <div 
+                className={`mb-8 flex w-fit items-center gap-3 text-[11px] font-bold uppercase tracking-[0.22em] transition-colors duration-500 ${isTopTextScratched ? 'text-white' : 'text-[#00AEEF]'}`}
+                onPointerEnter={() => setIsTopTextScratched(true)}
+              >
+                <span className={`grid h-6 w-6 place-items-center transition-colors duration-500 ${isTopTextScratched ? 'bg-white text-[#00AEEF]' : 'bg-[#00AEEF] text-white'}`}>+</span>
                 Agora-powered interview intelligence
               </div>
               <h1 className="max-w-4xl text-5xl font-semibold leading-[0.94] tracking-[-0.075em] text-[#102a3a] dark:text-slate-100 sm:text-7xl lg:text-[6.5rem]">
                 Make every interview
-                <span className={`block transition-colors duration-500 ${isTextScratched ? 'text-white' : 'text-[#00AEEF]'}`}>
+                <span 
+                  className={`block w-fit transition-colors duration-500 ${isTitleScratched ? 'text-white' : 'text-[#00AEEF]'}`}
+                  onPointerEnter={() => setIsTitleScratched(true)}
+                >
                   a real conversation.
                 </span>
               </h1>
@@ -84,18 +97,29 @@ export default function LandingPage() {
                 OmniPanel brings dynamic AI perspectives into one live voice interview—so teams can hear beyond rehearsed answers.
               </p>
               <div className="mt-10 flex flex-wrap items-center gap-3">
-                <Link href="/setup" className={`group inline-flex items-center gap-3 px-5 py-3.5 text-sm font-bold transition-colors ${isTextScratched ? 'bg-white text-[#00AEEF] hover:bg-slate-100' : 'bg-[#00AEEF] text-white hover:bg-[#008fca]'}`}>
+                <Link 
+                  href="/setup" 
+                  className={`group inline-flex items-center gap-3 px-5 py-3.5 text-sm font-bold transition-colors ${isPrimaryBtnScratched ? 'bg-white text-[#00AEEF] hover:bg-slate-100' : 'bg-[#00AEEF] text-white hover:bg-[#008fca]'}`}
+                  onPointerEnter={() => setIsPrimaryBtnScratched(true)}
+                >
                   Start an interview
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
-                <a href="#panel" className={`inline-flex items-center gap-2 border border-[#00AEEF]/30 px-5 py-3.5 text-sm font-semibold backdrop-blur-sm transition-colors ${isTextScratched ? 'bg-white/20 text-white hover:bg-white/30 border-white/50' : 'bg-white/80 dark:bg-[#0B121F]/80 text-[#00AEEF] hover:border-[#00AEEF] hover:text-white dark:hover:text-white'}`}>
+                <a 
+                  href="#panel" 
+                  className={`inline-flex items-center gap-2 border border-[#00AEEF]/30 px-5 py-3.5 text-sm font-semibold backdrop-blur-sm transition-colors ${isSecondaryBtnScratched ? 'bg-white/20 text-white hover:bg-white/30 border-white/50' : 'bg-white/80 dark:bg-[#0B121F]/80 text-[#00AEEF] hover:border-[#00AEEF] hover:text-white dark:hover:text-white'}`}
+                  onPointerEnter={() => setIsSecondaryBtnScratched(true)}
+                >
                   Meet the panel <ArrowDownRight className="h-4 w-4" />
                 </a>
               </div>
             </div>
 
-            <div className={`justify-self-end border-l pl-5 text-sm leading-relaxed lg:max-w-xs transition-colors duration-500 ${isTextScratched ? 'border-white/50 text-white' : 'border-[#00AEEF]/25 text-[#3b5869] dark:text-slate-400'}`}>
-              <p className={`font-mono text-[10px] font-bold uppercase tracking-[0.18em] transition-colors duration-500 ${isTextScratched ? 'text-white' : 'text-[#00AEEF]'}`}>Scratch the surface</p>
+            <div 
+              className={`justify-self-end w-fit border-l pl-5 text-sm leading-relaxed lg:max-w-xs transition-colors duration-500 ${isRightTextScratched ? 'border-white/50 text-white' : 'border-[#00AEEF]/25 text-[#3b5869] dark:text-slate-400'}`}
+              onPointerEnter={() => setIsRightTextScratched(true)}
+            >
+              <p className={`font-mono text-[10px] font-bold uppercase tracking-[0.18em] transition-colors duration-500 ${isRightTextScratched ? 'text-white' : 'text-[#00AEEF]'}`}>Scratch the surface</p>
               <p className="mt-3">Move your cursor across the page to uncover the live signal underneath.</p>
             </div>
           </div>
