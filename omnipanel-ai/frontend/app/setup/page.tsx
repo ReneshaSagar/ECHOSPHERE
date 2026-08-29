@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -338,21 +338,76 @@ function StepRubric({
 // ── Step 4: Mic Test ──────────────────────────────────────────────────────
 
 function StepMicTest({ onBack, onLaunch }: { onBack: () => void; onLaunch: () => void }) {
-  const [micStatus, setMicStatus] = useState<'idle' | 'testing' | 'granted' | 'denied'>('idle');
+  const [micStatus, setMicStatus] = useState<'idle' | 'testing' | 'listening' | 'granted' | 'denied'>('idle');
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
+  const [volume, setVolume] = useState(0);
+
+  const streamRef = useRef<MediaStream | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const rafRef = useRef<number | null>(null);
+
+  const cleanup = useCallback(() => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    if (streamRef.current) streamRef.current.getTracks().forEach((t: MediaStreamTrack) => t.stop());
+    if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
+      audioCtxRef.current.close().catch(() => {});
+    }
+  }, []);
+
+  useEffect(() => {
+    return cleanup;
+  }, [cleanup]);
 
   const testMic = useCallback(async () => {
     setMicStatus('testing');
+    cleanup();
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach((t) => t.stop());
+      streamRef.current = stream;
+      
       const devs = await navigator.mediaDevices.enumerateDevices();
       setDevices(devs.filter((d) => d.kind === 'audioinput'));
-      setMicStatus('granted');
+      
+      setMicStatus('listening');
+      
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      const audioContext = new AudioContextClass();
+      audioCtxRef.current = audioContext;
+      
+      const analyser = audioContext.createAnalyser();
+      const microphone = audioContext.createMediaStreamSource(stream);
+      microphone.connect(analyser);
+      
+      analyser.fftSize = 256;
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      
+      let speechDetected = false;
+      const checkVolume = () => {
+        if (speechDetected) return;
+        analyser.getByteFrequencyData(dataArray);
+        
+        let sum = 0;
+        for (let i = 0; i < bufferLength; i++) {
+          sum += dataArray[i];
+        }
+        const average = sum / bufferLength;
+        setVolume(average);
+        
+        if (average > 35) {
+          speechDetected = true;
+          setMicStatus('granted');
+          cleanup();
+        } else {
+          rafRef.current = requestAnimationFrame(checkVolume);
+        }
+      };
+      checkVolume();
+
     } catch {
       setMicStatus('denied');
     }
-  }, []);
+  }, [cleanup]);
 
   useEffect(() => { testMic(); }, [testMic]);
 
@@ -370,7 +425,7 @@ function StepMicTest({ onBack, onLaunch }: { onBack: () => void; onLaunch: () =>
 
       {/* Mic status indicator */}
       <div className="relative w-28 h-28">
-        {micStatus === 'testing' && (
+        {(micStatus === 'testing' || micStatus === 'listening') && (
           <div
             className="absolute inset-0 rounded-full border-4 border-t-transparent animate-spin"
             style={{ borderColor: `${AGORA_BLUE} transparent transparent transparent` }}
@@ -390,20 +445,32 @@ function StepMicTest({ onBack, onLaunch }: { onBack: () => void; onLaunch: () =>
           ) : micStatus === 'denied' ? (
             <AlertCircle className="w-12 h-12 text-red-500" />
           ) : (
-            <Mic className="w-10 h-10 text-[#00AEEF]" />
+            <Mic className={`w-10 h-10 text-[#00AEEF] transition-transform ${micStatus === 'listening' ? 'scale-110' : ''}`} />
           )}
         </div>
       </div>
 
-      <div className="text-center text-sm">
+      {micStatus === 'listening' && (
+        <div className="w-48 h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-[#00AEEF] transition-all duration-75"
+            style={{ width: `${Math.min(100, (volume / 80) * 100)}%` }}
+          />
+        </div>
+      )}
+
+      <div className="text-center text-sm min-h-6">
         {micStatus === 'granted' && (
-          <p className="text-emerald-600 font-semibold">✓ Microphone access granted</p>
+          <p className="text-emerald-600 font-semibold">✓ Perfect! Audio detected</p>
         )}
         {micStatus === 'denied' && (
           <p className="text-red-500 font-semibold">⚠ Mic blocked — enable in browser settings</p>
         )}
         {micStatus === 'testing' && (
           <p className="text-[#8baab8] dark:text-slate-500">Requesting microphone access…</p>
+        )}
+        {micStatus === 'listening' && (
+          <p className="text-[#00AEEF] font-semibold animate-pulse">Please speak into your microphone...</p>
         )}
       </div>
 
@@ -440,7 +507,7 @@ function StepMicTest({ onBack, onLaunch }: { onBack: () => void; onLaunch: () =>
         </SecondaryBtn>
         <button
           onClick={onLaunch}
-          disabled={micStatus === 'denied' || micStatus === 'testing'}
+          disabled={micStatus === 'denied' || micStatus === 'testing' || micStatus === 'listening'}
           className="flex items-center gap-2 px-8 py-3 bg-[#00AEEF] hover:bg-[#008fca]
             text-white font-bold text-sm transition-colors
             disabled:opacity-40 disabled:cursor-not-allowed"
