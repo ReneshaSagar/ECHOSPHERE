@@ -1,10 +1,20 @@
-export type PersonaName = 'alex' | 'maya' | 'david';
+export interface DynamicPersona {
+  name: string;
+  role: string;
+  voice_id: string;
+  color: string;
+  agent_id: string;
+  agent_uid: number;
+  specialties: string[];
+  system_prompt: string;
+}
+
 export type SessionStatus = 'setup' | 'live' | 'ended';
 export type HireVerdict = 'STRONG HIRE' | 'LEAN HIRE' | 'NO HIRE';
 
 export interface TranscriptEntry {
   id: string;
-  speaker: string;  // 'alex' | 'maya' | 'david' | 'candidate'
+  speaker: string;
   text: string;
   timestamp: number;
   vaguenessScore?: number;
@@ -47,7 +57,7 @@ export interface SessionReport {
 }
 
 export interface OrchestrationResponse {
-  next_persona: PersonaName;
+  next_persona: string;
   question: string;
   vagueness_score: number;
   detected_issues: string[];

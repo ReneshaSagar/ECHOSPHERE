@@ -17,11 +17,8 @@ import type { TranscriptEntry, WSTelemetryEvent } from '@/lib/types';
 
 const AudioVisualizer = dynamic(() => import('@/components/room/AudioVisualizer'), { ssr: false });
 
-const PERSONA_UIDS: Record<string, number> = { alex: 2001, maya: 2002, david: 2003 };
 const APP_ID = process.env.NEXT_PUBLIC_AGORA_APP_ID ?? '';
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
-
-type PersonaName = 'alex' | 'maya' | 'david';
 
 export default function RoomPage() {
   const { sessionId } = useParams<{ sessionId: string }>();
@@ -32,8 +29,8 @@ export default function RoomPage() {
   const [isMicMuted, setIsMicMuted] = useState(false);
   const [rttMs, setRttMs] = useState<number>(45);
   const [audioLevels, setAudioLevels] = useState<Record<string, number>>({});
-  const [activeSpeaker, setActiveSpeaker] = useState<PersonaName | 'candidate' | null>(null);
-  const [thinkingPersona, setThinkingPersona] = useState<PersonaName | null>(null);
+  const [activeSpeaker, setActiveSpeaker] = useState<string | null>(null);
+  const [thinkingPersona, setThinkingPersona] = useState<string | null>(null);
   const [transcript, setTranscript] = useState<TranscriptEntry[]>([]);
   const [vaguenessScore, setVaguenessScore] = useState(0);
   const [difficultyLevel, setDifficultyLevel] = useState(2);
@@ -43,7 +40,8 @@ export default function RoomPage() {
   // ── Round Control ──────────────────────────────────────────────────────────
   // OA Round is disconnected for now; starting directly at Round 2 (Voice Round)
   const [currentRound, setCurrentRound] = useState<1 | 2 | 3>(2); // 1: Assessment (Bypassed), 2: Technical, 3: HR
-  const [, setDynamicPersonas] = useState<any>(null);
+  const [dynamicPersonas, setDynamicPersonas] = useState<any[]>([]);
+  const dynamicPersonasRef = useRef<any[]>([]);
   
   // ── Proctoring & Media State ──────────────────────────────────────────────
   const [proctorStatus, setProctorStatus] = useState<'initializing' | 'active' | 'warning' | 'degraded'>('initializing');
@@ -347,15 +345,15 @@ export default function RoomPage() {
         tokenRes.rtc_token,
         (user, mediaType) => {
           const uid = user.uid as number;
-          const persona = Object.entries(PERSONA_UIDS).find(([, v]) => v === uid)?.[0];
+          const persona = dynamicPersonasRef.current?.find(p => p.agent_uid === uid)?.agent_id;
           if (persona && mediaType === 'audio') {
-            setActiveSpeaker(persona as PersonaName);
+            setActiveSpeaker(persona);
             setThinkingPersona(null);
           }
         },
         (user) => {
           const uid = user.uid as number;
-          const persona = Object.entries(PERSONA_UIDS).find(([, v]) => v === uid)?.[0];
+          const persona = dynamicPersonasRef.current?.find(p => p.agent_uid === uid)?.agent_id;
           if (persona) {
             setActiveSpeaker((prev) => (prev === persona ? null : prev));
           }
@@ -386,7 +384,7 @@ export default function RoomPage() {
       mediaRecorderRef.current?.stop();
       import('@/lib/agora').then(({ teardownRTC }) => teardownRTC());
     };
-  }, [connectWebSocket, initAgora, startCamera]);
+  }, [connectWebSocket, initAgora, startCamera, sessionId]);
 
   // ── Round Transition Operations ────────────────────────────────────────────
   const switchRound = async (roundNum: 1 | 2 | 3) => {
@@ -399,31 +397,26 @@ export default function RoomPage() {
       }));
     }
 
+    try {
+      // Fetch dynamic round info from backend session status
+      const { getSessionStatus } = await import('@/lib/api');
+      const status = await getSessionStatus(sessionId);
+      if (status.rounds && status.rounds.length >= roundNum) {
+        const agents = status.rounds[roundNum - 1].agents || [];
+        setDynamicPersonas(agents);
+        dynamicPersonasRef.current = agents;
+      }
+    } catch(err) {
+      console.warn("Failed to fetch session rounds", err);
+    }
+
     if (roundNum === 2) {
       try {
-        const startRes = await startAgents({ session_id: sessionId, channel_name: sessionId });
-        setDynamicPersonas(startRes.agent_ids);
+        await startAgents({ session_id: sessionId, channel_name: sessionId });
+
       } catch (err) {
         console.warn('Failed to start Technical AI panel:', err);
       }
-      
-      const technicalOpening: TranscriptEntry = {
-        id: 'tech-opening',
-        speaker: 'alex',
-        text: 'Welcome to the Technical Round. I am Alex, and we will evaluate your systems design skills. Maya and David will jump in as we discuss tradeoffs.',
-        timestamp: (Date.now() - sessionStartTime) / 1000
-      };
-      setTranscript((prev) => [...prev, technicalOpening]);
-      setActiveSpeaker('alex');
-    } else if (roundNum === 3) {
-      const hrOpening: TranscriptEntry = {
-        id: 'hr-opening',
-        speaker: 'david',
-        text: 'Welcome to the Behavioral and HR Round. I am David, and we will probe team leadership, conflict resolution, and career trajectory.',
-        timestamp: (Date.now() - sessionStartTime) / 1000
-      };
-      setTranscript((prev) => [...prev, hrOpening]);
-      setActiveSpeaker('david');
     }
   };
 
@@ -601,15 +594,21 @@ export default function RoomPage() {
                   </div>
                 </div>
 
-                {(['alex', 'maya', 'david'] as PersonaName[]).map((persona) => (
-                  <div key={persona} className="col-span-1 relative">
-                    <AvatarCard
-                      persona={persona}
-                      isActive={activeSpeaker === persona}
-                      isThinking={thinkingPersona === persona}
-                    />
+                {dynamicPersonas && dynamicPersonas.length > 0 ? (
+                  dynamicPersonas.map((persona: any) => (
+                    <div key={persona.agent_id} className="col-span-1 relative">
+                      <AvatarCard
+                        persona={persona}
+                        isActive={activeSpeaker === persona.agent_id}
+                        isThinking={thinkingPersona === persona.agent_id}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div className="col-span-3 flex items-center justify-center text-slate-500 font-mono text-sm border border-dashed border-slate-800 rounded-2xl">
+                    Waiting for dynamic agents...
                   </div>
-                ))}
+                )}
               </div>
 
               <div className="rounded-2xl overflow-hidden border border-slate-800 bg-[#0B121F]/80 backdrop-blur p-1 h-20 flex-shrink-0">

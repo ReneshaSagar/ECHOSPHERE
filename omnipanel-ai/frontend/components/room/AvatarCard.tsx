@@ -1,29 +1,28 @@
 'use client';
 import { motion } from 'framer-motion';
 import Card from '../ui/Card';
-import { Brain, Users, Shield } from 'lucide-react';
+import { Brain, Users, Shield, User, Zap, Briefcase } from 'lucide-react';
+import { DynamicPersona } from '@/lib/types';
 
 interface AvatarCardProps {
-  persona: 'alex' | 'maya' | 'david';
+  persona: DynamicPersona;
   isActive: boolean;
   isThinking: boolean;
   isMuted?: boolean;
 }
 
-const personaConfig = {
-  alex: { name: 'Alex', role: 'Staff Systems Architect', color: '#06B6D4', initials: 'AL', icon: Brain },
-  maya: { name: 'Maya', role: 'VP of Product', color: '#F59E0B', initials: 'MY', icon: Users },
-  david: { name: 'David', role: 'Engineering Director', color: '#10B981', initials: 'DV', icon: Shield },
-};
+const ICONS = [Brain, Users, Shield, User, Zap, Briefcase];
 
 export default function AvatarCard({ persona, isActive, isThinking, isMuted = false }: AvatarCardProps) {
-  const config = personaConfig[persona];
-  const Icon = config.icon;
+  // Select a random icon based on the agent's uid to keep it consistent
+  const Icon = ICONS[persona.agent_uid % ICONS.length];
+  // Generate initials
+  const initials = persona.name ? persona.name.substring(0, 2).toUpperCase() : 'AI';
 
   return (
     <Card 
       className={`relative overflow-hidden p-6 flex flex-col items-center justify-center min-h-[240px] transition-all duration-300 ${isActive ? 'scale-[1.02]' : 'scale-100'}`}
-      glowColor={isActive ? config.color : undefined}
+      glowColor={isActive ? persona.color : undefined}
     >
       <div className="relative mb-4">
         {isActive && (
@@ -32,14 +31,14 @@ export default function AvatarCard({ persona, isActive, isThinking, isMuted = fa
             animate={{ opacity: [0.5, 0.8, 0.5], scale: [1, 1.2, 1] }}
             transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
             className="absolute inset-0 rounded-full"
-            style={{ backgroundColor: config.color, filter: 'blur(20px)', zIndex: 0 }}
+            style={{ backgroundColor: persona.color, filter: 'blur(20px)', zIndex: 0 }}
           />
         )}
         <div 
           className="relative z-10 w-20 h-20 rounded-full flex items-center justify-center border-2 border-solid shadow-lg bg-slate-900"
-          style={{ borderColor: config.color, backgroundColor: `${config.color}20` }}
+          style={{ borderColor: persona.color, backgroundColor: `${persona.color}20` }}
         >
-          <span className="text-2xl font-bold" style={{ color: config.color }}>{config.initials}</span>
+          <span className="text-2xl font-bold" style={{ color: persona.color }}>{initials}</span>
         </div>
         
         {isMuted && (
@@ -54,10 +53,10 @@ export default function AvatarCard({ persona, isActive, isThinking, isMuted = fa
 
       <div className="text-center z-10">
         <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 flex items-center justify-center gap-2">
-          {config.name}
+          {persona.name}
           <Icon className="w-4 h-4 text-slate-500" />
         </h3>
-        <p className="text-sm text-slate-500 dark:text-slate-400">{config.role}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{persona.role}</p>
       </div>
 
       <div className="absolute bottom-4 left-0 right-0 flex justify-center items-end h-6 gap-1 px-4">
@@ -67,7 +66,7 @@ export default function AvatarCard({ persona, isActive, isThinking, isMuted = fa
               <motion.div
                 key={i}
                 className="w-2 h-2 rounded-full"
-                style={{ backgroundColor: config.color }}
+                style={{ backgroundColor: persona.color }}
                 animate={{ y: ['0%', '-50%', '0%'] }}
                 transition={{ repeat: Infinity, duration: 0.6, delay: i * 0.15 }}
               />
@@ -78,7 +77,7 @@ export default function AvatarCard({ persona, isActive, isThinking, isMuted = fa
             <motion.div
               key={i}
               className="w-1.5 rounded-full"
-              style={{ backgroundColor: config.color }}
+              style={{ backgroundColor: persona.color }}
               animate={isActive ? { height: ['20%', '80%', '20%'] } : { height: '10%' }}
               transition={isActive ? { repeat: Infinity, duration: 0.5 + Math.random() * 0.5, delay: i * 0.1 } : {}}
             />

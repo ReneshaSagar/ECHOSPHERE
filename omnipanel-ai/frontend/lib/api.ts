@@ -112,6 +112,7 @@ export interface SessionStatus {
   transcript_count: number;
   status: 'active' | 'ended';
   elapsed_seconds: number;
+  rounds?: any[]; // added for dynamic rendering
 }
 
 /** End the interview session and stop AI agents. */

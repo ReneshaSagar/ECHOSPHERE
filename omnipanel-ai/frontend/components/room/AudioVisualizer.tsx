@@ -2,11 +2,11 @@
 import { useEffect, useRef } from 'react';
 
 interface AudioVisualizerProps {
-  activeSpeaker: 'alex' | 'maya' | 'david' | 'candidate' | null;
+  activeSpeaker: string | null;
   audioLevels: Record<string, number>;
 }
 
-const colors = {
+const colors: Record<string, string> = {
   alex: '#06B6D4',
   maya: '#F59E0B',
   david: '#10B981',
@@ -34,7 +34,7 @@ export default function AudioVisualizer({ activeSpeaker, audioLevels }: AudioVis
       ctx.clearRect(0, 0, width, height);
       
       const barWidth = (width / numBars) - 2;
-      const speakerColor = activeSpeaker ? colors[activeSpeaker] : '#475569';
+      const speakerColor = activeSpeaker ? (colors[activeSpeaker] || '#00AEEF') : '#475569';
       
       const rawLevel = Object.values(audioLevels).reduce((a, b) => Math.max(a, b), 0);
       const isSpeaking = activeSpeaker !== null && rawLevel > 5;

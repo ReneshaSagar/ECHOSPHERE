@@ -217,5 +217,6 @@ async def get_session_status(session_id: str):
         "status": session.status,
         "elapsed_seconds": round(elapsed),
         "current_round": session.current_round,
-        "ats_score": session.ats_score
+        "ats_score": session.ats_score,
+        "rounds": getattr(session, "dynamic_rounds", [])
     }
