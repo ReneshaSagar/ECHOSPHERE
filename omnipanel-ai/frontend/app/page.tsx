@@ -1,126 +1,149 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { ArrowRight, Play, Mic, Brain, Zap, Shield, BarChart3, Users } from 'lucide-react';
+import { ArrowDownRight, ArrowRight, Mic, Sparkles } from 'lucide-react';
 import Link from 'next/link';
+import { useCallback, useEffect, useRef } from 'react';
+
+const AGORA_BLUE = '#00AEEF';
+const GRID_SIZE = 18;
+
+const panel = [
+  ['01', 'Alex', 'Systems architecture'],
+  ['02', 'Maya', 'Product judgment'],
+  ['03', 'David', 'Leadership depth'],
+];
 
 export default function LandingPage() {
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-  };
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const sizeCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const bounds = canvas.getBoundingClientRect();
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.floor(bounds.width * pixelRatio);
+    canvas.height = Math.floor(bounds.height * pixelRatio);
+    const context = canvas.getContext('2d');
+    context?.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+  }, []);
+
+  useEffect(() => {
+    sizeCanvas();
+    window.addEventListener('resize', sizeCanvas);
+    return () => window.removeEventListener('resize', sizeCanvas);
+  }, [sizeCanvas]);
+
+  const scratch = useCallback((clientX: number, clientY: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const bounds = canvas.getBoundingClientRect();
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    const x = clientX - bounds.left;
+    const y = clientY - bounds.top;
+    const originX = Math.floor(x / GRID_SIZE) * GRID_SIZE;
+    const originY = Math.floor(y / GRID_SIZE) * GRID_SIZE;
+
+    // A clustered, pixel-by-pixel reveal keeps the interaction tactile instead of a soft brush stroke.
+    for (let i = 0; i < 18; i += 1) {
+      const offsetX = (Math.floor(Math.random() * 7) - 3) * GRID_SIZE;
+      const offsetY = (Math.floor(Math.random() * 7) - 3) * GRID_SIZE;
+      const cellSize = Math.random() > 0.72 ? GRID_SIZE * 2 : GRID_SIZE;
+      context.fillStyle = Math.random() > 0.18 ? AGORA_BLUE : '#009CDE';
+      context.fillRect(originX + offsetX + 1, originY + offsetY + 1, cellSize - 2, cellSize - 2);
+    }
+  }, []);
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden bg-white dark:bg-midnight">
-      {/* Animated Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-20 dark:opacity-40">
-        <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-cyan-500 rounded-full blur-[100px] animate-pulse"></div>
-        <div className="absolute top-[20%] right-[-5%] w-96 h-96 bg-amber-500 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute bottom-[-10%] left-[20%] w-96 h-96 bg-emerald-500 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
-      </div>
+    <div
+      className="relative min-h-screen overflow-hidden bg-[#fbfdff] text-[#102a3a]"
+      onClick={(event) => scratch(event.clientX, event.clientY)}
+      onPointerDown={(event) => scratch(event.clientX, event.clientY)}
+      onPointerMove={(event) => scratch(event.clientX, event.clientY)}
+    >
+      <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:linear-gradient(#00AEEF_1px,transparent_1px),linear-gradient(90deg,#00AEEF_1px,transparent_1px)] [background-size:72px_72px]" />
 
-      <main className="flex-1 flex flex-col items-center justify-center w-full max-w-7xl mx-auto px-6 z-10">
-        
-        {/* Hero Section */}
-        <motion.section 
-          className="text-center py-20 flex flex-col items-center"
-          initial="hidden" animate="visible" variants={fadeInUp}
-        >
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-emerald-400 to-amber-400">
-            OmniPanel AI
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-10 max-w-3xl">
-            Experience the future of hiring with an autonomous, multi-persona voice interview panel.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link href="/setup">
-              <button className="flex items-center gap-2 px-8 py-4 rounded-full bg-white text-black font-semibold hover:bg-gray-100 transition-all">
-                Start Interview <ArrowRight className="w-5 h-5" />
-              </button>
-            </Link>
-            <button className="flex items-center gap-2 px-8 py-4 rounded-full border border-gray-300 dark:border-gray-700 bg-transparent text-gray-800 dark:text-white font-semibold hover:bg-gray-50 dark:hover:bg-white/5 transition-all">
-              <Play className="w-5 h-5" /> View Demo
-            </button>
-          </div>
-        </motion.section>
-
-        {/* Persona Showcase */}
-        <motion.section 
-          className="py-16 w-full"
-          initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
-        >
-          <h2 className="text-3xl font-bold text-center mb-12">Meet Your Panel</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl mx-auto">
-            {/* Alex */}
-            <motion.div whileHover={{ y: -5 }} className="glass rounded-2xl p-6 relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-full h-1 bg-persona-alex"></div>
-              <h3 className="text-2xl font-bold text-persona-alex mb-1">Alex</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 font-medium uppercase tracking-wider">Technical Lead</p>
-              <ul className="space-y-3">
-                <li className="flex items-center gap-3"><Zap className="w-5 h-5 text-persona-alex" /> <span className="text-sm">System Design</span></li>
-                <li className="flex items-center gap-3"><Brain className="w-5 h-5 text-persona-alex" /> <span className="text-sm">Architecture</span></li>
-                <li className="flex items-center gap-3"><BarChart3 className="w-5 h-5 text-persona-alex" /> <span className="text-sm">Problem Solving</span></li>
-              </ul>
-            </motion.div>
-            
-            {/* Maya */}
-            <motion.div whileHover={{ y: -5 }} className="glass rounded-2xl p-6 relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-full h-1 bg-persona-maya"></div>
-              <h3 className="text-2xl font-bold text-persona-maya mb-1">Maya</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 font-medium uppercase tracking-wider">Product Manager</p>
-              <ul className="space-y-3">
-                <li className="flex items-center gap-3"><Users className="w-5 h-5 text-persona-maya" /> <span className="text-sm">User Empathy</span></li>
-                <li className="flex items-center gap-3"><Mic className="w-5 h-5 text-persona-maya" /> <span className="text-sm">Communication</span></li>
-                <li className="flex items-center gap-3"><Shield className="w-5 h-5 text-persona-maya" /> <span className="text-sm">Leadership</span></li>
-              </ul>
-            </motion.div>
-
-            {/* David */}
-            <motion.div whileHover={{ y: -5 }} className="glass rounded-2xl p-6 relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-full h-1 bg-persona-david"></div>
-              <h3 className="text-2xl font-bold text-persona-david mb-1">David</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 font-medium uppercase tracking-wider">Engineering Manager</p>
-              <ul className="space-y-3">
-                <li className="flex items-center gap-3"><Brain className="w-5 h-5 text-persona-david" /> <span className="text-sm">Behavioral</span></li>
-                <li className="flex items-center gap-3"><Users className="w-5 h-5 text-persona-david" /> <span className="text-sm">Team Fit</span></li>
-                <li className="flex items-center gap-3"><BarChart3 className="w-5 h-5 text-persona-david" /> <span className="text-sm">Conflict Resolution</span></li>
-              </ul>
-            </motion.div>
-          </div>
-        </motion.section>
-
-        {/* How it works */}
-        <motion.section 
-          className="py-16 w-full max-w-4xl text-center"
-          initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}
-        >
-          <h2 className="text-3xl font-bold mb-10">How it Works</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="glass p-6 rounded-xl">
-              <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-xl font-bold mx-auto mb-4">1</div>
-              <h4 className="font-semibold mb-2">Upload Details</h4>
-              <p className="text-sm text-gray-400">Provide the job description and candidate resume to setup the context.</p>
+      <main className="relative z-10 mx-auto flex min-h-screen max-w-[1440px] flex-col px-5 pb-8 pt-24 sm:px-10 lg:px-16">
+        <section className="flex min-h-[calc(100vh-10rem)] flex-col justify-between py-8 sm:py-12">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.12fr_0.88fr] lg:items-end">
+            <div className="max-w-4xl">
+              <div className="mb-8 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.22em] text-[#087fb5]">
+                <span className="grid h-6 w-6 place-items-center bg-[#00AEEF] text-white">+</span>
+                Agora-powered interview intelligence
+              </div>
+              <h1 className="max-w-4xl text-5xl font-semibold leading-[0.94] tracking-[-0.075em] sm:text-7xl lg:text-[6.5rem]">
+                Make every interview
+                <span className="block text-[#00AEEF]">a real conversation.</span>
+              </h1>
+              <p className="mt-8 max-w-xl text-base leading-relaxed text-[#4b6574] sm:text-lg">
+                OmniPanel brings three distinct AI perspectives into one live voice interview—so teams can hear beyond rehearsed answers.
+              </p>
+              <div className="mt-10 flex flex-wrap items-center gap-3">
+                <Link href="/setup" className="group inline-flex items-center gap-3 bg-[#00AEEF] px-5 py-3.5 text-sm font-bold text-white transition-colors hover:bg-[#008fca]">
+                  Start an interview
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+                <a href="#panel" className="inline-flex items-center gap-2 border border-[#00AEEF]/30 bg-white/80 px-5 py-3.5 text-sm font-semibold text-[#15516e] backdrop-blur-sm transition-colors hover:border-[#00AEEF]">
+                  Meet the panel <ArrowDownRight className="h-4 w-4" />
+                </a>
+              </div>
             </div>
-            <div className="glass p-6 rounded-xl">
-              <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-xl font-bold mx-auto mb-4">2</div>
-              <h4 className="font-semibold mb-2">Live Interview</h4>
-              <p className="text-sm text-gray-400">Join the voice room. The AI panel drives the conversation organically.</p>
-            </div>
-            <div className="glass p-6 rounded-xl">
-              <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-xl font-bold mx-auto mb-4">3</div>
-              <h4 className="font-semibold mb-2">Get Report</h4>
-              <p className="text-sm text-gray-400">Receive a comprehensive radar chart and scorecard evaluation.</p>
+
+            <div className="justify-self-end border-l border-[#00AEEF]/25 pl-5 text-sm leading-relaxed text-[#3b5869] lg:max-w-xs">
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#00AEEF]">Scratch the surface</p>
+              <p className="mt-3">Move your cursor across the page to uncover the live signal underneath.</p>
             </div>
           </div>
-        </motion.section>
 
+          <div className="mt-16 grid grid-cols-2 gap-px border border-[#00AEEF]/30 bg-[#00AEEF]/30 sm:grid-cols-4">
+            {[
+              ['03', 'voices in the room'],
+              ['01', 'shared interview context'],
+              ['<250ms', 'real-time audio response'],
+              ['∞', 'room for better decisions'],
+            ].map(([stat, label]) => (
+              <div key={label} className="min-h-28 bg-white/90 p-4 backdrop-blur-sm sm:p-5">
+                <p className="text-2xl font-semibold tracking-[-0.06em] text-[#00AEEF]">{stat}</p>
+                <p className="mt-3 max-w-28 text-[11px] font-medium uppercase leading-relaxed tracking-[0.08em] text-[#587180]">{label}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="panel" className="border-t border-[#00AEEF]/30 py-16 sm:py-24">
+          <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#00AEEF]">Three points of view</p>
+              <h2 className="mt-3 text-4xl font-semibold tracking-[-0.06em] sm:text-5xl">One thoughtful panel.</h2>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-[#527080]"><Mic className="h-4 w-4 text-[#00AEEF]" /> Live, adaptive voice interviews</div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-px border border-[#00AEEF]/35 bg-[#00AEEF]/35 md:grid-cols-3">
+            {panel.map(([number, name, role]) => (
+              <article key={name} className="group relative min-h-64 overflow-hidden bg-white/95 p-6 backdrop-blur-sm transition-colors hover:bg-[#e9f8ff] sm:p-8">
+                <span className="absolute right-5 top-5 font-mono text-[10px] text-[#00AEEF]">{number}</span>
+                <div className="absolute bottom-0 left-0 h-1 w-0 bg-[#00AEEF] transition-all duration-300 group-hover:w-full" />
+                <Sparkles className="h-5 w-5 text-[#00AEEF]" strokeWidth={1.5} />
+                <h3 className="mt-16 text-3xl font-semibold tracking-[-0.06em]">{name}</h3>
+                <p className="mt-2 text-sm text-[#527080]">{role}</p>
+                <p className="mt-7 max-w-xs text-sm leading-relaxed text-[#385463]">
+                  Focused questions, context-aware follow-ups, and a clear view of what a candidate can really do.
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <footer className="flex flex-col gap-3 border-t border-[#00AEEF]/25 pt-5 text-[11px] font-semibold uppercase tracking-[0.13em] text-[#5c7482] sm:flex-row sm:items-center sm:justify-between">
+          <span>OmniPanel AI / EchoSphere</span>
+          <span className="text-[#00AEEF]">Voice is the interface</span>
+        </footer>
       </main>
-
-      <footer className="w-full py-6 text-center text-sm text-gray-500 z-10 border-t border-gray-200 dark:border-white/10 bg-white/50 dark:bg-black/20 backdrop-blur-md">
-        Built for EchoSphere: Agora Conversational AI Hackathon
-      </footer>
     </div>
   );
 }

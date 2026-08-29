@@ -41,7 +41,8 @@ export default function RoomPage() {
   const [buzzwordsDetected, setBuzzwordsDetected] = useState<string[]>([]);
   
   // ── Round Control ──────────────────────────────────────────────────────────
-  const [currentRound, setCurrentRound] = useState<1 | 2 | 3>(1); // 1: Assessment, 2: Technical, 3: HR
+  // OA Round is disconnected for now; starting directly at Round 2 (Voice Round)
+  const [currentRound, setCurrentRound] = useState<1 | 2 | 3>(2); // 1: Assessment (Bypassed), 2: Technical, 3: HR
   const [, setDynamicPersonas] = useState<any>(null);
   
   // ── Proctoring & Media State ──────────────────────────────────────────────
@@ -375,6 +376,9 @@ export default function RoomPage() {
     connectWebSocket();
     initAgora();
     startCamera();
+    
+    // Automatically trigger the voice round initialization since OA is bypassed
+    switchRound(2);
 
     return () => {
       wsRef.current?.close();
@@ -468,8 +472,8 @@ export default function RoomPage() {
     <div className="h-[calc(100vh-4rem)] flex flex-col bg-[#050B14] overflow-hidden text-slate-100 font-sans">
       <header className="h-12 border-b border-slate-800 bg-[#0B121F]/80 backdrop-blur flex items-center justify-between px-6 flex-shrink-0">
         <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1.5 px-3 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-full text-xs font-bold font-mono">
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+          <span className="flex items-center gap-1.5 px-3 py-1 bg-[#00AEEF]/10 text-[#00AEEF] border border-[#00AEEF]/25 text-xs font-bold font-mono uppercase tracking-wider">
+            <span className="w-1.5 h-1.5 bg-[#00AEEF] animate-pulse" />
             ROUND {currentRound}: {currentRound === 1 ? 'ASSESSMENT' : currentRound === 2 ? 'TECHNICAL ROUND' : 'HR ROUND'}
           </span>
           <span className="text-sm font-mono text-slate-500">{sessionTimer}</span>
@@ -508,22 +512,22 @@ export default function RoomPage() {
                   <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none rounded-2xl" />
                   
                   {roomScanProgress === 'idle' && (
-                    <div className="relative z-10 text-center p-6 bg-slate-950/80 backdrop-blur rounded-2xl border border-slate-800 max-w-sm">
-                      <ShieldAlert className="w-12 h-12 text-indigo-400 mx-auto mb-4 animate-bounce" />
+                    <div className="relative z-10 text-center p-6 bg-slate-950/80 backdrop-blur border border-[#00AEEF]/20 max-w-sm">
+                      <ShieldAlert className="w-12 h-12 text-[#00AEEF] mx-auto mb-4 animate-bounce" />
                       <h3 className="font-bold text-lg mb-2">Complete Security Scan</h3>
                       <p className="text-xs text-slate-400 mb-6">You must scan your surroundings and share your screen before starting.</p>
-                      <button onClick={startRoomScan} className="w-full py-2.5 bg-indigo-500 hover:bg-indigo-600 font-bold rounded-xl flex items-center justify-center gap-2 text-sm transition-colors shadow-lg">
+                      <button onClick={startRoomScan} className="w-full py-2.5 bg-[#00AEEF] hover:bg-[#008fca] font-bold flex items-center justify-center gap-2 text-sm transition-colors shadow-lg">
                         <Camera className="w-4 h-4" /> Start Room Scan
                       </button>
                     </div>
                   )}
 
                   {roomScanProgress === 'scanning' && (
-                    <div className="relative z-10 text-center p-6 bg-slate-950/80 backdrop-blur rounded-2xl border border-slate-800">
-                      <div className="w-16 h-16 rounded-full border-4 border-indigo-500 border-t-transparent animate-spin mx-auto mb-4" />
+                    <div className="relative z-10 text-center p-6 bg-slate-950/80 backdrop-blur border border-[#00AEEF]/20">
+                      <div className="w-16 h-16 rounded-full border-4 border-[#00AEEF] border-t-transparent animate-spin mx-auto mb-4" />
                       <h3 className="font-bold text-lg mb-1">Scanning Room</h3>
                       <p className="text-xs text-slate-400 mb-2">Please pan your camera slowly 360 degrees...</p>
-                      <span className="text-xl font-mono text-indigo-400 font-bold">{roomScanTimer}s</span>
+                      <span className="text-xl font-mono text-[#00AEEF] font-bold">{roomScanTimer}s</span>
                     </div>
                   )}
 
@@ -545,29 +549,29 @@ export default function RoomPage() {
                   )}
                 </div>
 
-                <div className="rounded-2xl border border-slate-800 bg-[#0B121F] p-5 flex flex-col gap-3">
-                  <h3 className="font-bold text-slate-200 flex items-center gap-2"><Terminal className="w-5 h-5 text-indigo-400" /> Coding Assessment Challenge</h3>
+                <div className="border border-slate-800 bg-[#0B121F] p-5 flex flex-col gap-3">
+                  <h3 className="font-bold text-slate-200 flex items-center gap-2"><Terminal className="w-5 h-5 text-[#00AEEF]" /> Coding Assessment Challenge</h3>
                   <p className="text-xs text-slate-400 leading-relaxed">
                     Write an implementation of an LRU Cache with O(1) query and insertion performance.
                     Constraints: Must handle capacity evictions correctly.
                   </p>
                   <div className="flex gap-2">
-                    <span className="text-[10px] px-2 py-0.5 bg-slate-800 text-slate-400 rounded">Time limit: 15 mins</span>
-                    <span className="text-[10px] px-2 py-0.5 bg-slate-800 text-slate-400 rounded">Complexity: Hard</span>
+                    <span className="text-[10px] px-2 py-0.5 bg-slate-800 text-slate-400">Time limit: 15 mins</span>
+                    <span className="text-[10px] px-2 py-0.5 bg-slate-800 text-slate-400">Complexity: Hard</span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-col border border-slate-800 bg-[#0B121F] rounded-2xl overflow-hidden shadow-xl">
-                <div className="h-11 border-b border-slate-850 px-4 bg-slate-950/50 flex items-center justify-between">
+              <div className="flex flex-col border border-slate-800 bg-[#0B121F] overflow-hidden shadow-xl">
+                <div className="h-11 border-b border-slate-800/80 px-4 bg-slate-950/50 flex items-center justify-between">
                   <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-                    <Code className="w-4 h-4 text-indigo-400" />
+                    <Code className="w-4 h-4 text-[#00AEEF]" />
                     lru_cache.js
                   </div>
                   <button 
                     disabled={!isScreenShared}
                     onClick={() => switchRound(2)} 
-                    className="px-4 py-1 bg-indigo-500 hover:bg-indigo-600 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold rounded-lg transition-colors flex items-center gap-1"
+                    className="px-4 py-1 bg-[#00AEEF] hover:bg-[#008fca] disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold transition-colors flex items-center gap-1"
                   >
                     Submit & Next Round <ArrowRight className="w-3.5 h-3.5" />
                   </button>
@@ -576,7 +580,7 @@ export default function RoomPage() {
                   value={codeContent}
                   onChange={(e) => setCodeContent(e.target.value)}
                   disabled={!isScreenShared}
-                  className="flex-1 w-full p-4 bg-[#060B13] text-indigo-300 font-mono text-sm outline-none resize-none disabled:opacity-50"
+                  className="flex-1 w-full p-4 bg-[#060B13] text-[#00AEEF] font-mono text-sm outline-none resize-none disabled:opacity-50"
                   spellCheck="false"
                 />
               </div>
@@ -612,17 +616,17 @@ export default function RoomPage() {
                 <AudioVisualizer activeSpeaker={activeSpeaker} audioLevels={audioLevels} />
               </div>
 
-              <div className="flex justify-between items-center bg-[#0B121F]/40 border border-slate-850 rounded-xl p-3 flex-shrink-0">
+              <div className="flex justify-between items-center bg-[#0B121F]/40 border border-slate-800/60 p-3 flex-shrink-0">
                 <p className="text-xs text-slate-500 font-mono">Dynamic multi-persona voice round active</p>
                 {currentRound === 2 ? (
                   <button 
                     onClick={() => switchRound(3)}
-                    className="px-4 py-1.5 bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/35 border border-indigo-500/30 rounded-lg text-xs font-bold transition-all flex items-center gap-1"
+                    className="px-4 py-1.5 bg-[#00AEEF]/10 text-[#00AEEF] hover:bg-[#00AEEF]/20 border border-[#00AEEF]/25 text-xs font-bold transition-all flex items-center gap-1"
                   >
                     Proceed to Behavioral/HR Round <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 ) : (
-                  <span className="text-xs text-indigo-400 font-semibold">Final behavioral round</span>
+                  <span className="text-xs text-[#00AEEF] font-semibold">Final behavioral round</span>
                 )}
               </div>
             </div>
@@ -659,8 +663,8 @@ export default function RoomPage() {
                     onClick={() => setSidebarTab(tab)}
                     className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-colors ${
                       sidebarTab === tab
-                        ? 'border-b-2 border-indigo-500 text-indigo-400 bg-indigo-500/5'
-                        : 'text-slate-500 hover:text-slate-350'
+                        ? 'border-b-2 border-[#00AEEF] text-[#00AEEF] bg-[#00AEEF]/5'
+                        : 'text-slate-500 hover:text-slate-300'
                     }`}
                   >
                     {tab === 'transcript' ? '📝 Transcript' : '🎯 AI Radar'}
@@ -690,10 +694,10 @@ export default function RoomPage() {
       <footer className="h-20 border-t border-slate-800 bg-[#0B121F]/60 backdrop-blur-md flex items-center justify-between px-8 flex-shrink-0">
         <button
           onClick={handleMicToggle}
-          className={`w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-lg ${
+          className={`w-12 h-12 flex items-center justify-center transition-all shadow-lg ${
             isMicMuted
               ? 'bg-red-500 text-white hover:bg-red-600'
-              : 'bg-slate-800 text-slate-200 hover:bg-slate-750'
+              : 'bg-[#00AEEF]/15 text-[#00AEEF] border border-[#00AEEF]/30 hover:bg-[#00AEEF]/25'
           }`}
           title={isMicMuted ? 'Unmute Mic' : 'Mute Mic'}
         >
@@ -711,7 +715,7 @@ export default function RoomPage() {
         <button
           onClick={handleEndInterview}
           disabled={isEnding}
-          className="flex items-center gap-2 px-5 py-2.5 bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white font-bold rounded-xl transition-all shadow-lg text-sm"
+          className="flex items-center gap-2 px-5 py-2.5 bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white font-bold transition-all shadow-lg text-sm"
         >
           <PhoneOff className="w-4 h-4" />
           {isEnding ? 'Terminating...' : 'End Interview'}

@@ -2,23 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── CSS Variables (Midnight Navy Theme) ────────────────────────────────── */
+/* ── CSS Variables (Agora Blue Theme) ───────────────────────────────────── */
 :root {
-  --bg-primary: #F8FAFC;
+  --bg-primary: #F7FCFF;
   --bg-surface: #FFFFFF;
-  --text-primary: #0F172A;
-  --text-muted: #64748B;
-  --border: #E2E8F0;
-  --ring-color: rgba(99, 102, 241, 0.15);
+  --text-primary: #102A3A;
+  --text-muted: #527080;
+  --border: #BDEBFF;
+  --ring-color: rgba(0, 174, 239, 0.22);
 }
 
 .dark {
-  --bg-primary: #050B14;
-  --bg-surface: #0B121F;
-  --text-primary: #F1F5F9;
-  --text-muted: #94A3B8;
-  --border: #1E293B;
-  --ring-color: rgba(6, 182, 212, 0.15);
+  --bg-primary: #E9F8FF;
+  --bg-surface: #FFFFFF;
+  --text-primary: #102A3A;
+  --text-muted: #527080;
+  --border: #9DE1FF;
+  --ring-color: rgba(0, 174, 239, 0.22);
 }
 
 /* ── Base ────────────────────────────────────────────────────────────────── */
@@ -51,7 +51,7 @@ body {
 /* ── Glassmorphic & Panel Grid Styles ─────────────────────────────────── */
 @layer components {
   .glass {
-    @apply bg-white/60 dark:bg-[#0B121F]/80 backdrop-blur-lg border border-slate-200/50 dark:border-slate-800/50;
+    @apply bg-white/75 dark:bg-white/85 backdrop-blur-lg border border-[#00AEEF]/20 dark:border-[#00AEEF]/30;
   }
 
   /* Dynamic Active Persona Halo */
@@ -79,7 +79,7 @@ body {
   }
 
   .meet-card {
-    @apply relative rounded-2xl overflow-hidden aspect-video bg-slate-900 border border-slate-800 shadow-xl transition-all duration-300;
+    @apply relative rounded-2xl overflow-hidden aspect-video bg-white border border-[#00AEEF]/25 shadow-xl transition-all duration-300;
   }
 }
 
