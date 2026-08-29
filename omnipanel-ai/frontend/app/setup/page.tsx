@@ -379,21 +379,33 @@ function StepMicTest({ onBack, onLaunch }: { onBack: () => void; onLaunch: () =>
       microphone.connect(analyser);
       
       analyser.fftSize = 256;
-      const bufferLength = analyser.frequencyBinCount;
-      const dataArray = new Uint8Array(bufferLength);
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
       
       let speechDetected = false;
+      let smoothedVolume = 0;
+      
       const checkVolume = () => {
-        analyser.getByteFrequencyData(dataArray);
+        analyser.getByteTimeDomainData(dataArray);
         
-        let sum = 0;
-        for (let i = 0; i < bufferLength; i++) {
-          sum += dataArray[i];
+        let max = 0;
+        for (let i = 0; i < analyser.frequencyBinCount; i++) {
+          const val = Math.abs(dataArray[i] - 128);
+          if (val > max) max = val;
         }
-        const average = sum / bufferLength;
-        setVolume(average);
         
-        if (average > 35 && !speechDetected) {
+        // Scale so that normal speaking hits a satisfying range
+        const currentVol = Math.min(100, (max / 60) * 100);
+        
+        // Smooth the visualizer (instant attack, slow decay)
+        if (currentVol > smoothedVolume) {
+          smoothedVolume = currentVol; 
+        } else {
+          smoothedVolume = smoothedVolume * 0.85 + currentVol * 0.15;
+        }
+        
+        setVolume(smoothedVolume);
+        
+        if (smoothedVolume > 20 && !speechDetected) {
           speechDetected = true;
           setMicStatus('granted');
         }
@@ -449,11 +461,31 @@ function StepMicTest({ onBack, onLaunch }: { onBack: () => void; onLaunch: () =>
       </div>
 
       {(micStatus === 'listening' || micStatus === 'granted') && (
-        <div className="w-48 h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-emerald-500 transition-all duration-75"
-            style={{ width: `${Math.min(100, (volume / 80) * 100)}%` }}
-          />
+        <div className="flex items-center gap-1 w-56 justify-center">
+          {Array.from({ length: 24 }).map((_, i) => {
+            // Calculate if this segment is active based on volume (0-100)
+            const isActive = (volume / 100) * 24 > i;
+            
+            // Color gradient: Green -> Yellow -> Red
+            let color = 'bg-emerald-500';
+            let glow = 'shadow-[0_0_8px_rgba(16,185,129,0.5)]';
+            if (i > 19) {
+              color = 'bg-red-500';
+              glow = 'shadow-[0_0_8px_rgba(239,68,68,0.5)]';
+            } else if (i > 14) {
+              color = 'bg-amber-400';
+              glow = 'shadow-[0_0_8px_rgba(251,191,36,0.5)]';
+            }
+
+            return (
+              <div 
+                key={i} 
+                className={`flex-1 h-3 rounded-[1px] transition-all duration-75 ${
+                  isActive ? `${color} ${glow}` : 'bg-slate-200/50 dark:bg-slate-800/50'
+                }`}
+              />
+            );
+          })}
         </div>
       )}
 
