@@ -384,7 +384,6 @@ function StepMicTest({ onBack, onLaunch }: { onBack: () => void; onLaunch: () =>
       
       let speechDetected = false;
       const checkVolume = () => {
-        if (speechDetected) return;
         analyser.getByteFrequencyData(dataArray);
         
         let sum = 0;
@@ -394,13 +393,12 @@ function StepMicTest({ onBack, onLaunch }: { onBack: () => void; onLaunch: () =>
         const average = sum / bufferLength;
         setVolume(average);
         
-        if (average > 35) {
+        if (average > 35 && !speechDetected) {
           speechDetected = true;
           setMicStatus('granted');
-          cleanup();
-        } else {
-          rafRef.current = requestAnimationFrame(checkVolume);
         }
+        
+        rafRef.current = requestAnimationFrame(checkVolume);
       };
       checkVolume();
 
@@ -425,7 +423,7 @@ function StepMicTest({ onBack, onLaunch }: { onBack: () => void; onLaunch: () =>
 
       {/* Mic status indicator */}
       <div className="relative w-28 h-28">
-        {(micStatus === 'testing' || micStatus === 'listening') && (
+        {(micStatus === 'testing' || (micStatus === 'listening' && volume < 5)) && (
           <div
             className="absolute inset-0 rounded-full border-4 border-t-transparent animate-spin"
             style={{ borderColor: `${AGORA_BLUE} transparent transparent transparent` }}
@@ -441,7 +439,7 @@ function StepMicTest({ onBack, onLaunch }: { onBack: () => void; onLaunch: () =>
           }`}
         >
           {micStatus === 'granted' ? (
-            <CheckCircle2 className="w-12 h-12 text-emerald-500" />
+            <Mic className="w-10 h-10 text-emerald-500" />
           ) : micStatus === 'denied' ? (
             <AlertCircle className="w-12 h-12 text-red-500" />
           ) : (
@@ -450,10 +448,10 @@ function StepMicTest({ onBack, onLaunch }: { onBack: () => void; onLaunch: () =>
         </div>
       </div>
 
-      {micStatus === 'listening' && (
+      {(micStatus === 'listening' || micStatus === 'granted') && (
         <div className="w-48 h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-[#00AEEF] transition-all duration-75"
+            className="h-full bg-emerald-500 transition-all duration-75"
             style={{ width: `${Math.min(100, (volume / 80) * 100)}%` }}
           />
         </div>
