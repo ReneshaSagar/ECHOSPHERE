@@ -52,7 +52,23 @@ async def create_session(
             print(f"PDF Parsing error: {e}")
             final_resume_text = "Failed to parse PDF."
     elif resume_link:
-        final_resume_text = f"Candidate provided resume link: {resume_link}"
+        if "docs.google.com/document/d/" in resume_link:
+            import re
+            import httpx
+            match = re.search(r"/d/([a-zA-Z0-9-_]+)", resume_link)
+            if match:
+                doc_id = match.group(1)
+                export_url = f"https://docs.google.com/document/d/{doc_id}/export?format=txt"
+                async with httpx.AsyncClient() as client:
+                    resp = await client.get(export_url)
+                    if resp.status_code == 200:
+                        final_resume_text = resp.text
+                    else:
+                        final_resume_text = f"Failed to download Google Doc (ensure it is public). HTTP {resp.status_code}"
+            else:
+                final_resume_text = f"Invalid Google Doc link format."
+        else:
+            final_resume_text = f"Candidate provided external link: {resume_link}"
     elif resume_text:
         final_resume_text = resume_text
 
