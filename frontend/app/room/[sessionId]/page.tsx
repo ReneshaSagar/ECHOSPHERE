@@ -659,7 +659,7 @@ export default function RoomPage() {
                   <button
                     key={tab}
                     onClick={() => setSidebarTab(tab)}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 ${
+                    className={`flex-1 flex items-center justify-center gap-2 pt-4 pb-3 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 focus:outline-none ${
                       sidebarTab === tab
                         ? 'border-[#00AEEF] text-[#00AEEF] bg-[#00AEEF]/5'
                         : 'border-slate-200 dark:border-slate-800 text-slate-500 hover:text-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900/50'
