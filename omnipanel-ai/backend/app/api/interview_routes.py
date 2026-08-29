@@ -69,7 +69,7 @@ async def create_session(
         session_id=session_id,
         job_title=job_title,
         jd_text=jd_text,
-        resume_text=resume_text[:2000], # Keep a compact copy
+        resume_text=final_resume_text[:2000], # Keep a compact copy
         rubric=rubric,
     )
     
@@ -89,7 +89,7 @@ async def create_session(
         "session_id": session_id,
         "job_title": job_title,
         "ats_score": ats_score,
-        "ats_feedback": analysis.get("ats_feedback", ""),
+        "ats_feedback": blueprint.get("ats_feedback", ""),
         "rubric": rubric,
         "opening_question": opening_question,
         "rounds": rounds
