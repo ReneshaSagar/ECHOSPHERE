@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -398,18 +398,56 @@ export default function SetupPage() {
   const [step, setStep] = useState(1);
   const [jobTitle, setJobTitle] = useState('');
   const [jdText, setJdText] = useState('');
-  const [resumeText, setResumeText] = useState('');
-  const [loading, setLoading] = useState(false);
+  
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [atsScore, setAtsScore] = useState<number | null>(null);
+  const [atsFeedback, setAtsFeedback] = useState('');
+  const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [rubric, setRubric] = useState<RubricData>({});
-  const [error, setError] = useState<string | null>(null);
+  const [rubric, setRubric] = useState<any>(null);
+  const [dynamicPersonas, setDynamicPersonas] = useState<any>(null);
 
-  const nextStep = () => setStep((s) => Math.min(s + 1, 4));
-  const prevStep = () => setStep((s) => Math.max(s - 1, 1));
+  const [videoActive, setVideoActive] = useState(false);
+  const [audioActive, setAudioActive] = useState(false);
+  const [deviceError, setDeviceError] = useState<string | null>(null);
+  
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const animationRef = useRef<number | null>(null);
 
-  const handleGenerateRubric = async () => {
-    setLoading(true);
-    setError(null);
+  useEffect(() => {
+    return () => {
+      stopMedia();
+    };
+  }, []);
+
+  const stopMedia = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+    }
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    let file: File | null = null;
+    
+    if ('dataTransfer' in e) {
+      file = e.dataTransfer.files[0];
+    } else if (e.target.files) {
+      file = e.target.files[0];
+    }
+
+    if (!file || file.type !== 'application/pdf') return;
+    setResumeFile(file);
+  };
+
+  const handleGenerateSession = async () => {
+    if (!jobTitle || !jdText || !resumeFile) return;
+    setIsCreatingSession(true);
     try {
       const res = await createSession({ job_title: jobTitle, jd_text: jdText, resume_text: resumeText });
       setSessionId(res.session_id);
@@ -426,20 +464,80 @@ export default function SetupPage() {
         clarity:       { label: 'Communication & Clarity', description: 'Measure articulation clarity.', key_signals: ['Structured answers', 'Conciseness', 'No jargon'] },
         ownership:     { label: 'Ownership & Leadership', description: 'Evaluate accountability depth.', key_signals: ['Concrete examples', 'Personal contribution', 'Outcomes'] },
       });
-      nextStep();
+      setSessionId(res.session_id);
+      setRubric(res.rubric);
+      setAtsScore(res.ats_score);
+      setAtsFeedback(res.ats_feedback);
+      setDynamicPersonas(res.dynamic_personas);
+      setStep(3);
+    } catch (err) {
+      console.error(err);
     } finally {
-      setLoading(false);
+      setIsCreatingSession(false);
+    }
+  };
+
+  const initAVTest = async () => {
+    setDeviceError(null);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: { width: 640, height: 480 } });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        setVideoActive(true);
+      }
+      
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const analyser = audioCtx.createAnalyser();
+      const source = audioCtx.createMediaStreamSource(stream);
+      source.connect(analyser);
+      analyser.fftSize = 64;
+      
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      
+      const draw = () => {
+        if (!canvasRef.current) return;
+        const ctx = canvasRef.current.getContext('2d');
+        if (!ctx) return;
+        
+        analyser.getByteFrequencyData(dataArray);
+        
+        const sum = dataArray.reduce((a, b) => a + b, 0);
+        const avg = sum / bufferLength;
+        if (avg > 5) setAudioActive(true);
+        
+        ctx.fillStyle = '#040508';
+        ctx.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        
+        const barWidth = (canvasRef.current.width / bufferLength) * 2.5;
+        let x = 0;
+        
+        for (let i = 0; i < bufferLength; i++) {
+          const barHeight = (dataArray[i] / 255) * canvasRef.current.height;
+          ctx.fillStyle = '#6366F1';
+          ctx.fillRect(x, canvasRef.current.height - barHeight, barWidth, barHeight);
+          x += barWidth + 1;
+        }
+        
+        animationRef.current = requestAnimationFrame(draw);
+      };
+      draw();
+    } catch (err) {
+      console.error(err);
+      setDeviceError('Could not access microphone or camera. Please verify system permissions.');
     }
   };
 
   const handleLaunch = () => {
-    if (sessionId) router.push(`/room/${sessionId}`);
-  };
-
-  const slideVariants = {
-    enter:  { opacity: 0, x: 40 },
-    center: { opacity: 1, x: 0 },
-    exit:   { opacity: 0, x: -40 },
+    if (!sessionId) return;
+    // Persist configuration in sessionStorage for the room page
+    sessionStorage.setItem(`omnipanel_rubric_${sessionId}`, JSON.stringify(rubric));
+    sessionStorage.setItem(`omnipanel_personas_${sessionId}`, JSON.stringify(dynamicPersonas));
+    sessionStorage.setItem(`omnipanel_ats_${sessionId}`, JSON.stringify({ score: atsScore, feedback: atsFeedback }));
+    
+    stopMedia();
+    router.push(`/room/${sessionId}`);
   };
 
   return (
@@ -503,7 +601,8 @@ export default function SetupPage() {
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             API unavailable — using demo mode. {error}
           </div>
-        )}
+        ))}
+      </div>
 
         {/* ── Step card */}
         <div className="bg-white border border-[#00AEEF]/25 p-8 overflow-hidden">
@@ -516,24 +615,100 @@ export default function SetupPage() {
               exit="exit"
               transition={{ duration: 0.2 }}
             >
-              {step === 1 && (
-                <StepJobDetails
-                  jobTitle={jobTitle} setJobTitle={setJobTitle}
-                  jdText={jdText} setJdText={setJdText}
-                  onNext={nextStep}
-                />
-              )}
-              {step === 2 && (
-                <StepResume
-                  resumeText={resumeText} setResumeText={setResumeText}
-                  onBack={prevStep} onNext={handleGenerateRubric} loading={loading}
-                />
-              )}
-              {step === 3 && (
-                <StepRubric rubric={rubric} onBack={prevStep} onNext={nextStep} />
-              )}
-              {step === 4 && (
-                <StepMicTest onBack={prevStep} onLaunch={handleLaunch} />
+              <div className="mb-6">
+                <span className="text-[10px] uppercase font-bold tracking-widest text-indigo-400">Step 01 / Job Specifications</span>
+                <h2 className="text-2xl font-bold mt-1 text-white tracking-tight">Enter Role Details</h2>
+              </div>
+              
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Job Title</label>
+                  <input 
+                    type="text" 
+                    value={jobTitle} 
+                    onChange={e => setJobTitle(e.target.value)} 
+                    className="w-full bg-slate-950 border border-slate-900 focus:border-indigo-500/40 rounded-xl p-3 text-sm text-slate-100 outline-none transition-colors" 
+                    placeholder="e.g. Lead Machine Learning Engineer" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Job Description</label>
+                  <textarea 
+                    value={jdText} 
+                    onChange={e => setJdText(e.target.value)} 
+                    rows={5} 
+                    className="w-full bg-slate-950 border border-slate-900 focus:border-indigo-500/40 rounded-xl p-3 text-sm text-slate-100 outline-none transition-colors resize-none" 
+                    placeholder="Paste the core requirements and goals of this position here..." 
+                  />
+                </div>
+                <button 
+                  onClick={() => setStep(2)} 
+                  disabled={!jobTitle || !jdText} 
+                  className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 disabled:cursor-not-allowed text-white font-bold rounded-xl flex items-center justify-center gap-2 text-sm transition-all shadow-lg"
+                >
+                  Configure Resume <ArrowRight size={16} />
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Step 2: PDF Resume OCR */}
+          {step === 2 && (
+            <motion.div 
+              key="step2" 
+              initial={{ opacity: 0, y: 15 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              exit={{ opacity: 0, y: -15 }} 
+              className="glass-panel p-8"
+            >
+              <div className="mb-6">
+                <span className="text-[10px] uppercase font-bold tracking-widest text-indigo-400">Step 02 / OCR Profile Parser</span>
+                <h2 className="text-2xl font-bold mt-1 text-white tracking-tight">Upload PDF Resume</h2>
+              </div>
+              
+              {!resumeFile ? (
+                <div className="space-y-4">
+                  <div 
+                    className="border border-dashed border-slate-800 rounded-xl p-10 flex flex-col items-center justify-center text-slate-450 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all cursor-pointer"
+                    onDragOver={e => e.preventDefault()}
+                    onDrop={handleFileUpload}
+                    onClick={() => document.getElementById('resume-pdf-upload')?.click()}
+                  >
+                    <input id="resume-pdf-upload" type="file" accept="application/pdf" className="hidden" onChange={handleFileUpload} />
+                    <UploadCloud size={40} className="mb-3 text-slate-500" />
+                    <p className="font-semibold text-sm text-slate-350">Drag & Drop PDF Profile</p>
+                    <p className="text-xs text-slate-500 mt-1">Accepts native resume documents</p>
+                  </div>
+                  <button onClick={() => setStep(1)} className="text-xs text-slate-500 hover:text-slate-350 hover:underline block text-center w-full">
+                    Go Back to Specifications
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-5">
+                  <div className="flex items-center gap-4 bg-slate-950/60 p-4 rounded-xl border border-slate-900">
+                    <FileText className="text-indigo-400 flex-shrink-0" size={28} />
+                    <div className="flex-1 overflow-hidden">
+                      <h4 className="font-semibold text-sm truncate text-slate-200">{resumeFile.name}</h4>
+                      <p className="text-[10px] text-slate-500 font-mono mt-0.5">{(resumeFile.size / 1024).toFixed(1)} KB • Ready for matching</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-4">
+                    <button 
+                      onClick={() => setResumeFile(null)} 
+                      className="flex-1 py-3 border border-slate-900 hover:bg-slate-950 font-semibold rounded-xl text-xs transition-colors"
+                    >
+                      Clear File
+                    </button>
+                    <button 
+                      onClick={handleGenerateSession} 
+                      disabled={isCreatingSession} 
+                      className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5"
+                    >
+                      {isCreatingSession ? 'Extracting Profiles...' : 'Analyze Rubrics'} <ArrowRight size={14} />
+                    </button>
+                  </div>
+                </div>
               )}
             </motion.div>
           </AnimatePresence>

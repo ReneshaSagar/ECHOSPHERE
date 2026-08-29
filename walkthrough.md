@@ -1,52 +1,46 @@
-# OmniPanel AI — Enterprise Proctoring & Dynamic Panel Upgrade
+# OmniPanel AI — Requesty, Agora SDK, and Dynamic Gating Upgrades
 
 ## What Was Upgraded
 
-OmniPanel AI was upgraded into an **Enterprise-Grade AI Interview Platform** with real-time proctoring, dynamic panel personas, multi-round flows, and coordinated conversational tag-teaming.
+OmniPanel AI was upgraded into an **intelligent, dynamic-panel recruiter platform** using Requesty's model router, official Agora auth builders, native PDF parsing, ATS scoring, and a high-fidelity minimalist dark canvas design matching `synthetic-audience`.
 
 ---
 
-## Enterprise Feature Enhancements
+## Key Upgrade Details
 
-### 1. 🛡️ Real-Time Proctoring & Cheat Detection
-- Integrated **MediaPipe Tasks Vision** dynamically inside the webcam feed on the room page.
-- Tracks **Gaze Vector Coordinates** in real-time. If the candidate looks away from the screen for more than 4 seconds, a proctor warning is triggered.
-- Detects **Multiple Faces** (triggers warnings if more than one face is visible) and **No Face** anomalies.
-- Alerts are persisted via WebSocket telemetry to the backend, showing up in the final evaluation report.
+### 1. 🔑 Requesty Router Integration
+- Swapped standard OpenAI API endpoint configuration for Requesty's unified API router base URL (`https://router.requesty.ai/v1`).
+- Upgraded the completions proxy and evaluation modules to call model constants:
+  - Large completions: `openai/gpt-4o`
+  - Small analysis: `openai/gpt-4o-mini`
+- Configured using your key `rqsty-sk-...`.
 
-### 2. 📹 Automatic Screen Recording
-- Automatic screen recording kicks in via browser `navigator.mediaDevices.getDisplayMedia`.
-- Streams video chunks to a dedicated `MediaRecorder` instance.
+### 2. 📞 Official Agora Token Generator
+- Swapped the manual struct packing in `agora_client.py` for the official `RtcTokenBuilder` from the `agora-token-builder` package.
+- This resolves the mic and audio join errors by formatting the token bytes correctly.
 
-### 3. 🔄 Dynamic Three-Round Interview Panel
-The interview is split into three rounds:
-1. **Round 1: Screening & Proctoring Verification** — Features a security room scan, webcam setup, screen share prompt, and an Online Assessment code editor interface.
-2. **Round 2: Technical Interview** — Spawns 3 customized dynamic technical interviewers (Sarah, Maya, David) tailored to the JD.
-3. **Round 3: HR / Behavioral Interview** — Spawns 3 customized HR/recruiter interviewers (Emily, Marcus, Robert) to probe culture and fit.
+### 3. 📄 PDF Resume Parser & ATS Match Calculator
+- Replaced the copy-paste text box with a drag-and-drop file upload accepting native `.pdf` files.
+- The Python backend reads files on-the-fly using `pypdf.PdfReader` with zero external OS dependencies.
+- A Requesty-based ATS analyzer evaluates the resume matching score (0-100%) against the JD requirements and returns feedback.
 
-### 4. 🔀 Centralized Agora completions Routing Proxy (`llm_routes.py`)
-- We resolved the feedback loop issue (where multiple voice agents speak simultaneously over each other) by implementing a completions proxy router at `/api/llm/{sessionId}/chat/completions`.
-- Agora Conversational AI cloud is pointed to our proxy.
-- Our backend:
-  - Intercepts incoming messages.
-  - Runs the Turn Arbiter to decide who speaks next.
-  - Feeds the Rubric Evaluator.
-  - Dynamically triggers tag-teaming prompts.
-  - Returns the speech answer *only* to the selected active agent, while keeping other agents silent. This results in clean, turn-based, multi-persona audio conversations!
+### 4. 🔀 Dynamic Round Personas & Disqualification Gating
+- Personas are generated dynamically based on the uploaded Job Description:
+  - **Round 1 (Assessment)**: Local coding block submit.
+  - **Round 2 (Technical)**: Spawns 3 custom specialists tailored to the JD.
+  - **Round 3 (HR/Behavioral)**: Spawns exactly **one** recruiter persona.
+- If a candidate fails a round (e.g. the backend grader gives the coding assessment a failing grade), they are immediately disqualified:
+  - The UI triggers a full-screen "Disqualification" modal.
+  - WebRTC and mic streams are terminated immediately, blocking access to the next rounds.
 
-### 5. 📝 Minutes of Meeting & Proctoring Scorecard
-- The post-interview report page now outputs separate **Minutes of Meeting (MoM)**:
-  - **Recruiter View**: Contains proctoring logs, suspicion level, hesitation pause counts, and hire markers.
-  - **Candidate View**: Constructive feedback and action items.
-- Alerts flag candidate responses if suspected to be AI-generated (detected via word counts + vagueness anomalies).
+### 5. 🎨 Minimalist Dark Vibe Theme
+- Updated the body background to an absolute black slate canvas (`#040508`) with thin layout borders (`#121622`) and indigo highlights (`#6366F1`) to match the `synthetic-audience` dashboard aesthetics.
 
 ---
 
-## Technical Audits Passed
+## Verification Status
 
-| Check | Result |
-|-------|--------|
-| Python compiles (`py_compile app/main.py`) | ✅ PASSED |
-| TypeScript compiles (`npx tsc --noEmit`) | ✅ PASSED (0 errors) |
-| Next.js production build (`npm run build`) | ✅ PASSED (0 errors) |
-| Dev servers status | 🟢 Backend (Port 8000) & Frontend (Port 3000) running |
+- **TypeScript Compilation:** Passed successfully (`npx tsc --noEmit` exited with 0 errors).
+- **Next.js Production Build:** Completed successfully (`npm run build` exited with 0 errors).
+- **Git Remote Synchronization:** Committed and pushed to GitHub main branch.
+- **Active Ports:** FastAPI (Port 8000), Next.js Dev Server (Port 3000).

@@ -15,8 +15,8 @@ import {
 import { getReport } from '@/lib/api';
 import type { SessionReport, HireVerdict } from '@/lib/types';
 
-// Extend local types to include dynamic enterprise features
 interface EnterpriseReport extends SessionReport {
+  ats_score?: number;
   proctoring?: {
     total_alerts: number;
     is_suspicious: boolean;
@@ -70,17 +70,17 @@ function formatDuration(seconds: number): string {
 }
 
 const PILLAR_LABELS: Record<string, string> = {
-  architecture: 'Architecture',
-  product_sense: 'Product Sense',
+  architecture: 'Architecture & Design',
+  product_sense: 'Product Alignment',
   scalability: 'Scalability',
-  clarity: 'Clarity',
-  ownership: 'Ownership',
+  clarity: 'Clarity & Delivery',
+  ownership: 'STAR Behavioral',
 };
 
 const PILLAR_COLORS: Record<string, string> = {
   architecture: '#06B6D4',
   product_sense: '#F59E0B',
-  scalability: '#8B5CF6',
+  scalability: '#6366F1',
   clarity: '#10B981',
   ownership: '#F97316',
 };
@@ -125,16 +125,15 @@ export default function ReportPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        await new Promise((r) => setTimeout(r, 1500));
         const data = await getReport(sessionId);
-        setReport(data as EnterpriseReport);
+        setReport(data);
       } catch (e) {
-        const msg = e instanceof Error ? e.message : 'Failed to load report';
+        const msg = e instanceof Error ? e.message : 'Failed to fetch report';
         setError(msg);
-        // Fallback report
+        // Fallback simulated report
         setReport({
           session_id: sessionId,
-          job_title: 'Lead Software Engineer',
+          job_title: 'Lead Software Architect',
           overall_recommendation: 'LEAN HIRE',
           recommendation_reasoning:
             'The candidate showed outstanding architectural systems design. However, significant hesitation during behavioral segments and multiple gaze-away proctoring flags indicate potential assistance or lack of ownership.',
@@ -145,18 +144,18 @@ export default function ReportPage() {
             clarity:       { score: 5, summary: 'Poor response conciseness', evidence: 'Verbosity and long pauses detected' },
             ownership:     { score: 5, summary: 'Behavioral gaps and hesitation', evidence: 'Missed STAR metrics when describing conflicts' },
           },
-          strengths: ['Expert systems design fundamentals', 'Good scalability reasoning', 'Clear technical examples'],
-          improvement_areas: ['Response brevity and structured speaking', 'Behavioral STAR framework preparation'],
-          communication_metrics: { avg_response_length_words: 135, buzzword_density_percent: 12.5, avg_vagueness_score: 55 },
+          strengths: ['Expert systems architecture logic', 'Detailed scalability estimations', 'Clear domain specifications'],
+          improvement_areas: ['STAR framework structure', 'Consistent camera positioning'],
+          communication_metrics: { avg_response_length_words: 110, buzzword_density_percent: 11.2, avg_vagueness_score: 48 },
           evidence_quotes: [
             { quote: 'We can scale the cache layer by sharding the DB keys using consistent hashing.', timestamp: 45, utterance_id: 'u1', speaker: 'candidate' },
             { quote: 'What are the costs of this cache database scaling on our AWS budget?', timestamp: 80, utterance_id: 'u2', speaker: 'maya' },
           ],
-          total_exchanges: 22,
-          interview_duration_seconds: 1420,
-          avg_vagueness_score: 55,
+          total_exchanges: 16,
+          interview_duration_seconds: 940,
+          avg_vagueness_score: 48,
           proctoring: {
-            total_alerts: 6,
+            total_alerts: 4,
             is_suspicious: true,
             alerts_log: [
               { timestamp: 120, type: 'Gaze Out-of-Bounds', detail: 'User was looking away from screen' },
@@ -166,14 +165,14 @@ export default function ReportPage() {
             screen_recorded: true,
           },
           hesitation_metrics: {
-            total_count: 5,
-            avg_duration_ms: 4500,
+            total_count: 3,
+            avg_duration_ms: 3800,
             log: [
               { timestamp: 180, duration_ms: 5000 },
               { timestamp: 390, duration_ms: 4000 },
             ],
           },
-          suspected_ai_answers: true,
+          suspected_ai_answers: false,
           recruiter_mom: {
             summary:
               'The candidate passed the screening, but the final evaluation score is impacted by high hesitation durations (avg 4.5s) and multiple gaze cheating alerts. Highly recommend secondary human audit on the screen recording.',
@@ -222,9 +221,14 @@ export default function ReportPage() {
 
   const vc = verdictConfig(report.overall_recommendation);
   const radarData = Object.entries(report.pillar_scores).map(([key, val]) => ({
-    subject: PILLAR_LABELS[key] ?? key,
+    subject: PILLAR_LABELS[key] || key,
     score: val.score * 10,
   }));
+
+  const compositeScore = Math.round(
+    ((report.ats_score || 0) * 0.3) + 
+    ((100 - (report.avg_vagueness_score || 0)) * 0.7)
+  );
 
   return (
     <div className="min-h-screen bg-[#fbfdff] pt-6 pb-20 px-4 md:px-8 text-[#102a3a]">
@@ -253,7 +257,7 @@ export default function ReportPage() {
 
         {/* ── Header Verdict Block */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           className="bg-white border border-[#00AEEF]/25 p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
         >
@@ -296,7 +300,7 @@ export default function ReportPage() {
         {/* ── Proctoring & Security Summary */}
         {report.proctoring && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="grid grid-cols-1 md:grid-cols-3 gap-4"
@@ -336,7 +340,7 @@ export default function ReportPage() {
 
         {/* ── Recruiter & Candidate MoM */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
@@ -403,9 +407,8 @@ export default function ReportPage() {
 
         {/* ── Scorecard + Radar Chart */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Radar */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -15 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
             className="bg-white border border-[#00AEEF]/20 p-6"
@@ -439,9 +442,8 @@ export default function ReportPage() {
             </div>
           </motion.div>
 
-          {/* Progress list */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 15 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.35 }}
             className="bg-white border border-[#00AEEF]/20 p-6 flex flex-col gap-4"
@@ -519,7 +521,7 @@ export default function ReportPage() {
         {/* ── Proctoring Alert Log */}
         {report.proctoring && report.proctoring.alerts_log.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
             className="bg-white border border-red-400/25 p-6"
@@ -527,7 +529,7 @@ export default function ReportPage() {
             <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-red-600 mb-4 flex items-center gap-1.5">
               <ShieldAlert className="w-3.5 h-3.5" /> Proctoring Alert Log
             </h3>
-            <div className="space-y-3">
+            <div className="space-y-3 font-mono">
               {report.proctoring.alerts_log.map((log, idx) => (
                 <div key={idx} className="flex items-start gap-4 text-xs">
                   <span className="flex-shrink-0 px-2 py-0.5 bg-red-50 border border-red-400/25 font-mono text-red-600">
@@ -556,7 +558,7 @@ export default function ReportPage() {
             className="flex items-center gap-2 px-6 py-3 border border-[#00AEEF]/30 bg-white
               text-[#527080] text-sm font-semibold hover:border-[#00AEEF] hover:text-[#102a3a] transition-colors"
           >
-            <Download className="w-4 h-4" /> Download PDF Report
+            <Download className="w-4 h-4" /> Download Report
           </button>
           <button
             onClick={() => router.push('/setup')}

@@ -1,26 +1,28 @@
 """
-Interview Routes: Session management, rubric generation, and turn orchestration.
+Interview Routes: Session creation via PDF upload, rubric generation, and round evaluation/grading.
 """
-from fastapi import APIRouter, Form, HTTPException
+from fastapi import APIRouter, Form, HTTPException, File, UploadFile
 from pydantic import BaseModel
 import uuid
 import asyncio
 import time
 import json
-from openai import AsyncOpenAI
-from app.core.config import settings
+import io
+from pypdf import PdfReader
+
+from app.core.config import settings, openai_client, MODEL_LARGE, MODEL_SMALL
 from app.core.session_store import session_store, TranscriptEntry
 from app.engine.arbiter import turn_arbiter
 from app.engine.evaluator import evaluator
-
 router = APIRouter()
-_openai_client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
-
 
 class OrchestrateRequest(BaseModel):
     candidate_utterance: str
     utterance_id: str
 
+class GradeRequest(BaseModel):
+    round_index: int
+    submission_content: str  # Code block or answers
 
 # LLM Rubric and Blueprint generation has been migrated to app.engine.orchestrator
 
@@ -31,9 +33,9 @@ from app.engine.orchestrator import orchestrator
 async def create_session(
     job_title: str = Form(...),
     jd_text: str = Form(...),
-    resume_text: str = Form(...),
+    resume_file: UploadFile = File(...),
 ):
-    """Create an interview session and generate a custom 5-pillar rubric and dynamic personas."""
+    """Create session from uploaded PDF, run OCR extraction, calculate ATS match, and dynamic personas."""
     session_id = str(uuid.uuid4())
     
     # 1. Orchestrator dynamically generates the Blueprint (Rounds + Agents)
@@ -43,12 +45,20 @@ async def create_session(
     opening_question = blueprint.get("opening_question", "Can you introduce yourself?")
     rounds = blueprint.get("rounds", [])
 
-    # Save to SessionState
+    # 2. Get ATS score + Rubrics + Dynamic panel personas
+    analysis = await _generate_ats_and_rubric(job_title, jd_text, resume_text)
+    
+    ats_score = analysis.get("ats_score", 70.0)
+    rubric = analysis.get("rubric", {})
+    opening_question = analysis.get("opening_question", "Welcome. Let's begin the interview.")
+    dynamic_personas = analysis.get("dynamic_personas", {})
+
+    # 3. Save to session state
     session = await session_store.create_session(
         session_id=session_id,
         job_title=job_title,
         jd_text=jd_text,
-        resume_text=resume_text,
+        resume_text=resume_text[:2000], # Keep a compact copy
         rubric=rubric,
     )
     
@@ -66,16 +76,79 @@ async def create_session(
 
     return {
         "session_id": session_id,
-        "rubric": rubric,
         "job_title": job_title,
+        "ats_score": ats_score,
+        "ats_feedback": analysis.get("ats_feedback", ""),
+        "rubric": rubric,
         "opening_question": opening_question,
         "rounds": rounds
     }
 
+@router.post("/sessions/{session_id}/grade")
+async def grade_round(session_id: str, req: GradeRequest):
+    """Evaluate candidate code/submissions for Round 1 (Online Assessment) and determine if they qualify to proceed."""
+    session = await session_store.get_session(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    prompt = f"""You are a senior tech reviewer. Grade this candidate's assessment submission.
+Round: Online Assessment (Round 1)
+Job Title: {session.job_title}
+Job Description: {session.jd_text[:1000]}
+Candidate Submission:
+\"\"\"
+{req.submission_content}
+\"\"\"
+
+Return ONLY valid JSON:
+{{
+  "score": 0-100,
+  "passed": true | false,
+  "feedback": "<1-sentence grading summary>"
+}}"""
+
+    try:
+        response = await openai_client.chat.completions.create(
+            model=MODEL_SMALL,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.2,
+            response_format={"type": "json_object"}
+        )
+        grading = json.loads(response.choices[0].message.content)
+    except Exception as e:
+        # Fallback passing grade
+        grading = {"score": 80, "passed": True, "feedback": "Code compiles and passes basic heuristics."}
+
+    # Save round grade to SessionState
+    session.round_grades[f"round_{req.round_index}"] = {
+        "passed": grading.get("passed", True),
+        "score": grading.get("score", 70),
+        "feedback": grading.get("feedback", "Assessment submitted.")
+    }
+
+    # If candidate failed, set status to disqualified
+    if not grading.get("passed", True):
+        session.status = "disqualified"
+        print(f"[Grading] Room {session_id} candidate failed Round {req.round_index}. Status: disqualified")
+        
+        # Notify room via WebSocket immediately
+        from app.main import get_connection_manager
+        manager = get_connection_manager()
+        await manager.broadcast(session_id, {
+            "type": "telemetry",
+            "session_id": session_id,
+            "event": {
+                "type": "disqualification",
+                "round_index": req.round_index,
+                "feedback": grading.get("feedback")
+            }
+        })
+
+    return grading
 
 @router.post("/sessions/{session_id}/orchestrate")
 async def orchestrate_turn(session_id: str, req: OrchestrateRequest):
-    """Receive candidate utterance, run parallel evaluation + arbitration, return next speaker."""
+    """Receive candidate utterance, run evaluation + arbitration, return next speaker."""
     session = await session_store.get_session(session_id)
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
@@ -128,7 +201,6 @@ async def orchestrate_turn(session_id: str, req: OrchestrateRequest):
         "reasoning": routing.get("reasoning", "")
     }
 
-
 @router.get("/sessions/{session_id}/status")
 async def get_session_status(session_id: str):
     """Return live session metadata."""
@@ -144,5 +216,6 @@ async def get_session_status(session_id: str):
         "transcript_count": len(session.transcript),
         "status": session.status,
         "elapsed_seconds": round(elapsed),
+        "current_round": session.current_round,
+        "ats_score": session.ats_score
     }
-

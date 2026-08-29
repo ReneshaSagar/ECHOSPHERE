@@ -4,13 +4,9 @@ from typing import List, Optional
 from app.core.agora_client import build_rtc_token, build_rtm_token, agora_client
 from app.engine.personas import PERSONAS
 from app.core.session_store import session_store
+from app.core.config import settings
 
 router = APIRouter()
-
-class TokenRequest(BaseModel):
-    channel_name: str
-    uid: int
-    role: str = 'publisher'
 
 class AgentStartRequest(BaseModel):
     session_id: str
@@ -20,15 +16,15 @@ class AgentStartRequest(BaseModel):
 class AgentInstructRequest(BaseModel):
     new_prompt: str
 
-@router.post('/token')
-async def get_agora_tokens(req: TokenRequest):
-    rtc_token = build_rtc_token(req.channel_name, req.uid)
-    rtm_token = build_rtm_token(str(req.uid))
+@router.get('/token')
+async def get_agora_tokens(channel_name: str, uid: int, role: str = 'publisher'):
+    rtc_token = build_rtc_token(channel_name, uid)
+    rtm_token = build_rtm_token(str(uid))
     return {
         'rtc_token': rtc_token,
         'rtm_token': rtm_token,
-        'uid': req.uid,
-        'channel_name': req.channel_name
+        'uid': uid,
+        'channel_name': channel_name
     }
 
 @router.post('/agents/start')

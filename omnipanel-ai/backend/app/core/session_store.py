@@ -29,6 +29,9 @@ class SessionState:
     dynamic_personas: Dict[str, dict] = field(default_factory=dict)
     hesitations: List[dict] = field(default_factory=list)
     room_scan_done: bool = False
+    ats_score: float = 0.0
+    pdf_resume_text: str = ""
+    round_grades: Dict[str, dict] = field(default_factory=dict)
 
 class SessionStore:
     def __init__(self):

@@ -3,9 +3,7 @@ import json
 from typing import Optional
 from openai import AsyncOpenAI
 from app.core.session_store import session_store
-from app.core.config import settings
-
-client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+from app.core.config import settings, openai_client, MODEL_SMALL
 
 class TurnArbiter:
     async def decide_next_turn(

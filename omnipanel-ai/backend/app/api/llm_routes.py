@@ -54,11 +54,9 @@ async def convo_ai_completion_proxy(session_id: str, req: ChatCompletionRequest)
     session = await session_store.get_session(session_id)
     if not session:
         # Fallback to direct completion if session not found to prevent freeze
-        from openai import AsyncOpenAI
-        from app.core.config import settings
-        client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
-        messages_dict = [{"role": m.role, "role": m.role, "content": m.content} for m in req.messages]
-        res = await client.chat.completions.create(model="gpt-4o-mini", messages=messages_dict, temperature=0.7)
+        from app.core.config import openai_client, MODEL_SMALL
+        messages_dict = [{"role": m.role, "content": m.content} for m in req.messages]
+        res = await openai_client.chat.completions.create(model=MODEL_SMALL, messages=messages_dict, temperature=0.7)
         return json_response(res.choices[0].message.content)
 
     # 3. Extract candidate's last utterance
@@ -138,7 +136,8 @@ async def convo_ai_completion_proxy(session_id: str, req: ChatCompletionRequest)
             # If arbiter decides tag-team (confidence > 0.9 and detected_issues), maya might interrupt alex
             is_tag_team = len(routing.get("detected_issues", [])) > 0 and routing.get("confidence", 0) > 0.8
             if is_tag_team:
-                interrupted_from = "Alex" if session.current_persona != "alex" else "David"
+                interrupted_key = "alex" if session.current_persona != "alex" else "david"
+                interrupted_from = get_dynamic_name(session, interrupted_key)
                 follow_up_question = f"[Interrupting {interrupted_from}] Wait, I want to follow up on that. {follow_up_question}"
 
             session.dynamic_personas["next_question"] = follow_up_question
@@ -220,3 +219,20 @@ def json_response(text: str) -> dict:
 def empty_response() -> dict:
     """Return a silent space response to mute the calling agent."""
     return json_response(" ")
+
+def get_dynamic_name(session, key: str) -> str:
+    """Resolve the dynamically generated display name for alex/maya/david in this round."""
+    round_index = getattr(session, 'current_round', 2)
+    round_type = "technical" if round_index == 2 else "hr"
+    
+    dynamic_list = []
+    if session and hasattr(session, "dynamic_personas") and session.dynamic_personas:
+        dynamic_list = session.dynamic_personas.get(round_type, [])
+        
+    uid = 2001 if key == "alex" else 2002 if key == "maya" else 2003
+    for p in dynamic_list:
+        if p.get("agent_uid") == uid:
+            return p.get("name")
+            
+    # Fallbacks
+    return "Alex" if key == "alex" else "Maya" if key == "maya" else "David"

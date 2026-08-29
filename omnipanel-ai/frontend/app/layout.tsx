@@ -1,17 +1,19 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
-import { ThemeProvider } from 'next-themes';
-import Navbar from '@/components/Navbar';
+import { Outfit } from 'next/font/google';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' });
 
-export const metadata: Metadata = {
-  title: 'OmniPanel AI — Autonomous Multi-Persona Voice Interview',
-  description: 'Enterprise-grade AI interview panel with Alex, Maya, and David',
+export const metadata = {
+  title: 'OmniPanel | AI Interview Platform',
+  description: 'Autonomous AI Interview Panel',
+  themeColor: '#0a0a0a',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>

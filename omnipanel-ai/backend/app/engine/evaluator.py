@@ -4,11 +4,8 @@ Real-time rubric evaluator: vagueness scoring, buzzword detection, 5-pillar scor
 import json
 import time
 from typing import Optional
-from openai import AsyncOpenAI
-from app.core.config import settings
 from app.core.session_store import session_store, TranscriptEntry
-
-client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+from app.core.config import settings, openai_client, MODEL_SMALL, MODEL_LARGE
 
 BUZZWORDS = [
     'synergy', 'leverage', 'paradigm', 'disruptive', 'holistic', 'agile',
@@ -71,8 +68,8 @@ Return ONLY valid JSON:
 }}'''
         
         try:
-            response = await client.chat.completions.create(
-                model='gpt-4o-mini',
+            response = await openai_client.chat.completions.create(
+                model=MODEL_SMALL,
                 messages=[{'role': 'user', 'content': analysis_prompt}],
                 temperature=0.1,
                 response_format={'type': 'json_object'},
@@ -191,8 +188,8 @@ Generate a structured JSON report:
 }}'''
         
         try:
-            response = await client.chat.completions.create(
-                model='gpt-4o',
+            response = await openai_client.chat.completions.create(
+                model=MODEL_LARGE,
                 messages=[{'role': 'user', 'content': report_prompt}],
                 temperature=0.2,
                 response_format={'type': 'json_object'},
@@ -241,6 +238,8 @@ Generate a structured JSON report:
             'log': hesitation_events
         }
         report_data['suspected_ai_answers'] = suspected_ai
+        report_data['ats_score'] = getattr(session, 'ats_score', 0.0)
+        report_data['round_grades'] = getattr(session, 'round_grades', {})
         
         return report_data
 

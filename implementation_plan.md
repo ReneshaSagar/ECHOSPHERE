@@ -1,66 +1,56 @@
-# Implementation Plan — OmniPanel AI Enterprise
+# Implementation Plan — Requesty, Agora SDK, and Dynamic Proctoring Platform
 
 ## Goal Description
-Enhance OmniPanel AI into a hyper-realistic, enterprise-grade proctored interview platform. The interview will be split into three consecutive rounds (Assessment, Technical, HR). It will feature frontend MediaPipe eye/face tracking for cheat detection, automatic screen recording, a professional dark navy/slate theme, dynamic panel persona generation, and a centralized LLM completion proxy on the backend to coordinate the Agora Conversational AI agents without feedback loops or overlap.
-
----
-
-## User Review Required
-
-> [!IMPORTANT]
-> **Agora LLM Completion Proxy Setup**
-> To coordinate the 3 separate AI interviewers (Alex, Maya, David) and prevent them from speaking over each other, their Agora LLM endpoints will be routed through our FastAPI backend.
-> This requires a public URL (e.g. via `ngrok` or a tunnel) so the Agora cloud can reach our local backend.
-> A new environment variable `PUBLIC_BACKEND_URL` will be added to `.env` (e.g., `PUBLIC_BACKEND_URL=https://xxxx.ngrok-free.app`). If this is not set, the platform will fall back to local browser-based simulation to ensure it remains functional.
+Upgrading the OmniPanel AI platform to use Requesty's unified API completions endpoint, implementing official Agora token generation to fix mic/audio issues, adding a PDF upload feature with real text extraction (OCR/pypdf) and ATS score calculation, designing a dynamic round progression flow (Assessment, Technical, HR) with disqualification checks, and refining the Next.js UI to be highly minimalist and modern (synthetic-audience style).
 
 ---
 
 ## Proposed Changes
 
-### 1. Backend: LLM Proxy & Dynamic Rounds
+### 1. Backend Modifications
 #### [MODIFY] [config.py](file:///C:/Users/Renesha Sagar/Desktop/ecosophere/omnipanel-ai/backend/app/core/config.py)
-- Add `PUBLIC_BACKEND_URL` to allow routing Agora agent requests to our backend.
-
-#### [MODIFY] [session_store.py](file:///C:/Users/Renesha Sagar/Desktop/ecosophere/omnipanel-ai/backend/app/core/session_store.py)
-- Add fields to `SessionState` for tracking current round, proctoring alerts, dynamic personas, and hesitation metrics.
+- Centrally expose `AsyncOpenAI` with Requesty configuration (`base_url="https://router.requesty.ai/v1"`).
+- Define default model constants: `MODEL_LARGE = "openai/gpt-4o"` and `MODEL_SMALL = "openai/gpt-4o-mini"`.
 
 #### [MODIFY] [agora_client.py](file:///C:/Users/Renesha Sagar/Desktop/ecosophere/omnipanel-ai/backend/app/core/agora_client.py)
-- Route the LLM URL to `PUBLIC_BACKEND_URL/api/llm/chat/completions` on agent startup if configured.
+- Replace custom struct-packing Rtc Token generation with the official `RtcTokenBuilder` from the `agora-token-builder` package:
+  ```python
+  from agora_token_builder import RtcTokenBuilder
+  ```
 
-#### [NEW] [llm_routes.py](file:///C:/Users/Renesha Sagar/Desktop/ecosophere/omnipanel-ai/backend/app/api/llm_routes.py)
-- Implement an OpenAI-compatible endpoint `/api/llm/chat/completions`.
-- It acts as the routing proxy: receives transcripts, runs TurnArbiter/Evaluator, generates the response in the chosen persona's style (with interruption prompts), and returns the completion to the Agora gateway.
-
-#### [MODIFY] [main.py](file:///C:/Users/Renesha Sagar/Desktop/ecosophere/omnipanel-ai/backend/app/main.py)
-- Mount the new `llm_routes` router.
+#### [MODIFY] [session_store.py](file:///C:/Users/Renesha Sagar/Desktop/ecosophere/omnipanel-ai/backend/app/core/session_store.py)
+- Add `ats_score`, `pdf_resume_text`, and round status/grades.
 
 #### [MODIFY] [interview_routes.py](file:///C:/Users/Renesha Sagar/Desktop/ecosophere/omnipanel-ai/backend/app/api/interview_routes.py)
-- Generate dynamic personas matching the job description and round type (Technical vs HR).
+- Change `/sessions/create` to accept a multi-part `.pdf` file instead of simple resume text.
+- Use `pypdf.PdfReader` to extract plain text from the uploaded PDF.
+- Prompt Requesty LLM to calculate an ATS score and parse the resume details.
+- Adapt the round execution checks (disqualifying candidates if their assessment or technical rounds do not meet a grade threshold).
 
-#### [MODIFY] [evaluator.py](file:///C:/Users/Renesha Sagar/Desktop/ecosophere/omnipanel-ai/backend/app/engine/evaluator.py)
-- Include cheating metrics, eye-gaze alerts, and hesitation analysis in the final report. Generate "Minutes of Meeting" for recruiter and candidate.
+#### [MODIFY] [llm_routes.py](file:///C:/Users/Renesha Sagar/Desktop/ecosophere/omnipanel-ai/backend/app/api/llm_routes.py)
+- Update models to use Requesty models (`openai/gpt-4o` / `openai/gpt-4o-mini`).
+
+#### [MODIFY] [arbiter.py](file:///C:/Users/Renesha Sagar/Desktop/ecosophere/omnipanel-ai/backend/app/engine/arbiter.py) & [evaluator.py](file:///C:/Users/Renesha Sagar/Desktop/ecosophere/omnipanel-ai/backend/app/engine/evaluator.py)
+- Inject Requesty models and base URL.
+- Update evaluator to merge ATS Resume score into the final scorecard.
 
 ---
 
-### 2. Frontend: Proctoring & Zoom-like UI
-#### [MODIFY] [package.json](file:///C:/Users/Renesha Sagar/Desktop/ecosophere/omnipanel-ai/frontend/package.json)
-- Add `@mediapipe/tasks-vision` or use CDN scripts for browser-based face tracking to ensure fast startup.
-
+### 2. Frontend Modifications
 #### [MODIFY] [globals.css](file:///C:/Users/Renesha Sagar/Desktop/ecosophere/omnipanel-ai/frontend/app/globals.css)
-- Implement a polished Dark Navy theme (`#030712`, `#0B1329`, `#1C2541`). Add zoom-like grid layout classes.
+- Revamp theme styles to use deep slate/black tones (`#020408`), thin border lines (`border-[#131B2E]`), glowing borders, and clean monospace font pairings to match `synthetic-audience`.
+
+#### [MODIFY] [setup/page.tsx](file:///C:/Users/Renesha Sagar/Desktop/ecosophere/omnipanel-ai/frontend/app/setup/page.tsx)
+- Change the resume copy-paste text box to a drag-and-drop file upload component accepting `.pdf`.
+- Display a professional parsing visualizer showing ATS metrics.
 
 #### [MODIFY] [room/[sessionId]/page.tsx](file:///C:/Users/Renesha Sagar/Desktop/ecosophere/omnipanel-ai/frontend/app/room/[sessionId]/page.tsx)
-- Rebuild layout to feature a Google Meet / Zoom grid:
-  - Left panel: Grid containing Candidate Video + Screen Share.
-  - Center/Right panel: Three AI interviewers in a horizontal grid.
-  - Sidebar: Dynamic tab switcher (Online Assessment, Code editor, Live Transcript, AI Proctoring Feed).
-- Add Webcam proctoring:
-  - Load MediaPipe Task Vision dynamically.
-  - Track gaze direction, face count, and mouth movements.
-  - Stream alerts to backend via WebSocket telemetry.
-- Add Screen Recording:
-  - Request screen capture automatically on launch.
-  - Record the stream using `MediaRecorder`.
+- Reorganize layout into a hyper-minimalist grid.
+- Integrate step-by-step round progression: if candidate fails Assessment/Round 1, show a rejection status and prevent proceeding.
+- Embed a proctoring eye gaze canvas layer.
+
+#### [MODIFY] [report/[sessionId]/page.tsx](file:///C:/Users/Renesha Sagar/Desktop/ecosophere/omnipanel-ai/frontend/app/report/[sessionId]/page.tsx)
+- Upgrade report UI to show recruiter MoM details, ATS scores, and proctoring log records in a sleek, minimalist dashboard.
 
 ---
 
@@ -72,7 +62,6 @@ Enhance OmniPanel AI into a hyper-realistic, enterprise-grade proctored intervie
 - Validate Python syntax: `python -m py_compile`
 
 ### Manual Verification
-- Expose local server using ngrok and test real voice coordination.
-- Verify cheating detection alerts trigger when looking away or when face is not detected.
-- Verify screen recording prompt triggers automatically.
-- Check final recruiter report contains the detailed proctoring summary.
+- Test PDF upload with a sample resume and confirm text extraction and ATS scores.
+- Test Agora join and verify that the official token builder resolves the audio/mic gateway issues.
+- Verify disqualification state terminates the room page.
