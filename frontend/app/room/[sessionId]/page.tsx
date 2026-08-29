@@ -659,10 +659,10 @@ export default function RoomPage() {
                   <button
                     key={tab}
                     onClick={() => setSidebarTab(tab)}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold uppercase tracking-wider transition-colors ${
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold uppercase tracking-wider transition-colors -mb-px ${
                       sidebarTab === tab
                         ? 'border-b-2 border-[#00AEEF] text-[#00AEEF] bg-[#00AEEF]/5'
-                        : 'text-slate-500 hover:text-slate-700'
+                        : 'border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50'
                     }`}
                   >
                     <span className="text-base">{tab === 'transcript' ? '📝' : '🎯'}</span>
