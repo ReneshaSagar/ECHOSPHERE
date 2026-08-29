@@ -1,10 +1,7 @@
 import json
 from pydantic import BaseModel, Field
 from typing import List
-from openai import AsyncOpenAI
-from app.core.config import settings
-
-client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+from app.core.config import settings, openai_client, MODEL_LARGE
 
 class AgentConfig(BaseModel):
     agent_id: str = Field(..., description="Unique ID for the agent, e.g., 'agent_1'")
@@ -62,8 +59,8 @@ Instructions:
 
         try:
             # Using GPT-4o for complex JSON structured output
-            response = await client.chat.completions.create(
-                model="gpt-4o",
+            response = await openai_client.chat.completions.create(
+                model=MODEL_LARGE,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.4,
                 response_format={"type": "json_schema", "json_schema": {"name": "blueprint", "schema": InterviewBlueprint.model_json_schema()}}

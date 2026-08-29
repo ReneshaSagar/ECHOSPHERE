@@ -75,8 +75,8 @@ Return ONLY valid JSON:
   "reasoning": "<Internal reasoning for this orchestration decision>"
 }}'''
         
-        response = await client.chat.completions.create(
-            model='gpt-4o-mini',
+        response = await openai_client.chat.completions.create(
+            model=MODEL_SMALL,
             messages=[{'role': 'user', 'content': routing_prompt}],
             temperature=0.4,
             response_format={'type': 'json_object'},
