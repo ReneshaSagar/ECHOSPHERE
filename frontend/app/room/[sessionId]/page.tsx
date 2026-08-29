@@ -589,18 +589,7 @@ export default function RoomPage() {
 
           {currentRound >= 2 && (
             <div className="flex-1 flex flex-col gap-4">
-              <div className="flex flex-col md:flex-row gap-4 flex-1 items-stretch">
-                <div className="w-full md:w-1/3 max-w-[400px] shrink-0 meet-card bg-slate-100 relative flex items-center justify-center border border-slate-200 rounded-2xl overflow-hidden">
-                  <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover" />
-                  <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
-                  {!isWebcamActive && (
-                    <VideoOff className="w-10 h-10 text-slate-800" />
-                  )}
-                  <div className="absolute bottom-3 left-3 px-2 py-0.5 bg-black/70 backdrop-blur text-[10px] font-semibold text-slate-800 rounded border border-slate-200">
-                    YOU (Candidate)
-                  </div>
-                </div>
-                
+              <div className="flex flex-col gap-4 flex-1">
                 <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
                 {dynamicPersonas && dynamicPersonas.length > 0 ? (
@@ -670,13 +659,14 @@ export default function RoomPage() {
                   <button
                     key={tab}
                     onClick={() => setSidebarTab(tab)}
-                    className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-colors ${
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold uppercase tracking-wider transition-colors ${
                       sidebarTab === tab
                         ? 'border-b-2 border-[#00AEEF] text-[#00AEEF] bg-[#00AEEF]/5'
-                        : 'text-slate-500 hover:text-slate-300'
+                        : 'text-slate-500 hover:text-slate-700'
                     }`}
                   >
-                    {tab === 'transcript' ? '📝 Transcript' : '🎯 AI Radar'}
+                    <span className="text-base">{tab === 'transcript' ? '📝' : '🎯'}</span>
+                    <span>{tab === 'transcript' ? 'Transcript' : 'AI Radar'}</span>
                   </button>
                 ))}
               </div>
