@@ -1,5 +1,4 @@
 'use client';
-
 import { motion } from 'framer-motion';
 import Card from '../ui/Card';
 import { Brain, Users, Shield } from 'lucide-react';
@@ -9,9 +8,6 @@ interface AvatarCardProps {
   isActive: boolean;
   isThinking: boolean;
   isMuted?: boolean;
-  displayName?: string;
-  displayRole?: string;
-  displayColor?: string;
 }
 
 const personaConfig = {
@@ -20,43 +16,30 @@ const personaConfig = {
   david: { name: 'David', role: 'Engineering Director', color: '#10B981', initials: 'DV', icon: Shield },
 };
 
-export default function AvatarCard({ 
-  persona, 
-  isActive, 
-  isThinking, 
-  isMuted = false,
-  displayName,
-  displayRole,
-  displayColor
-}: AvatarCardProps) {
-  const defaultConfig = personaConfig[persona];
-  
-  const name = displayName || defaultConfig.name;
-  const role = displayRole || defaultConfig.role;
-  const color = displayColor || defaultConfig.color;
-  const initials = name.substring(0, 2).toUpperCase();
-  const Icon = defaultConfig.icon;
+export default function AvatarCard({ persona, isActive, isThinking, isMuted = false }: AvatarCardProps) {
+  const config = personaConfig[persona];
+  const Icon = config.icon;
 
   return (
     <Card 
       className={`relative overflow-hidden p-6 flex flex-col items-center justify-center min-h-[240px] transition-all duration-300 ${isActive ? 'scale-[1.02]' : 'scale-100'}`}
-      glowColor={isActive ? color : undefined}
+      glowColor={isActive ? config.color : undefined}
     >
       <div className="relative mb-4">
         {isActive && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.15, 1] }}
+            animate={{ opacity: [0.5, 0.8, 0.5], scale: [1, 1.2, 1] }}
             transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
             className="absolute inset-0 rounded-full"
-            style={{ backgroundColor: color, filter: 'blur(20px)', zIndex: 0 }}
+            style={{ backgroundColor: config.color, filter: 'blur(20px)', zIndex: 0 }}
           />
         )}
         <div 
-          className="relative z-10 w-20 h-20 rounded-full flex items-center justify-center border-2 border-solid shadow-lg bg-slate-950"
-          style={{ borderColor: color, backgroundColor: `${color}15` }}
+          className="relative z-10 w-20 h-20 rounded-full flex items-center justify-center border-2 border-solid shadow-lg bg-slate-900"
+          style={{ borderColor: config.color, backgroundColor: `${config.color}20` }}
         >
-          <span className="text-2xl font-bold" style={{ color: color }}>{initials}</span>
+          <span className="text-2xl font-bold" style={{ color: config.color }}>{config.initials}</span>
         </div>
         
         {isMuted && (
@@ -70,18 +53,36 @@ export default function AvatarCard({
       </div>
 
       <div className="text-center z-10">
-        <h3 className="text-base font-bold text-white mb-1 flex items-center justify-center gap-1.5">
-          {name}
-          <Icon className="w-3.5 h-3.5 text-slate-500" />
+        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 flex items-center justify-center gap-2">
+          {config.name}
+          <Icon className="w-4 h-4 text-slate-500" />
         </h3>
-        <p className="text-xs text-slate-400">{role}</p>
-        
-        {isThinking && (
-          <div className="mt-3 flex justify-center gap-1">
-            <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-            <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-            <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+        <p className="text-sm text-slate-500 dark:text-slate-400">{config.role}</p>
+      </div>
+
+      <div className="absolute bottom-4 left-0 right-0 flex justify-center items-end h-6 gap-1 px-4">
+        {isThinking ? (
+          <div className="flex gap-1 items-center h-full">
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                className="w-2 h-2 rounded-full"
+                style={{ backgroundColor: config.color }}
+                animate={{ y: ['0%', '-50%', '0%'] }}
+                transition={{ repeat: Infinity, duration: 0.6, delay: i * 0.15 }}
+              />
+            ))}
           </div>
+        ) : (
+          [...Array(5)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="w-1.5 rounded-full"
+              style={{ backgroundColor: config.color }}
+              animate={isActive ? { height: ['20%', '80%', '20%'] } : { height: '10%' }}
+              transition={isActive ? { repeat: Infinity, duration: 0.5 + Math.random() * 0.5, delay: i * 0.1 } : {}}
+            />
+          ))
         )}
       </div>
     </Card>
