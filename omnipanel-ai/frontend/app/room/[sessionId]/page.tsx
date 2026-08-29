@@ -375,8 +375,8 @@ export default function RoomPage() {
     initAgora();
     startCamera();
     
-    // Automatically trigger the voice round initialization since OA is bypassed
-    switchRound(2);
+    // Automatically trigger the first voice round
+    switchRound(1);
 
     return () => {
       wsRef.current?.close();
@@ -387,7 +387,7 @@ export default function RoomPage() {
   }, [connectWebSocket, initAgora, startCamera, sessionId]);
 
   // ── Round Transition Operations ────────────────────────────────────────────
-  const switchRound = async (roundNum: 1 | 2 | 3) => {
+  const switchRound = async (roundNum: number) => {
     setCurrentRound(roundNum);
     
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
@@ -405,18 +405,20 @@ export default function RoomPage() {
         const agents = status.rounds[roundNum - 1].agents || [];
         setDynamicPersonas(agents);
         dynamicPersonasRef.current = agents;
+        
+        // Start the agents for this round
+        const agentNames = agents.map((a: any) => a.name.toLowerCase());
+        const { startAgents } = await import('@/lib/api');
+        await startAgents({
+          session_id: sessionId,
+          channel_name: sessionId,
+          personas: agentNames
+        });
+      } else {
+        console.warn(`Round ${roundNum} not found in session blueprint.`);
       }
     } catch(err) {
-      console.warn("Failed to fetch session rounds", err);
-    }
-
-    if (roundNum === 2) {
-      try {
-        await startAgents({ session_id: sessionId, channel_name: sessionId });
-
-      } catch (err) {
-        console.warn('Failed to start Technical AI panel:', err);
-      }
+      console.warn("Failed to fetch session rounds or start agents", err);
     }
   };
 
