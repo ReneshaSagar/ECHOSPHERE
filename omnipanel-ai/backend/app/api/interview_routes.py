@@ -90,7 +90,16 @@ async def create_session(
         reason = blueprint.get("rejection_reason", "Invalid job description or resume.")
         raise HTTPException(status_code=400, detail=f"Gibberish detected: {reason}")
     
-    rubric = blueprint.get("rubric", {})
+    rubric = {}
+    if blueprint.get("pillars"):
+        for p in blueprint["pillars"]:
+            key = p.get("pillar_name", "category").lower().replace(" ", "_")
+            rubric[key] = {
+                "label": p.get("pillar_name"),
+                "description": p.get("description"),
+                "key_signals": p.get("key_signals", [])
+            }
+
     opening_question = blueprint.get("opening_question", "Can you introduce yourself?")
     rounds = blueprint.get("rounds", [])
     ats_score = blueprint.get("ats_score", 70.0)

@@ -17,25 +17,17 @@ class RoundConfig(BaseModel):
     round_type: str = Field(..., description="E.g., 'Technical', 'Behavioral', 'System Design'")
     focus_areas: List[str] = Field(..., description="Key areas to evaluate in this round")
     agents: List[AgentConfig] = Field(..., description="The panel of agents for this round (can be 1 to 4 agents)")
-
 class PillarConfig(BaseModel):
-    label: str
+    pillar_name: str = Field(..., description="Custom name of the evaluation pillar based on the JD (e.g., 'React Architecture', 'Sales Negotiation', 'Clinical Empathy')")
     description: str
     key_signals: List[str]
-
-class RubricConfig(BaseModel):
-    architecture: PillarConfig
-    product_sense: PillarConfig
-    scalability: PillarConfig
-    clarity: PillarConfig
-    ownership: PillarConfig
 
 from typing import List, Optional
 
 class InterviewBlueprint(BaseModel):
     is_valid_input: bool = Field(..., description="Set to false if the JD or Resume is literal gibberish, completely irrelevant, or nonsensical.")
-    rejection_reason: Optional[str] = Field(None, description="If is_valid_input is false, explain why (e.g. 'The Job Description is gibberish').")
-    rubric: Optional[RubricConfig] = Field(None, description="Evaluation rubric tailored to JD")
+    rejection_reason: Optional[str] = Field(None, description="If is_valid_input is false, explain why.")
+    pillars: Optional[List[PillarConfig]] = Field(None, description="Generate exactly 5 customized evaluation pillars tailored exclusively to the Job Description.")
     opening_question: Optional[str] = Field(None, description="First question to ask the candidate")
     rounds: Optional[List[RoundConfig]] = Field(None, description="Dynamically generated interview rounds based on JD")
 
