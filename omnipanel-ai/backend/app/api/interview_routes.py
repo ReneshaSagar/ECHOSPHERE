@@ -68,7 +68,18 @@ async def create_session(
             else:
                 final_resume_text = f"Invalid Google Doc link format."
         else:
-            final_resume_text = f"Candidate provided external link: {resume_link}"
+            # Use Jina Reader API to extract clean text from ANY generic URL (portfolio, website, etc.)
+            import httpx
+            jina_url = f"https://r.jina.ai/{resume_link}"
+            try:
+                async with httpx.AsyncClient(timeout=10.0) as client:
+                    resp = await client.get(jina_url)
+                    if resp.status_code == 200:
+                        final_resume_text = resp.text
+                    else:
+                        final_resume_text = f"Candidate provided external link: {resume_link} (Failed to scrape)"
+            except Exception as e:
+                final_resume_text = f"Candidate provided external link: {resume_link}"
     elif resume_text:
         final_resume_text = resume_text
 
