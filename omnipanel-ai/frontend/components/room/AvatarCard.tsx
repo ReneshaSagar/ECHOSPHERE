@@ -15,14 +15,16 @@ const ICONS = [Brain, Users, Shield, User, Zap, Briefcase];
 
 export default function AvatarCard({ persona, isActive, isThinking, isMuted = false }: AvatarCardProps) {
   // Select a random icon based on the agent's uid to keep it consistent
-  const Icon = ICONS[persona.agent_uid % ICONS.length];
+  const uid = persona.agent_uid || (persona.name ? persona.name.charCodeAt(0) : 0);
+  const Icon = ICONS[uid % ICONS.length] || ICONS[0];
   // Generate initials
   const initials = persona.name ? persona.name.substring(0, 2).toUpperCase() : 'AI';
+  const color = persona.color || '#06B6D4';
 
   return (
     <Card 
       className={`relative overflow-hidden p-6 flex flex-col items-center justify-center min-h-[240px] transition-all duration-300 ${isActive ? 'scale-[1.02]' : 'scale-100'}`}
-      glowColor={isActive ? persona.color : undefined}
+      glowColor={isActive ? color : undefined}
     >
       <div className="relative mb-4">
         {isActive && (
@@ -31,14 +33,14 @@ export default function AvatarCard({ persona, isActive, isThinking, isMuted = fa
             animate={{ opacity: [0.5, 0.8, 0.5], scale: [1, 1.2, 1] }}
             transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
             className="absolute inset-0 rounded-full"
-            style={{ backgroundColor: persona.color, filter: 'blur(20px)', zIndex: 0 }}
+            style={{ backgroundColor: color, filter: 'blur(20px)', zIndex: 0 }}
           />
         )}
         <div 
           className="relative z-10 w-20 h-20 rounded-full flex items-center justify-center border-2 border-solid shadow-lg bg-slate-900"
-          style={{ borderColor: persona.color, backgroundColor: `${persona.color}20` }}
+          style={{ borderColor: color, backgroundColor: `${color}20` }}
         >
-          <span className="text-2xl font-bold" style={{ color: persona.color }}>{initials}</span>
+          <span className="text-2xl font-bold" style={{ color: color }}>{initials}</span>
         </div>
         
         {isMuted && (
