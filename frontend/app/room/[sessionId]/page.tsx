@@ -654,21 +654,23 @@ export default function RoomPage() {
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               className="border-l border-slate-200 bg-white backdrop-blur flex flex-col overflow-hidden flex-shrink-0"
             >
-              <div className="flex border-b border-slate-200">
-                {(['transcript', 'radar'] as const).map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setSidebarTab(tab)}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold uppercase tracking-wider transition-colors -mb-px ${
-                      sidebarTab === tab
-                        ? 'border-b-2 border-[#00AEEF] text-[#00AEEF] bg-[#00AEEF]/5'
-                        : 'border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50'
-                    }`}
-                  >
-                    <span className="text-base">{tab === 'transcript' ? '📝' : '🎯'}</span>
-                    <span>{tab === 'transcript' ? 'Transcript' : 'AI Radar'}</span>
-                  </button>
-                ))}
+              <div className="border-b border-slate-200">
+                <nav className="-mb-px flex">
+                  {(['transcript', 'radar'] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setSidebarTab(tab)}
+                      className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 ${
+                        sidebarTab === tab
+                          ? 'border-[#00AEEF] text-[#00AEEF] bg-[#00AEEF]/5'
+                          : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+                      }`}
+                    >
+                      <span className="text-base">{tab === 'transcript' ? '📝' : '🎯'}</span>
+                      <span>{tab === 'transcript' ? 'Transcript' : 'AI Radar'}</span>
+                    </button>
+                  ))}
+                </nav>
               </div>
 
               <div className="flex-1 overflow-hidden flex flex-col">
