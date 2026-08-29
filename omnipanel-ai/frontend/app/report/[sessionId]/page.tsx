@@ -77,13 +77,15 @@ const PILLAR_LABELS: Record<string, string> = {
   ownership: 'Ownership',
 };
 
-const PILLAR_COLORS: Record<string, string> = {
-  architecture: '#06B6D4',
-  product_sense: '#F59E0B',
-  scalability: '#8B5CF6',
-  clarity: '#10B981',
-  ownership: '#F97316',
-};
+const PILLAR_COLORS_PALETTE = [
+  '#0ea5e9', // Blue
+  '#f59e0b', // Amber
+  '#10b981', // Emerald
+  '#8b5cf6', // Violet
+  '#ef4444', // Red
+  '#ec4899', // Pink
+  '#14b8a6', // Teal
+];
 
 // ── Small stat card ───────────────────────────────────────────────────────
 function StatCard({
@@ -454,23 +456,20 @@ export default function ReportPage() {
                 5-Pillar Score Details
               </h2>
             </div>
-            {Object.entries(report.pillar_scores).map(([key, val]) => (
+            {Object.entries(report.pillar_scores).map(([key, val], i) => (
               <div key={key} className="space-y-1.5">
                 <div className="flex justify-between items-center">
                   <span className="text-xs font-semibold text-[#102a3a]">
                     {PILLAR_LABELS[key] ?? key}
                   </span>
-                  <span className="text-xs font-bold" style={{ color: PILLAR_COLORS[key] ?? '#00AEEF' }}>
+                  <span className="text-xs font-bold" style={{ color: PILLAR_COLORS_PALETTE[i % PILLAR_COLORS_PALETTE.length] }}>
                     {val.score}/10
                   </span>
                 </div>
-                <div className="h-1.5 bg-[#e9f5fb] overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${val.score * 10}%` }}
-                    transition={{ duration: 0.8, delay: 0.4 }}
-                    className="h-full"
-                    style={{ backgroundColor: PILLAR_COLORS[key] ?? '#00AEEF' }}
+                <div className="h-1.5 w-full bg-slate-100 overflow-hidden">
+                  <div
+                    className="h-full transition-all duration-1000"
+                    style={{ backgroundColor: PILLAR_COLORS_PALETTE[i % PILLAR_COLORS_PALETTE.length], width: `${Math.max(2, (val.score / 10) * 100)}%` }}
                   />
                 </div>
                 {val.evidence && (

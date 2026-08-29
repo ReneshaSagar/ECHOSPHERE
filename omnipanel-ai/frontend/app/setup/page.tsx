@@ -257,6 +257,16 @@ function StepResume({
 type RubricPillar = { label: string; description: string; key_signals: string[] };
 type RubricData = Record<string, RubricPillar | string>;
 
+const PILLAR_COLORS_PALETTE = [
+  '#0ea5e9', // Blue
+  '#f59e0b', // Amber
+  '#10b981', // Emerald
+  '#8b5cf6', // Violet
+  '#ef4444', // Red
+  '#ec4899', // Pink
+  '#14b8a6', // Teal
+];
+
 function StepRubric({
   rubric, onBack, onNext,
 }: {
@@ -290,12 +300,12 @@ function StepRubric({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08 }}
             className="p-4 bg-white dark:bg-[#090D16] border"
-            style={{ borderColor: `${PILLAR_COLORS[key] ?? '#94A3B8'}50` }}
+            style={{ borderColor: `${PILLAR_COLORS_PALETTE[i % PILLAR_COLORS_PALETTE.length]}50` }}
           >
             <div className="flex items-center gap-2 mb-1">
               <div
                 className="w-2 h-2 flex-shrink-0"
-                style={{ backgroundColor: PILLAR_COLORS[key] ?? '#94A3B8' }}
+                style={{ backgroundColor: PILLAR_COLORS_PALETTE[i % PILLAR_COLORS_PALETTE.length] }}
               />
               <span className="font-semibold text-[#102a3a] dark:text-slate-200 text-sm">{pillar.label}</span>
             </div>
