@@ -52,7 +52,7 @@ export default function LiveTranscript({ entries }: LiveTranscriptProps) {
                 )}
               </div>
               
-              <div className={`max-w-[85%] p-3 rounded-2xl break-words whitespace-pre-wrap ${entry.speaker === 'candidate' ? 'bg-indigo-600 text-white rounded-tr-sm' : 'bg-slate-100 text-slate-900 rounded-tl-sm shadow-sm border border-slate-200'}`}>
+              <div className={`max-w-[85%] p-3 rounded-2xl break-words whitespace-pre-wrap ${entry.speaker === 'candidate' ? 'bg-indigo-600 text-white rounded-tr-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-tl-sm shadow-sm border border-slate-200 dark:border-slate-700'}`}>
                 {isLatest && entry.speaker === 'candidate' ? (
                   <motion.span
                     initial={{ opacity: 0 }}
