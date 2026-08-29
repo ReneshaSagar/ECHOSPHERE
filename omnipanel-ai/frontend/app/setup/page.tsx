@@ -32,9 +32,9 @@ const PILLAR_COLORS: Record<string, string> = {
 // ── Shared input/textarea classes ─────────────────────────────────────────
 
 const inputCls =
-  'w-full bg-white border border-[#00AEEF]/30 px-4 py-3 outline-none ' +
-  'focus:border-[#00AEEF] focus:ring-2 focus:ring-[#00AEEF]/10 ' +
-  'transition-all text-[#102a3a] placeholder:text-[#8baab8] text-sm';
+  'w-full bg-white dark:bg-[#090D16] border border-[#00AEEF]/30 dark:border-slate-700/60 px-4 py-3 outline-none ' +
+  'focus:border-[#00AEEF] dark:focus:border-[#00AEEF] focus:ring-2 focus:ring-[#00AEEF]/10 ' +
+  'transition-all text-[#102a3a] dark:text-slate-100 placeholder:text-[#8baab8] dark:placeholder:text-slate-500 text-sm';
 
 // ── Buttons ───────────────────────────────────────────────────────────────
 
@@ -60,9 +60,9 @@ function SecondaryBtn({
   return (
     <button
       onClick={onClick}
-      className="flex items-center gap-2 px-5 py-3 border border-[#00AEEF]/30
-        text-[#527080] text-sm font-semibold hover:border-[#00AEEF]
-        hover:text-[#102a3a] transition-colors bg-white"
+      className="flex items-center gap-2 px-5 py-3 border border-[#00AEEF]/30 dark:border-slate-700
+        text-[#527080] dark:text-slate-400 text-sm font-semibold hover:border-[#00AEEF] dark:hover:border-slate-500
+        hover:text-[#102a3a] dark:hover:text-slate-200 transition-colors bg-white dark:bg-[#090D16]"
     >
       {children}
     </button>
@@ -86,16 +86,16 @@ function StepJobDetails({
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#00AEEF] mb-2">
           Step 01
         </p>
-        <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#102a3a] mb-1">
+        <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#102a3a] dark:text-slate-100 mb-1">
           Job Details
         </h2>
-        <p className="text-sm text-[#527080]">
+        <p className="text-sm text-[#527080] dark:text-slate-400">
           Tell us about the role so the AI panel can tailor their questions.
         </p>
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-xs font-bold uppercase tracking-[0.12em] text-[#102a3a]">
+        <label className="text-xs font-bold uppercase tracking-[0.12em] text-[#102a3a] dark:text-slate-300">
           Job Title <span className="text-red-500">*</span>
         </label>
         <input
@@ -108,7 +108,7 @@ function StepJobDetails({
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-xs font-bold uppercase tracking-[0.12em] text-[#102a3a]">
+        <label className="text-xs font-bold uppercase tracking-[0.12em] text-[#102a3a] dark:text-slate-300">
           Job Description <span className="text-red-500">*</span>
         </label>
         <textarea
@@ -118,7 +118,7 @@ function StepJobDetails({
           placeholder="Paste the full job description here. The more detail, the better the rubric and questions."
           className={`${inputCls} resize-none`}
         />
-        <p className="text-xs text-[#8baab8]">{jdText.length} chars — aim for 200+</p>
+        <p className="text-xs text-[#8baab8] dark:text-slate-500">{jdText.length} chars — aim for 200+</p>
       </div>
 
       <div className="flex justify-end">
@@ -155,10 +155,10 @@ function StepResume({
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#00AEEF] mb-2">
           Step 02
         </p>
-        <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#102a3a] mb-1">
+        <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#102a3a] dark:text-slate-100 mb-1">
           Candidate Resume
         </h2>
-        <p className="text-sm text-[#527080]">
+        <p className="text-sm text-[#527080] dark:text-slate-400">
           Upload a PDF, link to Google Drive, or paste the candidate&apos;s resume text.
         </p>
       </div>
@@ -168,7 +168,7 @@ function StepResume({
           <button
             key={m}
             onClick={() => setMode(m)}
-            className={`text-sm font-semibold uppercase tracking-wider transition-colors ${mode === m ? 'text-[#00AEEF] border-b-2 border-[#00AEEF]' : 'text-[#8baab8] hover:text-[#00AEEF]/70'}`}
+            className={`text-sm font-semibold uppercase tracking-wider transition-colors ${mode === m ? 'text-[#00AEEF] border-b-2 border-[#00AEEF]' : 'text-[#8baab8] dark:text-slate-500 hover:text-[#00AEEF]/70 dark:hover:text-[#00AEEF]'}`}
           >
             {m === 'file' ? 'PDF Upload' : m === 'link' ? 'Drive Link' : 'Paste Text'}
           </button>
@@ -177,7 +177,7 @@ function StepResume({
 
       <div className="flex flex-col gap-2 min-h-[200px]">
         {mode === 'file' && (
-          <div className="flex flex-col items-center justify-center border-2 border-dashed border-[#00AEEF]/30 bg-white/50 h-48 rounded-lg p-6">
+          <div className="flex flex-col items-center justify-center border-2 border-dashed border-[#00AEEF]/30 dark:border-slate-700/60 bg-white/50 dark:bg-slate-900/50 h-48 rounded-lg p-6">
             <input 
               type="file" 
               accept="application/pdf"
@@ -186,11 +186,11 @@ function StepResume({
               onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
             />
             <label htmlFor="resume-upload" className="cursor-pointer flex flex-col items-center text-center">
-              <div className="w-12 h-12 bg-[#f0faff] rounded-full flex items-center justify-center mb-3 text-[#00AEEF]">
+              <div className="w-12 h-12 bg-[#f0faff] dark:bg-[#00AEEF]/10 rounded-full flex items-center justify-center mb-3 text-[#00AEEF]">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
               </div>
-              <span className="text-sm font-semibold text-[#102a3a]">{resumeFile ? resumeFile.name : 'Click to upload PDF resume'}</span>
-              <span className="text-xs text-[#8baab8] mt-1">Maximum file size: 5MB</span>
+              <span className="text-sm font-semibold text-[#102a3a] dark:text-slate-200">{resumeFile ? resumeFile.name : 'Click to upload PDF resume'}</span>
+              <span className="text-xs text-[#8baab8] dark:text-slate-500 mt-1">Maximum file size: 5MB</span>
             </label>
             {resumeFile && (
               <button onClick={() => setResumeFile(null)} className="mt-4 text-xs text-red-500 hover:underline">
@@ -202,7 +202,7 @@ function StepResume({
 
         {mode === 'link' && (
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-bold uppercase tracking-[0.12em] text-[#102a3a]">
+            <label className="text-xs font-bold uppercase tracking-[0.12em] text-[#102a3a] dark:text-slate-300">
               Google Drive / External Link <span className="text-red-500">*</span>
             </label>
             <input
@@ -212,13 +212,13 @@ function StepResume({
               placeholder="https://docs.google.com/document/d/..."
               className={`${inputCls}`}
             />
-            <p className="text-xs text-[#8baab8]">Make sure the link is publicly accessible so the Orchestrator can read it.</p>
+            <p className="text-xs text-[#8baab8] dark:text-slate-500">Make sure the link is publicly accessible so the Orchestrator can read it.</p>
           </div>
         )}
 
         {mode === 'text' && (
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-bold uppercase tracking-[0.12em] text-[#102a3a]">
+            <label className="text-xs font-bold uppercase tracking-[0.12em] text-[#102a3a] dark:text-slate-300">
               Resume Text <span className="text-red-500">*</span>
             </label>
             <textarea
@@ -275,10 +275,10 @@ function StepRubric({
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#00AEEF] mb-2">
           Step 03
         </p>
-        <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#102a3a] mb-1">
+        <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#102a3a] dark:text-slate-100 mb-1">
           Your Evaluation Rubric
         </h2>
-        <p className="text-sm text-[#527080]">
+        <p className="text-sm text-[#527080] dark:text-slate-400">
           AI-generated based on the JD + resume. The panel will score across these 5 pillars.
         </p>
       </div>
@@ -290,7 +290,7 @@ function StepRubric({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08 }}
-            className="p-4 bg-white border"
+            className="p-4 bg-white dark:bg-[#090D16] border"
             style={{ borderColor: `${PILLAR_COLORS[key] ?? '#94A3B8'}50` }}
           >
             <div className="flex items-center gap-2 mb-1">
@@ -298,14 +298,14 @@ function StepRubric({
                 className="w-2 h-2 flex-shrink-0"
                 style={{ backgroundColor: PILLAR_COLORS[key] ?? '#94A3B8' }}
               />
-              <span className="font-semibold text-[#102a3a] text-sm">{pillar.label}</span>
+              <span className="font-semibold text-[#102a3a] dark:text-slate-200 text-sm">{pillar.label}</span>
             </div>
-            <p className="text-xs text-[#527080] mb-2">{pillar.description}</p>
+            <p className="text-xs text-[#527080] dark:text-slate-400 mb-2">{pillar.description}</p>
             <div className="flex flex-wrap gap-1">
               {pillar.key_signals?.map((sig, si) => (
                 <span
                   key={si}
-                  className="text-[10px] px-2 py-0.5 bg-[#f0faff] border border-[#00AEEF]/20 text-[#087fb5] font-medium"
+                  className="text-[10px] px-2 py-0.5 bg-[#f0faff] dark:bg-[#00AEEF]/10 border border-[#00AEEF]/20 text-[#087fb5] dark:text-[#00AEEF] font-medium"
                 >
                   {sig}
                 </span>
@@ -316,11 +316,11 @@ function StepRubric({
       </div>
 
       {openingQuestion && (
-        <div className="p-4 border border-[#00AEEF]/30 bg-[#00AEEF]/5">
+        <div className="p-4 border border-[#00AEEF]/30 dark:border-[#00AEEF]/20 bg-[#00AEEF]/5 dark:bg-[#00AEEF]/10">
           <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00AEEF] mb-1">
             Opening Question (Alex)
           </p>
-          <p className="text-sm text-[#385463] italic">&ldquo;{openingQuestion}&rdquo;</p>
+          <p className="text-sm text-[#385463] dark:text-slate-300 italic">&ldquo;{openingQuestion}&rdquo;</p>
         </div>
       )}
 
@@ -363,10 +363,10 @@ function StepMicTest({ onBack, onLaunch }: { onBack: () => void; onLaunch: () =>
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#00AEEF] mb-2">
           Step 04
         </p>
-        <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#102a3a] mb-1">
+        <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[#102a3a] dark:text-slate-100 mb-1">
           Microphone Test
         </h2>
-        <p className="text-sm text-[#527080]">Ensure your mic is ready before joining the panel.</p>
+        <p className="text-sm text-[#527080] dark:text-slate-400">Ensure your mic is ready before joining the panel.</p>
       </div>
 
       {/* Mic status indicator */}
@@ -378,7 +378,7 @@ function StepMicTest({ onBack, onLaunch }: { onBack: () => void; onLaunch: () =>
           />
         )}
         <div
-          className={`absolute inset-2 flex items-center justify-center transition-colors ${
+          className={`absolute inset-2 flex items-center justify-center rounded-full transition-colors ${
             micStatus === 'granted'
               ? 'bg-emerald-500/15'
               : micStatus === 'denied'
@@ -401,21 +401,21 @@ function StepMicTest({ onBack, onLaunch }: { onBack: () => void; onLaunch: () =>
           <p className="text-emerald-600 font-semibold">✓ Microphone access granted</p>
         )}
         {micStatus === 'denied' && (
-          <p className="text-red-500">⚠ Mic blocked — enable in browser settings</p>
+          <p className="text-red-500 font-semibold">⚠ Mic blocked — enable in browser settings</p>
         )}
         {micStatus === 'testing' && (
-          <p className="text-[#8baab8]">Requesting microphone access…</p>
+          <p className="text-[#8baab8] dark:text-slate-500">Requesting microphone access…</p>
         )}
       </div>
 
       {devices.length > 0 && (
         <div className="w-full max-w-sm">
-          <label className="block text-[10px] font-bold uppercase tracking-[0.18em] text-[#527080] mb-2">
+          <label className="block text-[10px] font-bold uppercase tracking-[0.18em] text-[#527080] dark:text-slate-400 mb-2">
             Available Microphones
           </label>
           <select
-            className="w-full bg-white border border-[#00AEEF]/30 px-4 py-2.5 text-sm
-              text-[#102a3a] outline-none focus:border-[#00AEEF]"
+            className="w-full bg-white dark:bg-[#090D16] border border-[#00AEEF]/30 dark:border-slate-700/60 px-4 py-2.5 text-sm
+              text-[#102a3a] dark:text-slate-100 outline-none focus:border-[#00AEEF]"
           >
             {devices.map((d) => (
               <option key={d.deviceId} value={d.deviceId}>
@@ -515,7 +515,7 @@ export default function SetupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fbfdff] flex flex-col items-center py-20 px-6">
+    <div className="min-h-screen bg-[#fbfdff] dark:bg-[#0B121F] text-[#102a3a] dark:text-slate-100 flex flex-col items-center py-20 px-6 transition-colors">
       {/* ── Subtle grid overlay (matches landing) */}
       <div
         aria-hidden="true"
@@ -527,14 +527,14 @@ export default function SetupPage() {
       <div className="relative z-10 w-full max-w-2xl">
         {/* ── Header */}
         <div className="text-center mb-10">
-          <div className="mb-4 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.22em] text-[#087fb5]">
+          <div className="mb-4 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.22em] text-[#087fb5] dark:text-[#00AEEF]">
             <span className="grid h-5 w-5 place-items-center bg-[#00AEEF] text-white text-[9px]">+</span>
             OmniPanel AI
           </div>
-          <h1 className="text-4xl font-semibold tracking-[-0.06em] text-[#102a3a] mb-2">
+          <h1 className="text-4xl font-semibold tracking-[-0.06em] text-[#102a3a] dark:text-slate-100 mb-2">
             Setup Your Interview
           </h1>
-          <p className="text-sm text-[#527080]">4 quick steps to launch your AI panel session</p>
+          <p className="text-sm text-[#527080] dark:text-slate-400">4 quick steps to launch your AI panel session</p>
         </div>
 
         {/* ── Step indicators */}
@@ -551,7 +551,7 @@ export default function SetupPage() {
                       ? 'bg-emerald-500/15 text-emerald-600 border border-emerald-500/25'
                       : active
                       ? 'bg-[#00AEEF]/10 text-[#00AEEF] border border-[#00AEEF]/30'
-                      : 'bg-white border border-[#00AEEF]/15 text-[#8baab8]'
+                      : 'bg-white dark:bg-slate-900 border border-[#00AEEF]/15 text-[#8baab8] dark:border-slate-700/50 dark:text-slate-500'
                   }`}
                 >
                   {done ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Icon className="w-3.5 h-3.5" />}
@@ -560,7 +560,7 @@ export default function SetupPage() {
                 {i < STEPS.length - 1 && (
                   <div
                     className={`h-px flex-1 transition-colors ${
-                      done ? 'bg-emerald-400/40' : 'bg-[#00AEEF]/15'
+                      done ? 'bg-emerald-400/40' : 'bg-[#00AEEF]/15 dark:bg-slate-700/50'
                     }`}
                   />
                 )}
@@ -571,14 +571,14 @@ export default function SetupPage() {
 
         {/* ── Error banner */}
         {error && (
-          <div className="mb-4 p-3 border border-amber-400/30 bg-amber-50 text-amber-700 text-sm flex items-center gap-2">
+          <div className="mb-4 p-3 border border-amber-400/30 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-500 text-sm flex items-center gap-2">
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             API unavailable — using demo mode. {error}
           </div>
         )}
 
         {/* ── Step card */}
-        <div className="bg-white border border-[#00AEEF]/25 p-8 overflow-hidden">
+        <div className="bg-white dark:bg-[#0B121F]/90 border border-[#00AEEF]/25 dark:border-[#00AEEF]/15 p-8 overflow-hidden backdrop-blur-md">
           <AnimatePresence mode="wait">
             <motion.div
               key={step}
