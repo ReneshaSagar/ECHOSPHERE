@@ -589,10 +589,10 @@ export default function RoomPage() {
 
           {currentRound >= 2 && (
             <div className="flex-1 flex flex-col gap-4">
-              <div className="grid grid-cols-4 gap-4 flex-1">
-                <div className="col-span-1 meet-card bg-slate-950 relative flex items-center justify-center">
-                  <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover rounded-2xl" />
-                  <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none rounded-2xl" />
+              <div className="flex flex-col md:flex-row gap-4 flex-1 items-stretch">
+                <div className="w-full md:w-1/3 max-w-[400px] shrink-0 meet-card bg-slate-950 relative flex items-center justify-center border border-slate-800 rounded-2xl overflow-hidden">
+                  <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover" />
+                  <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
                   {!isWebcamActive && (
                     <VideoOff className="w-10 h-10 text-slate-800" />
                   )}
@@ -600,6 +600,8 @@ export default function RoomPage() {
                     YOU (Candidate)
                   </div>
                 </div>
+                
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
                 {dynamicPersonas && dynamicPersonas.length > 0 ? (
                   dynamicPersonas.map((persona: any) => (
@@ -612,10 +614,11 @@ export default function RoomPage() {
                     </div>
                   ))
                 ) : (
-                  <div className="col-span-3 flex items-center justify-center text-slate-500 font-mono text-sm border border-dashed border-slate-800 rounded-2xl">
+                  <div className="col-span-3 flex items-center justify-center text-slate-500 font-mono text-sm border border-dashed border-slate-800 rounded-2xl min-h-[300px]">
                     Waiting for dynamic agents...
                   </div>
                 )}
+                </div>
               </div>
 
               <div className="rounded-2xl overflow-hidden border border-slate-800 bg-[#0B121F]/80 backdrop-blur p-1 h-20 flex-shrink-0">
