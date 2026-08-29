@@ -13,11 +13,11 @@ export default function AvatarCard({ persona, isActive, isThinking, isMuted = fa
   const color = persona.color || '#06B6D4';
 
   return (
-    <div className="relative w-full h-full min-h-[300px] flex flex-col items-center justify-center bg-[#0B121F]/50 rounded-2xl border border-slate-800/60 shadow-xl overflow-hidden transition-all duration-500">
+    <div className="relative w-full h-full min-h-[300px] flex flex-col items-center justify-center bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden transition-all duration-500">
       
       {/* Name and Role at the top */}
       <div className="absolute top-6 flex flex-col items-center">
-        <h3 className="text-xl font-semibold tracking-wide text-white mb-1">
+        <h3 className="text-xl font-semibold tracking-wide text-slate-900 mb-1">
           {persona.name || 'AI Assistant'}
         </h3>
         <p className="text-xs uppercase tracking-widest text-slate-400 font-mono">
@@ -84,7 +84,7 @@ export default function AvatarCard({ persona, isActive, isThinking, isMuted = fa
         {/* Muted Badge */}
         {isMuted && (
            <div className="absolute -bottom-4 right-0 bg-red-500/80 backdrop-blur rounded-full p-2 z-20 border border-red-400">
-             <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+             <svg className="w-4 h-4 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
              </svg>
