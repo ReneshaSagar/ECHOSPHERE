@@ -29,13 +29,15 @@ class GradeRequest(BaseModel):
 
 from app.engine.orchestrator import orchestrator
 
+from typing import Optional
+
 @router.post("/sessions/create")
 async def create_session(
     job_title: str = Form(...),
     jd_text: str = Form(...),
-    resume_file: UploadFile = File(None),
-    resume_link: str = Form(None),
-    resume_text: str = Form(None),
+    resume_file: Optional[UploadFile] = File(None),
+    resume_link: Optional[str] = Form(None),
+    resume_text: Optional[str] = Form(None),
 ):
     """Create session from uploaded PDF or link, run OCR extraction, calculate ATS match, and dynamic personas."""
     session_id = str(uuid.uuid4())
