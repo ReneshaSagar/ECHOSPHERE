@@ -133,12 +133,21 @@ function StepJobDetails({
 // ── Step 2: Resume ────────────────────────────────────────────────────────
 
 function StepResume({
-  resumeText, setResumeText, onBack, onNext, loading,
+  resumeText, setResumeText,
+  resumeFile, setResumeFile,
+  resumeLink, setResumeLink,
+  onBack, onNext, loading,
 }: {
   resumeText: string; setResumeText: (v: string) => void;
+  resumeFile: File | null; setResumeFile: (v: File | null) => void;
+  resumeLink: string; setResumeLink: (v: string) => void;
   onBack: () => void; onNext: () => void; loading: boolean;
 }) {
-  const valid = resumeText.trim().length > 50;
+  const [mode, setMode] = useState<'file' | 'link' | 'text'>('file');
+
+  const valid = mode === 'file' ? !!resumeFile :
+                mode === 'link' ? resumeLink.trim().length > 5 :
+                resumeText.trim().length > 50;
 
   return (
     <div className="flex flex-col gap-6">
@@ -150,22 +159,77 @@ function StepResume({
           Candidate Resume
         </h2>
         <p className="text-sm text-[#527080]">
-          Paste the candidate&apos;s resume to help the panel tailor their behavioral probes.
+          Upload a PDF, link to Google Drive, or paste the candidate&apos;s resume text.
         </p>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label className="text-xs font-bold uppercase tracking-[0.12em] text-[#102a3a]">
-          Resume Text <span className="text-red-500">*</span>
-        </label>
-        <textarea
-          value={resumeText}
-          onChange={(e) => setResumeText(e.target.value)}
-          rows={10}
-          placeholder="Paste resume text here (plain text works best)..."
-          className={`${inputCls} resize-none font-mono`}
-        />
-        <p className="text-xs text-[#8baab8]">{resumeText.length} chars</p>
+      <div className="flex gap-4 border-b border-[#00AEEF]/20 pb-2">
+        {(['file', 'link', 'text'] as const).map(m => (
+          <button
+            key={m}
+            onClick={() => setMode(m)}
+            className={`text-sm font-semibold uppercase tracking-wider transition-colors ${mode === m ? 'text-[#00AEEF] border-b-2 border-[#00AEEF]' : 'text-[#8baab8] hover:text-[#00AEEF]/70'}`}
+          >
+            {m === 'file' ? 'PDF Upload' : m === 'link' ? 'Drive Link' : 'Paste Text'}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex flex-col gap-2 min-h-[200px]">
+        {mode === 'file' && (
+          <div className="flex flex-col items-center justify-center border-2 border-dashed border-[#00AEEF]/30 bg-white/50 h-48 rounded-lg p-6">
+            <input 
+              type="file" 
+              accept="application/pdf"
+              id="resume-upload"
+              className="hidden"
+              onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+            />
+            <label htmlFor="resume-upload" className="cursor-pointer flex flex-col items-center text-center">
+              <div className="w-12 h-12 bg-[#f0faff] rounded-full flex items-center justify-center mb-3 text-[#00AEEF]">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              </div>
+              <span className="text-sm font-semibold text-[#102a3a]">{resumeFile ? resumeFile.name : 'Click to upload PDF resume'}</span>
+              <span className="text-xs text-[#8baab8] mt-1">Maximum file size: 5MB</span>
+            </label>
+            {resumeFile && (
+              <button onClick={() => setResumeFile(null)} className="mt-4 text-xs text-red-500 hover:underline">
+                Remove file
+              </button>
+            )}
+          </div>
+        )}
+
+        {mode === 'link' && (
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-bold uppercase tracking-[0.12em] text-[#102a3a]">
+              Google Drive / External Link <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="url"
+              value={resumeLink}
+              onChange={(e) => setResumeLink(e.target.value)}
+              placeholder="https://docs.google.com/document/d/..."
+              className={`${inputCls}`}
+            />
+            <p className="text-xs text-[#8baab8]">Make sure the link is publicly accessible so the Orchestrator can read it.</p>
+          </div>
+        )}
+
+        {mode === 'text' && (
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-bold uppercase tracking-[0.12em] text-[#102a3a]">
+              Resume Text <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              value={resumeText}
+              onChange={(e) => setResumeText(e.target.value)}
+              rows={8}
+              placeholder="Paste resume text here (plain text works best)..."
+              className={`${inputCls} resize-none font-mono`}
+            />
+          </div>
+        )}
       </div>
 
       <div className="flex justify-between">
@@ -399,6 +463,8 @@ export default function SetupPage() {
   const [jobTitle, setJobTitle] = useState('');
   const [jdText, setJdText] = useState('');
   const [resumeText, setResumeText] = useState('');
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [resumeLink, setResumeLink] = useState('');
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [rubric, setRubric] = useState<RubricData>({});
@@ -411,7 +477,13 @@ export default function SetupPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await createSession({ job_title: jobTitle, jd_text: jdText, resume_text: resumeText });
+      const res = await createSession({
+        job_title: jobTitle,
+        jd_text: jdText,
+        resume_text: resumeText,
+        resume_file: resumeFile || undefined,
+        resume_link: resumeLink,
+      });
       setSessionId(res.session_id);
       setRubric(res.rubric as unknown as Record<string, { label: string; description: string; key_signals: string[] }>);
       nextStep();
@@ -524,10 +596,14 @@ export default function SetupPage() {
                 />
               )}
               {step === 2 && (
-                <StepResume
-                  resumeText={resumeText} setResumeText={setResumeText}
-                  onBack={prevStep} onNext={handleGenerateRubric} loading={loading}
-                />
+                  <StepResume
+                    resumeText={resumeText} setResumeText={setResumeText}
+                    resumeFile={resumeFile} setResumeFile={setResumeFile}
+                    resumeLink={resumeLink} setResumeLink={setResumeLink}
+                    onBack={prevStep}
+                    onNext={handleGenerateRubric}
+                    loading={loading}
+                  />
               )}
               {step === 3 && (
                 <StepRubric rubric={rubric} onBack={prevStep} onNext={nextStep} />

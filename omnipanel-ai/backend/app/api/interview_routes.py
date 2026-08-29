@@ -33,25 +33,34 @@ from app.engine.orchestrator import orchestrator
 async def create_session(
     job_title: str = Form(...),
     jd_text: str = Form(...),
-    resume_file: UploadFile = File(...),
+    resume_file: UploadFile = File(None),
+    resume_link: str = Form(None),
+    resume_text: str = Form(None),
 ):
-    """Create session from uploaded PDF, run OCR extraction, calculate ATS match, and dynamic personas."""
+    """Create session from uploaded PDF or link, run OCR extraction, calculate ATS match, and dynamic personas."""
     session_id = str(uuid.uuid4())
     
+    final_resume_text = ""
+    if resume_file and resume_file.filename:
+        content = await resume_file.read()
+        try:
+            reader = PdfReader(io.BytesIO(content))
+            final_resume_text = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
+        except Exception as e:
+            print(f"PDF Parsing error: {e}")
+            final_resume_text = "Failed to parse PDF."
+    elif resume_link:
+        final_resume_text = f"Candidate provided resume link: {resume_link}"
+    elif resume_text:
+        final_resume_text = resume_text
+
     # 1. Orchestrator dynamically generates the Blueprint (Rounds + Agents)
-    blueprint = await orchestrator.generate_blueprint(job_title, jd_text, resume_text)
+    blueprint = await orchestrator.generate_blueprint(job_title, jd_text, final_resume_text)
     
     rubric = blueprint.get("rubric", {})
     opening_question = blueprint.get("opening_question", "Can you introduce yourself?")
     rounds = blueprint.get("rounds", [])
-
-    # 2. Get ATS score + Rubrics + Dynamic panel personas
-    analysis = await _generate_ats_and_rubric(job_title, jd_text, resume_text)
-    
-    ats_score = analysis.get("ats_score", 70.0)
-    rubric = analysis.get("rubric", {})
-    opening_question = analysis.get("opening_question", "Welcome. Let's begin the interview.")
-    dynamic_personas = analysis.get("dynamic_personas", {})
+    ats_score = blueprint.get("ats_score", 70.0)
 
     # 3. Save to session state
     session = await session_store.create_session(
