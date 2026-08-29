@@ -2,7 +2,7 @@
 
 import { ArrowDownRight, ArrowRight, Mic, Sparkles } from 'lucide-react';
 import Link from 'next/link';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const AGORA_BLUE = '#00AEEF';
 const GRID_SIZE = 18;
@@ -11,6 +11,7 @@ const GRID_SIZE = 18;
 
 export default function LandingPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isTextScratched, setIsTextScratched] = useState(false);
 
   const sizeCanvas = useCallback(() => {
     const canvas = canvasRef.current;
@@ -22,6 +23,7 @@ export default function LandingPage() {
     canvas.height = Math.floor(bounds.height * pixelRatio);
     const context = canvas.getContext('2d');
     context?.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    setIsTextScratched(false);
   }, []);
 
   useEffect(() => {
@@ -71,9 +73,14 @@ export default function LandingPage() {
                 <span className="grid h-6 w-6 place-items-center bg-[#00AEEF] text-white">+</span>
                 Agora-powered interview intelligence
               </div>
-              <h1 className="max-w-4xl text-5xl font-semibold leading-[0.94] tracking-[-0.075em] sm:text-7xl lg:text-[6.5rem]">
+              <h1 className="max-w-4xl text-5xl font-semibold leading-[0.94] tracking-[-0.075em] text-[#102a3a] dark:text-slate-100 sm:text-7xl lg:text-[6.5rem]">
                 Make every interview
-                <span className="block text-[#00AEEF] transition-colors duration-500 hover:text-white">a real conversation.</span>
+                <span 
+                  onPointerEnter={() => setIsTextScratched(true)}
+                  className={`block transition-colors duration-500 ${isTextScratched ? 'text-white' : 'text-[#00AEEF]'}`}
+                >
+                  a real conversation.
+                </span>
               </h1>
               <p className="mt-8 max-w-xl text-base leading-relaxed text-[#4b6574] dark:text-slate-400 sm:text-lg">
                 OmniPanel brings dynamic AI perspectives into one live voice interview—so teams can hear beyond rehearsed answers.
