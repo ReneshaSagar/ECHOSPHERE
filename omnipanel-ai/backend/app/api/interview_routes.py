@@ -35,9 +35,9 @@ from typing import Optional
 async def create_session(
     job_title: str = Form(...),
     jd_text: str = Form(...),
-    resume_file: Optional[UploadFile] = File(None),
-    resume_link: Optional[str] = Form(None),
-    resume_text: Optional[str] = Form(None),
+    resume_file: Optional[UploadFile] = File(default=None),
+    resume_link: Optional[str] = Form(default=None),
+    resume_text: Optional[str] = Form(default=None),
 ):
     """Create session from uploaded PDF or link, run OCR extraction, calculate ATS match, and dynamic personas."""
     session_id = str(uuid.uuid4())

@@ -47,8 +47,8 @@ export async function createSession(params: {
   const formData = new FormData();
   formData.append('job_title', params.job_title);
   formData.append('jd_text', params.jd_text);
-  if (params.resume_text) formData.append('resume_text', params.resume_text);
-  if (params.resume_link) formData.append('resume_link', params.resume_link);
+  formData.append('resume_text', params.resume_text || '');
+  formData.append('resume_link', params.resume_link || '');
   if (params.resume_file) formData.append('resume_file', params.resume_file);
 
   return apiFetch<CreateSessionResponse>('/api/sessions/create', {
