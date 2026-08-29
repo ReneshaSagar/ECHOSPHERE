@@ -469,7 +469,7 @@ export default function RoomPage() {
   const rttColor = rttMs < 60 ? 'text-emerald-500' : rttMs < 120 ? 'text-amber-500' : 'text-red-500';
 
   return (
-    <div className="h-[calc(100vh-4rem)] flex flex-col bg-slate-50 overflow-hidden text-slate-100 font-sans">
+    <div className="h-[calc(100vh-4rem)] flex flex-col bg-slate-50 overflow-hidden text-slate-900 font-sans">
       <header className="h-12 border-b border-slate-200 bg-white backdrop-blur flex items-center justify-between px-6 flex-shrink-0">
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1.5 px-3 py-1 bg-[#00AEEF]/10 text-[#00AEEF] border border-[#00AEEF]/25 text-xs font-bold font-mono uppercase tracking-wider">
@@ -496,7 +496,7 @@ export default function RoomPage() {
             <span className={rttColor}>{Math.round(rttMs)}ms</span>
           </span>
 
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1.5 hover:bg-slate-800 rounded transition-colors text-slate-600">
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1.5 hover:bg-slate-100 rounded transition-colors text-slate-600">
             {sidebarOpen ? <SidebarClose className="w-4 h-4" /> : <SidebarOpen className="w-4 h-4" />}
           </button>
         </div>
@@ -507,7 +507,7 @@ export default function RoomPage() {
           {currentRound === 1 && (
             <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-4">
-                <div className="meet-card relative flex-1 flex flex-col items-center justify-center border-slate-200 bg-[#0B121F]">
+                <div className="meet-card relative flex-1 flex flex-col items-center justify-center border-slate-200 bg-white">
                   <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover rounded-2xl" />
                   <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none rounded-2xl" />
                   
@@ -549,20 +549,20 @@ export default function RoomPage() {
                   )}
                 </div>
 
-                <div className="border border-slate-200 bg-[#0B121F] p-5 flex flex-col gap-3">
+                <div className="border border-slate-200 bg-white p-5 flex flex-col gap-3">
                   <h3 className="font-bold text-slate-800 flex items-center gap-2"><Terminal className="w-5 h-5 text-[#00AEEF]" /> Coding Assessment Challenge</h3>
                   <p className="text-xs text-slate-600 leading-relaxed">
                     Write an implementation of an LRU Cache with O(1) query and insertion performance.
                     Constraints: Must handle capacity evictions correctly.
                   </p>
                   <div className="flex gap-2">
-                    <span className="text-[10px] px-2 py-0.5 bg-slate-800 text-slate-600">Time limit: 15 mins</span>
-                    <span className="text-[10px] px-2 py-0.5 bg-slate-800 text-slate-600">Complexity: Hard</span>
+                    <span className="text-[10px] px-2 py-0.5 bg-slate-100 text-slate-600">Time limit: 15 mins</span>
+                    <span className="text-[10px] px-2 py-0.5 bg-slate-100 text-slate-600">Complexity: Hard</span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-col border border-slate-200 bg-[#0B121F] overflow-hidden shadow-xl">
+              <div className="flex flex-col border border-slate-200 bg-white overflow-hidden shadow-xl">
                 <div className="h-11 border-b border-slate-200/80 px-4 bg-slate-100/50 flex items-center justify-between">
                   <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
                     <Code className="w-4 h-4 text-[#00AEEF]" />
