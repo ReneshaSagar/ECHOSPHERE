@@ -64,7 +64,24 @@ async def convo_ai_completion_proxy(session_id: str, req: ChatCompletionRequest)
             break
 
     if not candidate_utterance:
-        # If no user message, return empty completion to keep agents silent
+        # If no user message and the transcript is empty, it's the start of the interview!
+        if not session.transcript:
+            target_persona = session.current_persona or "agent_1"
+            if calling_persona == target_persona:
+                response_text = getattr(session, "opening_question", "Hello! Let's begin the interview.")
+                # Save to transcript so we don't repeat it endlessly
+                ai_entry = TranscriptEntry(
+                    speaker=target_persona,
+                    text=response_text,
+                    timestamp=time.time() - session.start_time,
+                    utterance_id=str(uuid.uuid4()),
+                )
+                session.transcript.append(ai_entry)
+                session.turn_history.append({'speaker': target_persona, 'text': response_text})
+                print(f"[LLM Proxy] Interview Start! {target_persona} speaks opening question.")
+                return json_response(response_text)
+                
+        # Otherwise, keep silent
         return empty_response()
 
     # 4. Centralized turn arbitration (only run once per user utterance)
@@ -188,11 +205,16 @@ async def convo_ai_completion_proxy(session_id: str, req: ChatCompletionRequest)
     # The other two agents must return a silent response (empty content) so they stay silent.
     target_persona = session.current_persona or "agent_1"
     
+    print(f"[LLM Proxy] Calling Persona: {calling_persona} | Target Persona: {target_persona}")
+    print(f"[LLM Proxy] Candidate Utterance: {candidate_utterance}")
+    
     if calling_persona == target_persona:
         response_text = session.dynamic_personas.get("next_question", "Could you elaborate?")
+        print(f"[LLM Proxy] Returning response: {response_text}")
         return json_response(response_text)
     else:
         # Keep this agent silent
+        print(f"[LLM Proxy] Silencing {calling_persona}")
         return empty_response()
 
 def json_response(text: str) -> dict:
