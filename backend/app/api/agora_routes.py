@@ -71,7 +71,8 @@ async def start_agents(req: AgentStartRequest):
             
             # Inject context directly into the system prompt since we are bypassing the local proxy
             base_prompt = ag_data.get("system_prompt", f"You are {persona_name}. Conduct a professional interview.")
-            rich_prompt = f"{base_prompt}\n\nContext:\nJob Title: {session.job_title}\nResume snippet:\n{session.resume_text[:1000]}"
+            agent_id = ag_data.get("agent_id", persona_key)
+            rich_prompt = f"[AGENT_ID: {agent_id}]\n{base_prompt}\n\nContext:\nJob Title: {session.job_title}\nResume snippet:\n{session.resume_text[:1000]}"
             
             # Generate a token for the agent uid
             agent_token = build_rtc_token(req.channel_name, uid_hash)

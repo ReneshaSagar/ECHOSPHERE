@@ -36,20 +36,17 @@ async def convo_ai_completion_proxy(session_id: str, req: ChatCompletionRequest)
     from app.main import get_connection_manager
     manager = get_connection_manager()
     
-    calling_persona = "alex"  # Default fallback
+    import re
+    calling_persona = "agent_1"  # Default fallback
     system_content = ""
     for msg in req.messages:
         if msg.role == "system":
-            system_content = msg.content.lower()
+            system_content = msg.content
             break
             
-    if "alex" in system_content:
-        calling_persona = "alex"
-    elif "maya" in system_content:
-        calling_persona = "maya"
-    elif "david" in system_content:
-        calling_persona = "david"
-
+    match = re.search(r"\[AGENT_ID:\s*([^\]]+)\]", system_content)
+    if match:
+        calling_persona = match.group(1).strip()
     # 2. Retrieve session state
     session = await session_store.get_session(session_id)
     if not session:
@@ -127,18 +124,15 @@ async def convo_ai_completion_proxy(session_id: str, req: ChatCompletionRequest)
                 })
 
             # Store turn results on session for dynamic routing responses
-            session.current_persona = routing.get("next_persona", "alex")
+            session.current_persona = routing.get("next_persona_id", "agent_1")
             
-            # Store the AI follow-up response
+            # Store the AI follow-up question
             follow_up_question = routing.get("follow_up_question", "Please tell me more.")
             
             # Dynamic tag-teaming/interruption formatting:
-            # If arbiter decides tag-team (confidence > 0.9 and detected_issues), maya might interrupt alex
-            is_tag_team = len(routing.get("detected_issues", [])) > 0 and routing.get("confidence", 0) > 0.8
-            if is_tag_team:
-                interrupted_key = "alex" if session.current_persona != "alex" else "david"
-                interrupted_from = get_dynamic_name(session, interrupted_key)
-                follow_up_question = f"[Interrupting {interrupted_from}] Wait, I want to follow up on that. {follow_up_question}"
+            action_type = routing.get("action_type", "continue")
+            if action_type == "interrupt":
+                follow_up_question = f"[Interrupting] {follow_up_question}"
 
             session.dynamic_personas["next_question"] = follow_up_question
             
@@ -192,7 +186,7 @@ async def convo_ai_completion_proxy(session_id: str, req: ChatCompletionRequest)
 
     # 5. Routing response: Only the SELECTED agent should speak the response text.
     # The other two agents must return a silent response (empty content) so they stay silent.
-    target_persona = session.current_persona or "alex"
+    target_persona = session.current_persona or "agent_1"
     
     if calling_persona == target_persona:
         response_text = session.dynamic_personas.get("next_question", "Could you elaborate?")
