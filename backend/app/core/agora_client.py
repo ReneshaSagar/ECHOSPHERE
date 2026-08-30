@@ -99,7 +99,7 @@ class AgoraConvoAIClient:
                         {'role': 'system', 'content': system_prompt}
                     ],
                     'params': {
-                        'model': 'gpt-4o',
+                        'model': 'openai/gpt-4o',
                         'temperature': 0.7,
                         'max_tokens': 300,
                     }

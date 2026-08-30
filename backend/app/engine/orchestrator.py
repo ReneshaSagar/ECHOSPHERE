@@ -49,7 +49,7 @@ Instructions:
 2. If valid, set `is_valid_input` to true, and generate a custom 5-pillar rubric based on the core requirements of the JD.
 3. Formulate a strong, open-ended opening question.
 4. Design the interview 'rounds'. You can create 1 to 3 rounds depending on the seniority of the role.
-   - For each round, create a panel of 'agents'. You can have 1 to 3 agents per round.
+   - For each round, create a panel of 'agents'. You MUST create exactly 2 or 3 agents per round to simulate a panel interview.
    - Assign them distinct, realistic personas (e.g., a detail-oriented Data Engineer, a big-picture PM, a culture-focused HR Lead).
    - Ensure 'agent_id' is unique across the entire blueprint (e.g., 'agent_1', 'agent_2').
 """
