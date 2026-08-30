@@ -73,11 +73,16 @@ async def start_agents(req: AgentStartRequest):
             base_prompt = ag_data.get("system_prompt", f"You are {persona_name}. Conduct a professional interview.")
             rich_prompt = f"{base_prompt}\n\nContext:\nJob Title: {session.job_title}\nResume snippet:\n{session.resume_text[:1000]}"
             
+            # Generate a token for the agent uid
+            agent_token = build_rtc_token(req.channel_name, uid_hash)
+            
             res = await agora_client.start_convo_agent(
                 channel_name=req.channel_name,
                 agent_uid=uid_hash,
                 persona_name=persona_name,
                 system_prompt=rich_prompt,
+                rtc_token=agent_token,
+                session_id=req.session_id,
                 voice_id=ag_data.get("voice_id", "nova"),
                 llm_url=llm_url
             )

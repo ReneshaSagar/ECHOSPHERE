@@ -69,16 +69,23 @@ class AgoraConvoAIClient:
         agent_uid: int,
         persona_name: str,
         system_prompt: str,
+        rtc_token: str,
+        session_id: str,
         voice_id: str = 'nova',
         tts_provider: str = 'openai',
         llm_url: str = 'https://api.openai.com/v1/chat/completions',
     ) -> dict:
         """Start an Agora Conversational AI agent in the channel."""
+        # Clean name to only contain allowed characters, add random/session string for uniqueness to avoid 409
+        safe_name = "".join(c for c in persona_name if c.isalnum())
+        unique_agent_name = f"omnipanel_{safe_name}_{session_id[:8]}_{agent_uid}"
+        
         payload = {
-            'name': f'omnipanel_{persona_name}',
+            'name': unique_agent_name,
             'properties': {
                 'channel': channel_name,
                 'agent_rtc_uid': str(agent_uid),
+                'token': rtc_token,
                 'ai_vad': {
                     'enable': True,
                     'interrupt_on_speech': True,

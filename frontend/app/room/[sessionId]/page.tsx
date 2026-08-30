@@ -590,11 +590,16 @@ export default function RoomPage() {
           {currentRound >= 2 && (
             <div className="flex-1 flex flex-col gap-4">
               <div className="flex flex-col gap-4 flex-1">
-                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className={`flex-1 grid gap-4 ${
+                  !dynamicPersonas || dynamicPersonas.length === 0 ? 'grid-cols-1' :
+                  dynamicPersonas.length === 1 ? 'grid-cols-1 w-full max-w-3xl mx-auto' :
+                  dynamicPersonas.length === 2 ? 'grid-cols-1 md:grid-cols-2' :
+                  'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                }`}>
 
                 {dynamicPersonas && dynamicPersonas.length > 0 ? (
                   dynamicPersonas.map((persona: any) => (
-                    <div key={persona.agent_id} className="col-span-1 relative">
+                    <div key={persona.agent_id} className="relative w-full h-full min-h-[400px]">
                       <AvatarCard
                         persona={persona}
                         isActive={activeSpeaker === persona.agent_id}
