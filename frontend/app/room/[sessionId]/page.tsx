@@ -334,7 +334,7 @@ export default function RoomPage() {
   // ── Agora Init ─────────────────────────────────────────────────────────────
   const initAgora = useCallback(async () => {
     try {
-      const candidateUid = Math.floor(Math.random() * 100000) + 1000;
+      const candidateUid = 1; // Hardcoded to 1 so AI agents can explicitly target the candidate's audio and ignore each other
       const tokenRes = await getToken({ channel_name: sessionId, uid: candidateUid });
 
       const { initRTC } = await import('@/lib/agora');

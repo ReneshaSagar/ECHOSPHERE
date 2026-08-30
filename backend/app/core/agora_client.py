@@ -86,7 +86,7 @@ class AgoraConvoAIClient:
                 'channel': channel_name,
                 'agent_rtc_uid': str(agent_uid),
                 'enable_string_uid': False,
-                'remote_rtc_uids': ["*"],
+                'remote_rtc_uids': ["1"],
                 'token': rtc_token,
                 'ai_vad': {
                     'enable': True,
