@@ -373,7 +373,7 @@ export default function RoomPage() {
   useEffect(() => {
     connectWebSocket();
     initAgora();
-    startCamera();
+    // startCamera(); // Disabled as per user request to remove camera for now
     
     // Automatically trigger the voice round initialization since OA is bypassed
     switchRound(2);
