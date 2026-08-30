@@ -16,15 +16,20 @@ class AgentStartRequest(BaseModel):
 class AgentInstructRequest(BaseModel):
     new_prompt: str
 
-@router.get('/token')
-async def get_agora_tokens(channel_name: str, uid: int, role: str = 'publisher'):
-    rtc_token = build_rtc_token(channel_name, uid)
-    rtm_token = build_rtm_token(str(uid))
+class TokenRequest(BaseModel):
+    channel_name: str
+    uid: int
+    role: str = 'publisher'
+
+@router.post('/token')
+async def get_agora_tokens(req: TokenRequest):
+    rtc_token = build_rtc_token(req.channel_name, req.uid)
+    rtm_token = build_rtm_token(str(req.uid))
     return {
         'rtc_token': rtc_token,
         'rtm_token': rtm_token,
-        'uid': uid,
-        'channel_name': channel_name
+        'uid': req.uid,
+        'channel_name': req.channel_name
     }
 
 @router.post('/agents/start')

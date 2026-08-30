@@ -78,7 +78,7 @@ class AgoraConvoAIClient:
             'name': f'omnipanel_{persona_name}',
             'properties': {
                 'channel': channel_name,
-                'agora_uid': str(agent_uid),
+                'agent_rtc_uid': str(agent_uid),
                 'ai_vad': {
                     'enable': True,
                     'interrupt_on_speech': True,
@@ -89,26 +89,32 @@ class AgoraConvoAIClient:
                     'system_messages': [
                         {'role': 'system', 'content': system_prompt}
                     ],
-                    'model': 'gpt-4o',
-                    'temperature': 0.7,
-                    'max_tokens': 300,
+                    'params': {
+                        'model': 'gpt-4o',
+                        'temperature': 0.7,
+                        'max_tokens': 300,
+                    }
                 },
                 'tts': {
                     'vendor': tts_provider,
                     'params': {
                         'model': 'tts-1',
-                        'voice': voice_id,
+                        'voice_name': voice_id,
                         'speed': 1.0,
                     },
                 },
-                'vad': {
-                    'silence_duration_ms': 600,
-                    'speech_duration_ms': 200,
-                },
+                'asr': {
+                    'language': 'en-US',
+                    'vendor': 'agora'
+                }
             },
         }
+        
+        # Agora v2 Conversational AI endpoint
+        base_url = f'https://api.agora.io/api/conversational-ai-agent/v2/projects/{settings.AGORA_APP_ID}'
+        
         response = await self._client.post(
-            f'{AGORA_CONVO_AI_BASE}/agents/start',
+            f'{base_url}/join',
             json=payload,
             headers=self._headers,
         )
