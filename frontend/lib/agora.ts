@@ -29,33 +29,38 @@ export async function initRTC(
   const AgoraRTC = await getAgoraRTC();
   AgoraRTC.setLogLevel(3); // warn only
   
-  rtcClient = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
+  const client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
+  rtcClient = client;
   
-  rtcClient.on('user-published', async (user, mediaType) => {
+  client.on('user-published', async (user, mediaType) => {
     if (mediaType !== 'audio' && mediaType !== 'video') return;
-    await rtcClient!.subscribe(user, mediaType);
-    if (mediaType === 'audio') {
-      user.audioTrack?.play();
+    try {
+      await client.subscribe(user, mediaType);
+      if (mediaType === 'audio') {
+        user.audioTrack?.play();
+      }
+      onUserPublished(user, mediaType);
+    } catch (err) {
+      console.error('Failed to subscribe to user:', err);
     }
-    onUserPublished(user, mediaType);
   });
   
-  rtcClient.on('user-unpublished', onUserUnpublished);
+  client.on('user-unpublished', onUserUnpublished);
   
-  await rtcClient.join(appId, channel, token, uid);
+  await client.join(appId, channel, token, uid);
   
   localMicTrack = await AgoraRTC.createMicrophoneAudioTrack();
-  await rtcClient.publish([localMicTrack]);
+  await client.publish([localMicTrack]);
   
   // Audio level monitoring
   audioLevelInterval = setInterval(() => {
-    const levels = rtcClient!.getRemoteAudioStats();
+    const levels = client.getRemoteAudioStats();
     Object.entries(levels).forEach(([uidStr, stats]) => {
       onAudioLevel(parseInt(uidStr), (stats as any).receiveLevel ?? 0);
     });
   }, 100);
   
-  return rtcClient;
+  return client;
 }
 
 export async function toggleMic(): Promise<boolean> {
