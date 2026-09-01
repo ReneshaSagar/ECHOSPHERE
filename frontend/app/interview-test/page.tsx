@@ -27,6 +27,8 @@ export default function AgoraTestLab() {
   const [resume, setResume] = useState('Candidate has 5 years Python/FastAPI experience and previously built scalable REST APIs.');
   const [blueprint, setBlueprint] = useState<any>(null);
   const [orchestratorStatus, setOrchestratorStatus] = useState('IDLE');
+  const [scorecard, setScorecard] = useState<any>(null);
+  const [evalStatus, setEvalStatus] = useState('IDLE');
 
   // Removed legacy status polling
 
@@ -254,6 +256,36 @@ export default function AgoraTestLab() {
     setSessionInfo(null);
   };
 
+  const evaluateInterview = async () => {
+    if (!blueprint || transcript.length === 0) {
+      alert("No blueprint or empty transcript!");
+      return;
+    }
+    setEvalStatus('EVALUATING...');
+    addLog('Evaluator', 'Analyzing transcript and generating scorecard...');
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    try {
+      const res = await fetch(`${API_URL}/api/evaluator/evaluate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          job_description: jd, 
+          resume: resume,
+          rubric: blueprint.rubric || {},
+          transcript: transcript
+        })
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      setScorecard(data);
+      setEvalStatus('READY');
+      addLog('Evaluator', 'Scorecard generated successfully.');
+    } catch (e: any) {
+      setEvalStatus('FAILED');
+      addLog('Evaluator', `Failed: ${e.message}`);
+    }
+  };
+
   return (
     <div className="p-8 max-w-6xl mx-auto font-sans text-sm space-y-6">
       <h1 className="text-2xl font-bold border-b pb-2">Dynamic Interview Orchestrator</h1>
@@ -296,7 +328,22 @@ export default function AgoraTestLab() {
           2. Start Voice Interview
         </button>
         <button onClick={endTest} className="px-4 py-2 bg-red-600 text-white rounded">End Test</button>
+        <button onClick={evaluateInterview} disabled={transcript.length === 0} className="px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50">
+          3. Evaluate Transcript
+        </button>
+        <span className="font-bold text-gray-600">Status: {evalStatus}</span>
       </div>
+
+      {scorecard && (
+        <div className="bg-green-50 p-4 border border-green-200 rounded">
+          <h3 className="font-bold text-green-900 mb-2">Final Candidate Scorecard</h3>
+          <div className="text-black space-y-2">
+            <p><strong>Recommendation:</strong> {scorecard.overall_recommendation}</p>
+            <p><strong>Summary:</strong> {scorecard.overall_summary}</p>
+          </div>
+          <pre className="text-xs overflow-auto max-h-64 mt-4 text-black border-t pt-2">{JSON.stringify(scorecard, null, 2)}</pre>
+        </div>
+      )}
 
       {/* Diagnostics Panel */}
       <div className="bg-blue-50 p-4 rounded border border-blue-200">

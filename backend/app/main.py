@@ -12,7 +12,8 @@ from app.api import (
     llm_routes, 
     agora_test_routes, 
     agora_mllm_routes, 
-    orchestrator_routes
+    orchestrator_routes,
+    evaluator_routes
 )
 from app.core.session_store import session_store
 
@@ -71,6 +72,7 @@ app.include_router(interview_routes.router, prefix="/api/interview", tags=["Inte
 app.include_router(agora_test_routes.router, prefix="/api/agora-test", tags=["Agora Test"])
 app.include_router(agora_mllm_routes.router, prefix="/api/agora-mllm", tags=["Agora MLLM"])
 app.include_router(orchestrator_routes.router, prefix="/api/orchestrator", tags=["Orchestrator"])
+app.include_router(evaluator_routes.router, prefix="/api/evaluator", tags=["Evaluator"])
 
 @app.get('/health')
 async def health_check():
