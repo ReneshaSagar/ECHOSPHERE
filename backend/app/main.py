@@ -5,7 +5,15 @@ import asyncio
 import json
 import time
 from app.core.config import settings
-from app.api import agora_routes, interview_routes, report_routes, llm_routes
+from app.api import (
+    agora_routes, 
+    interview_routes, 
+    report_routes, 
+    llm_routes, 
+    agora_test_routes, 
+    agora_mllm_routes, 
+    orchestrator_routes
+)
 from app.core.session_store import session_store
 
 # WebSocket connection manager
@@ -57,13 +65,12 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
-app.include_router(agora_routes.router, prefix='/api/agora', tags=['Agora'])
-app.include_router(interview_routes.router, prefix='/api', tags=['Interview'])
-app.include_router(report_routes.router, prefix='/api', tags=['Report'])
-app.include_router(llm_routes.router, prefix='/api', tags=['LLM Proxy'])
-from app.api import agora_test_routes, agora_mllm_routes
-app.include_router(agora_test_routes.router, prefix='/api/agora-test', tags=['Agora Test Lab'])
-app.include_router(agora_mllm_routes.router, prefix='/api/agora-mllm', tags=['Agora MLLM Lab'])
+app.include_router(agora_routes.router, prefix="/api/agora", tags=["Agora"])
+app.include_router(llm_routes.router, prefix="/api/agora", tags=["LLM"])
+app.include_router(interview_routes.router, prefix="/api/interview", tags=["Interview"])
+app.include_router(agora_test_routes.router, prefix="/api/agora-test", tags=["Agora Test"])
+app.include_router(agora_mllm_routes.router, prefix="/api/agora-mllm", tags=["Agora MLLM"])
+app.include_router(orchestrator_routes.router, prefix="/api/orchestrator", tags=["Orchestrator"])
 
 @app.get('/health')
 async def health_check():
