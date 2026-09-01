@@ -72,6 +72,7 @@ export default function RoomPage() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
   const proctorIntervalRef = useRef<any>(null);
+  const candidateUidRef = useRef<number>(1);
 
   // ── Timer Interval ─────────────────────────────────────────────────────────
   useEffect(() => {
@@ -334,8 +335,12 @@ export default function RoomPage() {
   // ── Agora Init ─────────────────────────────────────────────────────────────
   const initAgora = useCallback(async () => {
     try {
-      const candidateUid = 1; // Hardcoded to 1 so AI agents can explicitly target the candidate's audio and ignore each other
+      // Generate a random UID so we don't conflict with lingering connections on refresh
+      const candidateUid = Math.floor(Math.random() * 100000) + 1;
       const tokenRes = await getToken({ channel_name: sessionId, uid: candidateUid });
+      
+      // Save it to a ref so we can use it in startAgents later
+      candidateUidRef.current = candidateUid;
 
       const { initRTC } = await import('@/lib/agora');
       const client = await initRTC(
@@ -417,7 +422,8 @@ export default function RoomPage() {
         await startAgents({
           session_id: sessionId,
           channel_name: sessionId,
-          personas: agentNames
+          personas: agentNames,
+          candidate_uid: candidateUidRef.current
         });
       } else {
         console.warn(`Backend round ${backendRoundIndex} not found in session blueprint.`);

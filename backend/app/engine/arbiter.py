@@ -44,46 +44,69 @@ class TurnArbiter:
         panel_text = "\n".join(panel_desc)
         primary_speaker = getattr(session, "current_persona", agent_ids[0])
 
-        # Build routing context
-        history_text = self._format_history(turn_history[-10:])
+        # Fast Deterministic Handoff check
+        utterance_lower = candidate_utterance.lower()
+        other_agents = [a for a in current_agents if a['agent_id'] != primary_speaker]
         
+        # Check if candidate explicitly addressed someone else by name
+        for agent in other_agents:
+            if agent['name'].lower() in utterance_lower:
+                return {
+                    "next_persona_id": agent['agent_id'],
+                    "action_type": "handoff",
+                    "reasoning": "Candidate explicitly mentioned another agent by name."
+                }
+
+        # If it's a short response, keep the floor with the current speaker to save LLM tokens
+        if len(candidate_utterance.split()) < 10:
+            return {
+                "next_persona_id": primary_speaker,
+                "action_type": "continue",
+                "reasoning": "Short response, maintaining current floor owner."
+            }
+
+        # Otherwise, ask a fast, lightweight LLM to decide routing ONLY
         routing_prompt = f'''You are the Orchestrator for an AI-driven interview panel.
-Your job is to manage the flow of conversation among the interviewers based on the candidate's responses.
+Your job is ONLY to manage the flow of conversation among the interviewers. DO NOT generate dialogue.
 
 Current Panel Members:
 {panel_text}
 
-Currently holding the "Speaker Token" (Primary Speaker): {primary_speaker}
-
-Recent conversation:
-{history_text}
+Currently holding the "Speaker Token": {primary_speaker}
 
 Candidate just said:
 "{candidate_utterance}"
 
 Decision Matrix:
-1. CONTINUE: The primary speaker asks the next logical follow-up.
-2. INTERRUPT: A DIFFERENT agent notices a critical flaw or highly relevant pivot related to their specialty. They seize the floor. 
-   - If they interrupt, their question MUST start with an apology to the primary speaker (e.g., "Sorry to interrupt, [Primary Name], but I need to ask...") and end by handing it back.
-3. HANDOFF: The primary speaker has exhausted their topic and explicitly hands the floor to another agent.
+1. CONTINUE: The primary speaker should ask the next follow-up.
+2. INTERRUPT/HANDOFF: The candidate's response heavily pivots into another agent's specialty, or explicitly asks a question meant for another agent.
 
 Return ONLY valid JSON:
 {{
   "next_persona_id": "<must be one of: {', '.join(agent_ids)}>",
   "action_type": "continue" | "interrupt" | "handoff",
-  "follow_up_question": "<The exact dialogue the chosen agent will speak. Max 80 words.>",
-  "reasoning": "<Internal reasoning for this orchestration decision>"
+  "reasoning": "<brief internal reasoning>"
 }}'''
         
-        response = await openai_client.chat.completions.create(
-            model=MODEL_SMALL,
-            messages=[{'role': 'user', 'content': routing_prompt}],
-            temperature=0.4,
-            response_format={'type': 'json_object'},
-        )
-        
-        result = json.loads(response.choices[0].message.content)
-        return result
+        try:
+            response = await openai_client.chat.completions.create(
+                model=MODEL_SMALL,
+                messages=[{'role': 'user', 'content': routing_prompt}],
+                temperature=0.1,
+                response_format={'type': 'json_object'},
+            )
+            result = json.loads(response.choices[0].message.content)
+            # Ensure valid ID
+            if result.get("next_persona_id") not in agent_ids:
+                result["next_persona_id"] = primary_speaker
+            return result
+        except Exception as e:
+            print(f"[Arbiter] LLM routing failed, defaulting to primary: {e}")
+            return {
+                "next_persona_id": primary_speaker,
+                "action_type": "continue",
+                "reasoning": "Fallback routing."
+            }
 
     def _format_history(self, history: list) -> str:
         lines = []

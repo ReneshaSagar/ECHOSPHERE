@@ -61,6 +61,9 @@ app.include_router(agora_routes.router, prefix='/api/agora', tags=['Agora'])
 app.include_router(interview_routes.router, prefix='/api', tags=['Interview'])
 app.include_router(report_routes.router, prefix='/api', tags=['Report'])
 app.include_router(llm_routes.router, prefix='/api', tags=['LLM Proxy'])
+from app.api import agora_test_routes, agora_mllm_routes
+app.include_router(agora_test_routes.router, prefix='/api/agora-test', tags=['Agora Test Lab'])
+app.include_router(agora_mllm_routes.router, prefix='/api/agora-mllm', tags=['Agora MLLM Lab'])
 
 @app.get('/health')
 async def health_check():

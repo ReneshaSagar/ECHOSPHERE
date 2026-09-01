@@ -82,12 +82,15 @@ export interface StartAgentsResponse {
   agent_ids: Record<string, string>;
 }
 
-/** Start all 3 AI panel agents in the Agora channel. */
-export async function startAgents(params: {
+export interface StartAgentsPayload {
   session_id: string;
   channel_name: string;
   personas?: string[];
-}): Promise<StartAgentsResponse> {
+  candidate_uid?: number;
+}
+
+/** Start all 3 AI panel agents in the Agora channel. */
+export async function startAgents(params: StartAgentsPayload): Promise<StartAgentsResponse> {
   return apiFetch<StartAgentsResponse>('/api/agora/agents/start', {
     method: 'POST',
     body: JSON.stringify({ personas: ['alex', 'maya', 'david'], ...params }),

@@ -3,6 +3,7 @@ Agora Client: RTC/RTM Token Generation + Conversational AI REST Gateway
 """
 import hmac
 import hashlib
+import json
 import base64
 import time
 import struct
@@ -27,10 +28,14 @@ def build_rtc_token(
     app_cert = settings.AGORA_APP_CERTIFICATE
     expire_ts = int(time.time()) + expire_seconds
     
-    token = RtcTokenBuilder.buildTokenWithUid(
-        app_id, app_cert, channel_name, uid, role, expire_ts
+    return RtcTokenBuilder.buildTokenWithUid(
+        app_id,
+        app_cert,
+        channel_name,
+        int(uid),
+        role,
+        expire_ts
     )
-    return token
 
 def build_rtm_token(user_id: str, expire_seconds: int = 3600) -> str:
     """Generate Agora RTM Token using JWT-style signing."""
@@ -74,23 +79,26 @@ class AgoraConvoAIClient:
         voice_id: str = 'nova',
         tts_provider: str = 'openai',
         llm_url: str = 'https://api.openai.com/v1/chat/completions',
+        candidate_uid: int = 1,
     ) -> dict:
         """Start an Agora Conversational AI agent in the channel."""
         # Clean name to only contain allowed characters, add random/session string for uniqueness to avoid 409
+        import uuid
         safe_name = "".join(c for c in persona_name if c.isalnum())
-        unique_agent_name = f"omnipanel_{safe_name}_{session_id[:8]}_{agent_uid}"
+        unique_agent_name = f"op_{safe_name}_{uuid.uuid4().hex[:8]}"
         
         payload = {
             'name': unique_agent_name,
             'properties': {
                 'channel': channel_name,
                 'agent_rtc_uid': str(agent_uid),
-                'enable_string_uid': False,
-                'remote_rtc_uids': ["1"],
+                'enable_string_uid': True,
+                'remote_rtc_uids': [str(candidate_uid)],
                 'token': rtc_token,
                 'ai_vad': {
                     'enable': True,
                     'interrupt_on_speech': True,
+                    'silence_duration_ms': 500,
                 },
                 'llm': {
                     'url': llm_url,
@@ -98,17 +106,12 @@ class AgoraConvoAIClient:
                     'system_messages': [
                         {'role': 'system', 'content': system_prompt}
                     ],
-                    'params': {
-                        'model': 'openai/gpt-4o',
-                        'temperature': 0.7,
-                        'max_tokens': 300,
-                    }
+                    'greeting': "Hello! This is the Agora test interviewer. Can you hear me?"
                 },
                 'tts': {
-                    'vendor': tts_provider,
+                    'vendor': 'microsoft',
                     'params': {
-                        'model': 'tts-1',
-                        'voice_name': voice_id,
+                        'voice_name': 'en-US-JennyNeural',
                         'speed': 1.0,
                     },
                 },
@@ -122,13 +125,89 @@ class AgoraConvoAIClient:
         # Agora v2 Conversational AI endpoint
         base_url = f'https://api.agora.io/api/conversational-ai-agent/v2/projects/{settings.AGORA_APP_ID}'
         
-        response = await self._client.post(
-            f'{base_url}/join',
-            json=payload,
-            headers=self._headers,
-        )
-        response.raise_for_status()
-        return response.json()
+        print(f"\n[AGORA] ==========================================")
+        print(f"[AGORA] Starting agent: {persona_name}")
+        print(f"[AGORA] session_id: {session_id}")
+        print(f"[AGORA] channel: {channel_name}")
+        print(f"[AGORA] agent_id (name): {unique_agent_name}")
+        print(f"[AGORA] agent_uid (RTC): {agent_uid}")
+        print(f"[AGORA] candidate_uid: {candidate_uid}")
+        print(f"[AGORA] remote_rtc_uids: {payload['properties']['remote_rtc_uids']}")
+        print(f"[AGORA] llm_url: {llm_url}")
+
+        # Serialize and log exactly what goes over the wire
+        serialized_payload = json.dumps(payload, indent=2)
+        print(f"\n[AGORA] EXACT SERIALIZED JSON SENT TO AGORA:")
+        print(serialized_payload)
+        
+        try:
+            res = await self._client.post(base_url + '/join', json=payload, headers=self._headers)
+            res.raise_for_status()
+            res_data = res.json()
+            print(f"[AGORA] START RESPONSE {res.status_code}")
+            print(f"[AGORA] RESPONSE BODY: {res_data}")
+            return res_data
+        except Exception as e:
+            print(f"[AGORA] ERROR STARTING AGENT {persona_name}: {str(e)}")
+            if hasattr(e, 'response') and e.response is not None:
+                print(f"[AGORA] ERROR RESPONSE BODY: {e.response.text}")
+            raise
+
+    async def start_mllm_agent(
+        self,
+        channel_name: str,
+        agent_uid: int,
+        persona_name: str,
+        rtc_token: str,
+        session_id: str,
+        candidate_uid: int,
+    ) -> dict:
+        import uuid
+        safe_name = "".join(c for c in persona_name if c.isalnum())
+        unique_agent_name = f"op_mllm_{safe_name}_{uuid.uuid4().hex[:8]}"
+        
+        system_prompt = "You are Alex, a senior software engineer conducting a friendly technical interview.\n\nYou are a real conversational interviewer.\n\nSpeak naturally and concisely.\n\nStart by introducing yourself.\n\nAsk the candidate about their software engineering experience.\n\nListen carefully to their answers.\n\nAsk relevant follow-up questions.\n\nDo not evaluate or score the candidate yet.\n\nMaintain conversational context throughout the interview."
+        
+        payload = {
+            'name': unique_agent_name,
+            'properties': {
+                'channel': channel_name,
+                'agent_rtc_uid': str(agent_uid),
+                'enable_string_uid': True,
+                'remote_rtc_uids': [str(candidate_uid)],
+                'token': rtc_token,
+                'ai_vad': {
+                    'enable': True,
+                    'interrupt_on_speech': True,
+                    'silence_duration_ms': 500,
+                },
+                'mllm': {
+                    'vendor': 'openai',
+                    'params': {
+                        'model': 'gpt-4o-realtime-preview',
+                        'api_key': settings.OPENAI_API_KEY,
+                        'prompt': system_prompt
+                    }
+                }
+            }
+        }
+        
+        base_url = f'https://api.agora.io/api/conversational-ai-agent/v2/projects/{settings.AGORA_APP_ID}'
+        
+        serialized_payload = json.dumps(payload, indent=2)
+        print(f"\n[AGORA MLLM] EXACT SERIALIZED JSON SENT TO AGORA:")
+        print(serialized_payload)
+        
+        try:
+            res = await self._client.post(base_url + '/join', json=payload, headers=self._headers)
+            res.raise_for_status()
+            res_data = res.json()
+            return res_data
+        except Exception as e:
+            print(f"[AGORA MLLM] ERROR STARTING MLLM AGENT: {str(e)}")
+            if hasattr(e, 'response') and e.response is not None:
+                print(f"[AGORA MLLM] ERROR RESPONSE BODY: {e.response.text}")
+            raise
 
     async def stop_convo_agent(self, agent_id: str) -> dict:
         """Stop a running Conversational AI agent."""

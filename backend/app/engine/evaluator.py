@@ -32,15 +32,18 @@ class RubricEvaluator:
         utterance_id: str,
     ) -> dict:
         """
-        Analyze a candidate utterance for vagueness, buzzwords, and pillar coverage.
-        Returns: {vagueness_score, buzzwords_found, pillar_updates, contradictions, evidence}
+        Analyze a candidate utterance for vagueness, buzzwords, and structured evaluation.
         """
-        # Buzzword detection (fast, no LLM needed)
-        utterance_lower = utterance.lower()
-        found_buzzwords = [bw for bw in BUZZWORDS if bw.lower() in utterance_lower]
-        
-        # LLM-based analysis
         session = await session_store.get_session(session_id)
+        if not session:
+            return {}
+
+        # Get dynamic pillars from session blueprint
+        pillars = getattr(session, "dynamic_pillars", [])
+        pillar_names = [p["pillar_name"] for p in pillars] if pillars else ["technical_accuracy", "depth", "communication", "confidence", "problem_solving"]
+        
+        pillar_json = ",\n    ".join([f'"{name}": 5' for name in pillar_names])
+
         history_snippet = ''
         if session and session.transcript:
             last_entries = session.transcript[-5:]
@@ -51,20 +54,18 @@ class RubricEvaluator:
 
 Context (last 5 exchanges): {history_snippet}
 
+Evaluate the candidate's response against the interview rubric.
+
 Return ONLY valid JSON:
 {{
   "vagueness_score": 0,  
-  "pillar_scores": {{
-    "architecture": 5,
-    "product_sense": 5,
-    "scalability": 5,
-    "clarity": 5,
-    "ownership": 5
+  "evaluation": {{
+    {pillar_json}
   }},
-  "has_contradiction": false,
-  "contradiction_detail": "",
-  "key_evidence_quote": "<10-20 word direct quote from the response>",
-  "difficulty_level": 2
+  "observations": [
+    "Candidate demonstrated strong fundamentals in X.",
+    "Candidate confused Y with Z."
+  ]
 }}'''
         
         try:
@@ -76,18 +77,13 @@ Return ONLY valid JSON:
             )
             analysis = json.loads(response.choices[0].message.content)
         except Exception as e:
-            # Fallback scoring
             word_count = len(utterance.split())
             analysis = {
                 'vagueness_score': max(0, 80 - word_count),
-                'pillar_scores': {p: 5 for p in PILLAR_KEYS},
-                'has_contradiction': False,
-                'contradiction_detail': '',
-                'key_evidence_quote': utterance[:50],
-                'difficulty_level': 2,
+                'evaluation': {p: 3 for p in pillar_names},
+                'observations': []
             }
         
-        analysis['buzzwords_found'] = found_buzzwords
         analysis['utterance_id'] = utterance_id
         analysis['timestamp'] = time.time()
         return analysis

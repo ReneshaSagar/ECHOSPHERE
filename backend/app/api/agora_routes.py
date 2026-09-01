@@ -12,6 +12,7 @@ class AgentStartRequest(BaseModel):
     session_id: str
     channel_name: str
     personas: List[str] = ['alex', 'maya', 'david']
+    candidate_uid: int = 1
 
 class AgentInstructRequest(BaseModel):
     new_prompt: str
@@ -85,7 +86,8 @@ async def start_agents(req: AgentStartRequest):
                 rtc_token=agent_token,
                 session_id=req.session_id,
                 voice_id=ag_data.get("voice_id", "nova"),
-                llm_url=llm_url
+                llm_url=llm_url,
+                candidate_uid=req.candidate_uid
             )
             agent_id = res.get('agent_id') or str(uid_hash)
             agent_ids[persona_key] = agent_id

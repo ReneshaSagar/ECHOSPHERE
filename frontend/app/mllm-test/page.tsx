@@ -1,0 +1,312 @@
+"use client";
+
+import React, { useState, useRef, useEffect } from 'react';
+
+export default function AgoraTestLab() {
+  const [status, setStatus] = useState<Record<string, 'IDLE' | 'PASS' | 'FAIL'>>({
+    backend: 'IDLE',
+    agent_creation: 'IDLE',
+    agent_joined: 'IDLE',
+    candidate_audio: 'IDLE',
+    ai_audio_received: 'IDLE'
+  });
+  
+  const [logs, setLogs] = useState<{time: string, comp: string, msg: string}[]>([]);
+  const [transcript, setTranscript] = useState<{speaker: string, text: string}[]>([]);
+  const [sessionInfo, setSessionInfo] = useState<{
+    sessionId: string;
+    channel: string;
+    candidateUid: number;
+    agentId: string;
+  } | null>(null);
+  
+  const [micVolume, setMicVolume] = useState(0);
+
+  // Removed legacy status polling
+
+  const rtcClientRef = useRef<any>(null);
+  const localMicRef = useRef<any>(null);
+  const wsRef = useRef<WebSocket | null>(null);
+
+  const addLog = (comp: string, msg: string) => {
+    setLogs(prev => [...prev, { time: new Date().toLocaleTimeString(), comp, msg }]);
+  };
+
+  const updateStatus = (key: string, val: 'PASS' | 'FAIL') => {
+    setStatus(prev => ({ ...prev, [key]: val }));
+  };
+
+  const startTest = async () => {
+    const sessionId = `test-${Math.random().toString(36).substring(7)}`;
+    const candidateUid = Math.floor(Math.random() * 100000) + 1000;
+    
+    addLog('System', `Starting test session: ${sessionId}`);
+    
+    // 1. Check Backend
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    try {
+      const h = await fetch(`${API_URL}/api/agora-test/health`);
+      if (h.ok) {
+        updateStatus('backend', 'PASS');
+        addLog('Backend', 'Health check passed');
+      } else throw new Error('Backend health failed');
+    } catch (e: any) {
+      updateStatus('backend', 'FAIL');
+      addLog('Backend', `Health check failed: ${e.message}`);
+      return;
+    }
+
+    // 2. Start Agent
+    let agentData;
+    try {
+      const res = await fetch(`${API_URL}/api/agora-mllm/start-mllm`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionId, candidate_uid: candidateUid })
+      });
+      
+      agentData = await res.json();
+      
+      addLog('Backend', `RAW AGORA RESPONSE: ${JSON.stringify(agentData.raw_response, null, 2)}`);
+      
+      if (!res.ok) {throw new Error(agentData.detail || 'Failed to start agent');
+      }
+      
+      updateStatus('agent_creation', 'PASS');
+      updateStatus('agent_creation_http', '200');
+      setSessionInfo({
+        sessionId,
+        channel: agentData.channel_name,
+        candidateUid: candidateUid,
+        agentId: agentData.agent_id
+      });
+      addLog('Backend', `Agent created successfully. Agent ID: ${agentData.agent_id}`);
+      
+      try {
+        const statusRes = await fetch(`${API_URL}/api/agora-test/status/${agentData.agent_id}`);
+        const statusData = await statusRes.json();
+        addLog('Backend', `RAW AGENT STATUS: ${statusData.response}`);
+        const parsed = JSON.parse(statusData.response);
+        updateStatus('agent_actual_state', parsed.status || 'UNKNOWN');
+      } catch (e: any) {
+        addLog('Backend', `Failed to fetch actual status: ${e.message}`);
+        updateStatus('agent_actual_state', 'UNKNOWN');
+      }
+    } catch (e: any) {
+      updateStatus('agent_creation', 'FAIL');
+      addLog('Backend', `Agent creation failed: ${e.message}`);
+      return;
+    }
+
+    // 3. Connect WebSocket for Transcript
+    const wsUrl = `${API_URL.replace('http', 'ws')}/ws/telemetry/${sessionId}`;
+    const ws = new WebSocket(wsUrl);
+    wsRef.current = ws;
+    ws.onmessage = (e) => {
+      const msg = JSON.parse(e.data);
+      if (msg.type === 'test_transcript') {
+        setTranscript(prev => [...prev, { speaker: msg.speaker, text: msg.text }]);
+      }
+    };
+
+    // 4. Join Agora RTC
+    try {
+      const AgoraRTC = (await import('agora-rtc-sdk-ng')).default;
+      const client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
+      rtcClientRef.current = client;
+
+      client.on("user-joined", (user) => {
+        addLog('RTC', `[user-joined] Remote UID ${user.uid} joined the channel`);
+        updateStatus('agent_connected', 'PASS');
+      });
+
+      client.on("user-published", async (user, mediaType) => {
+        addLog('RTC', `[user-published] Remote UID ${user.uid} published ${mediaType}`);
+        if (mediaType === "audio") {
+          updateStatus('agent_audio_published', 'PASS');
+          try {
+            await client.subscribe(user, "audio");
+            addLog('RTC', `REMOTE AUDIO SUBSCRIBED`);
+            
+            if (user.audioTrack) {
+              user.audioTrack.play();
+              addLog('RTC', `REMOTE AUDIO PLAY() CALLED`);
+              updateStatus('ai_audio_received', 'PASS');
+            } else {
+              addLog('RTC', `ERROR: No audioTrack found after subscribe`);
+            }
+          } catch (e: any) {
+            addLog('RTC', `Failed to subscribe: ${e.message}`);
+          }
+        }
+      });
+
+      client.on("user-unpublished", (user, mediaType) => {
+        addLog('RTC', `[user-unpublished] Remote UID ${user.uid} unpublished ${mediaType}`);
+      });
+
+      client.on("user-left", (user, reason) => {
+        addLog('RTC', `[user-left] Remote UID ${user.uid} left channel. Reason: ${reason}`);
+      });
+
+      client.on('stream-message', (uid, data) => {
+        try {
+          const text = new TextDecoder().decode(data);
+          addLog('RTC Stream', `Data received: ${text}`);
+          const parsed = JSON.parse(text);
+          const speaker = parsed.speaker || (String(uid) === String(candidateUid) ? 'CANDIDATE' : 'ALEX');
+          const messageText = parsed.text || parsed.content || JSON.stringify(parsed);
+          setTranscript(prev => [...prev, { speaker, text: messageText }]);
+        } catch (err) {
+          const rawText = new TextDecoder().decode(data);
+          if (rawText) {
+            setTranscript(prev => [...prev, { speaker: 'ALEX', text: rawText }]);
+          }
+        }
+      });
+
+      await client.join(
+        process.env.NEXT_PUBLIC_AGORA_APP_ID!,
+        agentData.channel_name,
+        agentData.candidate_token,
+        candidateUid
+      );
+      addLog('RTC', `Browser joined channel successfully`);
+      
+      const localMic = await AgoraRTC.createMicrophoneAudioTrack();
+      localMicRef.current = localMic;
+      addLog('RTC', `Local microphone created. (NOT playing locally)`);
+      
+      await client.publish([localMic]);
+      addLog('RTC', `Local microphone published to channel`);
+      updateStatus('candidate_audio_published', 'PASS');
+      
+      // Start volume check
+      setInterval(() => {
+        if (localMicRef.current) {
+          const vol = localMicRef.current.getVolumeLevel();
+          setMicVolume(Math.floor(vol * 100));
+        }
+      }, 200);
+
+    } catch (e: any) {
+      addLog('RTC', `RTC setup failed: ${e.message}`);
+    }
+  };
+
+  const endTest = async () => {
+    if (localMicRef.current) {
+      localMicRef.current.stop();
+      localMicRef.current.close();
+    }
+    if (rtcClientRef.current) {
+      await rtcClientRef.current.leave();
+    }
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    if (sessionInfo) {
+      await fetch(`${API_URL}/api/agora-mllm/stop-mllm`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionInfo.sessionId, candidate_uid: 0 })
+      });
+    }
+    if (wsRef.current) wsRef.current.close();
+    
+    addLog('System', 'Test ended.');
+    setSessionInfo(null);
+  };
+
+  return (
+    <div className="p-8 max-w-5xl mx-auto font-mono text-sm space-y-6">
+      <h1 className="text-2xl font-bold border-b pb-2">AGORA MLLM NATIVE TEST LAB</h1>
+      
+      <div className="flex gap-4 items-center">
+        <button onClick={startTest} className="px-4 py-2 bg-blue-600 text-white rounded">Start MLLM Agent</button>
+        <button onClick={endTest} className="px-4 py-2 bg-red-600 text-white rounded">End Test</button>
+      </div>
+
+      {/* Diagnostics Panel */}
+      <div className="bg-blue-50 p-4 rounded border border-blue-200">
+        <h2 className="font-bold mb-2 text-blue-800">Diagnostics (MLLM & Audio)</h2>
+        <div className="grid grid-cols-3 gap-4">
+          <div><span className="font-bold">Mic Volume:</span> <span className={micVolume > 0 ? "text-green-600 font-bold" : "text-gray-500"}>{micVolume}%</span></div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-8">
+        <div className="space-y-4">
+          <h2 className="font-bold bg-slate-100 p-2">Session Info</h2>
+          {sessionInfo ? (
+            <div className="text-xs space-y-1 break-all">
+              <p>Session ID: {sessionInfo.sessionId}</p>
+              <p>Channel: {sessionInfo.channel}</p>
+              <p>Candidate UID: {sessionInfo.candidateUid}</p>
+              <p>Agent ID: {sessionInfo.agentId}</p>
+            </div>
+          ) : <p className="text-slate-400">Not started</p>}
+          
+          <div className="grid grid-cols-2 gap-8">
+          <div>
+            <h2 className="font-bold mb-2 text-gray-800">Pipeline Status</h2>
+            <div className="space-y-1 font-mono text-sm">
+              <div className="flex justify-between">
+                <span>Browser mic active</span>
+                <span className={micVolume > 0 ? 'text-green-600' : 'text-gray-400'}>{micVolume > 0 ? 'PASS' : 'IDLE'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Candidate audio publishing</span>
+                <span className={status.candidate_audio_published === 'PASS' ? 'text-green-600' : 'text-gray-400'}>{status.candidate_audio_published || 'IDLE'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Agora agent connected</span>
+                <span className={status.agent_connected === 'PASS' ? 'text-green-600' : 'text-gray-400'}>{status.agent_connected || 'IDLE'}</span>
+              </div>
+              <div className="flex justify-between border-t pt-2 mt-2">
+                <span>MLLM Agent Status</span>
+                <span className={status.agent_actual_state === 'RUNNING' ? 'text-green-600' : 'text-gray-400'}>{status.agent_actual_state || 'IDLE'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Agent audio published</span>
+                <span className={status.agent_audio_published === 'PASS' ? 'text-green-600' : 'text-gray-400'}>{status.agent_audio_published || 'IDLE'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Browser subscribed</span>
+                <span className={status.ai_audio_received === 'PASS' ? 'text-green-600' : 'text-gray-400'}>{status.ai_audio_received || 'IDLE'}</span>
+              </div>
+              <div className="flex justify-between mt-4 border-t pt-2 border-gray-200">
+                <span>Auth / Errors</span>
+                <span className={logs.some(l => l.msg.includes('500') || l.msg.includes('failed') || l.msg.includes('Error')) ? 'text-red-600 font-bold' : 'text-green-600'}>
+                  {logs.some(l => l.msg.includes('500') || l.msg.includes('failed') || l.msg.includes('Error')) ? 'FAIL' : 'PASS'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+          
+          <h2 className="font-bold bg-slate-100 p-2 mt-4">Transcript</h2>
+          <div className="h-48 overflow-y-auto border p-2 text-xs space-y-2 bg-slate-50">
+            {transcript.map((t, i) => (
+              <div key={i}>
+                <span className="font-bold text-blue-600 uppercase">{t.speaker}: </span>
+                <span>{t.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <div className="space-y-4">
+          <h2 className="font-bold bg-slate-100 p-2">Error / Debug Log</h2>
+          <div className="h-[400px] overflow-y-auto border p-2 text-xs space-y-1 bg-black text-green-400">
+            {logs.map((l, i) => (
+              <div key={i}>
+                <span className="text-gray-500">[{l.time}]</span>{' '}
+                <span className="text-yellow-400">[{l.comp}]</span>{' '}
+                {l.msg}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

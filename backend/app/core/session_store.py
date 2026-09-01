@@ -2,14 +2,16 @@ import asyncio
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional
 import time
+from pydantic import BaseModel, Field
 
-@dataclass
-class TranscriptEntry:
+class TranscriptEntry(BaseModel):
     speaker: str
     text: str
     timestamp: float
     utterance_id: str
-    vagueness_score: Optional[float] = None
+    vagueness_score: Optional[int] = None
+    evaluation: Optional[dict] = Field(None, description="Structured scoring for this turn")
+    observations: Optional[list] = Field(None, description="Agent observations for this turn")
 
 @dataclass
 class SessionState:
