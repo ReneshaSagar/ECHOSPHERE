@@ -47,9 +47,9 @@ export default function AgoraTestLab() {
   const generateBlueprint = async () => {
     setOrchestratorStatus('GENERATING...');
     addLog('Orchestrator', 'Generating interview blueprint...');
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    
     try {
-      const res = await fetch(`${API_URL}/api/orchestrator/blueprint`, {
+      const res = await fetch(`/api/orchestrator/blueprint`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ job_description: jd, resume })
@@ -77,9 +77,9 @@ export default function AgoraTestLab() {
     addLog('System', `Starting test session: ${sessionId}`);
     
     // 1. Check Backend
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    
     try {
-      const h = await fetch(`${API_URL}/api/agora-test/health`);
+      const h = await fetch(`/api/agora-test/health`);
       if (h.ok) {
         updateStatus('backend', 'PASS');
         addLog('Backend', 'Health check passed');
@@ -94,7 +94,7 @@ export default function AgoraTestLab() {
     let agentData;
     try {
       const interviewer = blueprint.interview_rounds[0].interviewer;
-      const res = await fetch(`${API_URL}/api/agora-mllm/start-dynamic-mllm`, {
+      const res = await fetch(`/api/agora-mllm/start-dynamic-mllm`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -123,7 +123,7 @@ export default function AgoraTestLab() {
       addLog('Backend', `Agent created successfully. Agent ID: ${agentData.agent_id}`);
       
       try {
-        const statusRes = await fetch(`${API_URL}/api/agora-test/status/${agentData.agent_id}`);
+        const statusRes = await fetch(`/api/agora-test/status/${agentData.agent_id}`);
         const statusData = await statusRes.json();
         addLog('Backend', `RAW AGENT STATUS: ${statusData.response}`);
         const parsed = JSON.parse(statusData.response);
@@ -139,7 +139,8 @@ export default function AgoraTestLab() {
     }
 
     // 3. Connect WebSocket for Transcript
-    const wsUrl = `${API_URL.replace('http', 'ws')}/ws/telemetry/${sessionId}`;
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//${window.location.host}/ws/telemetry/${sessionId}`;
     const ws = new WebSocket(wsUrl);
     wsRef.current = ws;
     ws.onmessage = (e) => {
@@ -242,9 +243,9 @@ export default function AgoraTestLab() {
     if (rtcClientRef.current) {
       await rtcClientRef.current.leave();
     }
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    
     if (sessionInfo) {
-      await fetch(`${API_URL}/api/agora-mllm/stop-mllm`, {
+      await fetch(`/api/agora-mllm/stop-mllm`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ session_id: sessionInfo.sessionId, candidate_uid: 0 })
@@ -263,9 +264,9 @@ export default function AgoraTestLab() {
     }
     setEvalStatus('EVALUATING...');
     addLog('Evaluator', 'Analyzing transcript and generating scorecard...');
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    
     try {
-      const res = await fetch(`${API_URL}/api/evaluator/evaluate`, {
+      const res = await fetch(`/api/evaluator/evaluate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

@@ -1,0 +1,62 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+export async function POST(req: NextRequest) {
+  try {
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+    const { job_description, resume } = await req.json();
+
+    const systemInstruction = `You are an expert AI Interview Orchestrator. 
+Your job is to analyze a Job Description and a Candidate Resume, and design a technical interview blueprint.
+You MUST return ONLY valid JSON matching this exact structure:
+
+{
+  "interview_rounds": [
+    {
+      "round_name": "Technical Interview",
+      "purpose": "Evaluate technical skills and experience match",
+      "interviewer": {
+        "name": "Alex",
+        "role": "Senior Software Engineer",
+        "instructions": "<highly specific instructions for the LLM voice agent>",
+        "greeting_message": "<the exact opening line Alex will speak>"
+      },
+      "topics": ["topic 1", "topic 2"]
+    }
+  ],
+  "rubric": {
+    "Problem Solving": "What to look for",
+    "Technical Depth": "What to look for"
+  }
+}
+
+The instructions for Alex MUST explicitly tell him to:
+- speak naturally and concisely
+- ask one question at a time and listen carefully
+- ask relevant follow-up questions based on the candidate's answers
+- avoid unnecessarily repeating questions
+- stay within the scope of the provided JD and Resume
+- use the candidate's resume and JD context naturally in conversation
+- never reveal the evaluation rubric
+- never give the candidate the answers
+- maintain a professional interviewer personality
+
+Keep the instructions highly contextual to the specific JD and Resume provided.`;
+
+    const userPrompt = `Job Description:\n${job_description}\n\nCandidate Resume:\n${resume}\n\nGenerate the JSON Interview Blueprint.`;
+
+    const model = genAI.getGenerativeModel({
+      model: "gemini-3.5-flash",
+      systemInstruction,
+      generationConfig: { responseMimeType: "application/json" },
+    });
+
+    const result = await model.generateContent(userPrompt);
+    const blueprint = JSON.parse(result.response.text());
+    
+    return NextResponse.json(blueprint);
+  } catch (error: any) {
+    console.error('Orchestrator error:', error);
+    return NextResponse.json({ detail: error.message }, { status: 500 });
+  }
+}
