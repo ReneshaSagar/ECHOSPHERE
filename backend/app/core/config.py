@@ -1,3 +1,9 @@
+import os
+from dotenv import load_dotenv
+
+# Force .env file to override any cached OS environment variables
+load_dotenv(dotenv_path=".env", override=True)
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from openai import AsyncOpenAI
 

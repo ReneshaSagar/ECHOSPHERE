@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-import os
 import json
+from typing import List, Dict, Any
 import google.generativeai as genai
 from app.core.config import settings
 
@@ -14,7 +14,7 @@ class OrchestratorRequest(BaseModel):
 @router.post("/blueprint")
 async def generate_blueprint(req: OrchestratorRequest):
     """
-    Generate an Interview Blueprint using JD and Resume.
+    Takes JD and Resume. Returns the Interview Blueprint JSON.
     """
     try:
         genai.configure(api_key=settings.GEMINI_API_KEY)
@@ -38,7 +38,8 @@ You MUST return ONLY valid JSON matching this exact structure:
     }
   ],
   "rubric": {
-    "pillars": ["pillar 1", "pillar 2"]
+    "Problem Solving": "What to look for",
+    "Technical Depth": "What to look for"
   }
 }
 

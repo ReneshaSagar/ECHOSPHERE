@@ -30,7 +30,7 @@ async def start_mllm_test(req: StartMLLMRequest):
     from app.core.agora_client import agora_client, build_rtc_token
     
     # Check if Gemini key is available
-    gemini_key = os.environ.get("GEMINI_API_KEY", "")
+    gemini_key = settings.GEMINI_API_KEY
     
     # 1. Generate RTC tokens
     candidate_token = build_rtc_token(channel_name, candidate_uid)
@@ -149,7 +149,7 @@ async def start_dynamic_mllm(req: StartDynamicMLLMRequest):
     from app.core.config import settings
     from app.core.agora_client import build_rtc_token
     
-    gemini_key = os.environ.get('GEMINI_API_KEY', '')
+    gemini_key = settings.GEMINI_API_KEY
     
     candidate_token = build_rtc_token(channel_name, candidate_uid)
     agent_uid = 9999
