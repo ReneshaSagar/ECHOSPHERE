@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "agora-agents": "^2.7.0",
     "agora-rtc-sdk-ng": "^4.22.2",
     "agora-rtm-sdk": "^2.2.1",
     "agora-token": "^2.0.6",

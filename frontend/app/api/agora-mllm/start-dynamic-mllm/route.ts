@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { RtcTokenBuilder, RtcRole } from 'agora-token';
+import { AgoraClient, Agent, Area, GeminiLive } from 'agora-agents';
 
 function buildRtcToken(channelName: string, uid: number) {
   const appId = process.env.AGORA_APP_ID || '';
@@ -31,61 +32,54 @@ export async function POST(req: NextRequest) {
     const agentToken = buildRtcToken(channelName, agentUid);
 
     const appId = process.env.AGORA_APP_ID;
+    const appCertificate = process.env.AGORA_APP_CERTIFICATE;
     const customerId = process.env.AGORA_CUSTOMER_ID;
     const customerSecret = process.env.AGORA_CUSTOMER_SECRET;
     const geminiKey = process.env.GEMINI_API_KEY;
 
-    if (!appId || !customerId || !customerSecret || !geminiKey) {
+    if (!appId || !appCertificate || !customerId || !customerSecret || !geminiKey) {
       throw new Error("Missing required Agora or Gemini environment variables");
     }
 
-    const credentials = Buffer.from(`${customerId}:${customerSecret}`).toString('base64');
+    const client = new AgoraClient({
+      area: Area.US,
+      appId,
+      appCertificate,
+      customerId,
+      customerSecret
+    });
+    
+    const agent = new Agent({ client }).withMllm(new GeminiLive({
+      apiKey: geminiKey,
+      model: 'gemini-3.1-flash-live-preview',
+      voice: 'Charon',
+      instructions: instructions,
+      greetingMessage: greeting_message,
+      transcribeAgent: true,
+      transcribeUser: true,
+      inputModalities: ['audio'],
+      outputModalities: ['audio']
+    }));
 
-    const agentPayload = {
-      "channel_name": channelName,
-      "uid": agentUid,
-      "channel_options": {
-        "auto_subscribe_audio": true,
-        "auto_subscribe_video": false
-      },
-      "agent_config": {
-        "greeting_message": greeting_message,
-        "prompt": instructions
-      },
-      "llm_config": {
-        "provider": "google",
-        "model": "gemini-3.1-flash-live-preview",
-        "parameters": {
-          "api_key": geminiKey,
-          "temperature": 0.3
-        }
-      },
-      "token": agentToken
-    };
-
-    const response = await fetch(`https://api.agora.io/v1/projects/${appId}/agents`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Basic ${credentials}`
-      },
-      body: JSON.stringify(agentPayload)
+    const sessionObj = await agent.createSession({
+      channel: channelName,
+      agentUid: String(agentUid),
+      remoteUids: [String(candidate_uid)],
+      token: agentToken
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Agora API Error:", errorText);
-      throw new Error(`Agora Agent Creation Failed: ${response.status} ${errorText}`);
-    }
+    await sessionObj.start();
 
-    const agoraResp = await response.json();
+    // WARNING: In serverless (Next.js), the sessionObj cannot be persisted in memory easily.
+    // If you need to stop it later, you will need to stop it via the Agora REST API directly
+    // or by passing the agent_id to the REST API in stop-mllm/route.ts.
     
     return NextResponse.json({
       status: "started",
-      agent_id: agoraResp.agent_id,
+      agent_id: sessionObj.id,
       channel_name: channelName,
       candidate_token: candidateToken,
-      raw_response: agoraResp
+      raw_response: "SDK started successfully"
     });
   } catch (error: any) {
     console.error('Agora start error:', error);
