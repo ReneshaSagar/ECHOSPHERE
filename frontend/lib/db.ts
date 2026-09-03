@@ -17,6 +17,43 @@ export interface Job {
   mcpServerUrl?: string;
 }
 
+export interface GitHubRepoContext {
+  name: string;
+  fullName: string;
+  description?: string;
+  language?: string;
+  stars: number;
+  forks: number;
+  topics?: string[];
+  readmeSnippet?: string;
+  url: string;
+  updatedAt?: string;
+}
+
+export interface GitHubContext {
+  username: string;
+  profileUrl: string;
+  name?: string;
+  bio?: string;
+  company?: string;
+  location?: string;
+  publicReposCount?: number;
+  followers?: number;
+  avatarUrl?: string;
+  technicalHighlights?: string[];
+  githubProjects?: Array<{
+    name: string;
+    description?: string;
+    language?: string;
+    stars?: number;
+    topics?: string[];
+    keyInsights?: string;
+    url?: string;
+  }>;
+  githubInterviewHooks?: string[];
+  enrichedAt: string;
+}
+
 export interface CandidateContext {
   headline?: string;
   about?: string;
@@ -49,6 +86,20 @@ export interface CandidateContext {
   interviewHooks?: string[];
   enrichmentSource?: string;
   enrichedAt?: string;
+
+  // GitHub Technical Enrichment
+  githubContext?: GitHubContext;
+  technicalHighlights?: string[];
+  githubProjects?: Array<{
+    name: string;
+    description?: string;
+    language?: string;
+    stars?: number;
+    topics?: string[];
+    keyInsights?: string;
+    url?: string;
+  }>;
+  githubInterviewHooks?: string[];
 }
 
 export interface Candidate {
@@ -67,6 +118,7 @@ export interface Application {
   candidateId: string;
   resumeText: string;
   linkedinUrl?: string;
+  githubUrl?: string;
   relevantExperience?: string;
   additionalInfo?: string;
   status: string;

@@ -160,6 +160,126 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
           </div>
         )}
 
+        {/* Enriched GitHub Technical Context & Repositories */}
+        {(candidateContext?.githubContext || candidateContext?.githubProjects) && (
+          <div className="mt-8 border-t pt-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-lg text-gray-900 flex items-center gap-2">
+                <span className="text-xl">🐙</span> GitHub Technical Context & Codecraft
+              </h3>
+              <span className="text-xs bg-gray-900 text-gray-100 font-semibold px-2.5 py-1 rounded-full">
+                Official GitHub REST API
+              </span>
+            </div>
+
+            {candidateContext.githubContext && (
+              <div className="flex items-center gap-3 mb-4 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                {candidateContext.githubContext.avatarUrl && (
+                  <img 
+                    src={candidateContext.githubContext.avatarUrl} 
+                    alt={candidateContext.githubContext.username} 
+                    className="w-10 h-10 rounded-full border" 
+                  />
+                )}
+                <div>
+                  <a 
+                    href={candidateContext.githubContext.profileUrl} 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="font-bold text-sm text-blue-600 hover:underline"
+                  >
+                    @{candidateContext.githubContext.username}
+                  </a>
+                  {candidateContext.githubContext.bio && (
+                    <p className="text-xs text-gray-600">{candidateContext.githubContext.bio}</p>
+                  )}
+                </div>
+                <div className="ml-auto flex gap-3 text-xs text-gray-500">
+                  <span>📦 {candidateContext.githubContext.publicReposCount} Repos</span>
+                  <span>👥 {candidateContext.githubContext.followers} Followers</span>
+                </div>
+              </div>
+            )}
+
+            {/* Technical Highlights */}
+            {candidateContext.technicalHighlights && candidateContext.technicalHighlights.length > 0 && (
+              <div className="mb-4">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                  ⚡ Technical Architecture & Codecraft Highlights
+                </h4>
+                <ul className="space-y-1 text-xs text-gray-800 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                  {candidateContext.technicalHighlights.map((hl, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <span className="text-gray-400">•</span>
+                      <span>{hl}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Featured GitHub Projects */}
+            {candidateContext.githubProjects && candidateContext.githubProjects.length > 0 && (
+              <div className="mb-4">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">
+                  Featured Repositories & Project Insights
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {candidateContext.githubProjects.map((p, idx) => (
+                    <div key={idx} className="p-3 bg-white border border-gray-200 rounded-lg shadow-sm hover:border-gray-300">
+                      <div className="flex justify-between items-start mb-1">
+                        <a 
+                          href={p.url || `https://github.com/${p.name}`} 
+                          target="_blank" 
+                          rel="noreferrer"
+                          className="font-bold text-sm text-blue-600 hover:underline"
+                        >
+                          {p.name}
+                        </a>
+                        <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                          {p.language && (
+                            <span className="px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded font-medium text-[10px]">
+                              {p.language}
+                            </span>
+                          )}
+                          {p.stars !== undefined && p.stars > 0 && (
+                            <span>⭐ {p.stars}</span>
+                          )}
+                        </div>
+                      </div>
+                      {p.description && (
+                        <p className="text-xs text-gray-600 mb-2 line-clamp-2">{p.description}</p>
+                      )}
+                      {p.keyInsights && (
+                        <p className="text-[11px] text-gray-700 bg-amber-50 border border-amber-100 p-2 rounded italic">
+                          💡 {p.keyInsights}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* GitHub Technical Interview Hooks */}
+            {candidateContext.githubInterviewHooks && candidateContext.githubInterviewHooks.length > 0 && (
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-purple-700 mb-1.5 flex items-center gap-1.5">
+                  <span>🔬</span> GitHub Codecraft Interview Hooks (Provided to AI Interviewer)
+                </h4>
+                <ul className="space-y-1.5 text-xs text-gray-800">
+                  {candidateContext.githubInterviewHooks.map((hook, idx) => (
+                    <li key={idx} className="flex items-start gap-2 bg-purple-50/70 p-2.5 rounded border border-purple-100">
+                      <span className="text-purple-600 font-bold">💻</span>
+                      <span>{hook}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+
         {candidate?.portfolioUrl && (
           <div className="mt-6">
             <h3 className="font-bold text-lg mb-2">Portfolio / Website</h3>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb, saveDb, Candidate, Application, CandidateContext } from '@/lib/db';
 import { enrichLinkedInProfile } from '@/lib/enrichment/linkedin';
+import { enrichGitHubUrl } from '@/lib/enrichment/github';
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   console.log('[Apply Route Handler Entered]', req.url);
@@ -19,7 +20,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const db = getDb();
     
     // Verify job exists
-    if (!db.jobs.find(j => j.id === jobId)) {
+    const job = db.jobs.find(j => j.id === jobId);
+    if (!job) {
       return NextResponse.json({ error: "Job not found." }, { status: 404 });
     }
 
@@ -36,6 +38,28 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         if (process.env.MOCK_LINKEDIN_ENRICHMENT === 'false') {
           return NextResponse.json({ error: "Bright Data Enrichment Failed: " + enrichErr?.message }, { status: 502 });
         }
+      }
+    }
+
+    // Automatically trigger GitHub profile/repository enrichment if URL is provided
+    if (githubUrl && typeof githubUrl === 'string' && githubUrl.trim() !== '') {
+      try {
+        console.log('[Apply Route] Triggering GitHub enrichment for:', githubUrl);
+        const enrichedGh = await enrichGitHubUrl(githubUrl.trim(), resumeText, job.description);
+        if (enrichedGh) {
+          if (!candidateContext) {
+            candidateContext = {
+              enrichmentSource: 'github',
+              enrichedAt: new Date().toISOString()
+            };
+          }
+          candidateContext.githubContext = enrichedGh;
+          candidateContext.technicalHighlights = enrichedGh.technicalHighlights;
+          candidateContext.githubProjects = enrichedGh.githubProjects;
+          candidateContext.githubInterviewHooks = enrichedGh.githubInterviewHooks;
+        }
+      } catch (ghErr: any) {
+        console.warn("[Apply Route] GitHub enrichment failed gracefully without blocking application:", ghErr?.message);
       }
     }
 
@@ -74,6 +98,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       candidateId: candidate.id,
       resumeText,
       linkedinUrl: linkedinUrl || undefined,
+      githubUrl: githubUrl || undefined,
       relevantExperience,
       additionalInfo,
       status: 'APPLIED',

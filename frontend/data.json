@@ -796,6 +796,154 @@
           "The resume mentions you reduced model inference latency by 18% without accuracy loss. Can you walk me through the steps you took to achieve this significant improvement and how you validated the accuracy retention?"
         ]
       }
+    },
+    {
+      "id": "cand_nj0oo0a",
+      "name": "Madhav Gairola",
+      "email": "madhav.fullstack.dual@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
+      "githubUrl": "https://github.com/madhavgairola",
+      "candidateContext": {
+        "headline": "Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida",
+        "experience": [
+          {
+            "title": "Software Engineer Intern",
+            "company": "RHA Technologies",
+            "duration": "Jun 2026 - Aug 2026 (3 mos)",
+            "description": "Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform"
+          }
+        ],
+        "skills": [
+          "Python",
+          "JavaScript",
+          "TypeScript",
+          "React",
+          "Next.js",
+          "Node.js",
+          "PostgreSQL"
+        ],
+        "education": [
+          {
+            "school": "Jaypee Institute of Information Technology",
+            "degree": "Bachelor of Technology - BTech",
+            "year": "Jul 2024 - Present"
+          },
+          {
+            "school": "Kendriya Vidyalaya",
+            "degree": null,
+            "year": "2018 - 2023"
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T22:00:42.360Z",
+        "careerProgression": "The candidate is currently pursuing a Bachelor of Technology degree, which started in July 2024. They have future experience as a Software Engineer Intern at RHA Technologies, slated for June to August 2026, where they are described as leading validation efforts for AI-related systems.",
+        "notableClaims": [
+          "Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform",
+          "Developed HealthLens for medical summaries and clear clinical translations",
+          "Created Neoflo AI as a visual AI Browser Memory"
+        ],
+        "interviewHooks": [
+          "Could you elaborate on the specific challenges you anticipate in leading the end-to-end validation of RAG pipelines and AI agents at RHA Technologies?",
+          "Regarding your 'HealthLens' project, what was the most complex aspect of translating clinical information into clear medical summaries?",
+          "Can you describe the core functionality of 'Neoflo AI' and how it serves as a visual AI browser memory?"
+        ],
+        "githubContext": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "name": "mdhv",
+          "bio": "I code sometimes",
+          "location": "Delhi",
+          "publicReposCount": 19,
+          "followers": 1,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
+          "technicalHighlights": [
+            "Demonstrated strong interest and practical application in AI/ML systems, particularly in projects focusing on natural language processing (HealthLens) and semantic context extraction (neoflo-ai-assignment).",
+            "Proficiency in modern web and backend development, primarily leveraging TypeScript, JavaScript (with frameworks like React/Next.js) and Python, showcasing versatility across the full stack.",
+            "Proactive approach to learning and building, evidenced by the creation of tools and experimental projects that explore complex system designs, such as a 'Personal Browser Memory' and a 'leetcode accountability league'.",
+            "Experience with AI agent validation and RAG pipelines (from internship), indicating familiarity with advanced components of AI systems and their operational considerations."
+          ],
+          "githubProjects": [
+            {
+              "name": "neoflo-ai-assignment",
+              "description": "Visual AI Browser Memory",
+              "language": "TypeScript",
+              "stars": 0,
+              "topics": [],
+              "keyInsights": "This project aims to build a 'Personal Browser Memory' to understand 'what' a user was doing on a website, moving beyond mere URL history. It tackles the challenge of enriching browser activity data with semantic context, potentially using AI for visual or content analysis to infer user intent or activity, highlighting an innovative approach to data interpretation.",
+              "url": "https://github.com/madhavgairola/neoflo-ai-assignment"
+            },
+            {
+              "name": "HealthLens",
+              "description": "Patient-first medical platform that translates complex clinical reports into clear, plain English.",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "keyInsights": "HealthLens addresses a critical real-world problem by simplifying complex medical jargon using natural language processing. Its architecture likely involves an NLP backend service to process clinical reports and present simplified output via a user-friendly frontend, demonstrating an understanding of data transformation and user experience in a sensitive, domain-specific application.",
+              "url": "https://github.com/madhavgairola/HealthLens"
+            },
+            {
+              "name": "lal",
+              "description": "leetcode accountability league",
+              "language": "Python",
+              "stars": 0,
+              "topics": [],
+              "keyInsights": "This project showcases the ability to design and implement a system for tracking and managing progress, specifically in a competitive programming context. Written primarily in Python, it likely involves data aggregation, persistence, and presentation logic to display leaderboards or progress, illustrating foundational backend development and data management skills.",
+              "url": "https://github.com/madhavgairola/lal"
+            }
+          ],
+          "githubInterviewHooks": [
+            "The concept of 'Personal Browser Memory' in your `neoflo-ai-assignment` project is intriguing. If you were to evolve this into a real-time, multi-user system like EchoSphere's, how would you architect the backend to handle concurrent streams of browser activity data for semantic analysis, considering data consistency and potential integration with streaming inference services?",
+            "Your `HealthLens` project effectively tackles complex medical jargon. Could you walk us through the core architectural components you envisioned or implemented for the NLP processing? Specifically, how would you handle versioning of your 'translation' models, manage performance for high-throughput translation requests, and ensure data privacy if deployed as a critical backend service?",
+            "In `lal`, you built a 'leetcode accountability league.' If you were to expand this into a global platform with millions of users submitting solutions and interacting in real-time, how would you re-architect the data storage and update mechanisms to ensure high availability, low latency for leaderboard updates, and efficient querying of user progress?",
+            "Your GitHub profile indicates a strong interest in AI systems and backend development, complemented by your experience validating RAG pipelines. Could you share a specific technical challenge you encountered when ensuring the *reliability* or *consistency* of an AI agent's responses, and how you approached debugging or designing for resilience in that context?"
+          ],
+          "enrichedAt": "2026-09-03T22:00:52.215Z"
+        },
+        "technicalHighlights": [
+          "Demonstrated strong interest and practical application in AI/ML systems, particularly in projects focusing on natural language processing (HealthLens) and semantic context extraction (neoflo-ai-assignment).",
+          "Proficiency in modern web and backend development, primarily leveraging TypeScript, JavaScript (with frameworks like React/Next.js) and Python, showcasing versatility across the full stack.",
+          "Proactive approach to learning and building, evidenced by the creation of tools and experimental projects that explore complex system designs, such as a 'Personal Browser Memory' and a 'leetcode accountability league'.",
+          "Experience with AI agent validation and RAG pipelines (from internship), indicating familiarity with advanced components of AI systems and their operational considerations."
+        ],
+        "githubProjects": [
+          {
+            "name": "neoflo-ai-assignment",
+            "description": "Visual AI Browser Memory",
+            "language": "TypeScript",
+            "stars": 0,
+            "topics": [],
+            "keyInsights": "This project aims to build a 'Personal Browser Memory' to understand 'what' a user was doing on a website, moving beyond mere URL history. It tackles the challenge of enriching browser activity data with semantic context, potentially using AI for visual or content analysis to infer user intent or activity, highlighting an innovative approach to data interpretation.",
+            "url": "https://github.com/madhavgairola/neoflo-ai-assignment"
+          },
+          {
+            "name": "HealthLens",
+            "description": "Patient-first medical platform that translates complex clinical reports into clear, plain English.",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "keyInsights": "HealthLens addresses a critical real-world problem by simplifying complex medical jargon using natural language processing. Its architecture likely involves an NLP backend service to process clinical reports and present simplified output via a user-friendly frontend, demonstrating an understanding of data transformation and user experience in a sensitive, domain-specific application.",
+            "url": "https://github.com/madhavgairola/HealthLens"
+          },
+          {
+            "name": "lal",
+            "description": "leetcode accountability league",
+            "language": "Python",
+            "stars": 0,
+            "topics": [],
+            "keyInsights": "This project showcases the ability to design and implement a system for tracking and managing progress, specifically in a competitive programming context. Written primarily in Python, it likely involves data aggregation, persistence, and presentation logic to display leaderboards or progress, illustrating foundational backend development and data management skills.",
+            "url": "https://github.com/madhavgairola/lal"
+          }
+        ],
+        "githubInterviewHooks": [
+          "The concept of 'Personal Browser Memory' in your `neoflo-ai-assignment` project is intriguing. If you were to evolve this into a real-time, multi-user system like EchoSphere's, how would you architect the backend to handle concurrent streams of browser activity data for semantic analysis, considering data consistency and potential integration with streaming inference services?",
+          "Your `HealthLens` project effectively tackles complex medical jargon. Could you walk us through the core architectural components you envisioned or implemented for the NLP processing? Specifically, how would you handle versioning of your 'translation' models, manage performance for high-throughput translation requests, and ensure data privacy if deployed as a critical backend service?",
+          "In `lal`, you built a 'leetcode accountability league.' If you were to expand this into a global platform with millions of users submitting solutions and interacting in real-time, how would you re-architect the data storage and update mechanisms to ensure high availability, low latency for leaderboard updates, and efficient querying of user progress?",
+          "Your GitHub profile indicates a strong interest in AI systems and backend development, complemented by your experience validating RAG pipelines. Could you share a specific technical challenge you encountered when ensuring the *reliability* or *consistency* of an AI agent's responses, and how you approached debugging or designing for resilience in that context?"
+        ]
+      }
     }
   ],
   "applications": [
@@ -1591,6 +1739,156 @@
           "The resume mentions you reduced model inference latency by 18% without accuracy loss. Can you walk me through the steps you took to achieve this significant improvement and how you validated the accuracy retention?"
         ]
       }
+    },
+    {
+      "id": "app_1xxe17d",
+      "jobId": "j1",
+      "candidateId": "cand_nj0oo0a",
+      "resumeText": "Headline: Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida\n\nExperience\nSoftware Engineer Intern\nRHA Technologies � Internship\nJun 2026 - Aug 2026 � 3 mos\n. Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform\n\nEducation\nJaypee Institute of Information Technology\nBachelor of Technology - BTech\nJul 2024 - Present\n\nKendriya Vidyalaya\n2018 - 2023\n\nProjects\nHealthLens | Medical summaries and clear clinical translations\nNeoflo AI | Visual AI Browser Memory\n\nTechnical Skills\nPython, JavaScript, TypeScript, React, Next.js, Node.js, PostgreSQL",
+      "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
+      "githubUrl": "https://github.com/madhavgairola",
+      "status": "INTERVIEW_SCHEDULED",
+      "candidateContext": {
+        "headline": "Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida",
+        "experience": [
+          {
+            "title": "Software Engineer Intern",
+            "company": "RHA Technologies",
+            "duration": "Jun 2026 - Aug 2026 (3 mos)",
+            "description": "Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform"
+          }
+        ],
+        "skills": [
+          "Python",
+          "JavaScript",
+          "TypeScript",
+          "React",
+          "Next.js",
+          "Node.js",
+          "PostgreSQL"
+        ],
+        "education": [
+          {
+            "school": "Jaypee Institute of Information Technology",
+            "degree": "Bachelor of Technology - BTech",
+            "year": "Jul 2024 - Present"
+          },
+          {
+            "school": "Kendriya Vidyalaya",
+            "degree": null,
+            "year": "2018 - 2023"
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T22:00:42.360Z",
+        "careerProgression": "The candidate is currently pursuing a Bachelor of Technology degree, which started in July 2024. They have future experience as a Software Engineer Intern at RHA Technologies, slated for June to August 2026, where they are described as leading validation efforts for AI-related systems.",
+        "notableClaims": [
+          "Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform",
+          "Developed HealthLens for medical summaries and clear clinical translations",
+          "Created Neoflo AI as a visual AI Browser Memory"
+        ],
+        "interviewHooks": [
+          "Could you elaborate on the specific challenges you anticipate in leading the end-to-end validation of RAG pipelines and AI agents at RHA Technologies?",
+          "Regarding your 'HealthLens' project, what was the most complex aspect of translating clinical information into clear medical summaries?",
+          "Can you describe the core functionality of 'Neoflo AI' and how it serves as a visual AI browser memory?"
+        ],
+        "githubContext": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "name": "mdhv",
+          "bio": "I code sometimes",
+          "location": "Delhi",
+          "publicReposCount": 19,
+          "followers": 1,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
+          "technicalHighlights": [
+            "Demonstrated strong interest and practical application in AI/ML systems, particularly in projects focusing on natural language processing (HealthLens) and semantic context extraction (neoflo-ai-assignment).",
+            "Proficiency in modern web and backend development, primarily leveraging TypeScript, JavaScript (with frameworks like React/Next.js) and Python, showcasing versatility across the full stack.",
+            "Proactive approach to learning and building, evidenced by the creation of tools and experimental projects that explore complex system designs, such as a 'Personal Browser Memory' and a 'leetcode accountability league'.",
+            "Experience with AI agent validation and RAG pipelines (from internship), indicating familiarity with advanced components of AI systems and their operational considerations."
+          ],
+          "githubProjects": [
+            {
+              "name": "neoflo-ai-assignment",
+              "description": "Visual AI Browser Memory",
+              "language": "TypeScript",
+              "stars": 0,
+              "topics": [],
+              "keyInsights": "This project aims to build a 'Personal Browser Memory' to understand 'what' a user was doing on a website, moving beyond mere URL history. It tackles the challenge of enriching browser activity data with semantic context, potentially using AI for visual or content analysis to infer user intent or activity, highlighting an innovative approach to data interpretation.",
+              "url": "https://github.com/madhavgairola/neoflo-ai-assignment"
+            },
+            {
+              "name": "HealthLens",
+              "description": "Patient-first medical platform that translates complex clinical reports into clear, plain English.",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "keyInsights": "HealthLens addresses a critical real-world problem by simplifying complex medical jargon using natural language processing. Its architecture likely involves an NLP backend service to process clinical reports and present simplified output via a user-friendly frontend, demonstrating an understanding of data transformation and user experience in a sensitive, domain-specific application.",
+              "url": "https://github.com/madhavgairola/HealthLens"
+            },
+            {
+              "name": "lal",
+              "description": "leetcode accountability league",
+              "language": "Python",
+              "stars": 0,
+              "topics": [],
+              "keyInsights": "This project showcases the ability to design and implement a system for tracking and managing progress, specifically in a competitive programming context. Written primarily in Python, it likely involves data aggregation, persistence, and presentation logic to display leaderboards or progress, illustrating foundational backend development and data management skills.",
+              "url": "https://github.com/madhavgairola/lal"
+            }
+          ],
+          "githubInterviewHooks": [
+            "The concept of 'Personal Browser Memory' in your `neoflo-ai-assignment` project is intriguing. If you were to evolve this into a real-time, multi-user system like EchoSphere's, how would you architect the backend to handle concurrent streams of browser activity data for semantic analysis, considering data consistency and potential integration with streaming inference services?",
+            "Your `HealthLens` project effectively tackles complex medical jargon. Could you walk us through the core architectural components you envisioned or implemented for the NLP processing? Specifically, how would you handle versioning of your 'translation' models, manage performance for high-throughput translation requests, and ensure data privacy if deployed as a critical backend service?",
+            "In `lal`, you built a 'leetcode accountability league.' If you were to expand this into a global platform with millions of users submitting solutions and interacting in real-time, how would you re-architect the data storage and update mechanisms to ensure high availability, low latency for leaderboard updates, and efficient querying of user progress?",
+            "Your GitHub profile indicates a strong interest in AI systems and backend development, complemented by your experience validating RAG pipelines. Could you share a specific technical challenge you encountered when ensuring the *reliability* or *consistency* of an AI agent's responses, and how you approached debugging or designing for resilience in that context?"
+          ],
+          "enrichedAt": "2026-09-03T22:00:52.215Z"
+        },
+        "technicalHighlights": [
+          "Demonstrated strong interest and practical application in AI/ML systems, particularly in projects focusing on natural language processing (HealthLens) and semantic context extraction (neoflo-ai-assignment).",
+          "Proficiency in modern web and backend development, primarily leveraging TypeScript, JavaScript (with frameworks like React/Next.js) and Python, showcasing versatility across the full stack.",
+          "Proactive approach to learning and building, evidenced by the creation of tools and experimental projects that explore complex system designs, such as a 'Personal Browser Memory' and a 'leetcode accountability league'.",
+          "Experience with AI agent validation and RAG pipelines (from internship), indicating familiarity with advanced components of AI systems and their operational considerations."
+        ],
+        "githubProjects": [
+          {
+            "name": "neoflo-ai-assignment",
+            "description": "Visual AI Browser Memory",
+            "language": "TypeScript",
+            "stars": 0,
+            "topics": [],
+            "keyInsights": "This project aims to build a 'Personal Browser Memory' to understand 'what' a user was doing on a website, moving beyond mere URL history. It tackles the challenge of enriching browser activity data with semantic context, potentially using AI for visual or content analysis to infer user intent or activity, highlighting an innovative approach to data interpretation.",
+            "url": "https://github.com/madhavgairola/neoflo-ai-assignment"
+          },
+          {
+            "name": "HealthLens",
+            "description": "Patient-first medical platform that translates complex clinical reports into clear, plain English.",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "keyInsights": "HealthLens addresses a critical real-world problem by simplifying complex medical jargon using natural language processing. Its architecture likely involves an NLP backend service to process clinical reports and present simplified output via a user-friendly frontend, demonstrating an understanding of data transformation and user experience in a sensitive, domain-specific application.",
+            "url": "https://github.com/madhavgairola/HealthLens"
+          },
+          {
+            "name": "lal",
+            "description": "leetcode accountability league",
+            "language": "Python",
+            "stars": 0,
+            "topics": [],
+            "keyInsights": "This project showcases the ability to design and implement a system for tracking and managing progress, specifically in a competitive programming context. Written primarily in Python, it likely involves data aggregation, persistence, and presentation logic to display leaderboards or progress, illustrating foundational backend development and data management skills.",
+            "url": "https://github.com/madhavgairola/lal"
+          }
+        ],
+        "githubInterviewHooks": [
+          "The concept of 'Personal Browser Memory' in your `neoflo-ai-assignment` project is intriguing. If you were to evolve this into a real-time, multi-user system like EchoSphere's, how would you architect the backend to handle concurrent streams of browser activity data for semantic analysis, considering data consistency and potential integration with streaming inference services?",
+          "Your `HealthLens` project effectively tackles complex medical jargon. Could you walk us through the core architectural components you envisioned or implemented for the NLP processing? Specifically, how would you handle versioning of your 'translation' models, manage performance for high-throughput translation requests, and ensure data privacy if deployed as a critical backend service?",
+          "In `lal`, you built a 'leetcode accountability league.' If you were to expand this into a global platform with millions of users submitting solutions and interacting in real-time, how would you re-architect the data storage and update mechanisms to ensure high availability, low latency for leaderboard updates, and efficient querying of user progress?",
+          "Your GitHub profile indicates a strong interest in AI systems and backend development, complemented by your experience validating RAG pipelines. Could you share a specific technical challenge you encountered when ensuring the *reliability* or *consistency* of an AI agent's responses, and how you approached debugging or designing for resilience in that context?"
+        ]
+      }
     }
   ],
   "interviews": [
@@ -1772,6 +2070,12 @@
       "applicationId": "app_dn1h6ss",
       "scheduledAt": "2026-09-23T14:00:00Z",
       "status": "PENDING"
+    },
+    {
+      "id": "int_8bs6ij8",
+      "applicationId": "app_1xxe17d",
+      "scheduledAt": "2026-09-24T10:00:00Z",
+      "status": "PENDING"
     }
   ],
   "blueprints": [
@@ -1839,6 +2143,11 @@
       "id": "bp_6476p1g",
       "interviewId": "int_c1jidxm",
       "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency Interview\",\n      \"purpose\": \"To assess Aman's deep technical proficiency in building high-concurrency, low-latency backend services, asynchronous programming, database optimization, and understanding of event-driven architectures, especially given his experience as a Member of Technical Staff at TestMu AI and his academic background.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Architecture & Concurrency Lead\",\n        \"instructions\": \"Speak naturally and concisely, asking one question at a time and listening carefully. Ask relevant follow-up questions based on Aman's answers. Use Aman's specific background context, such as his experience at TestMu AI, his use of Python, Go, and WebSockets, and his work with Docker, AWS, and PostgreSQL, naturally to build rapport and guide the technical discussion. Maintain a professional interviewer personality. Focus on understanding his problem-solving approach and technical depth rather than just surface-level knowledge.\",\n        \"greeting_message\": \"Hello Aman! Welcome to EchoSphere. It's great to have you. I'm Alex, and I'll be leading this technical discussion. I'm particularly interested in your experience building high-performance systems. To start, as a Member of Technical Staff at TestMu AI, can you describe a recent project where you had to focus on backend architecture or concurrency, especially considering you're also pursuing your B.Tech?\"\n      },\n      \"topics\": [\n        \"High-concurrency microservice design (Python/FastAPI/asyncio or Go)\",\n        \"Asynchronous I/O and concurrent programming paradigms\",\n        \"WebSocket API design and real-time data handling\",\n        \"PostgreSQL performance optimization (query tuning, indexing, connection pooling)\",\n        \"Redis for caching and real-time data structures\",\n        \"Event-driven architecture concepts (e.g., using Redis Pub/Sub)\",\n        \"Practical experience with Docker and AWS in a backend context\"\n      ]\n    },\n    {\n      \"round_name\": \"Distributed System Design Interview\",\n      \"purpose\": \"To evaluate Aman's ability to design scalable, fault-tolerant, and performant distributed systems, considering trade-offs and fundamental principles. This round will also probe his theoretical understanding from his B.Tech combined with any practical insights gained from his industry experience.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Distributed System Design Lead\",\n        \"instructions\": \"Speak naturally and concisely, asking one question at a time and listening carefully. Ask relevant follow-up questions based on Aman's answers. Use Aman's specific background context to tailor the system design problem, perhaps by asking him to consider how principles would apply to a system he might have worked on or is familiar with. Encourage him to think aloud about architectural choices, trade-offs, and scalability challenges. Maintain a professional interviewer personality. Acknowledge his current academic pursuits and inquire how theoretical concepts are applied in practice.\",\n        \"greeting_message\": \"Hi Aman, glad to have you back! For this round, we'll dive into distributed system design. We're interested in how you approach complex, scalable problems. Thinking about the kind of real-time AI infrastructure we're building at EchoSphere, let's consider designing a system that handles thousands of concurrent real-time audio streams for AI inference. Can you walk me through your initial thoughts on architecting such a system, perhaps drawing parallels to any scaling challenges you might have encountered at TestMu AI or in academic projects?\"\n      },\n      \"topics\": [\n        \"Scalability strategies (horizontal vs. vertical scaling)\",\n        \"Microservices architecture and inter-service communication\",\n        \"Fault tolerance and resilience in distributed systems\",\n        \"Consistency models (eventual consistency, strong consistency) and their implications\",\n        \"Idempotent design patterns\",\n        \"Message queueing systems (e.g., Kafka, Redis Pub/Sub) for event ingestion\",\n        \"Load balancing and service discovery mechanisms\",\n        \"Observability and distributed tracing concepts (e.g., OpenTelemetry)\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Cultural Alignment Interview\",\n      \"purpose\": \"To assess Aman's problem-solving approach, collaboration skills, learning agility, and alignment with EchoSphere's values. Given his early career stage, the focus will be on his potential, passion for technology, and how he navigates challenges within a team and academic environment.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Engineering Leadership & Cultural Alignment Lead\",\n        \"instructions\": \"Speak naturally and concisely, asking one question at a time and listening carefully. Ask relevant follow-up questions based on Aman's answers. Use Aman's specific background context, such as his concurrent B.Tech studies and his role at TestMu AI, to discuss his passion for computer science, his learning journey, and how he approaches challenges and collaboration. Maintain a professional interviewer personality. Emphasize understanding his motivations and fit for a senior role at EchoSphere, focusing on his growth mindset and enthusiasm.\",\n        \"greeting_message\": \"Welcome back Aman! In this final round, we want to get to know you better beyond just your technical skills. We're very impressed with your proactive career start at TestMu AI while pursuing your B.Tech. Given your current role and studies, what areas of computer science or software development are you most passionate about, and what kind of problems are you excited to tackle in your future career? We're keen to understand what drives you.\"\n      },\n      \"topics\": [\n        \"Problem-solving methodologies and critical thinking\",\n        \"Collaboration and teamwork in a technical environment\",\n        \"Learning agility and adapting to new technologies/challenges\",\n        \"Handling technical disagreements or setbacks\",\n        \"Career aspirations and growth trajectory\",\n        \"Interest in AI, real-time systems, and distributed infrastructure\",\n        \"Work-life balance and time management (especially given studies and work)\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Depth & Concurrency\": \"Evaluates understanding of async programming, high-concurrency patterns, database optimization, and real-time API design, assessed through practical problem-solving and architectural discussions. Looks for the ability to articulate design choices and trade-offs.\",\n    \"Distributed Systems Acumen\": \"Assesses knowledge of distributed system fundamentals like scalability, fault tolerance, consistency, and messaging, applied to complex system design challenges. Focus on structured thinking and awareness of architectural implications.\",\n    \"Problem-Solving & Adaptability\": \"Examines the candidate's approach to complex technical problems, their ability to learn and adapt, and their capacity to contribute effectively in a dynamic team environment. Looks for curiosity, resilience, and a growth mindset.\",\n    \"Communication & Collaboration\": \"Evaluates clarity of thought, ability to articulate technical concepts, listen effectively, and engage in collaborative discussions. Assesses potential for mentorship and cross-functional teamwork.\",\n    \"Alignment with EchoSphere Values\": \"Determines cultural fit by assessing enthusiasm for pioneering AI, commitment to operational excellence, and alignment with our mission for autonomous conversational AI. Looks for passion, initiative, and a drive to innovate.\"\n  }\n}"
+    },
+    {
+      "id": "bp_w4u3qt6",
+      "interviewId": "int_8bs6ij8",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency Interview\",\n      \"purpose\": \"To assess Madhav's foundational understanding of concurrent programming, asynchronous I/O, API design, database optimization, and the practical application of these concepts, especially within a Python context and in real-time data scenarios. We'll specifically look for how their project experiences like 'HealthLens' and 'Neoflo AI' demonstrate these skills.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Architecture & Concurrency Lead\",\n        \"instructions\": \"Speak naturally and concisely, asking one question at a time and listening carefully. Ask relevant follow-up questions based on Madhav's answers. Use Madhav's specific background context, especially their Python projects and future internship experience, naturally in the conversation. Maintain a professional interviewer personality. Given Madhav's current academic stage and internship experience, calibrate questions to assess foundational knowledge, potential, and architectural thinking demonstrated in projects, rather than extensive senior-level professional experience.\",\n        \"greeting_message\": \"Hello Madhav, welcome! I've been really impressed by your projects like 'HealthLens' and your 'neoflo-ai-assignment' for a 'Personal Browser Memory'. They showcase a strong interest in AI and how it interacts with real-world data. Today, I'd like to dive into your technical architecture and concurrency skills, particularly with Python, and see how you approach building robust, performant systems. Let's start by discussing some of your project work.\"\n      },\n      \"topics\": [\n        \"Python concurrency (asyncio, threading, multiprocessing)\",\n        \"API design (REST, WebSockets) and implementation in Python\",\n        \"Database optimization (PostgreSQL schema design, indexing, query performance)\",\n        \"Caching strategies (Redis, in-memory caches)\",\n        \"Real-time data processing fundamentals\",\n        \"Error handling and fault tolerance at a microservice level\",\n        \"Performance optimization techniques in Python applications\"\n      ]\n    },\n    {\n      \"round_name\": \"Distributed System Design Interview\",\n      \"purpose\": \"To evaluate Madhav's ability to design scalable, fault-tolerant, and low-latency distributed systems, particularly those handling real-time data streams and AI inference. This round will gauge their understanding of distributed systems fundamentals and how they apply to the challenges of building platforms like EchoSphere. We'll explore scaling challenges in their projects.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Distributed System Design Lead\",\n        \"instructions\": \"Speak naturally and concisely, asking one question at a time and listening carefully. Ask relevant follow-up questions based on Madhav's answers. Use Madhav's specific background context, especially their GitHub projects like 'neoflo-ai-assignment', 'HealthLens', and 'lal', as well as their experience validating RAG pipelines, to personalize the design challenges. Maintain a professional interviewer personality. Given Madhav's current academic stage and internship experience, calibrate questions to assess foundational knowledge, potential, and architectural thinking demonstrated in projects, rather than extensive senior-level professional experience.\",\n        \"greeting_message\": \"Hi Madhav, great to meet you! Your GitHub profile, especially the 'neoflo-ai-assignment' for a 'Personal Browser Memory' and 'HealthLens', shows a knack for tackling complex data challenges. The concept of 'Personal Browser Memory' is particularly intriguing, especially when considering how EchoSphere handles real-time, multi-user interactions. Today, I'd like to explore how you'd approach designing and scaling distributed systems, potentially drawing from the challenges you've thought about in your projects or faced in your future RAG pipeline validation work. Let's start with a design challenge related to real-time data.\"\n      },\n      \"topics\": [\n        \"Microservices architecture and inter-service communication\",\n        \"Distributed state management and consistency models (eventual consistency, strong consistency)\",\n        \"Message queues (Kafka, Redis Pub/Sub) for event ingestion and processing\",\n        \"Fault tolerance, reliability, and resilience in distributed systems\",\n        \"Scalability strategies (horizontal vs. vertical scaling, sharding, load balancing)\",\n        \"Real-time data pipelines and stream processing concepts\",\n        \"Observability (logging, metrics, distributed tracing) in a distributed environment\",\n        \"Applying distributed system fundamentals to AI inference pipelines and real-time media\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Cultural Alignment Interview\",\n      \"purpose\": \"To understand Madhav's approach to problem-solving, collaboration, learning, and how they would contribute to a team building complex AI infrastructure. This round will assess their potential for leadership and ownership, even at an early career stage, by discussing their project ownership and validation experiences, and how they navigate challenges and ambiguity.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Engineering Leadership & Cultural Alignment Lead\",\n        \"instructions\": \"Speak naturally and concisely, asking one question at a time and listening carefully. Ask relevant follow-up questions based on Madhav's answers. Use Madhav's specific background context, especially their future internship leading RAG pipeline validation, and their project experiences with 'HealthLens' and 'Neoflo AI', to discuss their approach to problem-solving and ownership. Maintain a professional interviewer personality. Given Madhav's current academic stage and internship experience, focus on assessing their potential, intellectual curiosity, problem-solving mindset, and collaborative spirit.\",\n        \"greeting_message\": \"Hi Madhav, it’s great to connect. Your projects like 'HealthLens' and 'Neoflo AI' are quite impressive, demonstrating a clear drive to build and solve problems. I'm also particularly interested in your future internship experience where you'll be leading end-to-end validation of RAG pipelines and AI agents. Today, I'd love to chat about your approach to engineering challenges, how you collaborate, and what you look for in a team and an engineering culture. Tell me about a time you encountered a significant technical challenge in one of your projects; how did you approach solving it?\"\n      },\n      \"topics\": [\n        \"Problem-solving methodologies and debugging complex systems\",\n        \"Ownership, accountability, and project leadership (even in a student context)\",\n        \"Collaboration and teamwork in a technical environment\",\n        \"Learning agility and adapting to new technologies or domains\",\n        \"Communication skills (explaining technical concepts, giving/receiving feedback)\",\n        \"Dealing with ambiguity and making decisions with incomplete information\",\n        \"Understanding of team dynamics and cultural fit\",\n        \"Career aspirations and alignment with EchoSphere's mission\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Depth & Concurrency\": \"Assesses understanding of Python concurrency, async I/O, API design, database optimization, and caching, demonstrated through project examples and hypothetical scenarios. Look for detailed explanations and awareness of performance implications.\",\n    \"Distributed System Design Acumen\": \"Evaluates ability to conceptualize scalable, fault-tolerant, and low-latency distributed systems. Focus on understanding of microservices, distributed state, message queues, and architectural trade-offs, especially when applying to real-time AI inference and data streams.\",\n    \"Problem-Solving & Critical Thinking\": \"Examines the candidate's systematic approach to identifying, analyzing, and solving complex technical problems, including debugging, root cause analysis, and proposing robust solutions. Look for structured thinking and ability to articulate their thought process.\",\n    \"Ownership & Initiative\": \"Measures the candidate's sense of responsibility, proactive approach to project ownership, ability to drive tasks to completion, and leadership potential demonstrated in projects or past experiences. Look for instances of going above and beyond or taking charge.\",\n    \"Learning Agility & Adaptability\": \"Assesses the candidate's eagerness and ability to quickly learn new technologies, adapt to changing requirements, and integrate feedback. Look for examples of self-directed learning and continuous improvement.\",\n    \"Communication & Collaboration\": \"Evaluates clarity and effectiveness in explaining technical concepts, active listening skills, and ability to work constructively within a team environment. Look for structured communication and examples of successful teamwork.\"\n  }\n}"
     }
   ]
 }

@@ -63,10 +63,11 @@ The instructions for the AI interviewers MUST explicitly tell them to:
 - use the candidate's specific background context naturally
 - maintain a professional interviewer personality
 
-CRITICAL RULES FOR LINKEDIN CONTEXT PERSONALIZATION:
+CRITICAL RULES FOR LINKEDIN & GITHUB CONTEXT PERSONALIZATION:
 - If CandidateContext from LinkedIn is provided, use it to personalize the interviewer's opening greeting message, topic selection, and follow-up probes (e.g., asking about specific career milestones, past projects, or notable claims).
-- The LinkedIn information MUST be used ONLY to personalize questions, build conversational rapport, and guide technical discussions.
-- NEVER use LinkedIn information to directly score, penalize, or reject the candidate. Evaluation is based strictly on candidate answers during the live interview.`;
+- If GitHub context (repositories, technical highlights, project insights, and GitHub interview hooks) is provided, weave these real projects and codecraft signals directly into Round 1 (Technical Architecture) and Round 2 (System Design) questions.
+- GitHub and LinkedIn information MUST be used ONLY to personalize questions, build conversational rapport, and guide deep technical discussions.
+- NEVER use LinkedIn or GitHub information to directly score, penalize, or reject the candidate. Evaluation is based strictly on candidate answers during the live interview.`;
 
     const candidateContextStr = candidateContext ? `
 --- CANDIDATE LINKEDIN CONTEXT ---
@@ -77,6 +78,16 @@ Key Skills: ${(candidateContext.skills || []).join(', ') || 'N/A'}
 Notable Claims: ${(candidateContext.notableClaims || []).join('; ') || 'N/A'}
 Personalized Interview Hooks: ${(candidateContext.interviewHooks || []).join('; ') || 'N/A'}
 Experience Details: ${JSON.stringify(candidateContext.experience || [], null, 2)}
+` : '';
+
+    const githubContextStr = candidateContext?.githubContext ? `
+--- CANDIDATE GITHUB CONTEXT (VERIFIED REPOSITORIES & CODE) ---
+GitHub Profile: ${candidateContext.githubContext.profileUrl} (${candidateContext.githubContext.username})
+Bio: ${candidateContext.githubContext.bio || 'N/A'}
+Public Repositories: ${candidateContext.githubContext.publicReposCount}
+Technical Highlights: ${(candidateContext.technicalHighlights || candidateContext.githubContext.technicalHighlights || []).join('; ') || 'N/A'}
+Key GitHub Projects: ${JSON.stringify(candidateContext.githubProjects || candidateContext.githubContext.githubProjects || [], null, 2)}
+GitHub Deep Technical Hooks: ${(candidateContext.githubInterviewHooks || candidateContext.githubContext.githubInterviewHooks || []).join('; ') || 'N/A'}
 ` : '';
 
     const userPrompt = `
@@ -92,8 +103,9 @@ Candidate Resume:
 ${application.resumeText}
 ${application.relevantExperience ? `\nHighlighted Experience:\n${application.relevantExperience}` : ''}
 ${candidateContextStr}
+${githubContextStr}
 
-Generate the personalized JSON Interview Blueprint containing EXACTLY the requested rounds for ${job.title}, using the candidate's background context and LinkedIn hooks for natural personalization.`;
+Generate the personalized JSON Interview Blueprint containing EXACTLY the requested rounds for ${job.title}, using the candidate's background context, LinkedIn hooks, and GitHub projects for natural, deep technical personalization.`;
 
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",

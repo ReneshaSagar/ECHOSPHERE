@@ -41,13 +41,13 @@ The instructions for Alex MUST explicitly tell him to:
 - never give the candidate the answers
 - maintain a professional interviewer personality
 
-CRITICAL RULES FOR LINKEDIN CONTEXT:
-- If CandidateContext is present, use it to personalize questions and follow-ups.
-- NEVER use it to score or reject the candidate.
+CRITICAL RULES FOR LINKEDIN & GITHUB CONTEXT:
+- If CandidateContext (LinkedIn or GitHub) is present, use it to personalize questions, projects, and technical follow-ups.
+- NEVER use LinkedIn or GitHub context directly to score or reject the candidate.
 
 Keep the instructions highly contextual to the specific JD, Resume, and CandidateContext provided.`;
 
-    const contextPart = candidate_context ? `\n\nCandidateContext (LinkedIn):\n${JSON.stringify(candidate_context, null, 2)}` : '';
+    const contextPart = candidate_context ? `\n\nCandidateContext (LinkedIn & GitHub):\n${JSON.stringify(candidate_context, null, 2)}` : '';
     const userPrompt = `Job Description:\n${job_description}\n\nCandidate Resume:\n${resume}${contextPart}\n\nGenerate the JSON Interview Blueprint.`;
 
     const model = genAI.getGenerativeModel({
