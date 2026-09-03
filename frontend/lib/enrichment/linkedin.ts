@@ -19,6 +19,10 @@ export function normalizeLinkedInUrl(url: string): string {
   if (!clean.startsWith('http://') && !clean.startsWith('https://')) {
     clean = 'https://' + clean;
   }
+  // If user provided linkedin.com/username without /in/
+  if (clean.includes('linkedin.com/') && !clean.includes('linkedin.com/in/') && !clean.includes('linkedin.com/company/')) {
+    clean = clean.replace('linkedin.com/', 'linkedin.com/in/');
+  }
   return clean;
 }
 
