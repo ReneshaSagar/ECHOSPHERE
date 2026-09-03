@@ -47,7 +47,7 @@ export default function ApplicationActions({ applicationId, currentStatus }: { a
 
         {currentStatus === 'SELECTED' && (
           <button 
-            onClick={() => alert('Interview Scheduling (Phase 4) is coming soon!')}
+            onClick={() => router.push(`/admin/applications/${applicationId}/schedule`)}
             className="px-6 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700 ml-auto"
           >
             Schedule Interview →

@@ -17,8 +17,17 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
   const candidate = db.candidates.find(c => c.id === application.candidateId);
   const candidateContext = application.candidateContext || candidate?.candidateContext;
   
-  // Find related interview (Phase 9 Proctoring Display)
+  // Find related interview & blueprint (Phase 9 Proctoring & Agora Voice AI)
   const interview = db.interviews.find(i => i.applicationId === application.id);
+  const blueprint = interview ? db.blueprints.find(b => b.interviewId === interview.id) : undefined;
+  let parsedBlueprint: any = null;
+  if (blueprint) {
+    try {
+      parsedBlueprint = JSON.parse(blueprint.blueprintJson);
+    } catch (e) {
+      console.error("Error parsing blueprintJson:", e);
+    }
+  }
   const hasSuspiciousEvents = interview?.suspiciousEvents && interview.suspiciousEvents.length > 0;
 
   return (
@@ -159,6 +168,116 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
             </a>
           </div>
         )}
+      </div>
+
+      {/* Agora Conversational AI Agent Briefing & Blueprint Section */}
+      <div className="bg-white rounded-xl shadow border border-gray-200 overflow-hidden mb-6">
+        <div className="p-6 bg-gradient-to-r from-blue-900 to-indigo-900 text-white flex justify-between items-center">
+          <div>
+            <h2 className="text-xl font-bold flex items-center gap-2">
+              <span>🎙️</span> Agora Voice AI Agent Briefing & Instructions
+            </h2>
+            <p className="text-blue-200 text-sm mt-1">
+              Exact prompts, spoken greeting lines, and multi-round instructions fed to the Agora Conversational AI agent.
+            </p>
+          </div>
+          {blueprint && (
+            <Link 
+              href={`/interview/${blueprint.id}`}
+              className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-lg shadow transition-all text-sm shrink-0"
+            >
+              Launch Live Interview Room →
+            </Link>
+          )}
+        </div>
+
+        <div className="p-6 space-y-6">
+          {parsedBlueprint && parsedBlueprint.interview_rounds ? (
+            <div className="space-y-6">
+              {parsedBlueprint.interview_rounds.map((round: any, idx: number) => (
+                <div key={idx} className="border border-gray-200 rounded-lg overflow-hidden bg-gray-50/50">
+                  <div className="px-4 py-3 bg-gray-100 border-b flex justify-between items-center">
+                    <span className="font-bold text-gray-800">
+                      Round {idx + 1}: {round.round_name}
+                    </span>
+                    <span className="text-xs bg-indigo-100 text-indigo-800 font-semibold px-2.5 py-0.5 rounded-full">
+                      Interviewer: {round.interviewer?.name} ({round.interviewer?.role})
+                    </span>
+                  </div>
+
+                  <div className="p-4 space-y-4">
+                    {/* Spoken Greeting Message */}
+                    <div>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-800 mb-1.5 flex items-center gap-1.5">
+                        <span>🔊</span> Spoken Opening Line (What the AI Agent Speaks First)
+                      </h4>
+                      <p className="text-sm bg-emerald-50 border border-emerald-200 text-emerald-950 p-3.5 rounded-lg italic leading-relaxed">
+                        "{round.interviewer?.greeting_message}"
+                      </p>
+                    </div>
+
+                    {/* Agent Instructions */}
+                    <div>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-800 mb-1.5 flex items-center gap-1.5">
+                        <span>🧠</span> System Instructions & Behavioral Directives (Prompt fed to AI)
+                      </h4>
+                      <p className="text-sm bg-indigo-50/60 border border-indigo-100 text-gray-800 p-3.5 rounded-lg whitespace-pre-wrap leading-relaxed">
+                        {round.interviewer?.instructions}
+                      </p>
+                    </div>
+
+                    {/* Evaluation Rubric */}
+                    {round.rubric && (
+                      <div>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-gray-600 mb-1.5 flex items-center gap-1.5">
+                          <span>⚖️</span> Round Evaluation Rubric
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                          {Object.entries(round.rubric).map(([k, v]: [string, any], rIdx) => (
+                            <div key={rIdx} className="bg-white border rounded p-2">
+                              <span className="font-semibold text-gray-700 capitalize">{k.replace(/_/g, ' ')}:</span>
+                              <span className="text-gray-600 ml-1">{typeof v === 'string' ? v : JSON.stringify(v)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              <details className="mt-4 pt-4 border-t text-xs">
+                <summary className="font-semibold text-gray-600 cursor-pointer hover:text-gray-900">
+                  Inspect Raw Blueprint JSON sent to Agora Agent
+                </summary>
+                <pre className="mt-2 p-4 bg-gray-900 text-green-400 rounded-lg overflow-x-auto text-xs">
+                  {JSON.stringify(parsedBlueprint, null, 2)}
+                </pre>
+              </details>
+            </div>
+          ) : interview ? (
+            <div className="text-center py-6">
+              <p className="text-gray-700 font-medium mb-3">
+                An interview is scheduled for {new Date(interview.scheduledAt).toLocaleString()}, but the AI Blueprint hasn't been generated yet.
+              </p>
+              <Link 
+                href={`/admin/interviews`} 
+                className="inline-block px-6 py-2.5 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 text-sm shadow"
+              >
+                Go to Scheduled Interviews & Generate Blueprint →
+              </Link>
+            </div>
+          ) : (
+            <div className="text-center py-6 text-gray-600">
+              <p className="mb-2">
+                No interview scheduled for this candidate yet.
+              </p>
+              <p className="text-sm text-gray-500">
+                Click <strong>"Select for Interview"</strong> below and then <strong>"Schedule Interview →"</strong> to generate the customized Agora agent prompts and launch the voice session.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       <ApplicationActions applicationId={application.id} currentStatus={application.status} />
