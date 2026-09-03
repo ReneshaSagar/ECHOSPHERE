@@ -116,10 +116,39 @@ async function fetchFromBrightData(cleanUrl: string, apiToken: string): Promise<
 
     const results = await scrapeRes.json();
     clearTimeout(timeoutId);
+
     if (Array.isArray(results) && results.length > 0) {
       return results[0] as BrightDataLinkedInProfileRaw;
     }
-    throw new Error('Bright Data returned an empty array of results for: ' + cleanUrl);
+
+    // Handle asynchronous snapshot response
+    if (results && results.snapshot_id) {
+      console.log(`[Bright Data] Scrape queued as snapshot: ${results.snapshot_id}. Polling for completion...`);
+      const snapshotUrl = `https://api.brightdata.com/datasets/v3/snapshot/${results.snapshot_id}?format=json`;
+      const startTime = Date.now();
+      const maxPollMs = 120000; // Poll up to 2 minutes
+
+      while (Date.now() - startTime < maxPollMs) {
+        await new Promise(r => setTimeout(r, 6000));
+        try {
+          const snapRes = await fetch(snapshotUrl, {
+            headers: { 'Authorization': 'Bearer ' + apiToken }
+          });
+          if (snapRes.status === 200) {
+            const snapData = await snapRes.json();
+            if (Array.isArray(snapData) && snapData.length > 0) {
+              console.log(`[Bright Data] Snapshot ${results.snapshot_id} completed successfully.`);
+              return snapData[0] as BrightDataLinkedInProfileRaw;
+            }
+          }
+        } catch (pollErr: any) {
+          console.warn('[Bright Data] Transient polling error:', pollErr.message);
+        }
+      }
+      throw new Error(`Bright Data snapshot ${results.snapshot_id} timed out after 2 minutes.`);
+    }
+
+    throw new Error('Bright Data returned no records for: ' + cleanUrl);
   } catch (err: any) {
     clearTimeout(timeoutId);
     console.error('[Bright Data] API request error:', err.message);
