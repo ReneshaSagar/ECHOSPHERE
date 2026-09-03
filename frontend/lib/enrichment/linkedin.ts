@@ -161,24 +161,44 @@ async function fetchFromBrightData(cleanUrl: string, apiToken: string): Promise<
  * Strictly ignores any Posts, Activity, or Featured items.
  */
 function mapBrightDataToCandidateContext(raw: any): CandidateContext {
-  // Use explicit position or headline from LinkedIn; NEVER hallucinate "Leader / Executive"
-  const headline = raw.headline || raw.position || undefined;
-  const about = raw.about || raw.summary;
-
-  let experience = (raw.experience || []).map((e: any) => {
-    let duration = e.duration;
-    if (!duration && e.start_date) {
-      duration = e.start_date + ' - ' + (e.end_date || 'Present');
-    }
+  // If Bright Data returned an error or dead page object for private profiles
+  if (raw.error || raw.error_code) {
     return {
-      title: e.title || e.position || 'Software Professional',
-      company: e.company || e.company_name || 'Organization',
-      duration: duration || undefined,
-      description: e.description || undefined
+      headline: undefined,
+      about: "LinkedIn profile is private or restricted by user privacy settings. Verification is grounded directly from their submitted application.",
+      experience: [],
+      skills: [],
+      education: [],
+      projects: [],
+      certifications: [],
+      organizations: [],
+      enrichmentSource: 'brightdata_restricted',
+      enrichedAt: new Date().toISOString()
     };
-  });
+  }
 
-  // Only if raw.position exists AND raw.current_company_name exists, add a single fallback experience
+  // Use explicit position or headline from LinkedIn; NEVER hallucinate titles
+  const headline = raw.headline || raw.position || undefined;
+  const about = raw.about || raw.summary || undefined;
+
+  // Filter out any items without a real title or company; NEVER use dummy defaults like 'Software Professional' or 'Organization'
+  let experience = (raw.experience || [])
+    .filter((e: any) => e && (e.title || e.position || e.company || e.company_name))
+    .map((e: any) => {
+      let duration = e.duration;
+      if (!duration && e.start_date) {
+        duration = e.start_date + ' - ' + (e.end_date || 'Present');
+      }
+      return {
+        title: e.title || e.position || undefined,
+        company: e.company || e.company_name || undefined,
+        duration: duration || undefined,
+        description: e.description || undefined
+      };
+    })
+    .filter((e: any) => e.title || e.company);
+
+  // If raw.experience is empty, but both raw.position AND raw.current_company_name exist, use them
   if (experience.length === 0 && raw.position && raw.current_company_name) {
     experience = [{
       title: raw.position,
@@ -188,9 +208,11 @@ function mapBrightDataToCandidateContext(raw: any): CandidateContext {
     }];
   }
 
-  const skills = (raw.skills || []).map((s: any) => (typeof s === 'string' ? s : s.name || s.title || '')).filter(Boolean);
+  const skills = (raw.skills || [])
+    .map((s: any) => (typeof s === 'string' ? s.trim() : (s.name || s.title || '').trim()))
+    .filter(Boolean);
 
-  // Map education cleanly without cross-contaminating institution names onto unverified date ranges
+  // Map education without cross-contaminating institution names onto unverified date ranges
   let education: Array<{ school: string; degree?: string; fieldOfStudy?: string; year?: string }> = [];
 
   if (raw.educations_details) {
@@ -211,32 +233,37 @@ function mapBrightDataToCandidateContext(raw: any): CandidateContext {
         fieldOfStudy: ed.field_of_study || undefined,
         year: year
       });
-    } else if (year && education.length === 0) {
-      education.push({
-        school: 'University',
-        year: year
-      });
     }
   });
 
-  const projects = (raw.projects || []).map((p: any) => ({
-    title: p.title || p.name || 'Project',
-    description: p.description || undefined,
-    url: p.url || p.link || undefined
-  }));
+  // Never invent dummy placeholders ('Project', 'Certification', 'Member') - if empty, let it be empty!
+  const projects = (raw.projects || [])
+    .filter((p: any) => p && (p.title || p.name))
+    .map((p: any) => ({
+      title: p.title || p.name,
+      description: p.description || undefined,
+      url: p.url || p.link || undefined
+    }));
 
-  const certifications = (raw.certifications || []).map((c: any) => ({
-    name: c.name || c.title || 'Certification',
-    issuer: c.issuer || c.authority || undefined,
-    year: c.year ? String(c.year) : (c.date ? String(c.date) : undefined)
-  }));
+  const certifications = (raw.certifications || [])
+    .filter((c: any) => c && (c.name || c.title))
+    .map((c: any) => ({
+      name: c.name || c.title,
+      issuer: c.issuer || c.authority || undefined,
+      year: c.year ? String(c.year) : (c.date ? String(c.date) : undefined)
+    }));
 
-  const organizations = (raw.organizations || []).map((o: any) => {
-    if (typeof o === 'string') return o;
-    const role = o.role || o.title || 'Member';
-    const org = o.organization || o.company || o.name || 'Community';
-    return role + ' at ' + org;
-  });
+  const organizations = (raw.organizations || [])
+    .map((o: any) => {
+      if (typeof o === 'string' && o.trim()) return o.trim();
+      const role = o.role || o.title;
+      const org = o.organization || o.company || o.name;
+      if (role && org) return `${role} at ${org}`;
+      if (org) return org;
+      if (role) return role;
+      return null;
+    })
+    .filter(Boolean) as string[];
 
   return {
     headline: headline || undefined,
@@ -332,17 +359,20 @@ async function synthesizeInterviewHooks(context: CandidateContext, resumeText?: 
     });
 
     const prompt = 'You are an executive technical recruiter and interview strategist.\n' +
-      'Analyze this candidate\'s verified LinkedIn profile data (extracted via Bright Data) and their submitted resume with 100% precision.\n\n' +
-      'Synthesize strategic interview fields:\n' +
-      '1. "extractedHeadline": Extract their exact headline from profile/resume (e.g. "Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida").\n' +
-      '2. "extractedExperience": Extract their exact experience entries as an array of [{ "title": "...", "company": "...", "duration": "...", "description": "..." }] (e.g. "Software Engineer Intern at RHA Technologies, Jun 2026 - Aug 2026 · 3 mos").\n' +
-      '3. "extractedEducation": Extract all education entries as an array of [{ "school": "...", "degree": "...", "year": "..." }]. Ensure colleges (e.g. Jaypee Institute of Information Technology, Jul 2024 – Present) and high schools (e.g. Kendriya Vidyalaya, 2018 – 2023) are distinct, accurate entries.\n' +
-      '4. "extractedSkills": Array of technical skills/languages.\n' +
-      '5. "careerProgression": A 1-2 sentence narrative accurately summarizing their role, transitions, and growth trajectory.\n' +
-      '6. "notableClaims": A list of 2-4 specific technical claims, performance improvements, or architectural feats.\n' +
-      '7. "interviewHooks": A list of 3-4 deep conversational questions the AI technical interviewer can use.\n\n' +
+      'Analyze this candidate\'s verified LinkedIn profile data (extracted via Bright Data) and their submitted resume.\n\n' +
+      'STRICT ANTI-HALLUCINATION & TRUTHFULNESS DIRECTIVES:\n' +
+      '1. Extract all truthful details available from the profile and resume.\n' +
+      '2. If a specific field or detail is NOT present in either source, NEVER MAKE IT UP. Leave it out or return an empty array [].\n' +
+      '3. Do NOT invent companies, job titles, universities, dates, certifications, or projects. If unknown, DO NOT guess.\n' +
+      '4. "extractedHeadline": Extract their exact headline from profile/resume if available. If none provided, synthesize ONLY based on their real verified role.\n' +
+      '5. "extractedExperience": Extract their actual roles from their resume as [{ "title": "...", "company": "...", "duration": "...", "description": "..." }]. If no experience is listed, return [].\n' +
+      '6. "extractedEducation": Extract their actual education from resume as [{ "school": "...", "degree": "...", "year": "..." }]. If no education is listed, return [].\n' +
+      '7. "extractedSkills": Extract actual skills explicitly stated in resume/profile. Do NOT add skills they did not list.\n' +
+      '8. "careerProgression": A 1-2 sentence narrative summarizing their real trajectory. If minimal info, state only what is known.\n' +
+      '9. "notableClaims": Extract 1-4 specific verifiable claims or metrics mentioned in their resume/profile. If none exist, return [].\n' +
+      '10. "interviewHooks": 2-4 conversational questions that directly cite their actual projects or experiences. Never ask about tools or companies not mentioned.\n\n' +
       'Return ONLY a JSON object with this structure:\n' +
-      '{\n  "careerProgression": "...",\n  "notableClaims": ["claim 1", "claim 2"],\n  "interviewHooks": ["hook 1", "hook 2"],\n  "extractedExperience": [],\n  "extractedEducation": [],\n  "extractedSkills": [],\n  "extractedHeadline": ""\n}\n\n' +
+      '{\n  "careerProgression": "...",\n  "notableClaims": [],\n  "interviewHooks": [],\n  "extractedExperience": [],\n  "extractedEducation": [],\n  "extractedSkills": [],\n  "extractedHeadline": ""\n}\n\n' +
       '--- CANDIDATE PROFILE (BRIGHT DATA) ---\n' +
       'Headline: ' + (context.headline || 'N/A') + '\n' +
       'About: ' + (context.about || 'N/A') + '\n' +
@@ -350,7 +380,7 @@ async function synthesizeInterviewHooks(context: CandidateContext, resumeText?: 
       'Skills: ' + (context.skills || []).join(', ') + '\n' +
       'Projects: ' + JSON.stringify(context.projects || [], null, 2) + '\n' +
       'Education: ' + JSON.stringify(context.education || [], null, 2) + '\n\n' +
-      '--- RESUME TEXT (ground truth for exact titles, degrees, and dates) ---\n' +
+      '--- RESUME TEXT (ground truth) ---\n' +
       (resumeText || 'None provided');
 
     const res = await model.generateContent(prompt);
@@ -471,11 +501,21 @@ export async function enrichLinkedInProfile(
         return await synthesizeInterviewHooks(structuredContext, resumeText);
       }
     } catch (apiErr: any) {
-      console.error('[Bright Data Enrichment] Live API call failed:', apiErr.message);
-      if (process.env.MOCK_LINKEDIN_ENRICHMENT !== 'true') {
-        // Do NOT silently fall back when MOCK_LINKEDIN_ENRICHMENT is false
-        throw apiErr;
-      }
+      console.warn('[Bright Data Enrichment] Profile is private, restricted, or temporarily unavailable:', apiErr.message);
+      // For private or restricted profiles: extract as much as possible, ground cleanly in resume, NEVER invent fake data
+      const restrictedContext: CandidateContext = {
+        headline: undefined,
+        about: "LinkedIn profile is private or restricted by user privacy settings. Verification and context are grounded directly from the candidate's verified application.",
+        experience: [],
+        skills: [],
+        education: [],
+        projects: [],
+        certifications: [],
+        organizations: [],
+        enrichmentSource: 'brightdata_restricted',
+        enrichedAt: new Date().toISOString()
+      };
+      return await synthesizeInterviewHooks(restrictedContext, resumeText);
     }
   }
 

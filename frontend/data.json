@@ -750,6 +750,52 @@
           "You list Docker, AWS, and PostgreSQL under tools. Can you share an instance where you had to work with these tools, perhaps in a deployment or data management context?"
         ]
       }
+    },
+    {
+      "id": "cand_v26blfx",
+      "name": "Renesha Sagar",
+      "email": "renesha.restricted.test@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/reneshasagar/",
+      "candidateContext": {
+        "headline": "Machine Learning Research Intern",
+        "about": "LinkedIn profile is private or restricted by user privacy settings. Verification is grounded directly from their submitted application.",
+        "experience": [
+          {
+            "title": "Machine Learning Research Intern",
+            "company": "Center for AI Research",
+            "duration": "Jun 2025 - Aug 2025",
+            "description": "Researched transformer attention pruning methods and reduced model inference latency by 18% without accuracy loss"
+          }
+        ],
+        "skills": [
+          "Python",
+          "PyTorch",
+          "Hugging Face",
+          "Scikit-Learn",
+          "Docker",
+          "SQL"
+        ],
+        "education": [
+          {
+            "school": "Jaypee Institute of Information Technology",
+            "degree": "Bachelor of Technology - BTech, Computer Science",
+            "year": "2026"
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata_restricted",
+        "enrichedAt": "2026-09-03T21:56:39.913Z",
+        "careerProgression": "Renesha is currently pursuing a Bachelor of Technology in Computer Science and has gained initial experience as a Machine Learning Research Intern, focusing on transformer attention pruning.",
+        "notableClaims": [
+          "Reduced model inference latency by 18% without accuracy loss."
+        ],
+        "interviewHooks": [
+          "During your Machine Learning Research Internship, you focused on transformer attention pruning. Could you elaborate on the specific methods you explored and why you chose that particular area of research?",
+          "The resume mentions you reduced model inference latency by 18% without accuracy loss. Can you walk me through the steps you took to achieve this significant improvement and how you validated the accuracy retention?"
+        ]
+      }
     }
   ],
   "applications": [
@@ -1495,6 +1541,54 @@
           "Your technical skills list includes a strong set of languages and frameworks like JavaScript, TypeScript, React, Node.js, and Go. Can you walk me through a situation where you applied several of these technologies to solve a particular technical challenge?",
           "Given your current role and studies, what areas of computer science or software development are you most passionate about, and what kind of problems are you excited to tackle in your future career?",
           "You list Docker, AWS, and PostgreSQL under tools. Can you share an instance where you had to work with these tools, perhaps in a deployment or data management context?"
+        ]
+      }
+    },
+    {
+      "id": "app_qktivas",
+      "jobId": "j1",
+      "candidateId": "cand_v26blfx",
+      "resumeText": "Renesha Sagar\nEducation\nJaypee Institute of Information Technology\nBachelor of Technology - BTech, Computer Science\n2022 - 2026\n\nExperience\nMachine Learning Research Intern\nCenter for AI Research\nJun 2025 - Aug 2025\n. Researched transformer attention pruning methods and reduced model inference latency by 18% without accuracy loss\n\nSkills\nPython, PyTorch, Hugging Face, Scikit-Learn, Docker, SQL",
+      "linkedinUrl": "https://www.linkedin.com/in/reneshasagar/",
+      "status": "APPLIED",
+      "candidateContext": {
+        "headline": "Machine Learning Research Intern",
+        "about": "LinkedIn profile is private or restricted by user privacy settings. Verification is grounded directly from their submitted application.",
+        "experience": [
+          {
+            "title": "Machine Learning Research Intern",
+            "company": "Center for AI Research",
+            "duration": "Jun 2025 - Aug 2025",
+            "description": "Researched transformer attention pruning methods and reduced model inference latency by 18% without accuracy loss"
+          }
+        ],
+        "skills": [
+          "Python",
+          "PyTorch",
+          "Hugging Face",
+          "Scikit-Learn",
+          "Docker",
+          "SQL"
+        ],
+        "education": [
+          {
+            "school": "Jaypee Institute of Information Technology",
+            "degree": "Bachelor of Technology - BTech, Computer Science",
+            "year": "2026"
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata_restricted",
+        "enrichedAt": "2026-09-03T21:56:39.913Z",
+        "careerProgression": "Renesha is currently pursuing a Bachelor of Technology in Computer Science and has gained initial experience as a Machine Learning Research Intern, focusing on transformer attention pruning.",
+        "notableClaims": [
+          "Reduced model inference latency by 18% without accuracy loss."
+        ],
+        "interviewHooks": [
+          "During your Machine Learning Research Internship, you focused on transformer attention pruning. Could you elaborate on the specific methods you explored and why you chose that particular area of research?",
+          "The resume mentions you reduced model inference latency by 18% without accuracy loss. Can you walk me through the steps you took to achieve this significant improvement and how you validated the accuracy retention?"
         ]
       }
     }
