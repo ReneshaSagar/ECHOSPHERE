@@ -54,6 +54,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
             };
           }
           candidateContext.githubContext = enrichedGh;
+          candidateContext.totalCommits = enrichedGh.totalCommits;
+          candidateContext.recentCommits30Days = enrichedGh.recentCommits30Days;
+          candidateContext.commitVelocityNarrative = enrichedGh.commitVelocityNarrative;
           candidateContext.technicalHighlights = enrichedGh.technicalHighlights;
           candidateContext.githubProjects = enrichedGh.githubProjects;
           candidateContext.githubInterviewHooks = enrichedGh.githubInterviewHooks;

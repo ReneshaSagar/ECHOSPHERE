@@ -113,19 +113,56 @@ Generate the personalized JSON Interview Blueprint containing EXACTLY the reques
       generationConfig: { responseMimeType: "application/json" },
     });
 
-    let result: any = null;
-    let attempts = 0;
-    while (attempts < 3) {
-      try {
-        result = await model.generateContent(userPrompt);
-        break;
-      } catch (e: any) {
-        attempts++;
-        if (attempts >= 3) throw e;
-        await new Promise(r => setTimeout(r, 1500));
+    let blueprintJsonText = '';
+    try {
+      let result: any = null;
+      let attempts = 0;
+      while (attempts < 2) {
+        try {
+          result = await model.generateContent(userPrompt);
+          break;
+        } catch (e: any) {
+          attempts++;
+          if (attempts >= 2) throw e;
+          await new Promise(r => setTimeout(r, 2000));
+        }
       }
+      blueprintJsonText = result.response.text();
+    } catch (genErr: any) {
+      console.warn('[Blueprint Route] Gemini API limit reached. Utilizing personalized deterministic blueprint fallback:', genErr.message);
+      const topProjects = (candidateContext?.githubProjects || []).slice(0, 3).map(p => `'${p.name}'`).join(' and ') || 'your recent technical projects';
+      const commitNote = candidateContext?.recentCommits30Days ? `with ${candidateContext.recentCommits30Days} commits in the past 30 days` : 'active hands-on development';
+
+      const fallbackBlueprint = {
+        interview_rounds: stages.map((s, idx) => {
+          let role = `${s} Lead`;
+          let greeting = `Hello ${candidate.name}, welcome! I've been reviewing your background, including your GitHub projects like ${topProjects} (${commitNote}). Today, we will focus on ${s}. Let's dive in.`;
+          if (idx === 1) {
+            greeting = `Hi ${candidate.name}, welcome to the System Design round. Looking at your repositories like ${topProjects}, I'm keen to discuss how you approach scaling systems and managing concurrency. Let's get started.`;
+          } else if (idx === 2) {
+            greeting = `Hi ${candidate.name}, great to meet you. Today we'll talk about engineering leadership, team communication, and your experiences collaborating on projects. How are you doing today?`;
+          }
+
+          return {
+            round_name: `${s} Interview`,
+            purpose: `Evaluate ${candidate.name}'s capabilities in ${s} with personalized questions grounded in their background.`,
+            interviewer: {
+              name: "Alex",
+              role,
+              instructions: `Speak naturally and concisely. Ask one question at a time. Actively listen to ${candidate.name}. Explore their technical depth in projects like ${topProjects} and validate their real-world problem solving. Maintain a professional, encouraging interviewer tone.`,
+              greeting_message: greeting
+            },
+            topics: ["Core Architecture", "Data Structures", "System Scale", "Engineering Trade-offs"]
+          };
+        }),
+        rubric: {
+          "Technical Problem Solving": "Evaluates candidate's analytical reasoning and architectural clarity",
+          "System Architecture": "Evaluates understanding of concurrency, scalability, and maintainability",
+          "Communication & Craft": "Evaluates structured technical explanation and codecraft"
+        }
+      };
+      blueprintJsonText = JSON.stringify(fallbackBlueprint, null, 2);
     }
-    const blueprintJsonText = result.response.text();
     
     // Check if a blueprint already exists to overwrite or create new
     let blueprint = db.blueprints.find(b => b.interviewId === interviewId);

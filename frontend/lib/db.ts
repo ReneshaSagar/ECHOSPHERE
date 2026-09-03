@@ -40,6 +40,9 @@ export interface GitHubContext {
   publicReposCount?: number;
   followers?: number;
   avatarUrl?: string;
+  totalCommits?: number;
+  recentCommits30Days?: number;
+  commitVelocityNarrative?: string;
   technicalHighlights?: string[];
   githubProjects?: Array<{
     name: string;
@@ -49,6 +52,9 @@ export interface GitHubContext {
     topics?: string[];
     keyInsights?: string;
     url?: string;
+    isPinned?: boolean;
+    candidateCommits?: number;
+    isRecent?: boolean;
   }>;
   githubInterviewHooks?: string[];
   enrichedAt: string;
@@ -89,6 +95,9 @@ export interface CandidateContext {
 
   // GitHub Technical Enrichment
   githubContext?: GitHubContext;
+  totalCommits?: number;
+  recentCommits30Days?: number;
+  commitVelocityNarrative?: string;
   technicalHighlights?: string[];
   githubProjects?: Array<{
     name: string;
@@ -98,6 +107,9 @@ export interface CandidateContext {
     topics?: string[];
     keyInsights?: string;
     url?: string;
+    isPinned?: boolean;
+    candidateCommits?: number;
+    isRecent?: boolean;
   }>;
   githubInterviewHooks?: string[];
 }

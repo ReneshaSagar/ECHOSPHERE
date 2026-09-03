@@ -944,6 +944,242 @@
           "Your GitHub profile indicates a strong interest in AI systems and backend development, complemented by your experience validating RAG pipelines. Could you share a specific technical challenge you encountered when ensuring the *reliability* or *consistency* of an AI agent's responses, and how you approached debugging or designing for resilience in that context?"
         ]
       }
+    },
+    {
+      "id": "cand_ka351uk",
+      "name": "Madhav Gairola",
+      "email": "madhav.commit.test@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
+      "githubUrl": "https://github.com/madhavgairola",
+      "candidateContext": {
+        "headline": "Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida",
+        "experience": [
+          {
+            "company": "RHA Technologies",
+            "title": "Software Engineer Intern",
+            "duration": "Jun 2026 - Aug 2026 · 3 mos",
+            "description": "Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform."
+          }
+        ],
+        "skills": [],
+        "education": [
+          {
+            "school": "Jaypee Institute of Information Technology",
+            "degree": "Bachelor of Technology - BTech",
+            "year": "Jul 2024 – Present"
+          },
+          {
+            "school": "Kendriya Vidyalaya",
+            "year": "2018 – 2023"
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T22:08:41.685Z"
+      }
+    },
+    {
+      "id": "cand_9vfbjgs",
+      "name": "Madhav Gairola",
+      "email": "madhav.allrepos.verified@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
+      "githubUrl": "https://github.com/madhavgairola",
+      "candidateContext": {
+        "headline": "Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida",
+        "experience": [
+          {
+            "company": "RHA Technologies",
+            "title": "Software Engineer Intern",
+            "duration": "Jun 2026 - Aug 2026 · 3 mos",
+            "description": "Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform."
+          }
+        ],
+        "skills": [],
+        "education": [
+          {
+            "school": "Jaypee Institute of Information Technology",
+            "degree": "Bachelor of Technology - BTech",
+            "year": "Jul 2024 – Present"
+          },
+          {
+            "school": "Kendriya Vidyalaya",
+            "year": "2018 – 2023"
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T22:10:24.237Z",
+        "githubContext": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "name": "mdhv",
+          "bio": "I code sometimes",
+          "location": "Delhi",
+          "publicReposCount": 19,
+          "followers": 1,
+          "totalCommits": 702,
+          "recentCommits30Days": 124,
+          "commitVelocityNarrative": "124 commits in the past 30 days • 702 total commits",
+          "technicalHighlights": [
+            "Active GitHub contributor with 19 public repositories and 124 commits in the past 30 days.",
+            "Multi-language developer.",
+            "Showcased pinned repositories include: ExpensWise, HealthLens, syn-2, electora."
+          ],
+          "githubProjects": [
+            {
+              "name": "echosphere",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/echosphere",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "kana-dojo",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/kana-dojo",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "syn-2",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/syn-2",
+              "isPinned": true,
+              "isRecent": true
+            },
+            {
+              "name": "Yatrikavach",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/Yatrikavach",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "lal",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/lal",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "neoflo-ai-assignment",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/neoflo-ai-assignment",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "madhavgairola",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/madhavgairola",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "backend-synthetic",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/backend-synthetic",
+              "isPinned": false,
+              "isRecent": true
+            }
+          ],
+          "githubInterviewHooks": [
+            "In your GitHub project echosphere, what were the most significant technical trade-offs you made during its implementation?",
+            "Walk me through the architectural decisions behind echosphere and how you structured the code for maintainability."
+          ],
+          "enrichedAt": "2026-09-03T22:10:26.019Z"
+        },
+        "totalCommits": 702,
+        "recentCommits30Days": 124,
+        "commitVelocityNarrative": "124 commits in the past 30 days • 702 total commits",
+        "technicalHighlights": [
+          "Active GitHub contributor with 19 public repositories and 124 commits in the past 30 days.",
+          "Multi-language developer.",
+          "Showcased pinned repositories include: ExpensWise, HealthLens, syn-2, electora."
+        ],
+        "githubProjects": [
+          {
+            "name": "echosphere",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/echosphere",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "kana-dojo",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/kana-dojo",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "syn-2",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/syn-2",
+            "isPinned": true,
+            "isRecent": true
+          },
+          {
+            "name": "Yatrikavach",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/Yatrikavach",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "lal",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/lal",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "neoflo-ai-assignment",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/neoflo-ai-assignment",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "madhavgairola",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/madhavgairola",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "backend-synthetic",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/backend-synthetic",
+            "isPinned": false,
+            "isRecent": true
+          }
+        ],
+        "githubInterviewHooks": [
+          "In your GitHub project echosphere, what were the most significant technical trade-offs you made during its implementation?",
+          "Walk me through the architectural decisions behind echosphere and how you structured the code for maintainability."
+        ]
+      }
     }
   ],
   "applications": [
@@ -1889,6 +2125,246 @@
           "Your GitHub profile indicates a strong interest in AI systems and backend development, complemented by your experience validating RAG pipelines. Could you share a specific technical challenge you encountered when ensuring the *reliability* or *consistency* of an AI agent's responses, and how you approached debugging or designing for resilience in that context?"
         ]
       }
+    },
+    {
+      "id": "app_tblb47l",
+      "jobId": "j1",
+      "candidateId": "cand_ka351uk",
+      "resumeText": "Headline: Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida\n\nExperience\nSoftware Engineer Intern\nRHA Technologies � Internship\nJun 2026 - Aug 2026 � 3 mos\n. Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform\n\nEducation\nJaypee Institute of Information Technology\nBachelor of Technology - BTech\nJul 2024 - Present\n\nKendriya Vidyalaya\n2018 - 2023\n\nSkills\nTypeScript, JavaScript, Python, Next.js, React, Node.js, SQL",
+      "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
+      "githubUrl": "https://github.com/madhavgairola",
+      "status": "APPLIED",
+      "candidateContext": {
+        "headline": "Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida",
+        "experience": [
+          {
+            "company": "RHA Technologies",
+            "title": "Software Engineer Intern",
+            "duration": "Jun 2026 - Aug 2026 · 3 mos",
+            "description": "Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform."
+          }
+        ],
+        "skills": [],
+        "education": [
+          {
+            "school": "Jaypee Institute of Information Technology",
+            "degree": "Bachelor of Technology - BTech",
+            "year": "Jul 2024 – Present"
+          },
+          {
+            "school": "Kendriya Vidyalaya",
+            "year": "2018 – 2023"
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T22:08:41.685Z"
+      }
+    },
+    {
+      "id": "app_pqfntku",
+      "jobId": "j1",
+      "candidateId": "cand_9vfbjgs",
+      "resumeText": "Headline: Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida\n\nExperience\nSoftware Engineer Intern\nRHA Technologies � Internship\nJun 2026 - Aug 2026 � 3 mos\n. Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform\n\nEducation\nJaypee Institute of Information Technology\nBachelor of Technology - BTech\nJul 2024 - Present\n\nKendriya Vidyalaya\n2018 - 2023\n\nSkills\nTypeScript, JavaScript, Python, React, Next.js, Node.js, SQL",
+      "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
+      "githubUrl": "https://github.com/madhavgairola",
+      "status": "INTERVIEW_SCHEDULED",
+      "candidateContext": {
+        "headline": "Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida",
+        "experience": [
+          {
+            "company": "RHA Technologies",
+            "title": "Software Engineer Intern",
+            "duration": "Jun 2026 - Aug 2026 · 3 mos",
+            "description": "Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform."
+          }
+        ],
+        "skills": [],
+        "education": [
+          {
+            "school": "Jaypee Institute of Information Technology",
+            "degree": "Bachelor of Technology - BTech",
+            "year": "Jul 2024 – Present"
+          },
+          {
+            "school": "Kendriya Vidyalaya",
+            "year": "2018 – 2023"
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T22:10:24.237Z",
+        "githubContext": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "name": "mdhv",
+          "bio": "I code sometimes",
+          "location": "Delhi",
+          "publicReposCount": 19,
+          "followers": 1,
+          "totalCommits": 702,
+          "recentCommits30Days": 124,
+          "commitVelocityNarrative": "124 commits in the past 30 days • 702 total commits",
+          "technicalHighlights": [
+            "Active GitHub contributor with 19 public repositories and 124 commits in the past 30 days.",
+            "Multi-language developer.",
+            "Showcased pinned repositories include: ExpensWise, HealthLens, syn-2, electora."
+          ],
+          "githubProjects": [
+            {
+              "name": "echosphere",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/echosphere",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "kana-dojo",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/kana-dojo",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "syn-2",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/syn-2",
+              "isPinned": true,
+              "isRecent": true
+            },
+            {
+              "name": "Yatrikavach",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/Yatrikavach",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "lal",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/lal",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "neoflo-ai-assignment",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/neoflo-ai-assignment",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "madhavgairola",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/madhavgairola",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "backend-synthetic",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/backend-synthetic",
+              "isPinned": false,
+              "isRecent": true
+            }
+          ],
+          "githubInterviewHooks": [
+            "In your GitHub project echosphere, what were the most significant technical trade-offs you made during its implementation?",
+            "Walk me through the architectural decisions behind echosphere and how you structured the code for maintainability."
+          ],
+          "enrichedAt": "2026-09-03T22:10:26.019Z"
+        },
+        "totalCommits": 702,
+        "recentCommits30Days": 124,
+        "commitVelocityNarrative": "124 commits in the past 30 days • 702 total commits",
+        "technicalHighlights": [
+          "Active GitHub contributor with 19 public repositories and 124 commits in the past 30 days.",
+          "Multi-language developer.",
+          "Showcased pinned repositories include: ExpensWise, HealthLens, syn-2, electora."
+        ],
+        "githubProjects": [
+          {
+            "name": "echosphere",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/echosphere",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "kana-dojo",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/kana-dojo",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "syn-2",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/syn-2",
+            "isPinned": true,
+            "isRecent": true
+          },
+          {
+            "name": "Yatrikavach",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/Yatrikavach",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "lal",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/lal",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "neoflo-ai-assignment",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/neoflo-ai-assignment",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "madhavgairola",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/madhavgairola",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "backend-synthetic",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/backend-synthetic",
+            "isPinned": false,
+            "isRecent": true
+          }
+        ],
+        "githubInterviewHooks": [
+          "In your GitHub project echosphere, what were the most significant technical trade-offs you made during its implementation?",
+          "Walk me through the architectural decisions behind echosphere and how you structured the code for maintainability."
+        ]
+      }
     }
   ],
   "interviews": [
@@ -2076,6 +2552,12 @@
       "applicationId": "app_1xxe17d",
       "scheduledAt": "2026-09-24T10:00:00Z",
       "status": "PENDING"
+    },
+    {
+      "id": "int_namzxfu",
+      "applicationId": "app_pqfntku",
+      "scheduledAt": "2026-09-24T10:00:00Z",
+      "status": "PENDING"
     }
   ],
   "blueprints": [
@@ -2148,6 +2630,11 @@
       "id": "bp_w4u3qt6",
       "interviewId": "int_8bs6ij8",
       "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency Interview\",\n      \"purpose\": \"To assess Madhav's foundational understanding of concurrent programming, asynchronous I/O, API design, database optimization, and the practical application of these concepts, especially within a Python context and in real-time data scenarios. We'll specifically look for how their project experiences like 'HealthLens' and 'Neoflo AI' demonstrate these skills.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Architecture & Concurrency Lead\",\n        \"instructions\": \"Speak naturally and concisely, asking one question at a time and listening carefully. Ask relevant follow-up questions based on Madhav's answers. Use Madhav's specific background context, especially their Python projects and future internship experience, naturally in the conversation. Maintain a professional interviewer personality. Given Madhav's current academic stage and internship experience, calibrate questions to assess foundational knowledge, potential, and architectural thinking demonstrated in projects, rather than extensive senior-level professional experience.\",\n        \"greeting_message\": \"Hello Madhav, welcome! I've been really impressed by your projects like 'HealthLens' and your 'neoflo-ai-assignment' for a 'Personal Browser Memory'. They showcase a strong interest in AI and how it interacts with real-world data. Today, I'd like to dive into your technical architecture and concurrency skills, particularly with Python, and see how you approach building robust, performant systems. Let's start by discussing some of your project work.\"\n      },\n      \"topics\": [\n        \"Python concurrency (asyncio, threading, multiprocessing)\",\n        \"API design (REST, WebSockets) and implementation in Python\",\n        \"Database optimization (PostgreSQL schema design, indexing, query performance)\",\n        \"Caching strategies (Redis, in-memory caches)\",\n        \"Real-time data processing fundamentals\",\n        \"Error handling and fault tolerance at a microservice level\",\n        \"Performance optimization techniques in Python applications\"\n      ]\n    },\n    {\n      \"round_name\": \"Distributed System Design Interview\",\n      \"purpose\": \"To evaluate Madhav's ability to design scalable, fault-tolerant, and low-latency distributed systems, particularly those handling real-time data streams and AI inference. This round will gauge their understanding of distributed systems fundamentals and how they apply to the challenges of building platforms like EchoSphere. We'll explore scaling challenges in their projects.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Distributed System Design Lead\",\n        \"instructions\": \"Speak naturally and concisely, asking one question at a time and listening carefully. Ask relevant follow-up questions based on Madhav's answers. Use Madhav's specific background context, especially their GitHub projects like 'neoflo-ai-assignment', 'HealthLens', and 'lal', as well as their experience validating RAG pipelines, to personalize the design challenges. Maintain a professional interviewer personality. Given Madhav's current academic stage and internship experience, calibrate questions to assess foundational knowledge, potential, and architectural thinking demonstrated in projects, rather than extensive senior-level professional experience.\",\n        \"greeting_message\": \"Hi Madhav, great to meet you! Your GitHub profile, especially the 'neoflo-ai-assignment' for a 'Personal Browser Memory' and 'HealthLens', shows a knack for tackling complex data challenges. The concept of 'Personal Browser Memory' is particularly intriguing, especially when considering how EchoSphere handles real-time, multi-user interactions. Today, I'd like to explore how you'd approach designing and scaling distributed systems, potentially drawing from the challenges you've thought about in your projects or faced in your future RAG pipeline validation work. Let's start with a design challenge related to real-time data.\"\n      },\n      \"topics\": [\n        \"Microservices architecture and inter-service communication\",\n        \"Distributed state management and consistency models (eventual consistency, strong consistency)\",\n        \"Message queues (Kafka, Redis Pub/Sub) for event ingestion and processing\",\n        \"Fault tolerance, reliability, and resilience in distributed systems\",\n        \"Scalability strategies (horizontal vs. vertical scaling, sharding, load balancing)\",\n        \"Real-time data pipelines and stream processing concepts\",\n        \"Observability (logging, metrics, distributed tracing) in a distributed environment\",\n        \"Applying distributed system fundamentals to AI inference pipelines and real-time media\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Cultural Alignment Interview\",\n      \"purpose\": \"To understand Madhav's approach to problem-solving, collaboration, learning, and how they would contribute to a team building complex AI infrastructure. This round will assess their potential for leadership and ownership, even at an early career stage, by discussing their project ownership and validation experiences, and how they navigate challenges and ambiguity.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Engineering Leadership & Cultural Alignment Lead\",\n        \"instructions\": \"Speak naturally and concisely, asking one question at a time and listening carefully. Ask relevant follow-up questions based on Madhav's answers. Use Madhav's specific background context, especially their future internship leading RAG pipeline validation, and their project experiences with 'HealthLens' and 'Neoflo AI', to discuss their approach to problem-solving and ownership. Maintain a professional interviewer personality. Given Madhav's current academic stage and internship experience, focus on assessing their potential, intellectual curiosity, problem-solving mindset, and collaborative spirit.\",\n        \"greeting_message\": \"Hi Madhav, it’s great to connect. Your projects like 'HealthLens' and 'Neoflo AI' are quite impressive, demonstrating a clear drive to build and solve problems. I'm also particularly interested in your future internship experience where you'll be leading end-to-end validation of RAG pipelines and AI agents. Today, I'd love to chat about your approach to engineering challenges, how you collaborate, and what you look for in a team and an engineering culture. Tell me about a time you encountered a significant technical challenge in one of your projects; how did you approach solving it?\"\n      },\n      \"topics\": [\n        \"Problem-solving methodologies and debugging complex systems\",\n        \"Ownership, accountability, and project leadership (even in a student context)\",\n        \"Collaboration and teamwork in a technical environment\",\n        \"Learning agility and adapting to new technologies or domains\",\n        \"Communication skills (explaining technical concepts, giving/receiving feedback)\",\n        \"Dealing with ambiguity and making decisions with incomplete information\",\n        \"Understanding of team dynamics and cultural fit\",\n        \"Career aspirations and alignment with EchoSphere's mission\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Depth & Concurrency\": \"Assesses understanding of Python concurrency, async I/O, API design, database optimization, and caching, demonstrated through project examples and hypothetical scenarios. Look for detailed explanations and awareness of performance implications.\",\n    \"Distributed System Design Acumen\": \"Evaluates ability to conceptualize scalable, fault-tolerant, and low-latency distributed systems. Focus on understanding of microservices, distributed state, message queues, and architectural trade-offs, especially when applying to real-time AI inference and data streams.\",\n    \"Problem-Solving & Critical Thinking\": \"Examines the candidate's systematic approach to identifying, analyzing, and solving complex technical problems, including debugging, root cause analysis, and proposing robust solutions. Look for structured thinking and ability to articulate their thought process.\",\n    \"Ownership & Initiative\": \"Measures the candidate's sense of responsibility, proactive approach to project ownership, ability to drive tasks to completion, and leadership potential demonstrated in projects or past experiences. Look for instances of going above and beyond or taking charge.\",\n    \"Learning Agility & Adaptability\": \"Assesses the candidate's eagerness and ability to quickly learn new technologies, adapt to changing requirements, and integrate feedback. Look for examples of self-directed learning and continuous improvement.\",\n    \"Communication & Collaboration\": \"Evaluates clarity and effectiveness in explaining technical concepts, active listening skills, and ability to work constructively within a team environment. Look for structured communication and examples of successful teamwork.\"\n  }\n}"
+    },
+    {
+      "id": "bp_rd73io2",
+      "interviewId": "int_namzxfu",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency Interview\",\n      \"purpose\": \"Evaluate Madhav Gairola's capabilities in Technical Architecture & Concurrency with personalized questions grounded in their background.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Architecture & Concurrency Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time. Actively listen to Madhav Gairola. Explore their technical depth in projects like 'echosphere' and 'kana-dojo' and 'syn-2' and validate their real-world problem solving. Maintain a professional, encouraging interviewer tone.\",\n        \"greeting_message\": \"Hello Madhav Gairola, welcome! I've been reviewing your background, including your GitHub projects like 'echosphere' and 'kana-dojo' and 'syn-2' (with 124 commits in the past 30 days). Today, we will focus on Technical Architecture & Concurrency. Let's dive in.\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    },\n    {\n      \"round_name\": \"Distributed System Design Interview\",\n      \"purpose\": \"Evaluate Madhav Gairola's capabilities in Distributed System Design with personalized questions grounded in their background.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Distributed System Design Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time. Actively listen to Madhav Gairola. Explore their technical depth in projects like 'echosphere' and 'kana-dojo' and 'syn-2' and validate their real-world problem solving. Maintain a professional, encouraging interviewer tone.\",\n        \"greeting_message\": \"Hi Madhav Gairola, welcome to the System Design round. Looking at your repositories like 'echosphere' and 'kana-dojo' and 'syn-2', I'm keen to discuss how you approach scaling systems and managing concurrency. Let's get started.\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Cultural Alignment Interview\",\n      \"purpose\": \"Evaluate Madhav Gairola's capabilities in Engineering Leadership & Cultural Alignment with personalized questions grounded in their background.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Engineering Leadership & Cultural Alignment Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time. Actively listen to Madhav Gairola. Explore their technical depth in projects like 'echosphere' and 'kana-dojo' and 'syn-2' and validate their real-world problem solving. Maintain a professional, encouraging interviewer tone.\",\n        \"greeting_message\": \"Hi Madhav Gairola, great to meet you. Today we'll talk about engineering leadership, team communication, and your experiences collaborating on projects. How are you doing today?\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Problem Solving\": \"Evaluates candidate's analytical reasoning and architectural clarity\",\n    \"System Architecture\": \"Evaluates understanding of concurrency, scalability, and maintainability\",\n    \"Communication & Craft\": \"Evaluates structured technical explanation and codecraft\"\n  }\n}"
     }
   ]
 }

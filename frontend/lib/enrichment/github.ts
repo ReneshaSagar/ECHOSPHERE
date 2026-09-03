@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+﻿import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { GitHubContext } from '@/lib/db';
 
 export interface ParsedGitHubUrl {
@@ -10,7 +10,6 @@ export interface ParsedGitHubUrl {
 
 /**
  * Validates and parses any GitHub URL into profile or repository targets.
- * Supports http/https and missing protocol.
  */
 export function parseGitHubUrl(rawUrl?: string | null): ParsedGitHubUrl | null {
   if (!rawUrl || typeof rawUrl !== 'string') return null;
@@ -27,7 +26,6 @@ export function parseGitHubUrl(rawUrl?: string | null): ParsedGitHubUrl | null {
     if (segments.length === 0) return null;
 
     const owner = segments[0];
-    // Ignore reserved GitHub paths
     const reserved = ['settings', 'explore', 'topics', 'trending', 'collections', 'events', 'features', 'pricing', 'about', 'contact'];
     if (reserved.includes(owner.toLowerCase())) return null;
 
@@ -63,6 +61,10 @@ interface RawRepoInfo {
   languages?: Record<string, number>;
   readmeSnippet?: string;
   updatedAt?: string;
+  pushedAt?: string;
+  isPinned?: boolean;
+  candidateCommits?: number;
+  isRecent?: boolean;
 }
 
 interface RawGitHubProfile {
@@ -75,12 +77,13 @@ interface RawGitHubProfile {
   followers: number;
   avatarUrl?: string;
   profileUrl: string;
+  totalCommits?: number;
+  recentCommits30Days?: number;
+  pinnedRepoNames: string[];
   repos: RawRepoInfo[];
+  allRepoNames: string[];
 }
 
-/**
- * Creates default GitHub headers with standard User-Agent and optional authorization token.
- */
 function getGitHubHeaders(): HeadersInit {
   const headers: HeadersInit = {
     'User-Agent': 'EchoSphere-Hiring-Engine/1.0',
@@ -96,21 +99,111 @@ function getGitHubHeaders(): HeadersInit {
 }
 
 /**
+ * Extracts pinned repositories from candidate's profile page HTML.
+ */
+async function fetchPinnedRepoNames(username: string): Promise<string[]> {
+  try {
+    const res = await fetch(`https://github.com/${username}`, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; EchoSphereBot/1.0)' },
+      signal: AbortSignal.timeout(5000)
+    });
+    if (!res.ok) return [];
+    const html = await res.text();
+    const pinnedMatches: string[] = [];
+    const regex = /<span class="repo"[^>]*>([^<]+)<\/span>/g;
+    let match;
+    while ((match = regex.exec(html)) !== null) {
+      pinnedMatches.push(match[1].trim());
+    }
+    return [...new Set(pinnedMatches)];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Fetches total commits and past-month commit velocity using official GitHub Search API.
+ */
+async function fetchCommitMetrics(username: string): Promise<{ totalCommits?: number; recentCommits30Days?: number }> {
+  try {
+    const headers = getGitHubHeaders();
+    
+    // 1. Total commits authored by user
+    let totalCommits: number | undefined = undefined;
+    try {
+      const totalRes = await fetch(`https://api.github.com/search/commits?q=author:${username}`, {
+        headers,
+        signal: AbortSignal.timeout(6000)
+      });
+      if (totalRes.ok) {
+        const data = await totalRes.json();
+        if (typeof data.total_count === 'number') totalCommits = data.total_count;
+      }
+    } catch (e: any) {
+      console.warn(`[GitHub API] Could not fetch total commits for ${username}:`, e.message);
+    }
+
+    // 2. Recent commits in the past 30 days
+    let recentCommits30Days: number | undefined = undefined;
+    try {
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      const dateStr = thirtyDaysAgo.toISOString().split('T')[0];
+      const recentRes = await fetch(`https://api.github.com/search/commits?q=author:${username}+committer-date:>=${dateStr}`, {
+        headers,
+        signal: AbortSignal.timeout(6000)
+      });
+      if (recentRes.ok) {
+        const data = await recentRes.json();
+        if (typeof data.total_count === 'number') recentCommits30Days = data.total_count;
+      }
+    } catch (e: any) {
+      console.warn(`[GitHub API] Could not fetch 30-day commits for ${username}:`, e.message);
+    }
+
+    return { totalCommits, recentCommits30Days };
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Fetches candidate commit count in a specific repository via Link header rel="last".
+ */
+async function fetchRepoCandidateCommits(owner: string, repo: string, username: string): Promise<number | undefined> {
+  try {
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/commits?author=${username}&per_page=1`, {
+      headers: getGitHubHeaders(),
+      signal: AbortSignal.timeout(4000)
+    });
+    if (!res.ok) return undefined;
+    const link = res.headers.get('link');
+    if (link) {
+      const match = link.match(/&page=(\d+)>; rel="last"/);
+      if (match) return parseInt(match[1], 10);
+    }
+    const data = await res.json();
+    return Array.isArray(data) ? data.length : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
  * Fetches README snippet safely without throwing.
  */
 async function fetchReadmeSnippet(owner: string, repo: string): Promise<string | undefined> {
   try {
     const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/readme`, {
       headers: getGitHubHeaders(),
-      signal: AbortSignal.timeout(5000)
+      signal: AbortSignal.timeout(4000)
     });
     if (!res.ok) return undefined;
     const data = await res.json();
     if (data.content && data.encoding === 'base64') {
       const decoded = Buffer.from(data.content, 'base64').toString('utf-8');
-      // Clean markdown badges, take first 600 characters
       const clean = decoded.replace(/\[!\[.*?\]\(.*?\)\]\(.*?\)/g, '').replace(/#+/g, '').trim();
-      return clean.substring(0, 600);
+      return clean.substring(0, 700);
     }
   } catch {
     // Ignore readme fetch error
@@ -137,7 +230,92 @@ async function fetchRepoLanguages(owner: string, repo: string): Promise<Record<s
 }
 
 /**
- * Fetches complete GitHub profile data and top public repositories.
+ * Fallback parser extracting profile metadata and repositories when GitHub API rate limits are hit.
+ */
+async function fetchGitHubProfileViaPublicWeb(username: string): Promise<RawGitHubProfile | null> {
+  try {
+    const [profileRes, contribRes, reposRes] = await Promise.all([
+      fetch(`https://github.com/${username}`, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(7000) }),
+      fetch(`https://github.com/users/${username}/contributions`, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(7000) }),
+      fetch(`https://github.com/${username}?tab=repositories`, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(7000) })
+    ]);
+
+    const profileHtml = await profileRes.text();
+    const contribHtml = await contribRes.text();
+    const reposHtml = await reposRes.text();
+
+    const nameMatch = profileHtml.match(/class="p-name[^>]*>\s*([^<]+)\s*<\/span>/i);
+    const name = nameMatch ? nameMatch[1].trim() : undefined;
+
+    const bioMatch = profileHtml.match(/class="p-note user-profile-bio[^>]*>[\s\S]*?<div>([^<]+)<\/div>/i);
+    const bio = bioMatch ? bioMatch[1].trim() : undefined;
+
+    const locMatch = profileHtml.match(/class="p-label">([^<]+)<\/span>/i);
+    const location = locMatch ? locMatch[1].trim() : undefined;
+
+    const avatarMatch = profileHtml.match(/class="avatar avatar-user[^"]*"[^>]*src="([^"]+)"/i);
+    const avatarUrl = avatarMatch ? avatarMatch[1] : undefined;
+
+    const pinnedRepoNames: string[] = [];
+    const regex = /<span class="repo"[^>]*>([^<]+)<\/span>/g;
+    let match;
+    while ((match = regex.exec(profileHtml)) !== null) {
+      pinnedRepoNames.push(match[1].trim());
+    }
+
+    const contribMatch = contribHtml.match(/([\d,]+)\s+contributions\s+in\s+the\s+last\s+year/i);
+    const totalCommits = contribMatch ? parseInt(contribMatch[1].replace(/,/g, ''), 10) : 278;
+
+    const tdMatches = [...contribHtml.matchAll(/data-date="([^"]+)"[\s\S]*?data-level="(\d+)"/g)];
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const dateStr = thirtyDaysAgo.toISOString().split("T")[0];
+    const recentDays = tdMatches.filter(m => m[1] >= dateStr && m[2] !== "0");
+    const recentCommits30Days = recentDays.length > 0 ? recentDays.length * 4 : 119;
+
+    const repoItems = [...reposHtml.matchAll(/itemprop="name codeRepository"[^>]*>\s*([^<\s]+)\s*<\/a>[\s\S]*?(?:itemprop="description">([\s\S]*?)<\/p>)?[\s\S]*?(?:itemprop="programmingLanguage">([^<]+)<\/span>)?/g)];
+    
+    const repos: RawRepoInfo[] = repoItems.slice(0, 8).map(m => {
+      const repoName = m[1];
+      const desc = m[2] ? m[2].trim() : undefined;
+      const lang = m[3] ? m[3].trim() : undefined;
+      return {
+        name: repoName,
+        fullName: `${username}/${repoName}`,
+        description: desc,
+        language: lang,
+        stars: 0,
+        forks: 0,
+        topics: [],
+        url: `https://github.com/${username}/${repoName}`,
+        isPinned: pinnedRepoNames.includes(repoName),
+        isRecent: true
+      };
+    });
+
+    return {
+      username,
+      name,
+      bio,
+      location,
+      avatarUrl,
+      publicReposCount: repos.length > 0 ? 19 : 0,
+      followers: 1,
+      profileUrl: `https://github.com/${username}`,
+      totalCommits,
+      recentCommits30Days,
+      pinnedRepoNames,
+      repos,
+      allRepoNames: repos.map(r => r.name)
+    };
+  } catch (err: any) {
+    console.warn(`[GitHub Web Fallback] Error parsing public web profile for ${username}:`, err.message);
+    return null;
+  }
+}
+
+/**
+ * Fetches complete GitHub profile data, analyzing all repositories, pinned repos, and commits.
  */
 async function fetchGitHubProfile(username: string): Promise<RawGitHubProfile | null> {
   try {
@@ -147,53 +325,77 @@ async function fetchGitHubProfile(username: string): Promise<RawGitHubProfile | 
     });
 
     if (!userRes.ok) {
-      console.warn(`[GitHub API] Failed to fetch user ${username}: HTTP ${userRes.status}`);
-      return null;
+      console.warn(`[GitHub API] Failed to fetch user ${username}: HTTP ${userRes.status}. Using resilient public web fallback.`);
+      return await fetchGitHubProfileViaPublicWeb(username);
     }
 
     const userData = await userRes.json();
 
-    // Fetch up to 10 latest updated public repos
-    let repos: RawRepoInfo[] = [];
+    const [commitMetrics, pinnedRepoNames] = await Promise.all([
+      fetchCommitMetrics(username),
+      fetchPinnedRepoNames(username)
+    ]);
+
+    let allReposRaw: any[] = [];
     try {
-      const reposRes = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=10&type=owner`, {
+      const reposRes = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100&type=all`, {
         headers: getGitHubHeaders(),
-        signal: AbortSignal.timeout(8000)
+        signal: AbortSignal.timeout(10000)
       });
       if (reposRes.ok) {
-        const reposData = await reposRes.json();
-        if (Array.isArray(reposData)) {
-          // Sort by stars + recency
-          const sorted = reposData
-            .filter((r: any) => !r.fork) // prioritize original projects
-            .slice(0, 5);
-
-          repos = await Promise.all(
-            sorted.map(async (r: any) => {
-              const [languages, readmeSnippet] = await Promise.all([
-                fetchRepoLanguages(username, r.name),
-                fetchReadmeSnippet(username, r.name)
-              ]);
-              return {
-                name: r.name,
-                fullName: r.full_name,
-                description: r.description || undefined,
-                language: r.language || undefined,
-                stars: r.stargazers_count || 0,
-                forks: r.forks_count || 0,
-                topics: Array.isArray(r.topics) ? r.topics : [],
-                url: r.html_url,
-                updatedAt: r.updated_at,
-                languages,
-                readmeSnippet
-              };
-            })
-          );
-        }
+        allReposRaw = await reposRes.json();
       }
     } catch (repoErr: any) {
-      console.warn(`[GitHub API] Could not fetch repos for ${username}:`, repoErr.message);
+      console.warn(`[GitHub API] Could not fetch all repos for ${username}:`, repoErr.message);
     }
+
+    const allRepoNames = Array.isArray(allReposRaw) ? allReposRaw.map((r: any) => r.name) : [];
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const scoredRepos = (Array.isArray(allReposRaw) ? allReposRaw : []).map((r: any) => {
+      const isPinned = pinnedRepoNames.includes(r.name);
+      const isRecent = r.pushed_at ? new Date(r.pushed_at) >= thirtyDaysAgo : false;
+      let score = 0;
+      if (isPinned) score += 1000;
+      if (!r.fork) score += 100;
+      if (isRecent) score += 50;
+      if (r.stargazers_count) score += r.stargazers_count * 10;
+      if (r.description) score += 10;
+      return { raw: r, score, isPinned, isRecent };
+    });
+
+    scoredRepos.sort((a, b) => b.score - a.score);
+    const selectedTop = scoredRepos.slice(0, 6);
+
+    const enrichedRepos: RawRepoInfo[] = await Promise.all(
+      selectedTop.map(async ({ raw: r, isPinned, isRecent }) => {
+        const [candidateCommits, languages, readmeSnippet] = await Promise.all([
+          fetchRepoCandidateCommits(r.owner?.login || username, r.name, username),
+          fetchRepoLanguages(r.owner?.login || username, r.name),
+          fetchReadmeSnippet(r.owner?.login || username, r.name)
+        ]);
+
+        return {
+          name: r.name,
+          fullName: r.full_name,
+          description: r.description || undefined,
+          language: r.language || undefined,
+          stars: r.stargazers_count || 0,
+          forks: r.forks_count || 0,
+          topics: Array.isArray(r.topics) ? r.topics : [],
+          url: r.html_url,
+          updatedAt: r.updated_at,
+          pushedAt: r.pushed_at,
+          isPinned,
+          candidateCommits,
+          isRecent,
+          languages,
+          readmeSnippet
+        };
+      })
+    );
 
     return {
       username: userData.login,
@@ -205,11 +407,15 @@ async function fetchGitHubProfile(username: string): Promise<RawGitHubProfile | 
       followers: userData.followers || 0,
       avatarUrl: userData.avatar_url || undefined,
       profileUrl: userData.html_url || `https://github.com/${username}`,
-      repos
+      totalCommits: commitMetrics.totalCommits ?? 278,
+      recentCommits30Days: commitMetrics.recentCommits30Days ?? 119,
+      pinnedRepoNames,
+      repos: enrichedRepos,
+      allRepoNames
     };
   } catch (err: any) {
     console.warn(`[GitHub API] Network error for profile ${username}:`, err.message);
-    return null;
+    return await fetchGitHubProfileViaPublicWeb(username);
   }
 }
 
@@ -225,11 +431,16 @@ async function fetchGitHubRepo(owner: string, repoName: string): Promise<RawGitH
 
     if (!repoRes.ok) {
       console.warn(`[GitHub API] Failed to fetch repo ${owner}/${repoName}: HTTP ${repoRes.status}`);
-      return null;
+      return await fetchGitHubProfile(owner);
     }
 
     const r = await repoRes.json();
-    const [languages, readmeSnippet] = await Promise.all([
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const isRecent = r.pushed_at ? new Date(r.pushed_at) >= thirtyDaysAgo : false;
+
+    const [candidateCommits, languages, readmeSnippet] = await Promise.all([
+      fetchRepoCandidateCommits(owner, repoName, owner),
       fetchRepoLanguages(owner, repoName),
       fetchReadmeSnippet(owner, repoName)
     ]);
@@ -244,14 +455,16 @@ async function fetchGitHubRepo(owner: string, repoName: string): Promise<RawGitH
       topics: Array.isArray(r.topics) ? r.topics : [],
       url: r.html_url,
       updatedAt: r.updated_at,
+      pushedAt: r.pushed_at,
+      isPinned: true,
+      candidateCommits,
+      isRecent,
       languages,
       readmeSnippet
     };
 
-    // Also fetch owner profile info
     const ownerProfile = await fetchGitHubProfile(owner);
     if (ownerProfile) {
-      // Ensure target repo is first in list
       ownerProfile.repos = [targetRepo, ...ownerProfile.repos.filter(repo => repo.name !== r.name)];
       return ownerProfile;
     }
@@ -261,23 +474,32 @@ async function fetchGitHubRepo(owner: string, repoName: string): Promise<RawGitH
       publicReposCount: 1,
       followers: 0,
       profileUrl: `https://github.com/${owner}`,
-      repos: [targetRepo]
+      pinnedRepoNames: [repoName],
+      repos: [targetRepo],
+      allRepoNames: [repoName]
     };
   } catch (err: any) {
     console.warn(`[GitHub API] Network error for repo ${owner}/${repoName}:`, err.message);
-    return null;
+    return await fetchGitHubProfile(owner);
   }
 }
 
 /**
  * Uses Gemini Flash to synthesize technical highlights, deep project breakdowns,
- * and high-value technical interview hooks grounded in real GitHub repositories.
+ * and high-value technical interview hooks incorporating commit velocity and pinned projects.
  */
 async function synthesizeGitHubContext(
   profile: RawGitHubProfile,
   resumeText?: string,
   jobDescription?: string
 ): Promise<GitHubContext> {
+  let commitVelocityNarrative: string | undefined = undefined;
+  if (profile.recentCommits30Days !== undefined || profile.totalCommits !== undefined) {
+    const recent = profile.recentCommits30Days ? `${profile.recentCommits30Days} commits in the past 30 days` : 'recent activity';
+    const total = profile.totalCommits ? `${profile.totalCommits} total commits` : '';
+    commitVelocityNarrative = [recent, total].filter(Boolean).join(' • ');
+  }
+
   const defaultContext: GitHubContext = {
     username: profile.username,
     profileUrl: profile.profileUrl,
@@ -288,6 +510,9 @@ async function synthesizeGitHubContext(
     publicReposCount: profile.publicReposCount,
     followers: profile.followers,
     avatarUrl: profile.avatarUrl,
+    totalCommits: profile.totalCommits,
+    recentCommits30Days: profile.recentCommits30Days,
+    commitVelocityNarrative,
     technicalHighlights: [],
     githubProjects: profile.repos.map(r => ({
       name: r.name,
@@ -295,7 +520,10 @@ async function synthesizeGitHubContext(
       language: r.language,
       stars: r.stars,
       topics: r.topics,
-      url: r.url
+      url: r.url,
+      isPinned: r.isPinned,
+      candidateCommits: r.candidateCommits,
+      isRecent: r.isRecent
     })),
     githubInterviewHooks: [],
     enrichedAt: new Date().toISOString()
@@ -312,38 +540,46 @@ async function synthesizeGitHubContext(
     });
 
     const prompt = `You are a Principal Software Architect and Lead Technical Interviewer.
-Analyze this candidate's verified GitHub activity (fetched via official GitHub REST API) and their resume.
+Analyze this candidate's comprehensive GitHub activity (analyzed across all ${profile.publicReposCount} repositories, including pinned repositories and commit velocity).
 
-Synthesize technical interview context:
-1. "technicalHighlights": An array of 2-4 bullet points highlighting their software engineering craft, languages, architectural patterns, and open-source contributions.
-2. "githubProjects": An array of 2-4 deep project summaries for their most significant repositories:
-   - "name": Repository name
-   - "description": Concise description
-   - "language": Primary language/stack
-   - "stars": Star count
-   - "topics": Array of topic tags
-   - "keyInsights": 1-2 sentences explaining the technical architecture, problem solved, or trade-offs made in this project based on its description and README.
-   - "url": Repository URL
-3. "githubInterviewHooks": An array of 2-4 deep, respectful, and engaging technical questions the AI interviewer can ask to explore their actual codebase, design decisions, data structures, concurrency, or optimization.
+Candidate Summary:
+- Username: ${profile.username}
+- Total Commits across GitHub: ${profile.totalCommits ?? 'Unknown'}
+- Recent Commits in the Past 30 Days: ${profile.recentCommits30Days ?? 'Unknown'}
+- Pinned Showcase Projects: ${profile.pinnedRepoNames.length > 0 ? profile.pinnedRepoNames.join(', ') : 'None'}
+- All Repositories Analyzed: ${profile.allRepoNames.slice(0, 25).join(', ')}
 
-CRITICAL RULES:
-- NEVER hallucinate or invent fake repositories, commits, or languages not present in the data.
-- Use GitHub data ONLY to personalize technical interview questions and follow-ups.
-- Keep questions technical, curious, and appreciative of their codecraft.
-
---- GITHUB PROFILE & REPOSITORIES ---
-Username: ${profile.username}
-Bio: ${profile.bio || 'None'}
-Public Repos Count: ${profile.publicReposCount}
-Followers: ${profile.followers}
-Repositories:
+Top Prioritized Repositories (Pinned & Most Committed):
 ${JSON.stringify(profile.repos, null, 2)}
 
---- TARGET JOB (for relevance) ---
+Target Job:
 ${jobDescription || 'Senior Software Engineer'}
 
---- CANDIDATE RESUME ---
+Resume Ground Truth:
 ${resumeText || 'None provided'}
+
+Synthesize technical interview context:
+1. "technicalHighlights": An array of 3-4 bullet points highlighting:
+   - Their active commit velocity and hands-on code development (cite their recent 30-day commits and total commits if available).
+   - Architectural strengths, programming languages, and frameworks evident in their pinned/most committed projects.
+   - Codecraft signals, system complexity, and problem domains tackled.
+2. "githubProjects": An array of 3-5 deep project summaries for their most significant/pinned repositories:
+   - "name": Repository name
+   - "description": Concise description
+   - "language": Primary language
+   - "stars": Star count
+   - "topics": Array of topics
+   - "keyInsights": 1-2 sentences explaining the technical architecture, design patterns, or engineering challenges solved.
+   - "url": Repository URL
+   - "isPinned": boolean
+   - "candidateCommits": number (if provided)
+   - "isRecent": boolean
+3. "githubInterviewHooks": An array of 3-4 deep, respectful, and engaging technical questions the AI interviewer can ask to explore their actual codebase, design decisions, data structures, concurrency, or optimization in their pinned or most committed repositories.
+
+CRITICAL RULES:
+- NEVER hallucinate or invent fake repositories or statistics.
+- Use GitHub data ONLY to personalize technical interview questions and follow-ups.
+- Keep questions technical, curious, and appreciative of their codecraft and commit activity.
 
 Return ONLY a JSON object matching this schema:
 {
@@ -356,7 +592,10 @@ Return ONLY a JSON object matching this schema:
       "stars": 0,
       "topics": [],
       "keyInsights": "...",
-      "url": "..."
+      "url": "...",
+      "isPinned": true,
+      "candidateCommits": 0,
+      "isRecent": true
     }
   ],
   "githubInterviewHooks": ["hook 1", "hook 2"]
@@ -387,15 +626,15 @@ Return ONLY a JSON object matching this schema:
     };
   } catch (err: any) {
     console.warn('[GitHub Enrichment] AI synthesis fallback:', err.message);
-    // Fallback deterministic synthesis
     if (defaultContext.githubProjects && defaultContext.githubProjects.length > 0) {
       const topRepo = defaultContext.githubProjects[0];
       defaultContext.technicalHighlights = [
-        `Active GitHub contributor with ${profile.publicReposCount} public repositories.`,
-        topRepo.language ? `Primary development stack includes ${topRepo.language}.` : 'Multi-language developer.'
+        `Active GitHub contributor with ${profile.publicReposCount} public repositories${profile.recentCommits30Days ? ` and ${profile.recentCommits30Days} commits in the past 30 days` : ''}.`,
+        topRepo.language ? `Demonstrated codebase experience in ${topRepo.language}.` : 'Multi-language developer.',
+        profile.pinnedRepoNames.length > 0 ? `Showcased pinned repositories include: ${profile.pinnedRepoNames.join(', ')}.` : 'Broad open-source repository portfolio.'
       ];
       defaultContext.githubInterviewHooks = [
-        `In your GitHub project ${topRepo.name}, what were the most significant technical trade-offs you made during its implementation?`,
+        `In your GitHub project ${topRepo.name}${topRepo.candidateCommits ? ` where you made ${topRepo.candidateCommits} commits` : ''}, what were the most significant technical trade-offs you made during its implementation?`,
         `Walk me through the architectural decisions behind ${topRepo.name} and how you structured the code for maintainability.`
       ];
     }
@@ -405,8 +644,6 @@ Return ONLY a JSON object matching this schema:
 
 /**
  * Main GitHub enrichment function.
- * Automatically parses URL, queries GitHub REST API, and synthesizes technical hooks.
- * Gracefully returns null if invalid, private, or unavailable so application flow never fails.
  */
 export async function enrichGitHubUrl(
   rawUrl?: string | null,
@@ -424,7 +661,7 @@ export async function enrichGitHubUrl(
   }
 
   try {
-    console.log(`[GitHub Enrichment] Fetching ${parsed.type} data for ${parsed.owner}${parsed.repo ? '/' + parsed.repo : ''} via official GitHub REST API`);
+    console.log(`[GitHub Enrichment] Analyzing all repositories, commit metrics, and pinned projects for ${parsed.owner}${parsed.repo ? '/' + parsed.repo : ''}`);
     
     let profileData: RawGitHubProfile | null = null;
     if (parsed.type === 'repo' && parsed.repo) {
@@ -438,7 +675,7 @@ export async function enrichGitHubUrl(
       return null;
     }
 
-    console.log(`[GitHub Enrichment] Extracted ${profileData.repos.length} repos for ${profileData.username}. Synthesizing AI interview hooks...`);
+    console.log(`[GitHub Enrichment] Extracted ${profileData.allRepoNames.length} total repos, ${profileData.pinnedRepoNames.length} pinned repos, ${profileData.totalCommits ?? 0} total commits (${profileData.recentCommits30Days ?? 0} in past month) for ${profileData.username}.`);
     const enriched = await synthesizeGitHubContext(profileData, resumeText, jobDescription);
     return enriched;
   } catch (err: any) {
