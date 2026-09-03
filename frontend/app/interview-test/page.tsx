@@ -20,6 +20,23 @@ export default function AgoraTestLab() {
     agentId: string;
   } | null>(null);
   
+  type TestState = 'IDLE' | 'STARTING' | 'RUNNING' | 'STOPPING' | 'ENDED' | 'ERROR';
+  const [testState, setTestState] = useState<TestState>('IDLE');
+  
+  // Cleanup on tab close/refresh
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (sessionInfo?.agentId) {
+        navigator.sendBeacon('/api/agora-mllm/stop-mllm', JSON.stringify({ 
+          session_id: sessionInfo.sessionId, 
+          agent_id: sessionInfo.agentId 
+        }));
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [sessionInfo]);
+
   const [micVolume, setMicVolume] = useState(0);
 
   // Orchestrator State
@@ -70,6 +87,11 @@ export default function AgoraTestLab() {
       alert("Generate blueprint first!");
       return;
     }
+    if (testState === 'STARTING' || testState === 'RUNNING') {
+      console.warn("Test already starting or running.");
+      return;
+    }
+    setTestState('STARTING');
     
     const sessionId = `test-${Math.random().toString(36).substring(7)}`;
     const candidateUid = Math.floor(Math.random() * 100000) + 1000;
@@ -222,7 +244,6 @@ export default function AgoraTestLab() {
       addLog('RTC', `Local microphone published to channel`);
       updateStatus('candidate_audio_published', 'PASS');
       
-      // Start volume check
       setInterval(() => {
         if (localMicRef.current) {
           const vol = localMicRef.current.getVolumeLevel();
@@ -230,12 +251,17 @@ export default function AgoraTestLab() {
         }
       }, 200);
 
+      setTestState('RUNNING');
     } catch (e: any) {
       addLog('RTC', `RTC setup failed: ${e.message}`);
+      setTestState('ERROR');
     }
   };
 
   const endTest = async () => {
+    if (testState === 'STOPPING') return;
+    setTestState('STOPPING');
+    
     if (localMicRef.current) {
       localMicRef.current.stop();
       localMicRef.current.close();
@@ -244,17 +270,29 @@ export default function AgoraTestLab() {
       await rtcClientRef.current.leave();
     }
     
-    if (sessionInfo) {
-      await fetch(`/api/agora-mllm/stop-mllm`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ session_id: sessionInfo.sessionId, candidate_uid: 0 })
-      });
+    if (sessionInfo && sessionInfo.agentId) {
+      try {
+        const stopRes = await fetch(`/api/agora-mllm/stop-mllm`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session_id: sessionInfo.sessionId, agent_id: sessionInfo.agentId })
+        });
+        if (!stopRes.ok) {
+          addLog('System', `Failed to stop agent: HTTP ${stopRes.status}`);
+        } else {
+          addLog('System', `Agent stopped successfully via backend.`);
+        }
+      } catch (err: any) {
+        addLog('System', `Error stopping agent: ${err.message}`);
+      }
+    } else {
+      addLog('System', `No active agent ID to stop.`);
     }
     if (wsRef.current) wsRef.current.close();
     
     addLog('System', 'Test ended.');
     setSessionInfo(null);
+    setTestState('ENDED');
   };
 
   const evaluateInterview = async () => {
@@ -325,10 +363,20 @@ export default function AgoraTestLab() {
       )}
 
       <div className="flex gap-4 items-center pt-4 border-t">
-        <button onClick={startTest} disabled={!blueprint} className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50">
+        <button 
+          onClick={startTest} 
+          disabled={!blueprint || testState === 'STARTING' || testState === 'RUNNING' || testState === 'STOPPING'} 
+          className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
+        >
           2. Start Voice Interview
         </button>
-        <button onClick={endTest} className="px-4 py-2 bg-red-600 text-white rounded">End Test</button>
+        <button 
+          onClick={endTest} 
+          disabled={testState !== 'RUNNING' && testState !== 'STARTING'}
+          className="px-4 py-2 bg-red-600 text-white rounded disabled:opacity-50"
+        >
+          End Test
+        </button>
         <button onClick={evaluateInterview} disabled={transcript.length === 0} className="px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50">
           3. Evaluate Transcript
         </button>

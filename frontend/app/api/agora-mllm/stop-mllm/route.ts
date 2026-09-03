@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { AgoraClient, Area } from 'agora-agents';
 
 export async function POST(req: NextRequest) {
   try {
     const { session_id, agent_id } = await req.json();
+    
+    console.log(`[AGENT_STOP_REQUEST] session_id: ${session_id}, agent_id: ${agent_id}, timestamp: ${new Date().toISOString()}`);
     
     const appId = process.env.AGORA_APP_ID;
     const customerId = process.env.AGORA_CUSTOMER_ID;
@@ -13,27 +16,26 @@ export async function POST(req: NextRequest) {
     }
 
     if (!agent_id) {
+      console.warn(`[AGENT_STOP_FAILED] No agent_id provided for session ${session_id}`);
       return NextResponse.json({ detail: "No agent_id provided" }, { status: 400 });
     }
 
-    const credentials = Buffer.from(`${customerId}:${customerSecret}`).toString('base64');
-
-    const response = await fetch(`https://api.agora.io/v1/projects/${appId}/agents/${agent_id}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Basic ${credentials}`
-      }
+    const client = new AgoraClient({
+      area: Area.US,
+      appId,
+      customerId,
+      customerSecret
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Agora API Delete Error:", errorText);
-      throw new Error(`Failed to stop agent: ${response.status}`);
-    }
+    await client.agents.stop({
+      appid: appId,
+      agentId: agent_id
+    });
 
+    console.log(`[AGENT_STOPPED] agent_id: ${agent_id}, timestamp: ${new Date().toISOString()}`);
     return NextResponse.json({ status: "stopped", agent_id });
   } catch (error: any) {
-    console.error('Agora stop error:', error);
+    console.error(`[AGENT_STOP_FAILED] error: ${error.message}`);
     return NextResponse.json({ detail: error.message }, { status: 500 });
   }
 }

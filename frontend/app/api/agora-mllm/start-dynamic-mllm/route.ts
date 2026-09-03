@@ -26,6 +26,8 @@ export async function POST(req: NextRequest) {
   try {
     const { session_id, candidate_uid, instructions, greeting_message } = await req.json();
     
+    console.log(`[AGENT_START_REQUEST] session_id: ${session_id}, timestamp: ${new Date().toISOString()}`);
+
     const channelName = `interview_${session_id.replace(/[^a-zA-Z0-9]/g, '_')}`.substring(0, 60);
     const candidateToken = buildRtcToken(channelName, candidate_uid);
     const agentUid = 9999;
@@ -70,9 +72,7 @@ export async function POST(req: NextRequest) {
 
     await sessionObj.start();
 
-    // WARNING: In serverless (Next.js), the sessionObj cannot be persisted in memory easily.
-    // If you need to stop it later, you will need to stop it via the Agora REST API directly
-    // or by passing the agent_id to the REST API in stop-mllm/route.ts.
+    console.log(`[AGENT_STARTED] session_id: ${session_id}, agent_id: ${sessionObj.id}, timestamp: ${new Date().toISOString()}`);
     
     return NextResponse.json({
       status: "started",
@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
       raw_response: "SDK started successfully"
     });
   } catch (error: any) {
-    console.error('Agora start error:', error);
+    console.error(`[AGENT_START_FAILED] error: ${error.message}, timestamp: ${new Date().toISOString()}`);
     return NextResponse.json({ detail: error.message }, { status: 500 });
   }
 }
