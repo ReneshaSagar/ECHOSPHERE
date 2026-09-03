@@ -101,7 +101,18 @@ Generate the personalized JSON Interview Blueprint containing EXACTLY the reques
       generationConfig: { responseMimeType: "application/json" },
     });
 
-    const result = await model.generateContent(userPrompt);
+    let result: any = null;
+    let attempts = 0;
+    while (attempts < 3) {
+      try {
+        result = await model.generateContent(userPrompt);
+        break;
+      } catch (e: any) {
+        attempts++;
+        if (attempts >= 3) throw e;
+        await new Promise(r => setTimeout(r, 1500));
+      }
+    }
     const blueprintJsonText = result.response.text();
     
     // Check if a blueprint already exists to overwrite or create new

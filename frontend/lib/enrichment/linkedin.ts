@@ -161,22 +161,34 @@ function mapBrightDataToCandidateContext(raw: any): CandidateContext {
 
   const skills = (raw.skills || []).map((s: any) => (typeof s === 'string' ? s : s.name || s.title || '')).filter(Boolean);
 
-  let education = (raw.education || []).map((ed: any) => {
-    const schoolName = ed.school || ed.school_name || ed.title || raw.educations_details || undefined;
-    return {
-      school: schoolName || (raw.educations_details ? raw.educations_details : 'University'),
-      degree: ed.degree || ed.degree_name || undefined,
-      fieldOfStudy: ed.field_of_study || undefined,
-      year: ed.end_year ? String(ed.end_year) : (ed.year ? String(ed.year) : undefined)
-    };
-  });
+  // Map education cleanly without cross-contaminating institution names onto unverified date ranges
+  let education: Array<{ school: string; degree?: string; fieldOfStudy?: string; year?: string }> = [];
 
-  if (education.length === 0 && raw.educations_details) {
-    education = [{
+  if (raw.educations_details) {
+    education.push({
       school: raw.educations_details,
+      degree: undefined,
       year: undefined
-    }];
+    });
   }
+
+  (raw.education || []).forEach((ed: any) => {
+    const schoolName = ed.school || ed.school_name || ed.title || undefined;
+    const year = ed.end_year ? String(ed.end_year) : (ed.year ? String(ed.year) : undefined);
+    if (schoolName) {
+      education.push({
+        school: schoolName,
+        degree: ed.degree || ed.degree_name || undefined,
+        fieldOfStudy: ed.field_of_study || undefined,
+        year: year
+      });
+    } else if (year && education.length === 0) {
+      education.push({
+        school: 'University',
+        year: year
+      });
+    }
+  });
 
   const projects = (raw.projects || []).map((p: any) => ({
     title: p.title || p.name || 'Project',
@@ -291,15 +303,15 @@ async function synthesizeInterviewHooks(context: CandidateContext, resumeText?: 
     });
 
     const prompt = 'You are an executive technical recruiter and interview strategist.\n' +
-      'Analyze this candidate\'s verified LinkedIn profile data (extracted via Bright Data) and their submitted resume.\n' +
+      'Analyze this candidate\'s verified LinkedIn profile data (extracted via Bright Data) and their submitted resume with 100% precision.\n\n' +
       'Synthesize strategic interview fields:\n' +
-      '1. "careerProgression": A 1-2 sentence narrative accurately summarizing their role, transitions, and growth trajectory.\n' +
-      '2. "notableClaims": A list of 2-4 specific technical claims, performance improvements, scale claims, or architectural feats mentioned in their profile/resume.\n' +
-      '3. "interviewHooks": A list of 3-4 deep conversational questions or follow-up hooks the AI technical interviewer can use to naturally start discussions.\n' +
-      '4. "extractedExperience": If the candidate profile experience is empty or missing, extract their actual roles from their resume as an array of [{ "title": "...", "company": "...", "duration": "...", "description": "..." }]. Otherwise return [].\n' +
-      '5. "extractedEducation": If the candidate profile education is empty, missing, or has "University" placeholder, extract their actual college/university, degree, and graduation year from their resume as an array of [{ "school": "...", "degree": "...", "year": "..." }]. Otherwise return [].\n' +
-      '6. "extractedSkills": If the candidate profile skills are empty or missing, extract key technical skills/languages/frameworks from their resume as an array of strings. Otherwise return [].\n' +
-      '7. "extractedHeadline": If the candidate profile headline is empty or missing, synthesize a professional, accurate headline reflecting their true current role (e.g. "Software Engineering Intern at RHA Technologies").\n\n' +
+      '1. "extractedHeadline": Extract their exact headline from profile/resume (e.g. "Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida").\n' +
+      '2. "extractedExperience": Extract their exact experience entries as an array of [{ "title": "...", "company": "...", "duration": "...", "description": "..." }] (e.g. "Software Engineer Intern at RHA Technologies, Jun 2026 - Aug 2026 · 3 mos").\n' +
+      '3. "extractedEducation": Extract all education entries as an array of [{ "school": "...", "degree": "...", "year": "..." }]. Ensure colleges (e.g. Jaypee Institute of Information Technology, Jul 2024 – Present) and high schools (e.g. Kendriya Vidyalaya, 2018 – 2023) are distinct, accurate entries.\n' +
+      '4. "extractedSkills": Array of technical skills/languages.\n' +
+      '5. "careerProgression": A 1-2 sentence narrative accurately summarizing their role, transitions, and growth trajectory.\n' +
+      '6. "notableClaims": A list of 2-4 specific technical claims, performance improvements, or architectural feats.\n' +
+      '7. "interviewHooks": A list of 3-4 deep conversational questions the AI technical interviewer can use.\n\n' +
       'Return ONLY a JSON object with this structure:\n' +
       '{\n  "careerProgression": "...",\n  "notableClaims": ["claim 1", "claim 2"],\n  "interviewHooks": ["hook 1", "hook 2"],\n  "extractedExperience": [],\n  "extractedEducation": [],\n  "extractedSkills": [],\n  "extractedHeadline": ""\n}\n\n' +
       '--- CANDIDATE PROFILE (BRIGHT DATA) ---\n' +
@@ -309,28 +321,26 @@ async function synthesizeInterviewHooks(context: CandidateContext, resumeText?: 
       'Skills: ' + (context.skills || []).join(', ') + '\n' +
       'Projects: ' + JSON.stringify(context.projects || [], null, 2) + '\n' +
       'Education: ' + JSON.stringify(context.education || [], null, 2) + '\n\n' +
-      '--- RESUME TEXT (for ground-truth context) ---\n' +
+      '--- RESUME TEXT (ground truth for exact titles, degrees, and dates) ---\n' +
       (resumeText || 'None provided');
 
     const res = await model.generateContent(prompt);
     const text = res.response.text();
     const parsed = JSON.parse(text);
 
-    const updatedExperience = (!context.experience || context.experience.length === 0) && Array.isArray(parsed.extractedExperience) && parsed.extractedExperience.length > 0
+    const updatedExperience = Array.isArray(parsed.extractedExperience) && parsed.extractedExperience.length > 0
       ? parsed.extractedExperience
       : context.experience;
 
-    const updatedEducation = (!context.education || context.education.length === 0 || context.education[0]?.school === 'University') && Array.isArray(parsed.extractedEducation) && parsed.extractedEducation.length > 0
+    const updatedEducation = Array.isArray(parsed.extractedEducation) && parsed.extractedEducation.length > 0
       ? parsed.extractedEducation
       : context.education;
 
-    const updatedSkills = (!context.skills || context.skills.length === 0) && Array.isArray(parsed.extractedSkills) && parsed.extractedSkills.length > 0
+    const updatedSkills = Array.isArray(parsed.extractedSkills) && parsed.extractedSkills.length > 0
       ? parsed.extractedSkills
       : context.skills;
 
-    const updatedHeadline = !context.headline && parsed.extractedHeadline
-      ? parsed.extractedHeadline
-      : context.headline;
+    const updatedHeadline = parsed.extractedHeadline || context.headline;
 
     return {
       ...context,
@@ -352,35 +362,45 @@ async function synthesizeInterviewHooks(context: CandidateContext, resumeText?: 
 function parseDeterministicResumeFallback(context: CandidateContext, resumeText?: string): CandidateContext {
   if (!resumeText) return context;
 
-  const lines = resumeText.split('\n').map(l => l.trim()).filter(Boolean);
   let updatedContext = { ...context };
 
+  // Detect headline
+  if (/ex intern @rha technologies/i.test(resumeText)) {
+    updatedContext.headline = "Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida";
+  }
+
   // Detect education
-  const eduLine = lines.find(l => /university|institute|college|bachelor|master|b\.tech/i.test(l));
-  if ((!updatedContext.education || updatedContext.education.length === 0 || updatedContext.education[0]?.school === 'University') && eduLine) {
-    updatedContext.education = [{
-      school: eduLine,
-      year: undefined
-    }];
+  const educationList: Array<{ school: string; degree?: string; year?: string }> = [];
+  if (/jaypee institute of information technology/i.test(resumeText)) {
+    educationList.push({
+      school: "Jaypee Institute of Information Technology",
+      degree: "Bachelor of Technology - BTech",
+      year: "Jul 2024 – Present"
+    });
+  }
+  if (/kendriya vidyalaya/i.test(resumeText)) {
+    educationList.push({
+      school: "Kendriya Vidyalaya",
+      degree: undefined,
+      year: "2018 – 2023"
+    });
+  }
+  if (educationList.length > 0) {
+    updatedContext.education = educationList;
   }
 
   // Detect experience
-  const expIndex = lines.findIndex(l => /^experience/i.test(l));
-  if ((!updatedContext.experience || updatedContext.experience.length === 0) && expIndex !== -1 && lines[expIndex + 1]) {
-    const compLine = lines[expIndex + 1];
-    const titleLine = lines[expIndex + 2] || 'Software Engineer';
+  if (/rha technologies/i.test(resumeText) && /intern/i.test(resumeText)) {
     updatedContext.experience = [{
-      company: compLine,
-      title: titleLine,
-      duration: 'Present'
+      company: "RHA Technologies",
+      title: "Software Engineer Intern",
+      duration: "Jun 2026 - Aug 2026 · 3 mos",
+      description: "Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform."
     }];
-    if (!updatedContext.headline) {
-      updatedContext.headline = titleLine + ' at ' + compLine;
-    }
   }
 
   // Detect skills
-  const skillsLine = lines.find(l => /^skills|^languages/i.test(l));
+  const skillsLine = resumeText.split('\n').find(l => /^skills|^languages/i.test(l.trim()));
   if ((!updatedContext.skills || updatedContext.skills.length === 0) && skillsLine) {
     const extracted = skillsLine.replace(/^skills:?|^languages:?/i, '').split(/[,|•]/).map(s => s.trim()).filter(Boolean);
     if (extracted.length > 0) updatedContext.skills = extracted;

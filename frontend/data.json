@@ -629,6 +629,71 @@
           "Your Chrome Extension has garnered significant users. What were the key technical challenges you faced in building and scaling it, and how did you overcome them?"
         ]
       }
+    },
+    {
+      "id": "cand_4ehozdc",
+      "name": "Madhav Gairola",
+      "email": "madhav.exact.live@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
+      "candidateContext": {
+        "headline": "Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida",
+        "experience": [
+          {
+            "title": "Software Engineer Intern",
+            "company": "RHA Technologies",
+            "duration": "Jun 2026 - Aug 2026 · 3 mos",
+            "description": ". Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform, uncovering critical edge cases across diverse enterprise use cases\n. Engineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL integrations, analyzing retrieval accuracy, data ingestion behavior, and system reliability\n. Built and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug reports, validating feature releases, and accelerating issue resolution through close collaboration with engineering teams"
+          }
+        ],
+        "skills": [
+          "C/C++",
+          "JavaScript",
+          "Python",
+          "SQL",
+          "Solidity",
+          "PHP",
+          "Node.js",
+          "Express",
+          "FastAPI",
+          "Django",
+          "Tailwind CSS",
+          "MySQL",
+          "MongoDB",
+          "PostgreSQL",
+          "Firebase",
+          "Supabase"
+        ],
+        "education": [
+          {
+            "school": "Jaypee Institute of Information Technology",
+            "degree": "Bachelor of Technology - BTech",
+            "year": "Jul 2024 - Present"
+          },
+          {
+            "school": "Kendriya Vidyalaya",
+            "degree": "",
+            "year": "2018 - 2023"
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T21:45:21.637Z",
+        "careerProgression": "This candidate is an early-career professional currently pursuing a B.Tech in IT. They have gained foundational practical experience as a Software Engineer Intern, focusing on AI pipeline validation, comprehensive testing strategies for diverse data integrations, and quality assurance framework development within an enterprise technology setting.",
+        "notableClaims": [
+          "Led end-to-end validation of RAG pipelines, AI agents, and semantic search on the RHA One platform, uncovering critical edge cases.",
+          "Engineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL integrations.",
+          "Built and maintained a quality assurance framework for 250+ AI skills and workflows, accelerating issue resolution.",
+          "Co-inventor on a patent application for an Autonomous Smart Waste Segregation System and built a Chrome Extension with 3000+ active users."
+        ],
+        "interviewHooks": [
+          "Can you elaborate on a specific critical edge case you uncovered during the RAG pipeline validation at RHA Technologies, and how your findings influenced subsequent development?",
+          "Tell me about the most challenging aspect of building and maintaining the quality assurance framework for 250+ AI skills, and how you ensured its effectiveness in accelerating issue resolution.",
+          "Regarding your patent application for the Autonomous Smart Waste Segregation System, what were the key technical innovations or challenges you addressed in its design?",
+          "When designing testing strategies for diverse data integrations (CSV, PDF, DOCX, MySQL, PostgreSQL), what specific methods did you employ to analyze retrieval accuracy and ensure system reliability?"
+        ]
+      }
     }
   ],
   "applications": [
@@ -1251,6 +1316,73 @@
           "Your Chrome Extension has garnered significant users. What were the key technical challenges you faced in building and scaling it, and how did you overcome them?"
         ]
       }
+    },
+    {
+      "id": "app_88nqvju",
+      "jobId": "j1",
+      "candidateId": "cand_4ehozdc",
+      "resumeText": "Headline: Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida\n\nExperience\nSoftware Engineer Intern\nRHA Technologies � Internship\nJun 2026 - Aug 2026 � 3 mos\n. Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform, uncovering critical edge cases across diverse enterprise use cases\n. Engineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL integrations, analyzing retrieval accuracy, data ingestion behavior, and system reliability\n. Built and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug reports, validating feature releases, and accelerating issue resolution through close collaboration with engineering teams\n\nEducation\nJaypee Institute of Information Technology\nBachelor of Technology - BTech\nJul 2024 - Present\n\nKendriya Vidyalaya\n2018 - 2023\n\nProjects\nExpensWise (Personal Financial Assistant) | Node.js, PostgreSQL, Prisma, React, Gemini API\nHealthLens | JavaScript, Firebase Auth, Cloud Firestore, Gemini API, PDF.js\nElectora | Solidity, Node.js, Express, Firebase, Ethers.js\n\nTechnical Skills\nLanguages: C/C++, JavaScript, Python, SQL, Solidity, PHP\nFrameworks: Node.js, Express, FastAPI, Django, Tailwind CSS\nDatabases & Platforms: MySQL, MongoDB, PostgreSQL, Firebase, Supabase\n\nAchievements\n. Co-inventor on a patent application for an Autonomous Smart Waste Segregation System\n. Built and published a Chrome Extension with 3000+ active users; awarded Chrome Web Store Featured Badge",
+      "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
+      "status": "INTERVIEW_SCHEDULED",
+      "candidateContext": {
+        "headline": "Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida",
+        "experience": [
+          {
+            "title": "Software Engineer Intern",
+            "company": "RHA Technologies",
+            "duration": "Jun 2026 - Aug 2026 · 3 mos",
+            "description": ". Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform, uncovering critical edge cases across diverse enterprise use cases\n. Engineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL integrations, analyzing retrieval accuracy, data ingestion behavior, and system reliability\n. Built and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug reports, validating feature releases, and accelerating issue resolution through close collaboration with engineering teams"
+          }
+        ],
+        "skills": [
+          "C/C++",
+          "JavaScript",
+          "Python",
+          "SQL",
+          "Solidity",
+          "PHP",
+          "Node.js",
+          "Express",
+          "FastAPI",
+          "Django",
+          "Tailwind CSS",
+          "MySQL",
+          "MongoDB",
+          "PostgreSQL",
+          "Firebase",
+          "Supabase"
+        ],
+        "education": [
+          {
+            "school": "Jaypee Institute of Information Technology",
+            "degree": "Bachelor of Technology - BTech",
+            "year": "Jul 2024 - Present"
+          },
+          {
+            "school": "Kendriya Vidyalaya",
+            "degree": "",
+            "year": "2018 - 2023"
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T21:45:21.637Z",
+        "careerProgression": "This candidate is an early-career professional currently pursuing a B.Tech in IT. They have gained foundational practical experience as a Software Engineer Intern, focusing on AI pipeline validation, comprehensive testing strategies for diverse data integrations, and quality assurance framework development within an enterprise technology setting.",
+        "notableClaims": [
+          "Led end-to-end validation of RAG pipelines, AI agents, and semantic search on the RHA One platform, uncovering critical edge cases.",
+          "Engineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL integrations.",
+          "Built and maintained a quality assurance framework for 250+ AI skills and workflows, accelerating issue resolution.",
+          "Co-inventor on a patent application for an Autonomous Smart Waste Segregation System and built a Chrome Extension with 3000+ active users."
+        ],
+        "interviewHooks": [
+          "Can you elaborate on a specific critical edge case you uncovered during the RAG pipeline validation at RHA Technologies, and how your findings influenced subsequent development?",
+          "Tell me about the most challenging aspect of building and maintaining the quality assurance framework for 250+ AI skills, and how you ensured its effectiveness in accelerating issue resolution.",
+          "Regarding your patent application for the Autonomous Smart Waste Segregation System, what were the key technical innovations or challenges you addressed in its design?",
+          "When designing testing strategies for diverse data integrations (CSV, PDF, DOCX, MySQL, PostgreSQL), what specific methods did you employ to analyze retrieval accuracy and ensure system reliability?"
+        ]
+      }
     }
   ],
   "interviews": [
@@ -1420,6 +1552,12 @@
       "applicationId": "app_vtu8002",
       "scheduledAt": "2026-09-21T11:00:00Z",
       "status": "PENDING"
+    },
+    {
+      "id": "int_8hw8ctd",
+      "applicationId": "app_88nqvju",
+      "scheduledAt": "2026-09-22T10:00:00Z",
+      "status": "PENDING"
     }
   ],
   "blueprints": [
@@ -1477,6 +1615,11 @@
       "id": "bp_2ib5hxr",
       "interviewId": "int_i2pvvdn",
       "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency Interview\",\n      \"purpose\": \"To assess Madhav's foundational understanding of high-performance backend architecture, concurrent programming, asynchronous I/O, API design, and database optimization, leveraging his project experience and theoretical knowledge in these areas.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Architecture & Concurrency Lead\",\n        \"instructions\": \"Speak naturally and concisely, asking one question at a time and listening carefully. Ask relevant follow-up questions based on Madhav's answers. Use Madhav's specific background context naturally, especially his experience with FastAPI, PostgreSQL, and scalable projects. Maintain a professional interviewer personality. The goal is to understand Madhav's theoretical knowledge and problem-solving approach to senior-level challenges, even if his direct production experience at that scale is limited.\",\n        \"greeting_message\": \"Hello Madhav, welcome! I'm Alex. I've been really impressed by your work, especially your experience validating RAG pipelines and your Chrome Extension. I'm keen to dive into your technical approach to building robust and performant systems. Let's start with a discussion around backend architecture and concurrency, perhaps touching on how you approached performance in your projects like ExpensWise or your Chrome Extension.\"\n      },\n      \"topics\": [\n        \"Concurrent programming models (e.g., Python asyncio, Go goroutines)\",\n        \"Asynchronous I/O and event loops\",\n        \"High-performance API design (REST vs. WebSockets, FastAPI concepts)\",\n        \"Database optimization techniques (PostgreSQL indexing, query planning, connection pooling)\",\n        \"Caching strategies (Redis concepts and use cases)\",\n        \"Memory management and resource efficiency in backend services\",\n        \"Error handling and resilience in concurrent applications\"\n      ]\n    },\n    {\n      \"round_name\": \"Distributed System Design Interview\",\n      \"purpose\": \"To evaluate Madhav's conceptual understanding of designing scalable, fault-tolerant, and reliable distributed systems, including data flow, state management, and observability, extrapolating from his experience with AI pipeline validation and quality assurance frameworks.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Distributed System Design Lead\",\n        \"instructions\": \"Speak naturally and concisely, asking one question at a time and listening carefully. Ask relevant follow-up questions based on Madhav's answers. Use Madhav's specific background context naturally, particularly how his experience with testing AI agents or building a QA framework relates to distributed systems principles. Maintain a professional interviewer personality. Focus on Madhav's ability to think critically about system design challenges and articulate potential solutions, even if his direct hands-on experience with large-scale distributed systems is evolving.\",\n        \"greeting_message\": \"Hi Madhav, great to have you. As you know, EchoSphere deals with complex distributed systems. I'm particularly interested in how you approach system design. Your experience in building and maintaining a quality assurance framework for 250+ AI skills is fascinating. How did you design that for scalability and maintainability, especially in an evolving AI product environment? Let's use that as a jumping-off point to discuss broader distributed system design challenges.\"\n      },\n      \"topics\": [\n        \"Distributed systems fundamentals (CAP theorem, consensus mechanisms, consistency models)\",\n        \"Microservices architecture principles and communication patterns\",\n        \"Event-driven architectures and messaging systems (Kafka, Redis Pub/Sub concepts)\",\n        \"Data partitioning, replication, and sharding strategies\",\n        \"Fault tolerance, reliability, and disaster recovery in distributed environments\",\n        \"Observability (distributed tracing, logging, monitoring strategies with OpenTelemetry concepts)\",\n        \"Challenges and solutions for real-time data processing and low-latency systems\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Cultural Alignment Interview\",\n      \"purpose\": \"To assess Madhav's problem-solving approach, collaboration skills, adaptability, and alignment with EchoSphere's values, exploring his potential for growth and leadership within an innovative and fast-paced AI-focused environment.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Engineering Leadership & Cultural Alignment Lead\",\n        \"instructions\": \"Speak naturally and concisely, asking one question at a time and listening carefully. Ask relevant follow-up questions based on Madhav's answers. Use Madhav's specific background context naturally, discussing his experience leading validation efforts, collaborating with engineering teams, and his notable achievements like the patent and Chrome Extension. Maintain a professional interviewer personality. The aim is to understand Madhav's soft skills, motivations, and how he contributes to a team.\",\n        \"greeting_message\": \"Hello Madhav, it's a pleasure to speak with you. I'm Alex. Beyond the technical aspects, we value how engineers collaborate, solve problems, and grow. I'm particularly interested in hearing more about your experience leading end-to-end validation of RAG pipelines and working closely with engineering teams at RHA Technologies. Can you share a challenging situation where your collaboration made a significant impact?\"\n      },\n      \"topics\": [\n        \"Problem-solving methodologies and decision-making under ambiguity\",\n        \"Collaboration and communication within engineering teams and cross-functional partners\",\n        \"Handling technical disagreements and providing constructive feedback\",\n        \"Ownership, accountability, and driving projects to completion\",\n        \"Learning and adapting to new technologies and evolving requirements (e.g., AI space)\",\n        \"Impact of AI on technology and society, ethical considerations (high-level)\",\n        \"Career aspirations, growth mindset, and self-reflection on past experiences\",\n        \"Mentorship and fostering a positive engineering culture\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Depth & Principles\": \"Evaluates understanding of core backend and distributed systems concepts, ability to apply them, and grasp of trade-offs, even if direct experience is limited. Looks for foundational knowledge and capacity for growth.\",\n    \"Problem-Solving & Design Thinking\": \"Assesses the ability to break down complex problems, propose architectural solutions, articulate reasoning, and consider scalability, reliability, and performance implications.\",\n    \"Communication & Collaboration\": \"Measures clarity of thought, ability to articulate technical ideas, active listening, and evidence of effective teamwork and cross-functional interaction.\",\n    \"Drive & Impact\": \"Examines initiative, ownership, passion for technology, and the ability to deliver tangible results. Looks at how candidates learn from challenges and contribute to projects.\",\n    \"Cultural Alignment & Growth Potential\": \"Evaluates alignment with EchoSphere's values, adaptability, curiosity, and a demonstrated ability to learn and take on increasing responsibility.\"\n  }\n}"
+    },
+    {
+      "id": "bp_3jxtxcw",
+      "interviewId": "int_8hw8ctd",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency Interview\",\n      \"purpose\": \"To assess Madhav's foundational understanding of backend architecture principles, concurrent programming, and performance optimization, particularly in the context of real-time, low-latency systems. This round will explore how his project and internship experience informs his theoretical knowledge of system efficiency and scalability, while acknowledging his current career stage.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Architecture & Concurrency Lead\",\n        \"instructions\": \"Speak naturally and concisely, asking one question at a time and listening carefully. Ask relevant follow-up questions based on Madhav's answers. Use his specific background context naturally, particularly his work at RHA Technologies and his personal projects. Maintain a professional interviewer personality. Focus on his foundational understanding, problem-solving approach, and capacity to learn advanced concepts, rather than expecting extensive senior-level experience in these areas.\",\n        \"greeting_message\": \"Hello Madhav, welcome! I'm Alex. I'm particularly interested in your experience with validating RAG pipelines at RHA Technologies and your work on projects like ExpensWise. Today, we'll discuss backend architecture, concurrency, and how you think about building efficient systems. Let's start by diving into how you approached performance considerations during your testing strategies for diverse data integrations at RHA. Can you elaborate on any performance bottlenecks you observed or anticipated?\"\n      },\n      \"topics\": [\n        \"Python (FastAPI, asyncio) / Go concurrency principles and asynchronous I/O\",\n        \"Database optimization (PostgreSQL query optimization, indexing, connection pooling) and caching strategies (Redis)\",\n        \"API design (REST and WebSockets) for high-throughput and low-latency applications\",\n        \"Basic performance tuning and debugging strategies for backend services\",\n        \"Memory management and resource utilization in concurrent applications\"\n      ]\n    },\n    {\n      \"round_name\": \"Distributed System Design Interview\",\n      \"purpose\": \"To evaluate Madhav's grasp of distributed systems fundamentals, fault tolerance, data consistency, and how these concepts apply to high-scale, real-time AI infrastructure. This round will focus on his problem-solving approach and ability to reason about complex system interactions, encouraging him to relate theoretical concepts to his practical exposure and projects.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Distributed System Design Lead\",\n        \"instructions\": \"Speak naturally and concisely, asking one question at a time and listening carefully. Ask relevant follow-up questions based on Madhav's answers. Use his specific background context naturally, such as the scalability challenges of an AI agent platform like RHA One or the user base of his Chrome Extension. Maintain a professional interviewer personality. Encourage him to think aloud and articulate his thought process for complex problems, assessing his understanding of principles rather than expecting direct experience designing large-scale distributed systems.\",\n        \"greeting_message\": \"Hi Madhav, I'm Alex. It's impressive that you led the validation of RAG pipelines and AI agents at RHA Technologies, and also built a Chrome Extension with 3000+ active users. Today, we'll explore your understanding of distributed systems and how you'd approach designing scalable, fault-tolerant solutions. Let's imagine the RHA One platform scaled to thousands of concurrent users across many agents; what are some key distributed system challenges you foresee, and how might you begin to address them architecturally?\"\n      },\n      \"topics\": [\n        \"Fundamentals of distributed systems: consensus, partition tolerance, eventual consistency\",\n        \"Event-driven architectures using messaging queues (e.g., Apache Kafka, Redis Pub/Sub)\",\n        \"Strategies for distributed state management and data synchronization\",\n        \"Fault tolerance, reliability patterns, and error handling in distributed environments\",\n        \"Observability concepts: distributed tracing (OpenTelemetry), logging, monitoring\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Cultural Alignment Interview\",\n      \"purpose\": \"To understand Madhav's collaborative style, problem-solving approach in team settings, and his motivation for a role demanding senior-level responsibilities. This round will assess his learning agility, initiative, communication skills, and how his experiences, including his patent application and Chrome Extension, demonstrate his potential for growth and contribution to a pioneering team.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Engineering Leadership & Cultural Alignment Lead\",\n        \"instructions\": \"Speak naturally and concisely, asking one question at a time and listening carefully. Ask relevant follow-up questions based on Madhav's answers. Use his specific background context naturally, referring to his leadership in validation at RHA, his patent, and his successful Chrome Extension. Maintain a professional interviewer personality. Focus on understanding his thought processes, learning aptitude, and how he approaches challenges and collaboration, rather than evaluating him against typical 'senior' experience metrics.\",\n        \"greeting_message\": \"Hello Madhav, I'm Alex, and it's great to connect. Your work on a patent application for an Autonomous Smart Waste Segregation System and launching a Chrome Extension with thousands of users really stands out, as does your leadership in validating AI pipelines at RHA. This round is about your approach to problem-solving, collaboration, and how you drive initiatives. Can you tell me about a time during your internship at RHA when you encountered a particularly challenging critical edge case, and how you led the effort to uncover and resolve it, collaborating with the engineering team?\"\n      },\n      \"topics\": [\n        \"Collaboration and communication within engineering teams, especially with AI research and product\",\n        \"Problem-solving methodologies, especially when encountering complex or undefined problems\",\n        \"Taking initiative, owning projects, and driving solutions from conception to completion\",\n        \"Learning and adaptation in a fast-paced, evolving technical environment\",\n        \"Feedback mechanisms, mentorship, and contributing to team culture and growth\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Foundational Technical Acumen\": \"Evaluates understanding of core backend concepts, data structures, algorithms, and system architecture principles. Look for clear articulation of concepts, ability to discuss trade-offs, and how they connect theoretical knowledge to practical examples from their experience, even if limited.\",\n    \"Distributed Systems Reasoning\": \"Assesses grasp of distributed systems fundamentals (e.g., consistency, availability, fault tolerance, messaging). Look for logical thinking in system design questions, ability to identify potential bottlenecks or failure points, and a structured approach to scaling and reliability, even if purely theoretical.\",\n    \"Problem-Solving & Analytical Skills\": \"Measures candidate's ability to break down complex problems, propose solutions, and articulate their thought process clearly. Look for structured problem-solving, adaptability, and the ability to consider multiple approaches and their implications.\",\n    \"Proactive Learning & Initiative\": \"Evaluates the candidate's drive for continuous learning, self-improvement, and taking initiative beyond explicit assignments. Look for examples of personal projects, patents, self-directed learning, and contributions to improving processes or systems.\",\n    \"Collaboration & Communication\": \"Assesses ability to communicate technical ideas effectively, work collaboratively within a team, and engage constructively with feedback. Look for clarity in explanations, active listening, and examples of successful teamwork or cross-functional collaboration, especially from their internship.\"\n  }\n}"
     }
   ]
 }
