@@ -1,0 +1,1150 @@
+{
+  "companies": [
+    {
+      "id": "c1",
+      "name": "EchoSphere Tech",
+      "industry": "Artificial Intelligence"
+    }
+  ],
+  "jobs": [
+    {
+      "id": "j1",
+      "companyId": "c1",
+      "title": "Senior Backend Engineer",
+      "description": "We are looking for a Senior Backend Engineer to scale our AI infrastructure.",
+      "requirements": "- 5+ years Python/FastAPI\n- PostgreSQL\n- System Design",
+      "stagesJson": "[\"Technical\",\"System Design\",\"HR\"]"
+    },
+    {
+      "id": "j2",
+      "companyId": "c1",
+      "title": "Full Stack Engineer",
+      "description": "Join our core product team building the next generation of Next.js apps.",
+      "requirements": "- React/Next.js\n- Node.js\n- Tailwind CSS",
+      "stagesJson": "[\"Frontend Technical\",\"HR\"]"
+    },
+    {
+      "id": "j3",
+      "companyId": "c1",
+      "title": "AI/ML Engineer",
+      "description": "Help us improve our voice models and evaluation LLMs.",
+      "requirements": "- PyTorch\n- LLM finetuning\n- Python",
+      "stagesJson": "[\"ML Technical\",\"HR\"]"
+    },
+    {
+      "id": "j_m769m72",
+      "companyId": "c1",
+      "title": "DevOps",
+      "description": "Cloud eng",
+      "requirements": "AWS",
+      "stagesJson": "[\"Tech\"]"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "cand1",
+      "name": "Alice Smith",
+      "email": "alice@example.com",
+      "linkedinUrl": "https://linkedin.com/in/alicesmith"
+    },
+    {
+      "id": "cand2",
+      "name": "Bob Johnson",
+      "email": "bob@example.com",
+      "githubUrl": "https://github.com/bobj"
+    },
+    {
+      "id": "cand_y0c6uwk",
+      "name": "Charlie Applicant",
+      "email": "charlie@test.com",
+      "githubUrl": "https://github.com/charlie"
+    },
+    {
+      "id": "cand_rgpgnd8",
+      "name": "Alex Sharma",
+      "email": "alex.sharma@example.com",
+      "linkedinUrl": "https://linkedin.com/in/alex-sharma",
+      "githubUrl": "https://github.com/alexsharma"
+    },
+    {
+      "id": "cand_jdx9oaw",
+      "name": "David Miller",
+      "email": "david.miller@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/davidmiller-backend",
+      "candidateContext": {
+        "headline": "Senior Software Engineer | Distributed Systems & High-Throughput APIs",
+        "about": "Passionate backend engineer with extensive experience designing resilient microservices, optimizing database performance, and building developer tooling.",
+        "experience": [
+          {
+            "title": "Senior Backend Engineer",
+            "company": "HyperScale Cloud Systems",
+            "duration": "2021 - Present",
+            "description": "Led migration to asynchronous event-driven architecture, optimizing PostgreSQL query bottlenecks and improving p99 latency by 45%."
+          },
+          {
+            "title": "Software Engineer",
+            "company": "NextGen Software",
+            "duration": "2019 - 2021",
+            "description": "Engineered scalable REST APIs with FastAPI and Docker. Built real-time notification service handling 10M daily events."
+          }
+        ],
+        "skills": [
+          "Python",
+          "FastAPI",
+          "PostgreSQL",
+          "Distributed Systems",
+          "Redis",
+          "Docker",
+          "WebRTC",
+          "System Design"
+        ],
+        "education": [
+          {
+            "school": "State University of Technology",
+            "degree": "Bachelor of Science",
+            "fieldOfStudy": "Computer Science",
+            "year": "2019"
+          }
+        ],
+        "projects": [
+          {
+            "title": "Asyncpg Pool Optimizer",
+            "description": "Open-source connection pool manager reducing connection thrashing in async Python web apps.",
+            "url": "https://github.com/davidmiller-backend/pool-optimizer"
+          }
+        ],
+        "certifications": [
+          {
+            "name": "AWS Certified Solutions Architect",
+            "issuer": "Amazon Web Services",
+            "year": "2023"
+          }
+        ],
+        "organizations": [
+          "Open Source Contributor - Python Software Foundation"
+        ],
+        "careerProgression": "Over a six-year career, David has demonstrated steady upward mobility, transitioning from designing high-volume API services at NextGen Software to leading critical asynchronous infrastructure migrations and query optimizations as a Senior Engineer at HyperScale Cloud Systems. His trajectory showcases a clear evolution from foundational backend development to deep expertise in distributed systems, database clustering, and high-throughput architectures.",
+        "notableClaims": [
+          "Led a migration to an asynchronous event-driven architecture at HyperScale Cloud Systems, successfully reducing p99 latency by 45%.",
+          "Engineered a real-time notification service at NextGen Software capable of handling 10 million daily events.",
+          "Developed and published 'Asyncpg Pool Optimizer,' an open-source connection pool manager designed to eliminate connection thrashing in asynchronous Python web applications.",
+          "Acquired deep database engineering experience specializing in PostgreSQL clustering and optimization of high-throughput query bottlenecks."
+        ],
+        "interviewHooks": [
+          "At HyperScale Cloud Systems, you migrated legacy systems to an asynchronous event-driven architecture. What were the primary operational risks you mitigated during this transition, and how did you prevent data loss during the cutover?",
+          "Your open-source project, Asyncpg Pool Optimizer, targets connection thrashing. What specific architectural limitations in default asyncpg or standard PostgreSQL connection behaviors inspired you to build this, and how does your optimizer resolve them under high load?",
+          "Handling 10 million daily events on NextGen's real-time notification service is impressive. Could you walk me through the integration of FastAPI, Redis, and Celery in that system, particularly how you managed backpressure and consumer failures during traffic spikes?"
+        ],
+        "enrichmentSource": "provider_interface_simulated",
+        "enrichedAt": "2026-09-03T20:18:16.285Z"
+      }
+    },
+    {
+      "id": "cand_usa3bht",
+      "name": "Sarah Connor",
+      "email": "sarah.connor@example.com",
+      "linkedinUrl": "https://invalid-profile-site.com/user/123"
+    },
+    {
+      "id": "cand_7zsrf3a",
+      "name": "Marcus Vance",
+      "email": "marcus.vance@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/marcus-vance-cloud",
+      "candidateContext": {
+        "headline": "Senior Software Engineer | Distributed Systems & High-Throughput APIs",
+        "about": "Passionate backend engineer with extensive experience designing resilient microservices, optimizing database performance, and building developer tooling.",
+        "experience": [
+          {
+            "title": "Senior Backend Engineer",
+            "company": "HyperScale Cloud Systems",
+            "duration": "2021 - Present",
+            "description": "Led migration to asynchronous event-driven architecture, optimizing PostgreSQL query bottlenecks and improving p99 latency by 45%."
+          },
+          {
+            "title": "Software Engineer",
+            "company": "NextGen Software",
+            "duration": "2019 - 2021",
+            "description": "Engineered scalable REST APIs with FastAPI and Docker. Built real-time notification service handling 10M daily events."
+          }
+        ],
+        "skills": [
+          "Python",
+          "FastAPI",
+          "PostgreSQL",
+          "Distributed Systems",
+          "Redis",
+          "Docker",
+          "WebRTC",
+          "System Design"
+        ],
+        "education": [
+          {
+            "school": "State University of Technology",
+            "degree": "Bachelor of Science",
+            "fieldOfStudy": "Computer Science",
+            "year": "2019"
+          }
+        ],
+        "projects": [
+          {
+            "title": "Asyncpg Pool Optimizer",
+            "description": "Open-source connection pool manager reducing connection thrashing in async Python web apps.",
+            "url": "https://github.com/marcus-vance-cloud/pool-optimizer"
+          }
+        ],
+        "certifications": [
+          {
+            "name": "AWS Certified Solutions Architect",
+            "issuer": "Amazon Web Services",
+            "year": "2023"
+          }
+        ],
+        "organizations": [
+          "Open Source Contributor - Python Software Foundation"
+        ],
+        "enrichmentSource": "brightdata_simulated_dev",
+        "enrichedAt": "2026-09-03T20:28:19.504Z",
+        "careerProgression": "Over his 7-year career, Marcus has successfully transitioned from developing scalable REST APIs and high-volume notification services at NextGen Software to serving as a Senior Backend Engineer at HyperScale Cloud Systems, where he now leads complex architectural migrations and database optimizations.",
+        "notableClaims": [
+          "Led an asynchronous event-driven architecture migration at HyperScale Cloud Systems, improving p99 latency by 45%.",
+          "Engineered a real-time notification service handling 10 million daily events using FastAPI and Docker at NextGen Software.",
+          "Authored the 'Asyncpg Pool Optimizer' open-source tool to resolve connection thrashing in asynchronous Python web applications."
+        ],
+        "interviewHooks": [
+          "When you migrated HyperScale Cloud Systems to an asynchronous event-driven architecture and saw a 45% drop in p99 latency, what specific PostgreSQL query bottlenecks did you identify, and how did you resolve them?",
+          "For the real-time notification service at NextGen handling 10 million daily events, how did you architect the system to ensure message durability and handle sudden spikes in traffic? Did you leverage Kafka in this pipeline?",
+          "What inspired you to build the Asyncpg Pool Optimizer, and what are the unique challenges of managing database connection pooling in high-throughput, async Python applications compared to traditional synchronous setups?"
+        ]
+      }
+    },
+    {
+      "id": "cand_ias49p9",
+      "name": "Bill Gates",
+      "email": "bgates.test@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/williamhgates",
+      "candidateContext": {
+        "headline": "Leader / Executive at Gates Foundation",
+        "about": "Chair of the Gates Foundation. Founder of Breakthrough Energy. Co-founder of Microsoft…",
+        "experience": [
+          {
+            "title": "Current Leadership Role",
+            "company": "Gates Foundation",
+            "duration": "Present",
+            "description": "Chair of the Gates Foundation. Founder of Breakthrough Energy. Co-founder of Microsoft…"
+          }
+        ],
+        "skills": [],
+        "education": [
+          {
+            "school": "Harvard University",
+            "year": "1975"
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T20:53:16.063Z",
+        "careerProgression": "Having co-founded Microsoft and pioneered the personal computing revolution, this candidate transitioned from a legendary career in systems software and operating systems to executive leadership in global philanthropy and green energy technology. Their trajectory represents a rare evolution from defining modern computing architecture to driving massive-scale global initiatives in AI, health, and climate technology.",
+        "notableClaims": [
+          "Co-founded Microsoft and drove the foundational architecture of modern systems software and operating systems at global scale.",
+          "Founded Breakthrough Energy, spearheading investment and technical innovation in scalable green technologies and climate tech.",
+          "Led global-scale philanthropic and distributed systems strategies at the Gates Foundation, recently focusing on global health initiatives and AI integration."
+        ],
+        "interviewHooks": [
+          "Given your foundational work in operating systems and systems software at Microsoft, how do you see the architectural paradigm shifting as we transition from traditional CPU/GPU computing to specialized AI-driven systems?",
+          "Through Breakthrough Energy, you evaluate cutting-edge climate and deep-tech innovations; what specific technical benchmarks do you look for when determining if a green energy technology can scale globally?",
+          "You've championed AI's potential in global health; how can we structurally address the compute constraints and data privacy challenges of deploying localized AI models in under-resourced regions?"
+        ]
+      }
+    },
+    {
+      "id": "cand_p9pkna8",
+      "name": "Madhav Gairola",
+      "email": "madhav.gairola@test.com",
+      "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
+      "candidateContext": {
+        "headline": "Leader / Executive at RHA Technologies",
+        "experience": [
+          {
+            "title": "Current Leadership Role",
+            "company": "RHA Technologies",
+            "duration": "Present"
+          }
+        ],
+        "skills": [],
+        "education": [
+          {
+            "school": "University",
+            "year": "2023"
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T20:56:04.511Z",
+        "careerProgression": "Madhav has transitioned from hands-on software engineering in distributed systems and AI to an executive leadership role at RHA Technologies. His trajectory reflects a strong growth path combining deep technical expertise in real-time systems with strategic organizational leadership.",
+        "notableClaims": [
+          "Specializes in building distributed systems and real-time voice intelligence.",
+          "Designed and implemented full-stack cloud applications for complex AI workloads.",
+          "Currently serves in an executive and leadership capacity at RHA Technologies."
+        ],
+        "interviewHooks": [
+          "In your work with real-time voice intelligence, what were the primary latency bottlenecks you faced, and how did you architect your distributed systems to overcome them?",
+          "How do you balance your hands-on background in AI systems building with your current executive leadership responsibilities at RHA Technologies?",
+          "When scaling full-stack cloud applications for AI and real-time data feeds, what specific architectural trade-offs did you make regarding state management and system reliability?"
+        ]
+      }
+    },
+    {
+      "id": "cand_vd0q0ej",
+      "name": "Renesha Sagar",
+      "email": "renesha.sagar@test.com",
+      "linkedinUrl": "https://www.linkedin.com/in/reneshasagar/",
+      "candidateContext": {
+        "experience": [],
+        "skills": [],
+        "education": [],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T20:58:15.897Z",
+        "careerProgression": "Renesha is a full-stack software engineer and product-minded technology builder focused on designing scalable systems and user-facing applications.",
+        "notableClaims": [
+          "Experience in designing and architecting scalable, user-facing full-stack applications.",
+          "Dual expertise in both technical system design and product-oriented engineering."
+        ],
+        "interviewHooks": [
+          "You describe yourself as a 'product thinker' in engineering. Can you share an example of a time your product-oriented mindset directly influenced a major system design decision?",
+          "When building scalable user-facing applications, how do you balance frontend responsiveness with backend complexity during high-traffic events?",
+          "What architectural patterns do you rely on most when designing a full-stack system from scratch to ensure future scalability?"
+        ]
+      }
+    },
+    {
+      "id": "cand_wers94a",
+      "name": "Renesha Sagar",
+      "email": "renesha.sagar@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/reneshasagar/",
+      "candidateContext": {
+        "headline": "Full Stack Engineer | High-Performance Web Systems & Scalable Architectures",
+        "experience": [
+          {
+            "title": "Full Stack Engineer",
+            "company": "TechInnovate Labs",
+            "duration": "2022 - Present",
+            "description": "Passionate product-oriented technologist building high-performance web systems and scalable architectures."
+          },
+          {
+            "title": "Software Engineer",
+            "company": "DevCorp",
+            "duration": "2020 - 2022",
+            "description": "Responsible for developing software applications and systems."
+          }
+        ],
+        "skills": [],
+        "education": [
+          {
+            "school": "University Institute of Engineering and Technology",
+            "year": "2020"
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T21:04:40.799Z",
+        "careerProgression": "Renesha has established a consistent upward trajectory in full-stack engineering, transitioning from a Software Engineer at DevCorp to her current role as a Full Stack Engineer at TechInnovate Labs, where she focuses on scalable web architectures.",
+        "notableClaims": [
+          "Building high-performance web systems and scalable architectures at TechInnovate Labs.",
+          "Successfully transitioned from Software Engineer to Full Stack Engineer within two years of graduation."
+        ],
+        "interviewHooks": [
+          "In your current role at TechInnovate Labs, what specific performance metrics or architectural bottlenecks did you target when building high-performance web systems?",
+          "You describe yourself as a 'product-oriented technologist'. How does this product mindset practically influence the way you design and build scalable backends?",
+          "What was the most challenging technical project during your transition from DevCorp to TechInnovate Labs, and how did you approach resolving its architectural challenges?"
+        ]
+      }
+    },
+    {
+      "id": "cand_u2oml73",
+      "name": "Ryosuke Kawashima",
+      "email": "ryosuke.kawashima@test.com",
+      "linkedinUrl": "https://www.linkedin.com/in/ryosuke-kawashima-58878b360/",
+      "candidateContext": {
+        "headline": "AI Engineer | Ex-Financial Analyst | Ex-LLM Application Researcher | Harvard’s International Conference Ex-Delegate (2025&2026) | NTU (Nanyang Technological University) Exchange Alumnus | Python, C++, Rust",
+        "about": "Master’s student in Mechanical Engineering at The University of Tokyo, specializing in AI, LLM-driven knowledge engineering, and Digital Transformation (DX) across finance, construction, and manufacturing. Experience: ・Led a Proof of Concept (PoC) project in the construction industry ・Conducted master’s research in collaboration with Toyota Motor Corporation, developing a method to visualize and improve business workflows. Currently building AI systems that: ・Convert unstructured investment documents into useful insights for financial decision-making. ・Automate partner-matching processes in the manufacturing industry. International experience includes: ・Exchange program at Nanyang Technological University (Singapore) ・Delegate of HPAIR (Harvard Project for Asian and International Relations) ・Participant in the Future Global Leaders Program at UC San Diego Long-term objective: advancing AI-driven business innovation that enables scalable industry transformation, global collaboration, and sustainable impact.",
+        "experience": [
+          {
+            "title": "Artificial Intelligence Engineer",
+            "company": "Adventure India Journey Private Limited",
+            "duration": "Apr 2026 - Present",
+            "description": "・AI Feature Engineering: Architect innovative AI-powered solutions for the company's primary travel platform to enhance the customer journey.\n\n\n・Competitive Intelligence: Conduct comprehensive competitor analysis leveraging advanced data science methodologies to uncover market trends and strategic opportunities.\n\n\n・Strategic AI Leadership: Propose high-impact strategic business decisions based on deep analysis using Large Language Models (LLMs) and autonomous AI agents."
+          },
+          {
+            "title": "Financial Analyst",
+            "company": "TempestAI",
+            "duration": "Aug 2025 - Apr 2026",
+            "description": "Structured and analyzed qualitative and quantitative data used in loan screening documents, translating tacit decision-making criteria of sales and credit review teams into explicit, systematic processes.\n\n\nContributed to the development of a system that extracts and substitutes tacit knowledge with AI-driven solutions, enabling more consistent and transparent investment decision-making.\n\n\nBuilt and tested a Proof of Concept (PoC) system in the manufacturing domain: leveraging unused design drawings to identify required machining processes, retrieve similar past cases, and recommend the most suitable partner companies for outsourcing."
+          },
+          {
+            "title": "Future Global Leaders Program – University of California, San Diego (UCSD)",
+            "company": "UC San Diego School of Global Policy and Strategy (GPS)",
+            "duration": "Feb 2026 - Feb 2026",
+            "description": "Participated in an intensive international collaboration program at UC San Diego, engaging with globally minded peers in discussions, presentations, and entrepreneurship-focused workshops.\n\n\nExplored how technology and innovation can be translated into scalable ventures, while strengthening cross-cultural communication, leadership, and problem-solving skills.\n\n\nAn immersive experience at the intersection of global collaboration, deep tech, and entrepreneurial execution."
+          },
+          {
+            "title": "Harvard Project for Asian and International Relations (HPAIR 2026) Delegate",
+            "company": "Harvard Project for Asian and International Relations (HPAIR)",
+            "duration": "Nov 2025 - Feb 2026",
+            "description": "Through the connections I built during my visits to Singapore and India, as well as my interactions with Harvard students, I was reselected as a delegate for the Harvard Project for Asian and International Relations (HPAIR). I look forward to expanding my network and engaging with people from not only across Asia but around the world."
+          },
+          {
+            "title": "System Engineer",
+            "company": "Nippon Steel Corporation",
+            "duration": "Sep 2025 - Sep 2025",
+            "description": "Designed a production scheduling system for the steel industry, ensuring process timing alignment without contradictions.\n\n\nConducted requirements interviews with steel production staff to capture operational needs and translate them into system specifications.\n\n\nCreated a UI overview and developed a system diagram to illustrate stakeholder relationships and process flows.\n\n\nGained key insights into requirements engineering, including the value of asking broad, macro-level questions, analyzing system life cycles, defining stakeholder personas, and mapping real-world use scenarios."
+          },
+          {
+            "title": "Harvard Project for Asian and International Relations (HPAIR 2025) Delegate",
+            "company": "Harvard Project for Asian and International Relations (HPAIR)",
+            "duration": "Aug 2025 - Aug 2025",
+            "description": "Delegate of HPAIR (Harvard college Project for Asian and International Relations)"
+          },
+          {
+            "title": "DX Strategy Development in the Construction Sector",
+            "company": "燈株式会社",
+            "duration": "May 2025 - Jun 2025",
+            "description": "Conducted interviews with a construction company to identify operational challenges related to the configuration of construction facilities and the optimization of cable connections. Based on these insights, we defined the core problems and developed AI-driven algorithms to address them. Currently leading the Proof of Concept (PoC) phase to evaluate the performance of both our proprietary algorithm design and existing AI technologies.\n\n\nWe are actively engaging in consultations with stakeholders to refine our solutions based on real-world feedback. The project aims to reduce construction time by 30% and costs by 20%, contributing to greater efficiency and digital transformation in the construction industry."
+          },
+          {
+            "title": "Design Internship",
+            "company": "Makino",
+            "duration": "Sep 2022 - Sep 2022",
+            "description": "Designed a custom bracket for an oil-cooled spindle motor used in high-precision machining centers. The project focused on aligning with strict dimensional constraints while optimizing for manufacturability and cost-efficiency, collaborating with senior engineers to prototype and refine the design."
+          }
+        ],
+        "skills": [],
+        "education": [
+          {
+            "school": "The University of Tokyo",
+            "degree": "Master's degree",
+            "year": "2026"
+          },
+          {
+            "school": "Nanyang Technological University Singapore",
+            "degree": "Exchange Program",
+            "year": "2024"
+          },
+          {
+            "school": "The University of Tokyo",
+            "degree": "Bachelor's degree",
+            "year": "2024"
+          }
+        ],
+        "projects": [],
+        "certifications": [
+          {
+            "name": "AI and Innovation: How MongoDB Enables a Resilient AI Strategy"
+          },
+          {
+            "name": "Google Certifications"
+          },
+          {
+            "name": "Applied Information Technology Engineer"
+          },
+          {
+            "name": "Fundamental Information Technology Engineer"
+          },
+          {
+            "name": "International English Language Testing System"
+          }
+        ],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T21:12:40.703Z",
+        "careerProgression": "Transitioning from a solid mechanical engineering foundation at the University of Tokyo to cutting-edge AI software engineering, Ryosuke has built an agile career driving high-impact DX and LLM agent initiatives across the construction, manufacturing, and financial sectors.",
+        "notableClaims": [
+          "Designed and executed a construction DX PoC utilizing custom AI-driven algorithms targeting a 30% reduction in construction time and a 20% reduction in costs.",
+          "Built an automated partner-matching system that processes unused design drawings to identify machining requirements and recommend optimal manufacturing outsourcing partners.",
+          "Translated complex, tacit credit underwriting knowledge into structured, explicit AI-driven decision systems for loan screening at TempestAI."
+        ],
+        "interviewHooks": [
+          "Your construction DX project targeted massive 30% time and 20% cost reductions. Could you talk through the algorithmic approach you used to optimize facility layout and cable routing, and how you validated those metrics during the PoC?",
+          "Quantifying and translating 'tacit' loan underwriting criteria into deterministic or LLM-driven decision processes is notoriously difficult. What prompt-engineering, retrieval, or fine-tuning methodologies did you employ at TempestAI to capture these subtle human decision boundaries?",
+          "For the manufacturing matching system, how did you parse and extract structural metadata from raw engineering design drawings, and how did you scale the embedding or classification of those processes to match with potential suppliers?"
+        ]
+      }
+    }
+  ],
+  "applications": [
+    {
+      "id": "app1",
+      "jobId": "j1",
+      "candidateId": "cand1",
+      "resumeText": "Alice Smith\n5 years of Python, FastAPI, and Postgres.",
+      "status": "INTERVIEW_SCHEDULED"
+    },
+    {
+      "id": "app2",
+      "jobId": "j2",
+      "candidateId": "cand2",
+      "resumeText": "Bob Johnson\nFull Stack Dev with 3 years Next.js experience.",
+      "status": "REJECTED"
+    },
+    {
+      "id": "app_s3de21q",
+      "jobId": "j1",
+      "candidateId": "cand_y0c6uwk",
+      "resumeText": "I am great.",
+      "relevantExperience": "Did a hackathon.",
+      "status": "APPLIED"
+    },
+    {
+      "id": "app_jqgx5o3",
+      "jobId": "j3",
+      "candidateId": "cand_rgpgnd8",
+      "resumeText": "Software Engineer — TechNova\n2023 – Present\n\n• Developed scalable REST APIs using Node.js, TypeScript, and PostgreSQL.\n• Designed backend services handling over 100,000 requests per day.\n• Implemented Redis caching that reduced average API response time by 40%.\n• Built authentication and authorization using JWT and role-based access control.\n• Worked with Docker and AWS for deployment and infrastructure.\n• Designed asynchronous workflows using message queues.\n• Collaborated with frontend and product teams to deliver production features.\n\nSoftware Engineering Intern — DataFlow\n2022 – 2023\n\n• Developed backend APIs using Python and FastAPI.\n• Optimized SQL queries and database indexes.\n• Wrote unit and integration tests.\n• Participated in code reviews and debugging production issues.\n\nSKILLS\n\nLanguages: TypeScript, JavaScript, Python, SQL\nBackend: Node.js, Express, FastAPI, REST APIs\nDatabases: PostgreSQL, Redis, MongoDB\nCloud/DevOps: AWS, Docker, GitHub Actions\nConcepts: Distributed Systems, Authentication, Caching, Message Queues, System Design",
+      "relevantExperience": "My most relevant project was designing a scalable backend API for an e-commerce platform. I worked on authentication, product and order services, PostgreSQL database design, Redis caching, and asynchronous order processing using a message queue. The system was designed to handle high traffic while maintaining low response times and reliable order processing.",
+      "status": "INTERVIEW_SCHEDULED"
+    },
+    {
+      "id": "app_guhpsyv",
+      "jobId": "j1",
+      "candidateId": "cand_jdx9oaw",
+      "resumeText": "David Miller. 6 years of experience building Python backend services, asynchronous queues with Celery, and PostgreSQL clustering.",
+      "linkedinUrl": "https://www.linkedin.com/in/davidmiller-backend",
+      "relevantExperience": "Architected a distributed event ingestion pipeline at ScaleTech handling 20,000 requests per second.",
+      "status": "INTERVIEW_SCHEDULED",
+      "candidateContext": {
+        "headline": "Senior Software Engineer | Distributed Systems & High-Throughput APIs",
+        "about": "Passionate backend engineer with extensive experience designing resilient microservices, optimizing database performance, and building developer tooling.",
+        "experience": [
+          {
+            "title": "Senior Backend Engineer",
+            "company": "HyperScale Cloud Systems",
+            "duration": "2021 - Present",
+            "description": "Led migration to asynchronous event-driven architecture, optimizing PostgreSQL query bottlenecks and improving p99 latency by 45%."
+          },
+          {
+            "title": "Software Engineer",
+            "company": "NextGen Software",
+            "duration": "2019 - 2021",
+            "description": "Engineered scalable REST APIs with FastAPI and Docker. Built real-time notification service handling 10M daily events."
+          }
+        ],
+        "skills": [
+          "Python",
+          "FastAPI",
+          "PostgreSQL",
+          "Distributed Systems",
+          "Redis",
+          "Docker",
+          "WebRTC",
+          "System Design"
+        ],
+        "education": [
+          {
+            "school": "State University of Technology",
+            "degree": "Bachelor of Science",
+            "fieldOfStudy": "Computer Science",
+            "year": "2019"
+          }
+        ],
+        "projects": [
+          {
+            "title": "Asyncpg Pool Optimizer",
+            "description": "Open-source connection pool manager reducing connection thrashing in async Python web apps.",
+            "url": "https://github.com/davidmiller-backend/pool-optimizer"
+          }
+        ],
+        "certifications": [
+          {
+            "name": "AWS Certified Solutions Architect",
+            "issuer": "Amazon Web Services",
+            "year": "2023"
+          }
+        ],
+        "organizations": [
+          "Open Source Contributor - Python Software Foundation"
+        ],
+        "careerProgression": "Over a six-year career, David has demonstrated steady upward mobility, transitioning from designing high-volume API services at NextGen Software to leading critical asynchronous infrastructure migrations and query optimizations as a Senior Engineer at HyperScale Cloud Systems. His trajectory showcases a clear evolution from foundational backend development to deep expertise in distributed systems, database clustering, and high-throughput architectures.",
+        "notableClaims": [
+          "Led a migration to an asynchronous event-driven architecture at HyperScale Cloud Systems, successfully reducing p99 latency by 45%.",
+          "Engineered a real-time notification service at NextGen Software capable of handling 10 million daily events.",
+          "Developed and published 'Asyncpg Pool Optimizer,' an open-source connection pool manager designed to eliminate connection thrashing in asynchronous Python web applications.",
+          "Acquired deep database engineering experience specializing in PostgreSQL clustering and optimization of high-throughput query bottlenecks."
+        ],
+        "interviewHooks": [
+          "At HyperScale Cloud Systems, you migrated legacy systems to an asynchronous event-driven architecture. What were the primary operational risks you mitigated during this transition, and how did you prevent data loss during the cutover?",
+          "Your open-source project, Asyncpg Pool Optimizer, targets connection thrashing. What specific architectural limitations in default asyncpg or standard PostgreSQL connection behaviors inspired you to build this, and how does your optimizer resolve them under high load?",
+          "Handling 10 million daily events on NextGen's real-time notification service is impressive. Could you walk me through the integration of FastAPI, Redis, and Celery in that system, particularly how you managed backpressure and consumer failures during traffic spikes?"
+        ],
+        "enrichmentSource": "provider_interface_simulated",
+        "enrichedAt": "2026-09-03T20:18:16.285Z"
+      }
+    },
+    {
+      "id": "app_g9cm2pb",
+      "jobId": "j1",
+      "candidateId": "cand_usa3bht",
+      "resumeText": "Sarah Connor. 4 years of QA automation, Cypress, and Playwright.",
+      "linkedinUrl": "https://invalid-profile-site.com/user/123",
+      "status": "INTERVIEW_SCHEDULED"
+    },
+    {
+      "id": "app_5gov5mq",
+      "jobId": "j1",
+      "candidateId": "cand_7zsrf3a",
+      "resumeText": "Marcus Vance. 7 years experience in distributed backend engineering, Kafka stream processing, PostgreSQL optimizations, and Docker/Kubernetes.",
+      "linkedinUrl": "https://www.linkedin.com/in/marcus-vance-cloud",
+      "relevantExperience": "Architected a high-throughput event streaming platform with Kafka and FastAPI processing 50M events daily.",
+      "status": "INTERVIEW_SCHEDULED",
+      "candidateContext": {
+        "headline": "Senior Software Engineer | Distributed Systems & High-Throughput APIs",
+        "about": "Passionate backend engineer with extensive experience designing resilient microservices, optimizing database performance, and building developer tooling.",
+        "experience": [
+          {
+            "title": "Senior Backend Engineer",
+            "company": "HyperScale Cloud Systems",
+            "duration": "2021 - Present",
+            "description": "Led migration to asynchronous event-driven architecture, optimizing PostgreSQL query bottlenecks and improving p99 latency by 45%."
+          },
+          {
+            "title": "Software Engineer",
+            "company": "NextGen Software",
+            "duration": "2019 - 2021",
+            "description": "Engineered scalable REST APIs with FastAPI and Docker. Built real-time notification service handling 10M daily events."
+          }
+        ],
+        "skills": [
+          "Python",
+          "FastAPI",
+          "PostgreSQL",
+          "Distributed Systems",
+          "Redis",
+          "Docker",
+          "WebRTC",
+          "System Design"
+        ],
+        "education": [
+          {
+            "school": "State University of Technology",
+            "degree": "Bachelor of Science",
+            "fieldOfStudy": "Computer Science",
+            "year": "2019"
+          }
+        ],
+        "projects": [
+          {
+            "title": "Asyncpg Pool Optimizer",
+            "description": "Open-source connection pool manager reducing connection thrashing in async Python web apps.",
+            "url": "https://github.com/marcus-vance-cloud/pool-optimizer"
+          }
+        ],
+        "certifications": [
+          {
+            "name": "AWS Certified Solutions Architect",
+            "issuer": "Amazon Web Services",
+            "year": "2023"
+          }
+        ],
+        "organizations": [
+          "Open Source Contributor - Python Software Foundation"
+        ],
+        "enrichmentSource": "brightdata_simulated_dev",
+        "enrichedAt": "2026-09-03T20:28:19.504Z",
+        "careerProgression": "Over his 7-year career, Marcus has successfully transitioned from developing scalable REST APIs and high-volume notification services at NextGen Software to serving as a Senior Backend Engineer at HyperScale Cloud Systems, where he now leads complex architectural migrations and database optimizations.",
+        "notableClaims": [
+          "Led an asynchronous event-driven architecture migration at HyperScale Cloud Systems, improving p99 latency by 45%.",
+          "Engineered a real-time notification service handling 10 million daily events using FastAPI and Docker at NextGen Software.",
+          "Authored the 'Asyncpg Pool Optimizer' open-source tool to resolve connection thrashing in asynchronous Python web applications."
+        ],
+        "interviewHooks": [
+          "When you migrated HyperScale Cloud Systems to an asynchronous event-driven architecture and saw a 45% drop in p99 latency, what specific PostgreSQL query bottlenecks did you identify, and how did you resolve them?",
+          "For the real-time notification service at NextGen handling 10 million daily events, how did you architect the system to ensure message durability and handle sudden spikes in traffic? Did you leverage Kafka in this pipeline?",
+          "What inspired you to build the Asyncpg Pool Optimizer, and what are the unique challenges of managing database connection pooling in high-throughput, async Python applications compared to traditional synchronous setups?"
+        ]
+      }
+    },
+    {
+      "id": "app_878vv9n",
+      "jobId": "j1",
+      "candidateId": "cand_ias49p9",
+      "resumeText": "Bill Gates. Technologist, founder of Microsoft, co-chair of the Bill & Melinda Gates Foundation, founder of Breakthrough Energy. Decades of leadership across systems software, operating systems, distributed computing, and philanthropic initiatives in global health and AI.",
+      "linkedinUrl": "https://www.linkedin.com/in/williamhgates",
+      "relevantExperience": "Co-founded Microsoft, led development of MS-DOS, Windows architecture, and large-scale software engineering organizations.",
+      "status": "INTERVIEW_SCHEDULED",
+      "candidateContext": {
+        "headline": "Leader / Executive at Gates Foundation",
+        "about": "Chair of the Gates Foundation. Founder of Breakthrough Energy. Co-founder of Microsoft…",
+        "experience": [
+          {
+            "title": "Current Leadership Role",
+            "company": "Gates Foundation",
+            "duration": "Present",
+            "description": "Chair of the Gates Foundation. Founder of Breakthrough Energy. Co-founder of Microsoft…"
+          }
+        ],
+        "skills": [],
+        "education": [
+          {
+            "school": "Harvard University",
+            "year": "1975"
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T20:53:16.063Z",
+        "careerProgression": "Having co-founded Microsoft and pioneered the personal computing revolution, this candidate transitioned from a legendary career in systems software and operating systems to executive leadership in global philanthropy and green energy technology. Their trajectory represents a rare evolution from defining modern computing architecture to driving massive-scale global initiatives in AI, health, and climate technology.",
+        "notableClaims": [
+          "Co-founded Microsoft and drove the foundational architecture of modern systems software and operating systems at global scale.",
+          "Founded Breakthrough Energy, spearheading investment and technical innovation in scalable green technologies and climate tech.",
+          "Led global-scale philanthropic and distributed systems strategies at the Gates Foundation, recently focusing on global health initiatives and AI integration."
+        ],
+        "interviewHooks": [
+          "Given your foundational work in operating systems and systems software at Microsoft, how do you see the architectural paradigm shifting as we transition from traditional CPU/GPU computing to specialized AI-driven systems?",
+          "Through Breakthrough Energy, you evaluate cutting-edge climate and deep-tech innovations; what specific technical benchmarks do you look for when determining if a green energy technology can scale globally?",
+          "You've championed AI's potential in global health; how can we structurally address the compute constraints and data privacy challenges of deploying localized AI models in under-resourced regions?"
+        ]
+      }
+    },
+    {
+      "id": "app_5x20lnh",
+      "jobId": "j1",
+      "candidateId": "cand_p9pkna8",
+      "resumeText": "Madhav Gairola. Software Engineer and AI systems builder specializing in distributed systems, real-time voice intelligence, and full-stack cloud applications.",
+      "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
+      "status": "INTERVIEW_SCHEDULED",
+      "candidateContext": {
+        "headline": "Leader / Executive at RHA Technologies",
+        "experience": [
+          {
+            "title": "Current Leadership Role",
+            "company": "RHA Technologies",
+            "duration": "Present"
+          }
+        ],
+        "skills": [],
+        "education": [
+          {
+            "school": "University",
+            "year": "2023"
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T20:56:04.511Z",
+        "careerProgression": "Madhav has transitioned from hands-on software engineering in distributed systems and AI to an executive leadership role at RHA Technologies. His trajectory reflects a strong growth path combining deep technical expertise in real-time systems with strategic organizational leadership.",
+        "notableClaims": [
+          "Specializes in building distributed systems and real-time voice intelligence.",
+          "Designed and implemented full-stack cloud applications for complex AI workloads.",
+          "Currently serves in an executive and leadership capacity at RHA Technologies."
+        ],
+        "interviewHooks": [
+          "In your work with real-time voice intelligence, what were the primary latency bottlenecks you faced, and how did you architect your distributed systems to overcome them?",
+          "How do you balance your hands-on background in AI systems building with your current executive leadership responsibilities at RHA Technologies?",
+          "When scaling full-stack cloud applications for AI and real-time data feeds, what specific architectural trade-offs did you make regarding state management and system reliability?"
+        ]
+      }
+    },
+    {
+      "id": "app_lasn1qz",
+      "jobId": "j1",
+      "candidateId": "cand_vd0q0ej",
+      "resumeText": "Renesha Sagar. Software engineer, product thinker, and technology builder with experience in full-stack engineering, system design, and building scalable user-facing applications.",
+      "linkedinUrl": "https://www.linkedin.com/in/reneshasagar/",
+      "status": "INTERVIEW_SCHEDULED",
+      "candidateContext": {
+        "experience": [],
+        "skills": [],
+        "education": [],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T20:58:15.897Z",
+        "careerProgression": "Renesha is a full-stack software engineer and product-minded technology builder focused on designing scalable systems and user-facing applications.",
+        "notableClaims": [
+          "Experience in designing and architecting scalable, user-facing full-stack applications.",
+          "Dual expertise in both technical system design and product-oriented engineering."
+        ],
+        "interviewHooks": [
+          "You describe yourself as a 'product thinker' in engineering. Can you share an example of a time your product-oriented mindset directly influenced a major system design decision?",
+          "When building scalable user-facing applications, how do you balance frontend responsiveness with backend complexity during high-traffic events?",
+          "What architectural patterns do you rely on most when designing a full-stack system from scratch to ensure future scalability?"
+        ]
+      }
+    },
+    {
+      "id": "app_91t1ltw",
+      "jobId": "j1",
+      "candidateId": "cand_wers94a",
+      "resumeText": "Renesha Sagar. Full Stack Engineer at TechInnovate Labs (2022 - Present). Previously Software Engineer at DevCorp (2020 - 2022). Studied Computer Science and Engineering at University Institute of Engineering and Technology (Graduated 2020). Passionate product-oriented technologist building high-performance web systems and scalable architectures.",
+      "linkedinUrl": "https://www.linkedin.com/in/reneshasagar/",
+      "relevantExperience": "Architected a customer portal with Next.js, Node.js, and PostgreSQL reducing churn by 25%.",
+      "status": "INTERVIEW_SCHEDULED",
+      "candidateContext": {
+        "headline": "Full Stack Engineer | High-Performance Web Systems & Scalable Architectures",
+        "experience": [
+          {
+            "title": "Full Stack Engineer",
+            "company": "TechInnovate Labs",
+            "duration": "2022 - Present",
+            "description": "Passionate product-oriented technologist building high-performance web systems and scalable architectures."
+          },
+          {
+            "title": "Software Engineer",
+            "company": "DevCorp",
+            "duration": "2020 - 2022",
+            "description": "Responsible for developing software applications and systems."
+          }
+        ],
+        "skills": [],
+        "education": [
+          {
+            "school": "University Institute of Engineering and Technology",
+            "year": "2020"
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T21:04:40.799Z",
+        "careerProgression": "Renesha has established a consistent upward trajectory in full-stack engineering, transitioning from a Software Engineer at DevCorp to her current role as a Full Stack Engineer at TechInnovate Labs, where she focuses on scalable web architectures.",
+        "notableClaims": [
+          "Building high-performance web systems and scalable architectures at TechInnovate Labs.",
+          "Successfully transitioned from Software Engineer to Full Stack Engineer within two years of graduation."
+        ],
+        "interviewHooks": [
+          "In your current role at TechInnovate Labs, what specific performance metrics or architectural bottlenecks did you target when building high-performance web systems?",
+          "You describe yourself as a 'product-oriented technologist'. How does this product mindset practically influence the way you design and build scalable backends?",
+          "What was the most challenging technical project during your transition from DevCorp to TechInnovate Labs, and how did you approach resolving its architectural challenges?"
+        ]
+      }
+    },
+    {
+      "id": "app_e4393fj",
+      "jobId": "j1",
+      "candidateId": "cand_u2oml73",
+      "resumeText": "Ryosuke Kawashima. AI Engineer with strong background in LLM application research, Python, C++, Rust, and financial analytics. Ex-NTU exchange alumnus and Harvard international conference delegate.",
+      "linkedinUrl": "https://www.linkedin.com/in/ryosuke-kawashima-58878b360/",
+      "status": "INTERVIEW_SCHEDULED",
+      "candidateContext": {
+        "headline": "AI Engineer | Ex-Financial Analyst | Ex-LLM Application Researcher | Harvard’s International Conference Ex-Delegate (2025&2026) | NTU (Nanyang Technological University) Exchange Alumnus | Python, C++, Rust",
+        "about": "Master’s student in Mechanical Engineering at The University of Tokyo, specializing in AI, LLM-driven knowledge engineering, and Digital Transformation (DX) across finance, construction, and manufacturing. Experience: ・Led a Proof of Concept (PoC) project in the construction industry ・Conducted master’s research in collaboration with Toyota Motor Corporation, developing a method to visualize and improve business workflows. Currently building AI systems that: ・Convert unstructured investment documents into useful insights for financial decision-making. ・Automate partner-matching processes in the manufacturing industry. International experience includes: ・Exchange program at Nanyang Technological University (Singapore) ・Delegate of HPAIR (Harvard Project for Asian and International Relations) ・Participant in the Future Global Leaders Program at UC San Diego Long-term objective: advancing AI-driven business innovation that enables scalable industry transformation, global collaboration, and sustainable impact.",
+        "experience": [
+          {
+            "title": "Artificial Intelligence Engineer",
+            "company": "Adventure India Journey Private Limited",
+            "duration": "Apr 2026 - Present",
+            "description": "・AI Feature Engineering: Architect innovative AI-powered solutions for the company's primary travel platform to enhance the customer journey.\n\n\n・Competitive Intelligence: Conduct comprehensive competitor analysis leveraging advanced data science methodologies to uncover market trends and strategic opportunities.\n\n\n・Strategic AI Leadership: Propose high-impact strategic business decisions based on deep analysis using Large Language Models (LLMs) and autonomous AI agents."
+          },
+          {
+            "title": "Financial Analyst",
+            "company": "TempestAI",
+            "duration": "Aug 2025 - Apr 2026",
+            "description": "Structured and analyzed qualitative and quantitative data used in loan screening documents, translating tacit decision-making criteria of sales and credit review teams into explicit, systematic processes.\n\n\nContributed to the development of a system that extracts and substitutes tacit knowledge with AI-driven solutions, enabling more consistent and transparent investment decision-making.\n\n\nBuilt and tested a Proof of Concept (PoC) system in the manufacturing domain: leveraging unused design drawings to identify required machining processes, retrieve similar past cases, and recommend the most suitable partner companies for outsourcing."
+          },
+          {
+            "title": "Future Global Leaders Program – University of California, San Diego (UCSD)",
+            "company": "UC San Diego School of Global Policy and Strategy (GPS)",
+            "duration": "Feb 2026 - Feb 2026",
+            "description": "Participated in an intensive international collaboration program at UC San Diego, engaging with globally minded peers in discussions, presentations, and entrepreneurship-focused workshops.\n\n\nExplored how technology and innovation can be translated into scalable ventures, while strengthening cross-cultural communication, leadership, and problem-solving skills.\n\n\nAn immersive experience at the intersection of global collaboration, deep tech, and entrepreneurial execution."
+          },
+          {
+            "title": "Harvard Project for Asian and International Relations (HPAIR 2026) Delegate",
+            "company": "Harvard Project for Asian and International Relations (HPAIR)",
+            "duration": "Nov 2025 - Feb 2026",
+            "description": "Through the connections I built during my visits to Singapore and India, as well as my interactions with Harvard students, I was reselected as a delegate for the Harvard Project for Asian and International Relations (HPAIR). I look forward to expanding my network and engaging with people from not only across Asia but around the world."
+          },
+          {
+            "title": "System Engineer",
+            "company": "Nippon Steel Corporation",
+            "duration": "Sep 2025 - Sep 2025",
+            "description": "Designed a production scheduling system for the steel industry, ensuring process timing alignment without contradictions.\n\n\nConducted requirements interviews with steel production staff to capture operational needs and translate them into system specifications.\n\n\nCreated a UI overview and developed a system diagram to illustrate stakeholder relationships and process flows.\n\n\nGained key insights into requirements engineering, including the value of asking broad, macro-level questions, analyzing system life cycles, defining stakeholder personas, and mapping real-world use scenarios."
+          },
+          {
+            "title": "Harvard Project for Asian and International Relations (HPAIR 2025) Delegate",
+            "company": "Harvard Project for Asian and International Relations (HPAIR)",
+            "duration": "Aug 2025 - Aug 2025",
+            "description": "Delegate of HPAIR (Harvard college Project for Asian and International Relations)"
+          },
+          {
+            "title": "DX Strategy Development in the Construction Sector",
+            "company": "燈株式会社",
+            "duration": "May 2025 - Jun 2025",
+            "description": "Conducted interviews with a construction company to identify operational challenges related to the configuration of construction facilities and the optimization of cable connections. Based on these insights, we defined the core problems and developed AI-driven algorithms to address them. Currently leading the Proof of Concept (PoC) phase to evaluate the performance of both our proprietary algorithm design and existing AI technologies.\n\n\nWe are actively engaging in consultations with stakeholders to refine our solutions based on real-world feedback. The project aims to reduce construction time by 30% and costs by 20%, contributing to greater efficiency and digital transformation in the construction industry."
+          },
+          {
+            "title": "Design Internship",
+            "company": "Makino",
+            "duration": "Sep 2022 - Sep 2022",
+            "description": "Designed a custom bracket for an oil-cooled spindle motor used in high-precision machining centers. The project focused on aligning with strict dimensional constraints while optimizing for manufacturability and cost-efficiency, collaborating with senior engineers to prototype and refine the design."
+          }
+        ],
+        "skills": [],
+        "education": [
+          {
+            "school": "The University of Tokyo",
+            "degree": "Master's degree",
+            "year": "2026"
+          },
+          {
+            "school": "Nanyang Technological University Singapore",
+            "degree": "Exchange Program",
+            "year": "2024"
+          },
+          {
+            "school": "The University of Tokyo",
+            "degree": "Bachelor's degree",
+            "year": "2024"
+          }
+        ],
+        "projects": [],
+        "certifications": [
+          {
+            "name": "AI and Innovation: How MongoDB Enables a Resilient AI Strategy"
+          },
+          {
+            "name": "Google Certifications"
+          },
+          {
+            "name": "Applied Information Technology Engineer"
+          },
+          {
+            "name": "Fundamental Information Technology Engineer"
+          },
+          {
+            "name": "International English Language Testing System"
+          }
+        ],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-03T21:12:40.703Z",
+        "careerProgression": "Transitioning from a solid mechanical engineering foundation at the University of Tokyo to cutting-edge AI software engineering, Ryosuke has built an agile career driving high-impact DX and LLM agent initiatives across the construction, manufacturing, and financial sectors.",
+        "notableClaims": [
+          "Designed and executed a construction DX PoC utilizing custom AI-driven algorithms targeting a 30% reduction in construction time and a 20% reduction in costs.",
+          "Built an automated partner-matching system that processes unused design drawings to identify machining requirements and recommend optimal manufacturing outsourcing partners.",
+          "Translated complex, tacit credit underwriting knowledge into structured, explicit AI-driven decision systems for loan screening at TempestAI."
+        ],
+        "interviewHooks": [
+          "Your construction DX project targeted massive 30% time and 20% cost reductions. Could you talk through the algorithmic approach you used to optimize facility layout and cable routing, and how you validated those metrics during the PoC?",
+          "Quantifying and translating 'tacit' loan underwriting criteria into deterministic or LLM-driven decision processes is notoriously difficult. What prompt-engineering, retrieval, or fine-tuning methodologies did you employ at TempestAI to capture these subtle human decision boundaries?",
+          "For the manufacturing matching system, how did you parse and extract structural metadata from raw engineering design drawings, and how did you scale the embedding or classification of those processes to match with potential suppliers?"
+        ]
+      }
+    }
+  ],
+  "interviews": [
+    {
+      "id": "int_5n0io1e",
+      "applicationId": "app1",
+      "scheduledAt": "2026-09-05T10:00:00Z",
+      "status": "FAILED",
+      "suspiciousEvents": [
+        {
+          "timestamp": "2026-09-03T18:40:30.916Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate went to chatgpt.com"
+        }
+      ],
+      "transcript": [
+        {
+          "round": "Technical Interview",
+          "speaker": "Alex",
+          "text": "Hi Alice, I see you have a solid 5 years of experience with Python. Could you tell me about a particularly challenging performance bottleneck you resolved in a FastAPI application?"
+        },
+        {
+          "round": "Technical Interview",
+          "speaker": "Alice Smith",
+          "text": "Yes, we had an issue where our async routes were getting blocked by synchronous DB calls. I migrated the codebase to use SQLAlchemy with asyncpg, which increased our throughput by 400%."
+        },
+        {
+          "round": "HR Interview",
+          "speaker": "Alex",
+          "text": "How do you handle disagreements on a team?"
+        },
+        {
+          "round": "HR Interview",
+          "speaker": "Alice Smith",
+          "text": "I focus on the data and aligning on the customer problem, then proposing a proof-of-concept."
+        }
+      ],
+      "scorecard": {
+        "overall_recommendation": "Leaning Hire",
+        "overall_summary": "Alice demonstrated strong fundamental knowledge of FastAPI's asynchronous ecosystem, resolving a common bottleneck by migrating to asyncpg. While her communication is structured and data-driven, further evaluation is needed to verify her expertise in complex system design and deep PostgreSQL profiling.",
+        "strengths": [
+          "Identified and resolved async blocking issues in FastAPI using SQLAlchemy and asyncpg",
+          "Data-driven, collaborative, and pragmatic approach to resolving team disagreements"
+        ],
+        "weaknesses": [
+          "Did not provide details on complex database scaling, schema design, or indexing",
+          "Lacks evidence on designing decoupled systems for heavy or asynchronous AI workloads"
+        ],
+        "rubric_evaluations": [
+          {
+            "pillar": "Technical Depth (Python/FastAPI)",
+            "score": 4,
+            "feedback": "Alice shows a solid understanding of asynchronous programming in Python. She correctly identified that synchronous database calls block the async event loop in FastAPI and successfully resolved this using SQLAlchemy with asyncpg.",
+            "evidence": [
+              "we had an issue where our async routes were getting blocked by synchronous DB calls. I migrated the codebase to use SQLAlchemy with asyncpg, which increased our throughput by 400%."
+            ]
+          },
+          {
+            "pillar": "Database Expertise (PostgreSQL)",
+            "score": 3,
+            "feedback": "She understands connection-level concurrency improvements by using asyncpg, but the transcript lacks depth regarding database schema design, query profiling, or advanced indexing.",
+            "evidence": [
+              "I migrated the codebase to use SQLAlchemy with asyncpg, which increased our throughput by 400%."
+            ]
+          },
+          {
+            "pillar": "System Design & Scalability",
+            "score": 3,
+            "feedback": "Alice successfully increased throughput on a single service by 400% using asynchronous I/O. However, she did not get to demonstrate how she would design decoupled, resilient systems for resource-intensive AI processing.",
+            "evidence": [
+              "increased our throughput by 400%."
+            ]
+          },
+          {
+            "pillar": "Cultural Alignment & Communication",
+            "score": 4,
+            "feedback": "Alice exhibits a highly structured, objective, and collaborative communication style. Her methodology for alignment—focusing on customer pain points, hard data, and PoCs—is excellent for a Senior Engineer.",
+            "evidence": [
+              "I focus on the data and aligning on the customer problem, then proposing a proof-of-concept."
+            ]
+          }
+        ]
+      },
+      "evaluations": [
+        {
+          "round": "Technical Interview",
+          "decision": "FAIL",
+          "score": 0,
+          "reason": "The candidate evaluation could not be completed because no interview transcript was provided for assessment. Consequently, there is zero evidence to satisfy any of the rubric criteria."
+        },
+        {
+          "round": "Technical Interview",
+          "decision": "FAIL",
+          "score": 0,
+          "reason": "The interview transcript is completely empty, making it impossible to evaluate the candidate against the technical rubric. Without any demonstration of skills or communication, the candidate cannot be passed."
+        },
+        {
+          "round": "Technical Interview",
+          "decision": "FAIL",
+          "score": 0,
+          "reason": "The candidate could not be evaluated as no interview transcript was provided for review. Without any evidence of technical competence or communication skills, a passing decision cannot be granted."
+        }
+      ]
+    },
+    {
+      "id": "int_7wdpo4d",
+      "applicationId": "app_jqgx5o3",
+      "scheduledAt": "2026-09-03T18:58:00.000Z",
+      "status": "PENDING"
+    },
+    {
+      "id": "int_myh9rfb",
+      "applicationId": "app_guhpsyv",
+      "scheduledAt": "2026-09-10T14:00:00Z",
+      "status": "PENDING"
+    },
+    {
+      "id": "int_pog4pt6",
+      "applicationId": "app_g9cm2pb",
+      "scheduledAt": "2026-09-11T10:00:00Z",
+      "status": "PENDING"
+    },
+    {
+      "id": "int_fly3wi3",
+      "applicationId": "app_5gov5mq",
+      "scheduledAt": "2026-09-12T15:00:00Z",
+      "status": "PENDING"
+    },
+    {
+      "id": "int_3oygsol",
+      "applicationId": "app_878vv9n",
+      "scheduledAt": "2026-09-15T10:00:00Z",
+      "status": "PENDING"
+    },
+    {
+      "id": "int_wh0bo8c",
+      "applicationId": "app_5x20lnh",
+      "scheduledAt": "2026-09-16T11:00:00Z",
+      "status": "PENDING"
+    },
+    {
+      "id": "int_67z12dp",
+      "applicationId": "app_lasn1qz",
+      "scheduledAt": "2026-09-17T12:00:00Z",
+      "status": "PENDING"
+    },
+    {
+      "id": "int_m19pzoh",
+      "applicationId": "app_91t1ltw",
+      "scheduledAt": "2026-09-18T14:00:00Z",
+      "status": "PENDING"
+    },
+    {
+      "id": "int_bs0ekdk",
+      "applicationId": "app_e4393fj",
+      "scheduledAt": "2026-09-19T10:00:00Z",
+      "status": "PENDING"
+    }
+  ],
+  "blueprints": [
+    {
+      "id": "bp_jyjoolw",
+      "interviewId": "int_5n0io1e",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Interview\",\n      \"purpose\": \"Evaluate Alice's deep technical expertise in Python, FastAPI, and PostgreSQL performance optimization in the context of scaling backend systems.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Lead\",\n        \"instructions\": \"You are a highly technical and professional interviewer. Please speak naturally and concisely. Ask one question at a time and listen carefully to Alice's responses. Ask relevant follow-up questions based on her answers to dig deeper. Refer to her 5 years of experience with Python, FastAPI, and Postgres naturally throughout the discussion. Maintain a supportive yet rigorous professional interviewer personality.\",\n        \"greeting_message\": \"Hi Alice, I'm Alex, the Technical Lead here at EchoSphere. I see you have a solid 5 years of experience with Python, FastAPI, and Postgres. Today, I'd love to dive deep into some advanced Python concepts and database optimizations. To kick things off, could you tell me about a particularly challenging performance bottleneck you resolved in a FastAPI application?\"\n      },\n      \"topics\": [\n        \"FastAPI concurrency models and async/await bottlenecks\",\n        \"PostgreSQL indexing strategies, query optimization, and connection pooling\",\n        \"Memory management and profiling in Python applications\"\n      ]\n    },\n    {\n      \"round_name\": \"System Design Interview\",\n      \"purpose\": \"Assess Alice's ability to design scalable, reliable, and maintainable distributed systems, with a particular focus on backend AI infrastructure.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"System Design Lead\",\n        \"instructions\": \"You are an analytical and professional System Design Lead. Speak naturally and concisely. Ask one question at a time and listen carefully to how Alice structures her thoughts. Ask relevant follow-up questions based on her answers to challenge her assumptions or scale her proposed architecture. Make natural use of her background in FastAPI and PostgreSQL. Maintain a professional interviewer personality.\",\n        \"greeting_message\": \"Welcome back, Alice. I'm Alex, leading System Design today. Given our goal to scale our AI infrastructure, I want to explore your system-level thinking. Let's design a real-time AI inference pipeline that handles high-throughput video processing. Where would you start when drafting the high-level architecture?\"\n      },\n      \"topics\": [\n        \"Scalable AI inference pipeline design and rate limiting\",\n        \"Asynchronous task queues (e.g., Celery, Redis, RabbitMQ) for heavy workloads\",\n        \"Database sharding, replication, and caching strategies for high throughput\"\n      ]\n    },\n    {\n      \"round_name\": \"HR Interview\",\n      \"purpose\": \"Evaluate Alice's alignment with team culture, collaboration style, problem-solving mindset, and overall communication skills.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"HR Lead\",\n        \"instructions\": \"You are an empathetic, engaging, and professional HR Lead. Speak naturally and concisely. Ask one question at a time and listen carefully to the candidate's stories. Ask relevant follow-up questions based on her answers to understand her soft skills and motivations. Use her 5-year career history context naturally. Maintain a friendly and professional interviewer personality.\",\n        \"greeting_message\": \"Hi Alice, great to connect with you. I'm Alex from the HR team. Today, I'd love to learn more about you as a colleague, teammate, and leader. Having spent the last 5 years working heavily with backend engineering, how do you typically approach mentoring junior developers or collaborating with cross-functional teams like product and AI research?\"\n      },\n      \"topics\": [\n        \"Collaboration, communication, and cross-functional teamwork\",\n        \"Handling technical disagreement and architectural conflicts\",\n        \"Career aspirations and alignment with the startup growth environment\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Depth (Python/FastAPI)\": \"Demonstrates mastery over asynchronous programming, framework lifecycle, dependency injection, and performance tuning.\",\n    \"Database Expertise (PostgreSQL)\": \"Proves deep understanding of schema design, query profiling, indexing, and handling highly concurrent database connections.\",\n    \"System Design & Scalability\": \"Successfully designs decoupled, resilient systems capable of handling asynchronous, resource-intensive AI processing jobs.\",\n    \"Cultural Alignment & Communication\": \"Exhibits strong, structured communication, ownership mindset, and collaborative approach to solving complex engineering problems.\"\n  }\n}"
+    },
+    {
+      "id": "bp_x2mu17m",
+      "interviewId": "int_myh9rfb",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Interview\",\n      \"purpose\": \"Evaluate advanced Python, FastAPI, and PostgreSQL performance optimization skills, specifically focusing on asynchronous scaling and connection management under high load.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time and listen carefully to the candidate's responses. Ask relevant follow-up questions based on David's answers. Integrate his specific background naturally—specifically referencing his open-source work 'Asyncpg Pool Optimizer' and his experience with ScaleTech's high-throughput pipelines. Maintain a collaborative and professional technical persona.\",\n        \"greeting_message\": \"Hi David, I'm Alex, the Technical Lead here. I was reviewing your background and was really intrigued by your open-source project, 'Asyncpg Pool Optimizer'—addressing connection thrashing in asynchronous Python applications is a highly relevant problem for our scaling goals. Today, I'd love to dive deep into advanced asynchronous Python, PostgreSQL clustering, and how you design systems to handle heavy concurrent database connections.\"\n      },\n      \"topics\": [\n        \"Asynchronous programming patterns in FastAPI and asyncio\",\n        \"PostgreSQL connection pooling mechanics and mitigating thrashing under high load\",\n        \"PostgreSQL clustering, indexing strategies, and resolving query bottlenecks\",\n        \"Managing Celery task queues, worker scaling, and preventing backpressure\"\n      ]\n    },\n    {\n      \"round_name\": \"System Design Interview\",\n      \"purpose\": \"Assess the candidate's capability to architect high-throughput, resilient distributed systems and scale event ingestion pipelines.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"System Design Lead\",\n        \"instructions\": \"Speak naturally and concisely. Allow the candidate to lead the architecture whiteboard while probing deeply into trade-offs. Ask one question at a time. Use David's experience with the 20,000 RPS ingestion pipeline at ScaleTech and his event-driven migrations at HyperScale Cloud Systems to ground the system design scenario. Focus on resilience, data loss prevention, and latency optimization.\",\n        \"greeting_message\": \"Great to meet you, David. I'm Alex, the System Design Lead. I saw that during your time at HyperScale Cloud Systems, you led a migration to an asynchronous event-driven architecture that cut p99 latency by 45%. I'd love to walk through a design problem today focused on building a scalable AI data ingestion pipeline. Let's explore how you'd architect this, drawing on your experience handling tens of thousands of requests per second.\"\n      },\n      \"topics\": [\n        \"Architecting distributed event ingestion pipelines (20k+ RPS scale)\",\n        \"Mitigating operational risks and ensuring zero data loss during major system migrations\",\n        \"Designing for high availability, partitioning, and replication in PostgreSQL clusters\",\n        \"Load balancing, horizontal scaling of worker processes, and caching strategies\"\n      ]\n    },\n    {\n      \"round_name\": \"HR Interview\",\n      \"purpose\": \"Evaluate culture fit, behavioral alignment, leadership maturity, and David's career trajectory.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"HR Lead\",\n        \"instructions\": \"Speak naturally, warmly, and concisely. Focus on career growth, team dynamics, and cross-functional leadership. Use David's trajectory from NextGen Software to HyperScale Cloud Systems to frame questions around technical ownership, dealing with legacy architectures, and mentoring team members on best practices.\",\n        \"greeting_message\": \"Hi David, I'm Alex from HR. It's a pleasure to speak with you today. I’ve been tracking your career progression from NextGen Software to HyperScale Cloud Systems, and it's clear you've taken on significant ownership of core infrastructure. Today, I want to learn more about the human side of those transitions—how you lead migrations, influence engineering standards, and what environment helps you do your best work.\"\n      },\n      \"topics\": [\n        \"Career progression, ownership, and technical leadership transitions\",\n        \"Fostering adoption of open-source standards and modern engineering practices within a team\",\n        \"Handling team disagreement on architectural directions and managing stakeholder alignment\",\n        \"Motivation, career goals, and alignment with our company values\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Advanced Python & Async Frameworks\": \"Demonstrates deep mastery of Python's asyncio, FastAPI performance tuning, and optimizing asynchronous database drivers under stress.\",\n    \"Database Engineering & Query Optimization\": \"Shows advanced knowledge of PostgreSQL clustering, write/read path optimization, connection pooling strategies, and isolating bottleneck sources.\",\n    \"High-Throughput Distributed Systems Design\": \"Proven ability to design highly resilient, event-driven pipelines handling >10k RPS with robust error handling, backpressure controls, and zero-data-loss strategies.\",\n    \"Technical Leadership & Migration Strategy\": \"Can successfully articulate risks, design mitigation plans for cutting over high-traffic systems, and mentor/influence teams on adopting modern architectures.\"\n  }\n}"
+    },
+    {
+      "id": "bp_4zovftg",
+      "interviewId": "int_pog4pt6",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Interview\",\n      \"purpose\": \"Assess core Python/FastAPI proficiency, PostgreSQL knowledge, and evaluate how the candidate bridges their QA automation expertise into writing production-grade backend services.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time and listen carefully to the candidate's responses. Acknowledge her strong 4-year background in QA automation (Cypress, Playwright) and explore how she has used Python in her automation career. Ask relevant follow-up questions regarding FastAPI, async programming in Python, and PostgreSQL query optimization, maintaining a professional and encouraging demeanor.\",\n        \"greeting_message\": \"Hi Sarah, I'm Alex, the Technical Lead here. I was reviewing your profile and was really impressed by your deep experience in QA automation with Cypress and Playwright. Today, I'd love to discuss how you've leveraged Python in your past roles, and explore your technical skills in FastAPI and PostgreSQL to see how we can apply your background to scaling our backend infrastructure.\"\n      },\n      \"topics\": [\n        \"Python asynchronous programming and FastAPI frameworks\",\n        \"PostgreSQL schema design and query optimization\",\n        \"Translating test automation principles into robust backend unit/integration testing\"\n      ]\n    },\n    {\n      \"round_name\": \"System Design Interview\",\n      \"purpose\": \"Evaluate the candidate's ability to design scalable, reliable backend architectures, with a focus on AI infrastructure and database performance.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"System Design Lead\",\n        \"instructions\": \"Speak naturally and concisely. Probe her understanding of system reliability, API design, and database scaling. Leverage her QA background by asking how she designs systems for testability and fault tolerance. Ask one design question at a time, allowing her to drive the architecture while guiding her with realistic follow-up constraints.\",\n        \"greeting_message\": \"Welcome back, Sarah. For this System Design round, we'll focus on high-level architecture. Given your strong background in QA, you likely have a keen eye for system failure points. I'd love to design a scalable backend system for our AI processing infrastructure today, focusing on how you would structure our APIs, manage asynchronous tasks, and scale our PostgreSQL database.\"\n      },\n      \"topics\": [\n        \"Scalable API architecture and rate limiting\",\n        \"Message queues and asynchronous task processing for AI workloads\",\n        \"Database scaling strategies (indexing, replication, and connection pooling in PostgreSQL)\"\n      ]\n    },\n    {\n      \"round_name\": \"HR Interview\",\n      \"purpose\": \"Assess cultural alignment, communication skills, and the candidate's motivation for transitioning from QA automation into a Senior Backend Engineering role.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"HR Lead\",\n        \"instructions\": \"Maintain a warm, professional, and conversational tone. Speak concisely and ask one question at a time. Focus on her career journey, specifically her transition from QA automation to backend development, and evaluate her problem-solving mindset and adaptability in a fast-paced environment.\",\n        \"greeting_message\": \"Hi Sarah, it's great to connect with you today. I've been following your interview progress, and I'm really excited to chat about your career journey. You have a phenomenal foundation in QA automation, and I'd love to hear more about what's driving your transition into backend engineering, and how you see yourself contributing to the EchoSphere team culture.\"\n      },\n      \"topics\": [\n        \"Motivation for transitioning from QA to Senior Backend Engineering\",\n        \"Conflict resolution and cross-functional collaboration\",\n        \"Adaptability and learning agility in high-growth engineering teams\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Backend Competency\": \"Ability to demonstrate proficiency in Python, FastAPI, and PostgreSQL database optimization despite a QA-heavy resume.\",\n    \"System Design & Scalability\": \"Capacity to architect distributed systems, handle asynchronous AI workloads, and design for database scaling.\",\n    \"Transition Readiness & Transferable Skills\": \"Clarity in explaining how 4 years of QA automation experience translates to writing highly reliable, testable production code.\",\n    \"Communication & Culture Fit\": \"Demonstrated alignment with company values, proactive communication, and strong motivation for professional growth.\"\n  }\n}"
+    },
+    {
+      "id": "bp_9gwiwzu",
+      "interviewId": "int_fly3wi3",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Interview\",\n      \"purpose\": \"Evaluate hands-on competency in asynchronous Python development, FastAPI, PostgreSQL query optimization, and memory/connection pooling techniques under high load.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Lead\",\n        \"instructions\": \"Focus heavily on Marcus's implementation details. Speak naturally and concisely. Ask one question at a time and listen carefully before asking follow-ups. Use his 'Asyncpg Pool Optimizer' project and his PostgreSQL optimization work at HyperScale to anchor the technical discussion on async database constraints. Maintain a professional, peer-to-peer technical persona.\",\n        \"greeting_message\": \"Hi Marcus, I'm Alex, the Technical Lead here. I was looking through your background and was really intrigued by your open-source work on 'Asyncpg Pool Optimizer'. We face similar asynchronous connection thrashing challenges here, so I'm excited to dive into your technical journey today. Let's start there: what inspired you to build that optimizer, and what unique connection pool challenges did you solve for high-throughput async Python apps?\"\n      },\n      \"topics\": [\n        \"Asynchronous Python & FastAPI Event Loops\",\n        \"PostgreSQL Connection Pooling & Query Bottlenecks\",\n        \"Asynchronous Database Drivers (asyncpg vs synchronous drivers)\"\n      ]\n    },\n    {\n      \"round_name\": \"System Design Interview\",\n      \"purpose\": \"Assess capability to architect resilient, scalable event-driven architectures, manage distributed message brokers like Kafka, and guarantee system durability.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"System Design Lead\",\n        \"instructions\": \"Evaluate Marcus's system-level architectural skills. Focus on his design choices for handling huge volumes of events (such as his 50M daily event platform). Ask one conceptual question at a time. Use his LinkedIn hook about the NextGen 10M daily event notification system and HyperScale's 45% p99 latency reduction to probe how he guarantees message durability during traffic spikes.\",\n        \"greeting_message\": \"Hi Marcus, I'm Alex, the System Design Lead. Thanks for joining me. Today, I'd love to drill into distributed system architecture. I noticed you designed a high-throughput event streaming platform handling 50 million daily events, and successfully migrated HyperScale to an async event-driven architecture. Let's walk through how you would design a similarly high-throughput notification system today, specifically focusing on how you ensure message durability and handle sudden traffic spikes without dropping events.\"\n      },\n      \"topics\": [\n        \"High-Throughput Distributed Event Ingestion\",\n        \"Kafka Partitioning, Consumer Groups & Message Durability\",\n        \"Mitigating p99 Latency Spikes in Event-Driven Backends\"\n      ]\n    },\n    {\n      \"round_name\": \"HR Interview\",\n      \"purpose\": \"Assess cultural alignment, leadership through technical transitions, collaboration style, and career growth expectations.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"HR Lead\",\n        \"instructions\": \"Focus on Marcus's career progression from NextGen Software to leading complex migrations at HyperScale. Ask open-ended behavioral questions about stakeholder management, leading technical changes, and personal motivation. Listen carefully, validate his experience, and ask natural follow-ups.\",\n        \"greeting_message\": \"Hi Marcus, great to meet you! I'm Alex, the HR Lead. I've been reviewing your impressive career journey, particularly your progression into leading major architectural migrations at HyperScale Cloud Systems. Today, I'd love to learn more about how you manage the human side of engineering—like aligning team stakeholders during major migrations—and what aspects of scaling our AI infrastructure align with your career goals.\"\n      },\n      \"topics\": [\n        \"Architectural Migration Management & Stakeholder Alignment\",\n        \"Cross-functional Collaboration & Peer Mentorship\",\n        \"Career Alignment with Scaling AI Infrastructure\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Asynchronous Python & FastAPI Mastery\": \"Evaluates candidate's deep technical knowledge of async/await patterns, performance limits, and custom tooling like Asyncpg Pool Optimizer.\",\n    \"PostgreSQL Optimization & Scale\": \"Measures ability to diagnose query bottlenecks, manage connection limits, and scale relational databases under high write loads.\",\n    \"Distributed Systems & Resilient Architecture\": \"Assesses proficiency in designing durable event-driven systems using tools like Kafka, managing partition sizing, and maintaining low p99 latencies.\",\n    \"Technical Leadership & Collaboration\": \"Rates candidate's capacity to lead high-impact architectural migrations, collaborate with stakeholders, and clearly communicate complex technical trade-offs.\"\n  }\n}"
+    },
+    {
+      "id": "bp_9e64a25",
+      "interviewId": "int_3oygsol",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Interview\",\n      \"purpose\": \"Evaluate advanced Python/FastAPI mastery, asynchronous programming, database schema design, and PostgreSQL optimization under high-concurrency AI workloads.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time and listen carefully. Ask relevant follow-up questions based on the candidate's answers. Use the candidate's background context naturally—specifically bridging his foundational operating systems background at Microsoft with modern high-throughput asynchronous backend paradigms. Maintain a professional, peer-to-peer technical interviewer personality.\",\n        \"greeting_message\": \"Hi Bill, it's a real privilege to speak with you today. Given your legendary foundation in systems software and operating systems at Microsoft, I'm incredibly excited to discuss backend engineering at scale. Let's start by looking at modern asynchronous environments. How do you approach optimizing high-throughput FastAPI applications when dealing with long-running, CPU-bound AI inference steps alongside I/O-bound database operations?\"\n      },\n      \"topics\": [\n        \"Asynchronous Programming in Python (asyncio/FastAPI)\",\n        \"PostgreSQL performance tuning, connection pooling, and scaling strategies under heavy loads\",\n        \"Memory management and resource optimization during heavy AI payload processing\"\n      ]\n    },\n    {\n      \"round_name\": \"System Design Interview\",\n      \"purpose\": \"Assess the ability to design highly resilient, scalable, and distributed AI infrastructure, with a particular focus on resource efficiency and localized deployment constraints.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"System Design Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time and listen carefully. Ask deep follow-up questions based on system tradeoffs. Personalize the session using the candidate's LinkedIn context, specifically referencing his focus on AI integration in global health and the challenge of compute constraints in under-resourced regions. Maintain an engaging and collaborative system architect personality.\",\n        \"greeting_message\": \"Welcome back, Bill. For this round, we'll dive into System Design. You've championed AI's potential to solve global issues through the Gates Foundation, but you've also pointed out the massive compute constraints and data privacy issues in localized regions. If we were designing a distributed, hybrid-cloud AI inference backend that must serve both global-scale cloud clients and edge systems in under-resourced areas, how would you architect the data synchronization, caching, and model orchestration layers?\"\n      },\n      \"topics\": [\n        \"Distributed system architecture and microservices design\",\n        \"Edge computing, latency minimization, and offline-first sync strategies\",\n        \"Data privacy, localized caching, and partitioning structures in PostgreSQL\"\n      ]\n    },\n    {\n      \"round_name\": \"HR Interview\",\n      \"purpose\": \"Evaluate leadership style, mission alignment, adaptability to an evolving startup environment, and team-building philosophy.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"HR Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time. Probe deeply into leadership transition, collaborative engineering culture, and driving impact. Personalize based on the transition from leading global foundations and Breakthrough Energy back to direct, hands-on architectural contributions in AI. Maintain a highly professional, respectful, and culture-focused personality.\",\n        \"greeting_message\": \"Hi Bill, thank you for taking the time to speak with me. Your journey from pioneering personal computing to driving massive global initiatives in health and green tech through Breakthrough Energy is truly inspiring. Given your experience directing global-scale organizations, how do you approach joining a focused, fast-moving team to directly influence the core backend and AI infrastructure? What values do you believe are critical for fostering technical innovation in today's engineering cultures?\"\n      },\n      \"topics\": [\n        \"Adaptability and collaboration within fast-growing engineering teams\",\n        \"Mission alignment with scaling AI infrastructure and technology-driven impact\",\n        \"Mentorship, engineering culture, and fostering open technical dialogue\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Backend Mastery & Python Concurrency\": \"Evaluates candidate's deep knowledge of FastAPI, asynchronous microservices, thread management, and the optimization of compute-heavy backend pipelines.\",\n    \"Database Scalability & Performance\": \"Looks for expertise in advanced PostgreSQL strategies, including partitioning, indexing, connection pooling, and mitigation of database bottlenecks.\",\n    \"Distributed System Design & Resource Efficiency\": \"Assesses capabilities in designing architectures that handle high-concurrency workloads, network latency, resource constraints, and data isolation at global scale.\",\n    \"Collaborative Leadership & Cultural Alignment\": \"Measures adaptability, alignment with technical innovation goals, communication clarity, and the ability to inspire and mentor within a modern development team.\"\n  }\n}"
+    },
+    {
+      "id": "bp_afm65j6",
+      "interviewId": "int_wh0bo8c",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Interview\",\n      \"purpose\": \"Evaluate Madhav's core backend engineering skills in Python, FastAPI, and PostgreSQL, with a specific focus on optimizing latency for real-time systems.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time and listen carefully to Madhav's answers. Ask relevant technical follow-up questions based on his responses. Use his background in real-time voice intelligence and distributed systems naturally to guide technical probes. Maintain a professional, encouraging, and collaborative interviewer personality.\",\n        \"greeting_message\": \"Hi Madhav, welcome! I'm Alex, the Technical Lead here. I was reviewing your impressive work with real-time voice intelligence and distributed systems. For this round, I'd love to dive into your experience with Python, FastAPI, and PostgreSQL, especially around how you've optimized latency and performance in your past projects. Let's start by discussing the primary latency bottlenecks you faced in your voice intelligence systems and how you solved them using Python.\"\n      },\n      \"topics\": [\n        \"Python/FastAPI asynchronous programming and concurrency\",\n        \"PostgreSQL indexing, query optimization, and connection pooling under heavy AI workloads\",\n        \"Latency optimization and real-time data streaming strategies\"\n      ]\n    },\n    {\n      \"round_name\": \"System Design Interview\",\n      \"purpose\": \"Assess Madhav's capability to architect scalable, reliable distributed systems for complex AI workloads.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"System Design Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time and listen carefully. Challenge architectural assumptions respectfully and probe into trade-offs. Use Madhav's experience in building full-stack cloud applications and scaling AI workloads to frame the system design problem. Maintain a highly professional and analytical personality.\",\n        \"greeting_message\": \"Hello Madhav, great to have you in this System Design round. Today, we'll focus on scaling AI infrastructure. Given your extensive background designing full-stack cloud applications for complex AI workloads, I'd like to explore how you handle system reliability. When designing these systems, what specific architectural trade-offs do you typically make regarding state management and reliability?\"\n      },\n      \"topics\": [\n        \"Distributed systems architecture and microservices coordination\",\n        \"State management and caching strategies for high-throughput AI pipelines\",\n        \"Fault tolerance, rate limiting, and system reliability under peak load\"\n      ]\n    },\n    {\n      \"round_name\": \"HR Interview\",\n      \"purpose\": \"Assess cultural alignment, behavioral traits, and Madhav's transition between hands-on engineering and executive leadership.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"HR Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time. Probe into leadership style, decision-making, and collaboration. Leverage Madhav's executive leadership background at RHA Technologies to personalize the conversation. Maintain an empathetic, professional, and welcoming personality.\",\n        \"greeting_message\": \"Hi Madhav, it's a pleasure to connect with you today. I'm Alex, leading the HR and cultural alignment round. I noticed your transition into an executive leadership role at RHA Technologies. I'm very curious to hear about your journey: how do you balance your deep hands-on background in AI systems building with your current executive leadership responsibilities?\"\n      },\n      \"topics\": [\n        \"Balancing technical contribution with organizational leadership\",\n        \"Conflict resolution and cross-functional collaboration\",\n        \"Career motivations and alignment with EchoSphere's mission\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Depth (Python & Databases)\": \"Evaluates candidate's mastery of asynchronous Python/FastAPI, database optimization in PostgreSQL, and real-time processing capabilities.\",\n    \"System Architecture & Scalability\": \"Measures capability to design decoupled, reliable, and fault-tolerant distributed systems tailored for high-volume AI workloads.\",\n    \"Leadership & Communication\": \"Assesses executive presence, communication clarity, ability to mentor/lead, and balance between business strategy and deep technical execution.\"\n  }\n}"
+    },
+    {
+      "id": "bp_gj1acbh",
+      "interviewId": "int_67z12dp",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Interview\",\n      \"purpose\": \"Evaluate Python/FastAPI mastery, asynchronous programming, database design with PostgreSQL, and backend optimization strategies for scaling AI infrastructure.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask only one question at a time and listen carefully to the candidate's responses. Ask deep, relevant follow-up questions based on their answers. Use Renesha's background in building scalable user-facing applications to frame scenario-based backend scaling questions. Do not read from a script; maintain an organic, professional technical dialogue.\",\n        \"greeting_message\": \"Hi Renesha, thanks for joining me today! I'm Alex, the Technical Lead here. I noticed from your impressive background that you have a strong track record of building scalable user-facing systems. Today, we'll dive into some deep technical challenges, focusing on Python, FastAPI, and PostgreSQL, especially around how we optimize backend performance for high-throughput AI workloads. Let's start with FastAPI: in your experience, how do you manage asynchronous tasks and database sessions under heavy concurrent traffic?\"\n      },\n      \"topics\": [\n        \"Asynchronous Programming in Python/FastAPI\",\n        \"PostgreSQL Performance, Connection Pooling, and Query Optimization\",\n        \"Scalable AI Backend Architecture and State Management\",\n        \"API Latency Reduction and Caching Strategies\"\n      ]\n    },\n    {\n      \"round_name\": \"System Design Interview\",\n      \"purpose\": \"Assess system design capability, understanding of architectural patterns, and the ability to balance frontend responsiveness with backend complexity during peak traffic events.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"System Design Lead\",\n        \"instructions\": \"Speak naturally and concisely. Focus heavily on Renesha's self-described 'product-oriented' engineering approach. Ask one system design question at a time and probe with targeted follow-up questions. Challenge her on architectural choices, trade-offs between frontend responsiveness and backend complexity, and future-proofing system design. Maintain a collaborative, whiteboarding-style conversation.\",\n        \"greeting_message\": \"Hi Renesha, great to connect with you. I'm Alex, the System Design Lead. I was highly intrigued by how you describe yourself as a 'product thinker' in engineering. Today, I want to explore how that product mindset translates into your architecture. Specifically, when designing a full-stack system from scratch to handle high-traffic spikes, how do you balance frontend responsiveness with backend complexity? Let's use that as our starting point to design an asynchronous AI processing pipeline.\"\n      },\n      \"topics\": [\n        \"High-Traffic System Architecture\",\n        \"Balancing Frontend Responsiveness with Complex Async Backend Pipelines\",\n        \"Scalable Database Sharding and Read Replicas\",\n        \"Event-Driven Architecture (Queues/Message Brokers) for AI Pipelines\"\n      ]\n    },\n    {\n      \"round_name\": \"HR Interview\",\n      \"purpose\": \"Assess behavioral alignment, communication skills, collaboration with product teams, and how the candidate uses their product-oriented mindset to solve organizational challenges.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"HR Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one behavioral question at a time and probe deeply based on the candidate's real-world experiences. Actively reference Renesha's dual expertise in technical system design and product-oriented engineering to drive the conversation. Maintain a warm, encouraging, yet professional demeanor.\",\n        \"greeting_message\": \"Hi Renesha, it's a pleasure to meet you! I'm Alex, the HR Lead. I've been looking over your background, and your dual expertise in technical system design and product-oriented engineering really stands out. I'd love to hear more about how this unique perspective shapes your work. Could you share a specific example of a time your product-oriented mindset directly influenced a major technical or system design decision?\"\n      },\n      \"topics\": [\n        \"Product-Minded Engineering and Trade-off Decisions\",\n        \"Cross-functional Collaboration with Product Managers and Designers\",\n        \"Prioritization in Fast-Paced Infrastructure Teams\",\n        \"Career Goals and Alignment with EchoSphere's Mission\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Python & FastAPI Scalability\": \"Evaluates candidate's depth of knowledge in async/await paradigms, concurrency, API design patterns, and handling high-concurrency requests.\",\n    \"Database Engineering (PostgreSQL)\": \"Looks for evidence of optimal index design, understanding of query planners, connection pooling strategies, and partitioning for massive datasets.\",\n    \"System Design & Architecture\": \"Assesses ability to architect scalable, decoupled, and event-driven systems. Evaluates trade-off analysis between synchronous APIs and asynchronous queue-based processing.\",\n    \"Product-Minded Engineering\": \"Measures how effectively the candidate connects architectural decisions to user experience, frontend constraints, and broader product goals.\"\n  }\n}"
+    },
+    {
+      "id": "bp_prfijb8",
+      "interviewId": "int_m19pzoh",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Interview\",\n      \"purpose\": \"Evaluate core backend development competencies with Python, FastAPI, and PostgreSQL, focusing on database optimization and hands-on problem-solving.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Lead\",\n        \"instructions\": \"Speak naturally, concisely, and ask one question at a time. Maintain a professional and encouraging technical persona. Listen carefully to her answers and ask relevant follow-up questions. Leverage her background at TechInnovate Labs and DevCorp naturally. Probe into her PostgreSQL experience, specifically how she scaled databases to support high-performance architectures, and ask how she maps her Node.js background to FastAPI frameworks.\",\n        \"greeting_message\": \"Hi Renesha, welcome! I'm Alex, the Technical Lead here. I was reviewing your impressive journey from DevCorp to TechInnovate Labs, particularly how you optimized PostgreSQL to help reduce churn by 25%. Today, I'd love to dive deep into backend performance. To kick things off, what was the most challenging technical project during your transition to TechInnovate Labs, and how did you resolve its database or architectural bottlenecks?\"\n      },\n      \"topics\": [\n        \"Python & FastAPI concurrency models\",\n        \"PostgreSQL query optimization and indexing\",\n        \"Data access layer abstraction and ORMs vs Raw SQL\"\n      ]\n    },\n    {\n      \"round_name\": \"System Design Interview\",\n      \"purpose\": \"Assess the candidate's ability to design scalable, reliable, and high-performance backend architectures for AI infrastructure.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"System Design Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time and listen carefully. Maintain an interactive, collaborative design-partner persona. Naturally reference her self-description as a 'product-oriented technologist' to see how business and product needs influence her technical trade-offs. Challenge her to design a real-time data ingestion pipeline for AI model serving, referencing scalable architectures.\",\n        \"greeting_message\": \"Hi Renesha, great to meet you! I'm Alex, the System Design Lead. I love that you call yourself a 'product-oriented technologist.' In this round, we'll design a high-performance backend architecture to scale our AI infrastructure. Before we jump into the diagramming, how does your product-first mindset practically influence the way you balance system performance with user-facing latency and scalability requirements?\"\n      },\n      \"topics\": [\n        \"Distributed systems design for AI infrastructure\",\n        \"Caching strategies and load balancing\",\n        \"Asynchronous task processing and rate-limiting\"\n      ]\n    },\n    {\n      \"round_name\": \"HR Interview\",\n      \"purpose\": \"Evaluate cultural alignment, behavioral fit, product mindset, collaboration skills, and Renesha's rapid career progression.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"HR Lead\",\n        \"instructions\": \"Speak naturally and maintain an empathetic, professional HR persona. Ask one question at a time. Highlight her rapid progression from a Software Engineer at DevCorp to a Full Stack role at TechInnovate Labs within two years of graduating from UIET. Focus on cross-functional collaboration, ownership, and how she measures engineering success through business impact (such as churn reduction).\",\n        \"greeting_message\": \"It's wonderful to connect with you today, Renesha! I'm Alex from HR. Your progression from DevCorp to TechInnovate Labs is incredibly impressive. I noticed you successfully drove a 25% reduction in customer churn with your portal rewrite. Could you take me behind the scenes of that project? How did you collaborate with product managers and users to deliver such a direct business impact?\"\n      },\n      \"topics\": [\n        \"Cross-functional collaboration and communication\",\n        \"Ownership and driving business impact\",\n        \"Adaptability and career growth trajectory\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Proficiency\": \"Assesses depth of knowledge in Python/FastAPI, asynchronous backend programming, and PostgreSQL performance tuning.\",\n    \"System Design & Architecture\": \"Evaluates capability to design scalable, highly available architectures suitable for AI infrastructure, including resource orchestration.\",\n    \"Product & Impact Alignment\": \"Measures how effectively the candidate connects engineering choices to business metrics (such as customer churn, scaling costs, and system uptime).\",\n    \"Communication & Collaboration\": \"Rates clarity of thought, active listening, and the ability to work cross-functionally and articulate trade-offs clearly.\"\n  }\n}"
+    },
+    {
+      "id": "bp_mrz4arj",
+      "interviewId": "int_bs0ekdk",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Interview\",\n      \"purpose\": \"Evaluate Python/FastAPI expertise, PostgreSQL management, and backend code optimization skills, incorporating the candidate's experience with Rust, C++, and processing complex data pipelines.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time and listen carefully to the candidate's responses. Ask relevant follow-up questions based on their answers. Incorporate the candidate's background naturally, such as their work building AI systems to parse engineering drawings or processing unstructured documents at TempestAI. Keep a professional but welcoming tone.\",\n        \"greeting_message\": \"Hi Ryosuke, welcome! I'm Alex, the Technical Lead here. I was really impressed by your work at TempestAI, especially how you built systems to process unstructured documents and unused design drawings. Today, we'll dive into some Python, FastAPI, and database management topics to see how you'd help us scale our backend AI infrastructure. Let's kick off with how you typically optimize FastAPI endpoints for heavy concurrent requests.\"\n      },\n      \"topics\": [\n        \"FastAPI concurrency models (async/await) and event loops\",\n        \"Database optimization in PostgreSQL (indexing strategy, pooling, partition tables for raw metadata)\",\n        \"Integrating Python backends with low-level execution paths (C++ or Rust bindings) to speed up computationally heavy data extraction tasks\",\n        \"Error handling, rate limiting, and scaling background workers (Celery/RQ) for long-running LLM tasks\"\n      ]\n    },\n    {\n      \"round_name\": \"System Design Interview\",\n      \"purpose\": \"Assess ability to design highly scalable, resilient backend and AI orchestration infrastructures, utilizing the candidate's experience with unstructured data processing.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"System Design Lead\",\n        \"instructions\": \"Speak naturally and concisely. Allow the candidate to lead the architectural decisions while gently nudging with constraints. Ask one question at a time. Leverage Ryosuke's background in designing custom AI-driven algorithms for construction DX or partner-matching systems. Probe specifically on how to translate complex business rules into deterministic workflows at scale.\",\n        \"greeting_message\": \"Great to speak with you again, Ryosuke. For this system design round, I'd love to focus on scalability. You've worked on some fascinating projects, like the automated partner-matching system translating raw drawings, and the credit underwriting system at TempestAI. Today, let's design a high-throughput, fault-tolerant ingestion pipeline that processes unstructured enterprise documents, extracts key metadata, and updates a search index in real-time. How would you lay out the high-level architecture?\"\n      },\n      \"topics\": [\n        \"Distributed message queues (Kafka, RabbitMQ) for decouple asynchronous ingestion pipelines\",\n        \"Vector database integration and scaling strategy (Pinecone, pgvector, Milvus) under high write/query volumes\",\n        \"State management and orchestration for complex agent workflows or multi-step processing graphs\",\n        \"Ensuring data consistency and transaction safety in PostgreSQL when writing high-volume outputs from unstructured extraction processes\"\n      ]\n    },\n    {\n      \"round_name\": \"HR Interview\",\n      \"purpose\": \"Evaluate cross-functional communication, global collaboration skills, adaptability, and cultural alignment with the team.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"HR Lead\",\n        \"instructions\": \"Speak naturally and concisely. Engage Ryosuke on his diverse international experiences (such as his Harvard Project delegation, NTU exchange, and UCSD Future Global Leaders program) and his transition from Mechanical Engineering at UTokyo to AI Software Engineering. Ask open-ended questions about conflict resolution, stakeholder alignment, and leadership style. Only ask one question at a time.\",\n        \"greeting_message\": \"Hi Ryosuke, great to connect with you. I'm Alex from HR. I see you've had an incredible journey, from your academic foundation in Mechanical Engineering at the University of Tokyo to representing Harvard's International Conference twice and working with diverse global peers. Let's talk about your experience driving DX initiatives across different industries like manufacturing and construction. How do you approach aligning expectations when dealing with non-technical business stakeholders?\"\n      },\n      \"topics\": [\n        \"Transitioning from academic research (UTokyo/NTU) to fast-paced commercial engineering environments\",\n        \"Translating tacit human business rules (like credit underwriting or facility layout constraints) into clear technical specifications\",\n        \"Experience collaborating with global teams and leading high-impact Proof of Concept (PoC) initiatives with external partners\",\n        \"Long-term career goals and engineering philosophy regarding AI-driven business transformation\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Python & FastAPI Mastery\": \"Evaluates candidate's depth of Python knowledge, understanding of FastAPI's async mechanisms, and ability to write performant backend code.\",\n    \"PostgreSQL & Data Engineering\": \"Measures expertise in relational database schema design, query optimization, indexing, and processing structured/unstructured metadata.\",\n    \"Scalable System Architecture\": \"Assesses how well the candidate can architect distributed systems, coordinate message queues, design scalable vector search spaces, and maintain robust infrastructure.\",\n    \"Stakeholder Alignment & Communication\": \"Measures the candidate's ability to simplify complex technical topics, work productively with non-technical stakeholders, and collaborate in international cross-functional settings.\"\n  }\n}"
+    }
+  ]
+}

@@ -31,7 +31,10 @@ Instructions:
 2. Provide concrete 'evidence' quotes directly from the transcript to justify your scores.
 3. Be objective, fair, and highly critical just like a real Senior Engineering Manager.`;
 
-    const formattedTranscript = transcript.map((t: any) => `${t.speaker}: ${t.text}`).join("\n");
+    const formattedTranscript = transcript.map((t: any) => {
+      const prefix = t.round ? `[${t.round}] ` : '';
+      return `${prefix}${t.speaker}: ${t.text}`;
+    }).join("\n");
 
     const userPrompt = `
 --- JOB DESCRIPTION ---

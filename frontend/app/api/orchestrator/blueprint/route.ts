@@ -4,10 +4,10 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 export async function POST(req: NextRequest) {
   try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-    const { job_description, resume } = await req.json();
+    const { job_description, resume, candidate_context } = await req.json();
 
     const systemInstruction = `You are an expert AI Interview Orchestrator. 
-Your job is to analyze a Job Description and a Candidate Resume, and design a technical interview blueprint.
+Your job is to analyze a Job Description, a Candidate Resume, and optional CandidateContext (from verified LinkedIn enrichment), and design a technical interview blueprint.
 You MUST return ONLY valid JSON matching this exact structure:
 
 {
@@ -36,14 +36,19 @@ The instructions for Alex MUST explicitly tell him to:
 - ask relevant follow-up questions based on the candidate's answers
 - avoid unnecessarily repeating questions
 - stay within the scope of the provided JD and Resume
-- use the candidate's resume and JD context naturally in conversation
+- use the candidate's resume, JD context, and LinkedIn context naturally in conversation
 - never reveal the evaluation rubric
 - never give the candidate the answers
 - maintain a professional interviewer personality
 
-Keep the instructions highly contextual to the specific JD and Resume provided.`;
+CRITICAL RULES FOR LINKEDIN CONTEXT:
+- If CandidateContext is present, use it to personalize questions and follow-ups.
+- NEVER use it to score or reject the candidate.
 
-    const userPrompt = `Job Description:\n${job_description}\n\nCandidate Resume:\n${resume}\n\nGenerate the JSON Interview Blueprint.`;
+Keep the instructions highly contextual to the specific JD, Resume, and CandidateContext provided.`;
+
+    const contextPart = candidate_context ? `\n\nCandidateContext (LinkedIn):\n${JSON.stringify(candidate_context, null, 2)}` : '';
+    const userPrompt = `Job Description:\n${job_description}\n\nCandidate Resume:\n${resume}${contextPart}\n\nGenerate the JSON Interview Blueprint.`;
 
     const model = genAI.getGenerativeModel({
       model: "gemini-3.5-flash",
