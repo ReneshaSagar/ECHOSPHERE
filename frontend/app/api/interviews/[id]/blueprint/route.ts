@@ -96,7 +96,7 @@ ${candidateContextStr}
 Generate the personalized JSON Interview Blueprint containing EXACTLY the requested rounds for ${job.title}, using the candidate's background context and LinkedIn hooks for natural personalization.`;
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-3.5-flash",
+      model: "gemini-2.5-flash",
       systemInstruction,
       generationConfig: { responseMimeType: "application/json" },
     });

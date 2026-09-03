@@ -51,7 +51,7 @@ Keep the instructions highly contextual to the specific JD, Resume, and Candidat
     const userPrompt = `Job Description:\n${job_description}\n\nCandidate Resume:\n${resume}${contextPart}\n\nGenerate the JSON Interview Blueprint.`;
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-3.5-flash",
+      model: "gemini-2.5-flash",
       systemInstruction,
       generationConfig: { responseMimeType: "application/json" },
     });
