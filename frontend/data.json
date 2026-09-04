@@ -3192,6 +3192,20 @@
       "metadata": {
         "resendId": "ca70b3cc-1b9f-4eb0-a156-d53b776a193f"
       }
+    },
+    {
+      "id": "email_485444cb",
+      "recipientEmail": "madhavgairola05@gmail.com",
+      "recipientName": "Madhav Gairola",
+      "type": "INTERVIEW_INVITATION",
+      "subject": "Interview Invitation: Senior Backend Engineer at EchoSphere (IST Sync)",
+      "sentAt": "2026-09-04T08:52:08.798Z",
+      "metadata": {
+        "scheduledAt": "2026-09-24T10:00:00Z",
+        "interviewLink": "http://localhost:3000/interview/int_namzxfu",
+        "resendId": "485444cb-c35a-4d6a-83db-23d22a67087e",
+        "timezone": "Asia/Kolkata"
+      }
     }
   ]
 }

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -207,13 +207,13 @@ export default function ScheduleClient({
                     : 'bg-gray-50 border-gray-200 text-gray-700'
                 }`}>
                   <span className="text-[11px] font-bold uppercase tracking-wider">
-                    {dateObj.toLocaleDateString(undefined, { month: 'short' })}
+                    {dateObj.toLocaleDateString('en-US', { month: 'short', timeZone: 'Asia/Kolkata' })}
                   </span>
                   <span className="text-xl font-black leading-none">
-                    {dateObj.getDate()}
+                    {dateObj.toLocaleDateString('en-US', { day: 'numeric', timeZone: 'Asia/Kolkata' })}
                   </span>
                   <span className="text-[10px] font-semibold text-gray-500">
-                    {dateObj.toLocaleDateString(undefined, { weekday: 'short' })}
+                    {dateObj.toLocaleDateString('en-US', { weekday: 'short', timeZone: 'Asia/Kolkata' })}
                   </span>
                 </div>
 
@@ -221,7 +221,7 @@ export default function ScheduleClient({
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4 text-gray-400" />
                     <span className="text-sm font-bold text-gray-800">
-                      {dateObj.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+                      {dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' })} IST
                     </span>
                     <span className="text-xs text-gray-400 font-medium">(45 mins)</span>
                     {isToday && (

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -438,7 +438,7 @@ export default function ApplicantsClient({
                         <div className="space-y-1 text-xs">
                           <div className="font-semibold text-purple-800 flex items-center gap-1">
                             <Calendar className="w-3.5 h-3.5" />
-                            {app.scheduledAt ? new Date(app.scheduledAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Date Pending'}
+                            {app.scheduledAt ? `${new Date(app.scheduledAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' })} IST` : 'Date Pending'}
                           </div>
                           <p className="text-gray-500">Autonomous Agora voice interview room active.</p>
                         </div>

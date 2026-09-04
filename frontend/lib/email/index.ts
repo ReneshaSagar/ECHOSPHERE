@@ -197,13 +197,15 @@ export async function sendInterviewInvitationEmail(
     weekday: 'long',
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
+    timeZone: 'Asia/Kolkata'
   });
   const formattedTime = dateObj.toLocaleTimeString('en-US', {
     hour: '2-digit',
     minute: '2-digit',
-    timeZoneName: 'short'
-  });
+    hour12: true,
+    timeZone: 'Asia/Kolkata'
+  }) + ' IST';
   const fullDateTime = `${formattedDate} at ${formattedTime}`;
 
   // Google Calendar Link
@@ -212,7 +214,7 @@ export async function sendInterviewInvitationEmail(
   const formatGCalDate = (d: Date) => d.toISOString().replace(/-|:|\.\d+/g, '');
   const dates = `${formatGCalDate(startTime)}/${formatGCalDate(endTime)}`;
   const title = encodeURIComponent(`EchoSphere AI Interview: ${candidate.name} (${job.title})`);
-  const details = encodeURIComponent(`Role: ${job.title}\nRoom: ${interviewLink}\nCandidate: ${candidate.name}`);
+  const details = encodeURIComponent(`Role: ${job.title}\nRoom: ${interviewLink}\nCandidate: ${candidate.name}\nTime: ${fullDateTime}`);
   const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}`;
 
   const subject = `Congratulations! You're Selected for an Interview: ${job.title} at EchoSphere`;

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import InterviewRoom from './InterviewRoom';
@@ -50,13 +50,15 @@ export default function InterviewLobbyWrapper({
     weekday: 'long',
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
+    timeZone: 'Asia/Kolkata'
   });
   const formattedTime = scheduledDate.toLocaleTimeString('en-US', {
     hour: '2-digit',
     minute: '2-digit',
-    timeZoneName: 'short'
-  });
+    hour12: true,
+    timeZone: 'Asia/Kolkata'
+  }) + ' IST';
 
   useEffect(() => {
     const updateCountdown = () => {
