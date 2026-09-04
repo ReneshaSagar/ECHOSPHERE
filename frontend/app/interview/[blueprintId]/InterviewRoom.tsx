@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import ProctorEngine from './ProctorEngine';
 
 type Blueprint = {
@@ -29,12 +30,23 @@ export default function InterviewRoom({
   candidateName: string;
   mcpServerUrl?: string;
 }) {
+  const router = useRouter();
   const [testState, setTestState] = useState<'IDLE' | 'STARTING' | 'RUNNING' | 'STOPPING' | 'ENDED' | 'ERROR'>('IDLE');
   const [logs, setLogs] = useState<{time: string, comp: string, msg: string}[]>([]);
   const [transcript, setTranscript] = useState<{speaker: string, text: string}[]>([]);
   const [micVolume, setMicVolume] = useState(0);
   const [floorOwner, setFloorOwner] = useState<'AI' | 'CANDIDATE' | 'NONE' | 'CROSSTALK'>('NONE');
   const [currentRound, setCurrentRound] = useState(0);
+
+  // Auto-redirect to completed summary page when interview concludes
+  useEffect(() => {
+    if (testState === 'ENDED') {
+      const timer = setTimeout(() => {
+        router.push(`/interview/${interviewId}/completed`);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [testState, interviewId, router]);
 
   const [sessionInfo, setSessionInfo] = useState<{
     sessionId: string;
@@ -89,13 +101,24 @@ export default function InterviewRoom({
       addLog('Backend', 'Requesting Agora Conversational AI Agent spawn...');
       const interviewer = round.interviewer;
       
+      // Inject Anti-Hallucination Guardrails into Agora Gemini Live instructions
+      let agentInstructions = interviewer.instructions || '';
+      if (!agentInstructions.includes('ANTI-HALLUCINATION')) {
+        agentInstructions += `\n\nSTRICT ANTI-HALLUCINATION & CONVERSATIONAL RULES:
+- Ask ONE question at a time and listen patiently to ${candidateName}'s response.
+- Speak concisely and naturally (2-3 sentences max per turn). Do not monologue.
+- ZERO ASSUMPTIONS: Ground all technical questions strictly in verified background. Do not claim or pretend the candidate used tools or frameworks they have not used.
+- DO NOT ask about irrelevant topics (e.g. Blockchain, Smart Contracts, Crypto, or unrelated hobby projects) unless the candidate specifically brings them up.
+- Focus on evaluating their core problem solving, system architecture, and real-world engineering depth.`;
+      }
+      
       const res = await fetch(`/api/agora-mllm/start-dynamic-mllm`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           session_id: sessionId, 
           candidate_uid: candidateUid,
-          instructions: interviewer.instructions,
+          instructions: agentInstructions,
           greeting_message: interviewer.greeting_message
         })
       });
@@ -397,9 +420,20 @@ export default function InterviewRoom({
           )}
 
           {testState === 'ENDED' && (
-            <div className="absolute inset-0 bg-gray-900/90 z-10 flex flex-col items-center justify-center text-white backdrop-blur-sm rounded-xl">
-              <h3 className="text-2xl font-bold text-green-400">Interview Completed</h3>
-              <p className="text-gray-300 mt-2">Thank you for your time. You may now close this window.</p>
+            <div className="absolute inset-0 bg-gray-950/95 z-20 flex flex-col items-center justify-center text-white backdrop-blur-md rounded-xl p-6 text-center animate-in fade-in">
+              <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mb-4 border border-emerald-500/40 shadow-[0_0_40px_rgba(16,185,129,0.3)]">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+              </div>
+              <h3 className="text-2xl font-black text-white mb-2">Interview Completed!</h3>
+              <p className="text-gray-300 max-w-sm text-sm mb-5">
+                Session telemetry and responses captured. Redirecting to your session completion report...
+              </p>
+              <button 
+                onClick={() => router.push(`/interview/${interviewId}/completed`)}
+                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-blue-500/20"
+              >
+                View Session Summary →
+              </button>
             </div>
           )}
         </div>

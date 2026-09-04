@@ -5022,7 +5022,7 @@
       "resumeDriveUrl": "https://drive.google.com/file/d/1U_D1vBg_-QY_3u8-WwBDVoZxGlvJ1Flc/view?usp=sharing",
       "linkedinUrl": "https://www.linkedin.com/in/madhavgairo",
       "githubUrl": "https://github.com/madhavgairola",
-      "status": "APPLIED",
+      "status": "INTERVIEW_SCHEDULED",
       "candidateContext": {
         "resume": {
           "textSnippet": "Madhav Gairola\n(+91) 7895936487|madhavgairola05@gmail.com|linkedin.com/in/madhavgairola|github.com/madhavgairola|Portfolio\nEducation\nJaypee Institute of Information TechnologyNoida, Uttar Pradesh\nBachelor of Technology, Information TechnologyJul. 2024 – May. 2028\nExperience\nRHA TechnologiesJun 2026 – Present\nSoftware Engineering Intern\n•\nLed end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA\nOne platform, uncovering critical edge cases across diverse enterprise use cases\n•\nEngineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL\nintegrations, analyzing retrieval accuracy, data ingestion behavior, and system reliability\n•\nBuilt and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug\nreports, validating feature releases, and accelerating issue resolution through close collaboration with engineering\nteams\nProjects\nExpensWise (Personal Financial Assistant)",
@@ -7035,6 +7035,21 @@
       "applicationId": "app_bldqgtj",
       "scheduledAt": "2026-09-26T15:00:00Z",
       "status": "PENDING"
+    },
+    {
+      "id": "int_bs0z9ge",
+      "applicationId": "app_hcmgc0o",
+      "scheduledAt": "2026-09-04T10:52:00.000Z",
+      "status": "FAILED",
+      "evaluations": [
+        {
+          "round": "Technical Architecture & Concurrency",
+          "decision": "FAIL",
+          "score": 0,
+          "reason": "The interview transcript was empty, providing no evidence of technical knowledge or communication skills. Consequently, the candidate fails the evaluation due to a complete lack of responses."
+        }
+      ],
+      "transcript": []
     }
   ],
   "blueprints": [
@@ -7122,6 +7137,11 @@
       "id": "bp_ffynird",
       "interviewId": "int_xjy2bws",
       "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency\",\n      \"purpose\": \"Evaluate core technical architecture and systems thinking\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Lead\",\n        \"instructions\": \"Speak naturally and concisely with Maya Lin. Explore their codecraft and system design depth.\",\n        \"greeting_message\": \"Hello Maya Lin, welcome! I have reviewed your background for the Senior Backend Engineer — Distributed Systems & AI Infrastructure position. Today we will explore your technical architecture and problem-solving skills. Let's dive in.\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\"\n      ]\n    },\n    {\n      \"round_name\": \"Distributed System Design\",\n      \"purpose\": \"Evaluate system scalability, reliability, and trade-offs\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"System Architect Lead\",\n        \"instructions\": \"Discuss scaling, caching, and resiliency.\",\n        \"greeting_message\": \"Hi Maya Lin, welcome to the System Design round. Let's discuss how you approach scaling systems and managing concurrency.\"\n      },\n      \"topics\": [\n        \"Scalability\",\n        \"Caching\",\n        \"Concurrency\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Culture\",\n      \"purpose\": \"Evaluate collaboration, ownership, and technical communication\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Engineering Director\",\n        \"instructions\": \"Evaluate communication, ownership, and engineering culture.\",\n        \"greeting_message\": \"Hi Maya Lin, great to meet you. Today we will discuss team collaboration, problem solving, and technical ownership.\"\n      },\n      \"topics\": [\n        \"Ownership\",\n        \"Collaboration\",\n        \"Conflict Resolution\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Depth\": \"Evaluates codecraft and architecture\",\n    \"System Scale\": \"Evaluates distributed systems concepts\",\n    \"Communication\": \"Evaluates clarity and structured thought\"\n  }\n}"
+    },
+    {
+      "id": "bp_uwo88kf",
+      "interviewId": "int_bs0z9ge",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency\",\n      \"purpose\": \"Evaluate Madhav's technical expertise in Python, RAG pipelines, and conversational AI architecture relevant to Speech & Conversational LLMs.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Lead\",\n        \"instructions\": \"You are Alex, Technical Lead for Speech & Conversational LLMs at EchoSphere. Speak naturally, conversationally, and concisely (2-3 sentences per turn). Ask one question at a time and listen carefully to Madhav Gairola's responses.\\n\\nGROUNDED CONTEXT FOR MADHAV GAIROLA:\\n- Verified Skills: Python, FastAPI, RAG, PostgreSQL, Node.js, SQL.\\n- Verified Projects to probe: 'echosphere' (real-time audio pipeline experimentation and streaming context management), 'syn-2' (synthetic dialogue evaluation framework and scoring rubrics), and QA validation of 250+ AI skills at RHA Technologies.\\n- Technical Hooks to explore:\\n  1. In 'echosphere', how did you structure multi-persona context management during streaming audio interactions?\\n  2. In 'syn-2', how did you design automated prompt orchestration to evaluate agent dialogue quality and prevent hallucinations?\\n  3. At RHA Technologies, what benchmarking metrics did you create to validate retrieval accuracy and semantic search across PDF, DOCX, CSV, and SQL?\\n\\nSTRICT ANTI-HALLUCINATION & RELEVANCE RULES:\\n- Do NOT assume or hallucinate knowledge of technologies Madhav has not used.\\n- DO NOT ask about irrelevant topics from resume: Blockchain, Solidity, Web3, Smart Contracts, Electora voter registry, personal finance CLI app (ExpensWise), Chrome extensions, or patent on smart waste segregation. These are irrelevant to this AI/ML speech role.\\n- Maintain an encouraging yet rigorous technical interviewer tone.\",\n        \"greeting_message\": \"Hello Madhav, welcome! I'm Alex, Technical Lead for Speech & Conversational LLMs. I was reviewing your work with real-time conversational pipelines like 'echosphere' and synthetic dialogue evaluation in 'syn-2'. Today, I'd love to dive deep into your technical architecture and how you handle low-latency streaming context. To start, how did you approach managing state and context across multi-persona audio interactions in echosphere?\"\n      },\n      \"topics\": [\n        \"Real-time Streaming Context Management\",\n        \"Conversational AI Dialogue Quality & Hallucination Mitigation\",\n        \"RAG Pipeline Validation & Semantic Search Benchmarking\"\n      ]\n    },\n    {\n      \"round_name\": \"Distributed System Design\",\n      \"purpose\": \"Evaluate Madhav's ability to design scalable, low-latency architectures for real-time speech and multimodal conversational agents.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"System Architect Lead\",\n        \"instructions\": \"You are Alex, System Architect Lead. Speak naturally and concisely. Ask one question at a time. Probe Madhav on concurrency, streaming audio buffers, and latency mitigation trade-offs in distributed voice pipelines.\\n\\nGROUNDED CANDIDATE CONTEXT:\\n- Core strengths: Python asyncio, FastAPI services, PostgreSQL, and structured evaluation rubrics.\\n- Ground scenarios around real-time streaming audio ingestion and low-latency LLM inference pipelines.\\n\\nANTI-HALLUCINATION RULES:\\n- Ground all questions in real-world systems principles.\\n- Do NOT ask about blockchain or smart contracts.\\n- Challenge assumptions gently while keeping the discussion collaborative.\",\n        \"greeting_message\": \"Welcome back, Madhav. In this round, we'll focus on distributed system design. EchoSphere processes live bidirectional audio where p99 latency needs to stay under 400ms. If you were architecting an audio streaming ingestion pipeline that handles 5,000 concurrent conversational voice sessions, where would you start?\"\n      },\n      \"topics\": [\n        \"Low-Latency Audio Streaming Buffers & WebSockets/WebRTC\",\n        \"Asynchronous Pipeline Concurrency & Backpressure Handling\",\n        \"Stateful Session Management in Distributed Clusters\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Culture\",\n      \"purpose\": \"Evaluate collaboration, communication clarity, quality mindset, and technical ownership in fast-moving engineering teams.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Engineering Director\",\n        \"instructions\": \"You are Alex, Engineering Director. Speak warmly, naturally, and concisely. Ask one question at a time. Listen carefully to Madhav's stories regarding collaboration, engineering QA, and handling edge cases.\\n\\nGROUNDED HOOKS:\\n- Discuss his experience at RHA Technologies leading validation across cross-functional engineering teams for 250+ AI workflows.\\n- Explore how he handles trade-offs between delivery speed and pipeline accuracy.\\n\\nANTI-HALLUCINATION RULES:\\n- Maintain genuine curiosity and zero assumptions about unverified claims.\",\n        \"greeting_message\": \"Hi Madhav, great to connect with you. In this round, I want to learn more about how you collaborate and lead technical initiatives. At RHA Technologies, you validated 250+ AI workflows alongside engineering teams. Can you walk me through a situation where you uncovered a critical pipeline failure and how you worked with the developers to resolve it under tight timelines?\"\n      },\n      \"topics\": [\n        \"Cross-functional Collaboration & Feedback Loops\",\n        \"Handling Pipeline Edge Cases & Quality Assurance\",\n        \"Technical Ownership & Growth Mindset\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Conversational AI & Streaming Architecture\": \"Evaluates understanding of real-time audio pipelines, streaming context, and low-latency audio delivery.\",\n    \"System Concurrency & Data Flow\": \"Evaluates Python asyncio, state management, message queues, and backpressure handling.\",\n    \"Grounded Verification & Quality Mindset\": \"Evaluates ability to design robust evaluation rubrics and prevent hallucinations in agent workflows.\",\n    \"Collaboration & Structured Communication\": \"Evaluates clarity, transparency, and ownership when discussing technical trade-offs.\"\n  }\n}"
     }
   ],
   "emails": [
@@ -7315,6 +7335,38 @@
       "metadata": {
         "jobTitle": "Senior DevOps / Cloud Infrastructure Engineer — Kubernetes & GPU Platform",
         "deliveryId": "<d1af1c43-3b2b-1959-18fc-385f01ef1361@gmail.com>",
+        "provider": "gmail_smtp"
+      }
+    },
+    {
+      "id": "email_n8rvr56",
+      "recipientEmail": "madhavgairola05@gmail.com",
+      "recipientName": "Madhav Gairola",
+      "type": "INTERVIEW_INVITATION",
+      "subject": "Congratulations! You're Selected for an Interview: Staff AI / Machine Learning Engineer — Speech & Conversational LLMs at EchoSphere",
+      "bodyText": "Hi Madhav Gairola,\n\nCongratulations! We were impressed by your background, codecraft, and experience, and we are excited to invite you to the next stage of our evaluation process for the Staff AI / Machine Learning Engineer — Speech & Conversational LLMs role.\n\n📅 Scheduled Interview Time:\nSaturday, September 5, 2026 at 04:20 PM IST\n\n🔗 Your Personal Interview Room Link:\nhttp://localhost:3000/jobs/j3\n\n⏱️ How the Waiting Room & Interview Works:\nYour interview is scheduled to start promptly at 04:20 PM IST on Saturday, September 5, 2026.\nWhen you open your room link before the scheduled time, a live countdown will display on your screen. The \"Join Interview\" button will unlock automatically as soon as your scheduled time arrives. All the best!\n\n💡 Quick Tips to Prepare:\n- Find a quiet space and use headphones with a clear microphone.\n- Be prepared to discuss your architectural trade-offs, recent projects, and hands-on technical problem solving.\n- Our AI technical interviewer, Alex, will conduct the discussion conversationally.\n\nWe look forward to meeting you!\n\nWarm regards,\nThe EchoSphere Talent & Engineering Team",
+      "sentAt": "2026-09-04T10:50:26.271Z",
+      "metadata": {
+        "jobTitle": "Staff AI / Machine Learning Engineer — Speech & Conversational LLMs",
+        "scheduledAt": "2026-09-05T10:50:23.524Z",
+        "interviewLink": "http://localhost:3000/jobs/j3",
+        "deliveryId": "<130206e1-c437-c6e0-d1f2-c0e7ca53a53a@gmail.com>",
+        "provider": "gmail_smtp"
+      }
+    },
+    {
+      "id": "email_gxjr785",
+      "recipientEmail": "madhavgairola05@gmail.com",
+      "recipientName": "Madhav Gairola",
+      "type": "INTERVIEW_INVITATION",
+      "subject": "Congratulations! You're Selected for an Interview: Staff AI / Machine Learning Engineer — Speech & Conversational LLMs at EchoSphere",
+      "bodyText": "Hi Madhav Gairola,\n\nCongratulations! We were impressed by your background, codecraft, and experience, and we are excited to invite you to the next stage of our evaluation process for the Staff AI / Machine Learning Engineer — Speech & Conversational LLMs role.\n\n📅 Scheduled Interview Time:\nFriday, September 4, 2026 at 04:22 PM IST\n\n🔗 Your Personal Interview Room Link:\nhttp://localhost:3000/interview/int_bs0z9ge\n\n⏱️ How the Waiting Room & Interview Works:\nYour interview is scheduled to start promptly at 04:22 PM IST on Friday, September 4, 2026.\nWhen you open your room link before the scheduled time, a live countdown will display on your screen. The \"Join Interview\" button will unlock automatically as soon as your scheduled time arrives. All the best!\n\n💡 Quick Tips to Prepare:\n- Find a quiet space and use headphones with a clear microphone.\n- Be prepared to discuss your architectural trade-offs, recent projects, and hands-on technical problem solving.\n- Our AI technical interviewer, Alex, will conduct the discussion conversationally.\n\nWe look forward to meeting you!\n\nWarm regards,\nThe EchoSphere Talent & Engineering Team",
+      "sentAt": "2026-09-04T10:50:54.450Z",
+      "metadata": {
+        "jobTitle": "Staff AI / Machine Learning Engineer — Speech & Conversational LLMs",
+        "scheduledAt": "2026-09-04T10:52:00.000Z",
+        "interviewLink": "http://localhost:3000/interview/int_bs0z9ge",
+        "deliveryId": "<0212187a-55d0-8204-6808-3e0bd96d5b82@gmail.com>",
         "provider": "gmail_smtp"
       }
     }

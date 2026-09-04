@@ -41,13 +41,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         const { sendRejectionEmail, sendInterviewInvitationEmail } = await import('@/lib/email');
         if (status === 'REJECTED') {
           await sendRejectionEmail(candidate, job, decisionStage, decisionReason);
-        } else if (status === 'SELECTED') {
-          // If interview exists, send room link, otherwise general congrats
-          const existingInt = db.interviews.find(i => i.applicationId === app.id);
-          const interviewLink = existingInt ? `http://localhost:3000/interview/${existingInt.id}` : `http://localhost:3000/jobs/${job.id}`;
-          const scheduledAt = existingInt?.scheduledAt || new Date(Date.now() + 86400000).toISOString();
-          await sendInterviewInvitationEmail(candidate, job, scheduledAt, interviewLink);
         }
+        // NOTE: Interview invitation email is NOT sent here.
+        // It is strictly dispatched when recruiter selects date & time via POST /api/interviews.
       }
     } catch (mailErr: any) {
       console.warn('[Application PATCH] Failed to dispatch status email:', mailErr.message);

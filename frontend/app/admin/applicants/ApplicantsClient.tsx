@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
   Users, 
@@ -54,6 +55,7 @@ export default function ApplicantsClient({
   initialApplicants: ApplicantRow[]; 
   jobs: { id: string; title: string }[]; 
 }) {
+  const router = useRouter();
   const [applicants, setApplicants] = useState<ApplicantRow[]>(initialApplicants);
   const [selectedStatus, setSelectedStatus] = useState<string>('ALL');
   const [selectedJob, setSelectedJob] = useState<string>('ALL');
@@ -121,6 +123,13 @@ export default function ApplicantsClient({
       console.error('Failed to update decision:', e);
     }
     setIsUpdating(false);
+  };
+
+  const handleSaveAndSchedule = async () => {
+    if (!activeModalApp) return;
+    const appId = activeModalApp.id;
+    await handleSaveDecision();
+    router.push(`/admin/applications/${appId}/schedule`);
   };
 
   const filtered = applicants.filter(app => {
@@ -461,6 +470,10 @@ export default function ApplicantsClient({
                             value={app.status}
                             onChange={(e) => {
                               const newSt = e.target.value;
+                              if (newSt === 'INTERVIEW_SCHEDULED') {
+                                router.push(`/admin/applications/${app.id}/schedule`);
+                                return;
+                              }
                               if (newSt === 'REJECTED' || newSt === 'CONSIDER_FOR_OTHER_ROLES' || newSt === 'SELECTED') {
                                 openDecisionModal(app, newSt);
                               } else {
@@ -612,6 +625,17 @@ export default function ApplicantsClient({
               >
                 Cancel
               </button>
+              {modalStatus === 'SELECTED' && (
+                <button
+                  type="button"
+                  onClick={handleSaveAndSchedule}
+                  disabled={isUpdating}
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold shadow-sm transition disabled:opacity-50 flex items-center gap-1.5"
+                >
+                  <Calendar className="w-3.5 h-3.5" />
+                  {isUpdating ? 'Saving...' : 'Save & Pick Interview Slot →'}
+                </button>
+              )}
               <button
                 type="button"
                 onClick={handleSaveDecision}
