@@ -3181,6 +3181,17 @@
         "reason": "Strong fundamentals but missing production WebRTC and streaming audio experience.",
         "resendId": "d7a25d75-8240-4fea-bea1-c0d34739068b"
       }
+    },
+    {
+      "id": "email_ca70b3cc",
+      "recipientEmail": "madhavgairola05@gmail.com",
+      "recipientName": "Madhav Gairola",
+      "type": "INTERVIEW_INVITATION",
+      "subject": "Interview Invitation: Senior AI Engineer at EchoSphere",
+      "sentAt": "2026-09-04T08:45:57.466Z",
+      "metadata": {
+        "resendId": "ca70b3cc-1b9f-4eb0-a156-d53b776a193f"
+      }
     }
   ]
 }
