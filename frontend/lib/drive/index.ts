@@ -39,130 +39,122 @@ export interface DriveDownloadResult {
 }
 
 /**
- * Downloads a publicly accessible Google Drive file using official Google Drive endpoints.
- * Throws a clear user-friendly error if the file is private or requires authentication.
+ * Downloads a publicly accessible Google Drive file using official Google Drive content endpoints.
+ * Reliably handles public share links, large file virus warnings, and Google Doc formats.
+ * Throws a clear user-friendly error if the file is truly private or requires authentication.
  */
 export async function downloadGoogleDriveFile(fileId: string): Promise<DriveDownloadResult> {
   const privateFileError = "The Google Drive file is private or inaccessible. Please ensure link sharing is set to 'Anyone with the link can view' and try again.";
 
-  // Strategy 1: Official Google Drive REST API (if GEMINI_API_KEY / GOOGLE_API_KEY is available)
-  const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
-  if (apiKey) {
+  // Candidate download endpoints in order of delivery speed and reliability
+  const candidateEndpoints = [
+    `https://drive.usercontent.google.com/download?id=${fileId}&export=download&authuser=0`,
+    `https://drive.google.com/uc?export=download&id=${fileId}`,
+    `https://docs.google.com/document/d/${fileId}/export?format=pdf`
+  ];
+
+  let isPrivateDetected = false;
+  let isNotFoundDetected = false;
+
+  for (const endpoint of candidateEndpoints) {
     try {
-      const apiUrl = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&key=${apiKey}`;
-      const apiRes = await fetch(apiUrl, {
-        headers: { 'User-Agent': 'EchoSphere-Hiring-Engine/1.0' },
-        signal: AbortSignal.timeout(12000)
+      const res = await fetch(endpoint, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+          'Accept': '*/*'
+        },
+        redirect: 'follow',
+        signal: AbortSignal.timeout(15000)
       });
 
-      if (apiRes.ok) {
-        const arrayBuffer = await apiRes.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-        // Verify not an HTML error message
-        const preview = buffer.subarray(0, 100).toString('utf-8');
-        if (!preview.includes('<!DOCTYPE') && !preview.includes('<html')) {
-          return {
-            buffer,
-            mimeType: apiRes.headers.get('content-type') || 'application/pdf'
-          };
-        }
-      } else if (apiRes.status === 403 || apiRes.status === 401) {
-        const errJson: any = await apiRes.json().catch(() => ({}));
-        const reason = errJson?.error?.errors?.[0]?.reason || '';
-        if (reason === 'cannotDownloadAbusiveFile' || reason === 'fileNotDownloadable') {
-          // continue to fallback
-        } else {
-          const err: any = new Error(privateFileError);
-          err.isPrivate = true;
-          err.statusCode = 400;
-          throw err;
-        }
-      } else if (apiRes.status === 404) {
-        const err: any = new Error("Google Drive file not found. Please verify the URL.");
-        err.statusCode = 404;
-        throw err;
-      }
-    } catch (e: any) {
-      if (e.isPrivate || e.statusCode === 404) throw e;
-      // Continue to Strategy 2
-    }
-  }
-
-  // Strategy 2: Direct accessible download via Google Drive uc export
-  try {
-    const ucUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-    const res = await fetch(ucUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': '*/*'
-      },
-      redirect: 'follow',
-      signal: AbortSignal.timeout(15000)
-    });
-
-    if (res.status === 404) {
-      const err: any = new Error("Google Drive file not found. Please check the URL.");
-      err.statusCode = 404;
-      throw err;
-    }
-
-    if (res.status === 403 || res.status === 401) {
-      const err: any = new Error(privateFileError);
-      err.isPrivate = true;
-      err.statusCode = 400;
-      throw err;
-    }
-
-    const contentType = res.headers.get('content-type') || '';
-    const arrayBuffer = await res.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    // Check if Google redirected to a login page or permission denied HTML page
-    const sample = buffer.subarray(0, 500).toString('utf-8');
-    if (contentType.includes('text/html') || sample.includes('<!DOCTYPE') || sample.includes('<html')) {
-      if (
-        sample.includes('Sign in') || 
-        sample.includes('accounts.google.com') || 
-        sample.includes('ServiceLogin') ||
-        sample.includes('You need access') ||
-        sample.includes('permission')
-      ) {
-        const err: any = new Error(privateFileError);
-        err.isPrivate = true;
-        err.statusCode = 400;
-        throw err;
+      if (res.status === 404) {
+        isNotFoundDetected = true;
+        continue;
       }
 
-      // Check for Google Drive virus scan warning for larger files
-      const confirmMatch = sample.match(/confirm=([0-9A-Za-z_-]+)/i);
+      if (res.status === 401 || res.status === 403) {
+        isPrivateDetected = true;
+        continue;
+      }
+
+      const contentType = res.headers.get('content-type') || '';
+      const arrayBuffer = await res.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+
+      if (buffer.length === 0) continue;
+
+      const preview = buffer.subarray(0, 1000).toString('utf-8');
+      const isHtml = contentType.includes('text/html') || preview.includes('<!DOCTYPE') || preview.includes('<html');
+
+      if (!isHtml) {
+        // Binary payload received (e.g. PDF or document stream)
+        return {
+          buffer,
+          mimeType: contentType || 'application/pdf'
+        };
+      }
+
+      // If response is HTML, inspect content
+      // 1. Check if Google returned a large file virus scan confirmation token
+      const confirmMatch = preview.match(/confirm=([0-9A-Za-z_-]+)/i) || preview.match(/name="confirm"\s+value="([0-9A-Za-z_-]+)"/i);
       if (confirmMatch) {
-        const confirmToken = confirmMatch[1];
-        const confirmUrl = `https://drive.google.com/uc?export=download&confirm=${confirmToken}&id=${fileId}`;
+        const token = confirmMatch[1];
+        const confirmUrl = `https://drive.usercontent.google.com/download?id=${fileId}&export=download&confirm=${token}&authuser=0`;
         const confirmRes = await fetch(confirmUrl, {
-          headers: { 'User-Agent': 'Mozilla/5.0' },
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+          },
           redirect: 'follow',
           signal: AbortSignal.timeout(15000)
         });
+
         if (confirmRes.ok) {
           const confBuf = Buffer.from(await confirmRes.arrayBuffer());
-          return { buffer: confBuf, mimeType: confirmRes.headers.get('content-type') || 'application/pdf' };
+          const confPreview = confBuf.subarray(0, 100).toString('utf-8');
+          if (!confPreview.includes('<html') && !confPreview.includes('<!DOCTYPE')) {
+            return {
+              buffer: confBuf,
+              mimeType: confirmRes.headers.get('content-type') || 'application/pdf'
+            };
+          }
         }
       }
 
-      const err: any = new Error(privateFileError);
-      err.isPrivate = true;
-      err.statusCode = 400;
-      throw err;
-    }
+      // 2. Check if the page is a Google sign-in or permission denied prompt
+      if (
+        preview.includes('accounts.google.com') ||
+        preview.includes('ServiceLogin') ||
+        preview.includes('Sign in') ||
+        preview.includes('You need access') ||
+        preview.includes('You need permission') ||
+        preview.includes('Request access') ||
+        preview.includes('Access denied')
+      ) {
+        isPrivateDetected = true;
+        continue;
+      }
 
-    return {
-      buffer,
-      mimeType: contentType
-    };
-  } catch (err: any) {
-    if (err.isPrivate || err.statusCode) throw err;
-    throw new Error(`Failed to download Google Drive file: ${err.message}`);
+      // 3. Check for 404 in HTML
+      if (preview.includes('Error 404 (Not Found)')) {
+        isNotFoundDetected = true;
+        continue;
+      }
+    } catch (fetchErr: any) {
+      console.warn(`[Google Drive] Attempt on ${endpoint} encountered:`, fetchErr.message);
+    }
   }
+
+  if (isNotFoundDetected && !isPrivateDetected) {
+    const err: any = new Error("Google Drive file not found. Please verify the URL.");
+    err.statusCode = 404;
+    throw err;
+  }
+
+  // Default to private/inaccessible error
+  const err: any = new Error(privateFileError);
+  err.isPrivate = true;
+  err.statusCode = 400;
+  throw err;
 }
 
 /**

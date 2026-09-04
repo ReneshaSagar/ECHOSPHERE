@@ -1,15 +1,36 @@
-﻿/**
+/**
  * Extracts plain text from a PDF Buffer with whitespace normalization.
  * Uses pdf-parse/lib/pdf-parse.js directly to avoid Next.js bundling issues.
  */
+let cachedPdfParser: any = null;
+
+async function getPdfParser(): Promise<any> {
+  if (cachedPdfParser) return cachedPdfParser;
+  try {
+    const { createRequire } = await import('module');
+    const req = createRequire(import.meta.url);
+    cachedPdfParser = req('pdf-parse/lib/pdf-parse.js');
+    return cachedPdfParser;
+  } catch {
+    try {
+      // @ts-ignore
+      cachedPdfParser = require('pdf-parse/lib/pdf-parse.js');
+      return cachedPdfParser;
+    } catch {
+      const mod = await import('pdf-parse');
+      cachedPdfParser = (mod as any).default || mod;
+      return cachedPdfParser;
+    }
+  }
+}
+
 export async function extractTextFromPdfBuffer(buffer: Buffer): Promise<string> {
   if (!buffer || buffer.length === 0) {
     throw new Error('PDF file buffer is empty.');
   }
 
   try {
-    // Import lib directly to bypass index.js test-runner execution in Next.js
-    const pdfParse = require('pdf-parse/lib/pdf-parse.js');
+    const pdfParse = await getPdfParser();
     const data = await pdfParse(buffer);
     const rawText = data?.text || '';
 

@@ -1658,6 +1658,439 @@
       "id": "cand_wkwauui",
       "name": "Resend Live Test Candidate",
       "email": "delivered@resend.dev"
+    },
+    {
+      "id": "cand_afb6tpx",
+      "name": "Madhav Gairola",
+      "email": "madhav.test.drive@gmail.com",
+      "githubUrl": "https://github.com/madhavgairola",
+      "resumeDriveUrl": "https://drive.google.com/file/d/1U_D1vBg_-QY_3u8-WwBDVoZxGlvJ1Flc/view?usp=sharing",
+      "candidateContext": {
+        "resume": {
+          "textSnippet": "Madhav Gairola\n(+91) 7895936487|madhavgairola05@gmail.com|linkedin.com/in/madhavgairola|github.com/madhavgairola|Portfolio\nEducation\nJaypee Institute of Information TechnologyNoida, Uttar Pradesh\nBachelor of Technology, Information TechnologyJul. 2024 – May. 2028\nExperience\nRHA TechnologiesJun 2026 – Present\nSoftware Engineering Intern\n•\nLed end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA\nOne platform, uncovering critical edge cases across diverse enterprise use cases\n•\nEngineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL\nintegrations, analyzing retrieval accuracy, data ingestion behavior, and system reliability\n•\nBuilt and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug\nreports, validating feature releases, and accelerating issue resolution through close collaboration with engineering\nteams\nProjects\nExpensWise (Personal Financial Assistant)",
+          "driveUrl": "https://drive.google.com/file/d/1U_D1vBg_-QY_3u8-WwBDVoZxGlvJ1Flc/view?usp=sharing",
+          "skills": [
+            "Python",
+            "FastAPI",
+            "Django",
+            "Node.js",
+            "JavaScript",
+            "React",
+            "PostgreSQL",
+            "RAG",
+            "SQL"
+          ],
+          "experienceTitles": [
+            "Software Engineering Intern",
+            "Engineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL",
+            "reports, validating feature releases, and accelerating issue resolution through close collaboration with engineering",
+            "Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL",
+            "Engineered a blockchain-based voter registry eliminating duplicate identity fraud by anchoring electoral"
+          ],
+          "projects": [
+            "Built and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug",
+            "Projects",
+            "Designed an intelligent classification engine categorizing expenses into Needs vs Wants with budget threshold",
+            "Built a CLI interface for rapid expense logging secured via JWT authentication, allowing power users to log",
+            "Designed Firestore schema (Users, Reports, Requests, Audit) with security rules enforcing patient-controlled"
+          ],
+          "notableHighlights": [
+            "Eliminated manual expense entry by parsing natural language inputs (e.g., ”coffee 50”, ”rent 5k”) into",
+            "Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL"
+          ]
+        },
+        "github": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "bio": "I code sometimes",
+          "publicReposCount": 19,
+          "repositories": [
+            {
+              "name": "ExpensWise",
+              "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+              "language": "JavaScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/ExpensWise",
+              "isPinned": true,
+              "readmeSnippet": "Parses natural language inputs into structured transactional records using Gemini API, backed by PostgreSQL and Express with custom budget threshold rules."
+            },
+            {
+              "name": "HealthLens",
+              "description": "Patient-first medical platform that translates complex clinical reports into plain English.",
+              "language": "JavaScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/HealthLens",
+              "isPinned": true,
+              "readmeSnippet": "Parses medical report PDFs client-side using PDF.js and injects extracted context into Gemini API prompts, incorporating a real-time Firestore listener pattern for patient consent control."
+            },
+            {
+              "name": "electora",
+              "description": "Trustless voter roll management platform solving double enrollment while protecting PII.",
+              "language": "JavaScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/electora",
+              "isPinned": true,
+              "readmeSnippet": "Architects a dual-layer strategy separating sensitive PII in Firebase from state truth stored on Ethereum via keccak256 identity hashes and Solidity time-locks."
+            },
+            {
+              "name": "ECHOSPHERE",
+              "description": "Multi-language AI repository featuring TypeScript and Python backends.",
+              "language": "TypeScript",
+              "topics": [],
+              "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+              "isPinned": false,
+              "readmeSnippet": "Combines a TypeScript web tier with Python modules for complex data processing and AI workflow automation."
+            }
+          ],
+          "activeProjects": [
+            "ExpensWise",
+            "HealthLens",
+            "electora",
+            "ECHOSPHERE"
+          ]
+        },
+        "crossSourceContext": {
+          "corroboratedSkills": [
+            {
+              "skill": "Python",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "PostgreSQL",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "RAG & AI Workflows",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "JavaScript / Node.js",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "FastAPI",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM"
+            }
+          ],
+          "corroboratedProjects": [
+            {
+              "projectName": "ExpensWise",
+              "description": "AI-powered expense manager using natural language processing with Gemini API, Express/Node.js backend, and PostgreSQL database.",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "details": "Resume highlights natural language input parsing and budget thresholds; GitHub repo confirms Gemini API integration, Express backend, and PostgreSQL storage."
+            },
+            {
+              "projectName": "HealthLens",
+              "description": "Medical platform translating clinical reports into plain language using PDF parsing, Gemini API, and Firestore real-time listeners.",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "details": "Resume notes Firestore schema and security rules; GitHub details client-side PDF parsing with PDF.js and consent control workflow."
+            },
+            {
+              "projectName": "electora",
+              "description": "Blockchain-based voter registration platform preventing duplicate enrollment.",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "details": "Resume outlines voter registry architecture; GitHub details keccak256 identity hashes, Firebase PII storage, and Solidity smart contracts."
+            },
+            {
+              "projectName": "ECHOSPHERE",
+              "description": "Multi-language AI repository with TypeScript web tier and Python modules for complex AI processing.",
+              "sources": [
+                "github"
+              ],
+              "details": "GitHub repository features TypeScript and Python modules for AI workflow automation."
+            }
+          ],
+          "corroboratedExperience": [
+            {
+              "role": "Software Engineering Intern",
+              "company": "RHA Technologies",
+              "duration": "Jun 2026 – Present",
+              "sources": [
+                "resume"
+              ],
+              "corroborationNotes": "Appears only on Resume as LinkedIn profile data was not provided. Focuses on testing and validating RAG pipelines, AI skills, and database integrations."
+            }
+          ],
+          "careerProgressionSummary": "Currently an undergraduate B.Tech student (2024–2028) serving as a Software Engineering Intern at RHA Technologies. Hands-on experience centers on QA/testing for RAG pipelines and AI workflows, alongside building full-stack Web/AI personal projects leveraging Node.js, Python, PostgreSQL, and LLM APIs (Gemini).",
+          "notableClaims": [
+            {
+              "claim": "Built and maintained a quality assurance framework for 250+ AI skills and workflows",
+              "source": "resume",
+              "verificationFocus": "Probe test automation design, isolation of flaky LLM calls, and validation metrics for retrieval/generation accuracy."
+            },
+            {
+              "claim": "Engineered dual-layer voter registry separating PII in Firebase from state truth on Ethereum via keccak256 hashes",
+              "source": "resume",
+              "verificationFocus": "Probe state management, transactional guarantees, and latency/gas cost trade-offs."
+            }
+          ]
+        },
+        "interviewContext": {
+          "targetRole": "Senior Backend Engineer — Distributed Systems & AI Infrastructure",
+          "highRelevanceEvidence": [
+            {
+              "topic": "Python & Async AI Workflows",
+              "relevance": "HIGH",
+              "reason": "Target role requires scaling Python (FastAPI/asyncio) services for real-time AI inference and agent systems.",
+              "evidenceSources": [
+                "resume",
+                "github"
+              ]
+            },
+            {
+              "topic": "Relational Databases & Schema Design (PostgreSQL)",
+              "relevance": "HIGH",
+              "reason": "Role heavily emphasizes PostgreSQL optimization, indexing, and connection pooling for transactional persistence.",
+              "evidenceSources": [
+                "resume",
+                "github"
+              ]
+            },
+            {
+              "topic": "RAG Pipelines & AI Integration",
+              "relevance": "HIGH",
+              "reason": "Direct experience validating enterprise RAG pipelines, data connectors, and AI agent skills aligns with AI infrastructure tooling.",
+              "evidenceSources": [
+                "resume",
+                "github"
+              ]
+            }
+          ],
+          "technicalInterviewHooks": [
+            "In ExpensWise and your Python AI modules, how do you manage asynchronous I/O and latency spikes when calling external LLM gateways like Gemini during user sessions?",
+            "When testing and validating 250+ AI skills and RAG pipelines at RHA Technologies, how did you measure and debug retrieval accuracy, database query performance, and context window limits under concurrent load?",
+            "How would you design a FastAPI and Redis Pub/Sub orchestration service to process streaming audio chunks and LLM tokens with sub-50ms latency targets?",
+            "In PostgreSQL, what indexing and connection pooling strategies would you apply when scaling transactional persistence layers for thousands of concurrent WebSocket connections?"
+          ],
+          "behavioralInterviewHooks": [
+            "Describe a scenario where an automated AI skill or pipeline failed due to unhandled edge cases or non-deterministic output. How did you isolate the root cause and collaborate with developers to fix it?",
+            "Given your target background in backend infrastructure, walk us through a technical design disagreement you had regarding database choice (e.g., PostgreSQL vs NoSQL/Firebase) and how you reached a resolution.",
+            "How do you approach testing and monitoring for systems where downstream dependencies (like third-party LLM APIs) have unpredictable SLAs or rate limits?"
+          ],
+          "projectsWorthProbing": [
+            {
+              "name": "ExpensWise",
+              "relevanceLevel": "HIGH",
+              "reasonToProbe": "Combines natural language parsing, PostgreSQL persistence, and structured schema storage.",
+              "suggestedQuestions": [
+                "How did you structure the PostgreSQL schema and queries to handle natural language expense inputs efficiently?",
+                "How would you re-architect ExpensWise using FastAPI and asyncio to handle real-time streaming audio inputs instead of text?"
+              ],
+              "sourceUrl": "https://github.com/madhavgairola/ExpensWise"
+            },
+            {
+              "name": "ECHOSPHERE",
+              "relevanceLevel": "HIGH",
+              "reasonToProbe": "Contains Python backend modules intended for AI workflow automation, matching the target company name and core technology stack.",
+              "suggestedQuestions": [
+                "Walk through the boundary between the TypeScript web tier and Python processing modules in this architecture.",
+                "How are background tasks and concurrency managed within the Python backend?"
+              ],
+              "sourceUrl": "https://github.com/ReneshaSagar/ECHOSPHERE"
+            },
+            {
+              "name": "HealthLens",
+              "relevanceLevel": "MEDIUM",
+              "reasonToProbe": "Demonstrates prompt contextualization and real-time state listeners using Firestore.",
+              "suggestedQuestions": [
+                "How did you handle race conditions or latency during real-time consent updates in Firestore?",
+                "What were the bottlenecks when extracting PDF context client-side versus server-side?"
+              ],
+              "sourceUrl": "https://github.com/madhavgairola/HealthLens"
+            }
+          ],
+          "ignoredOrLowRelevanceTopics": [
+            "React frontend components, CSS layout design, and generic UI styling",
+            "Ethereum smart contract deployment and Solidity time-locks (electora project)",
+            "Client-side browser PDF parsing with PDF.js"
+          ]
+        },
+        "headline": "Software Engineering Intern",
+        "about": "Madhav Gairola\n(+91) 7895936487|madhavgairola05@gmail.com|linkedin.com/in/madhavgairola|github.com/madhavgairola|Portfolio\nEducation\nJaypee Institute of Information TechnologyNoida, Uttar Pradesh\nBachelor of Technology, Information TechnologyJul. 2024 – May. 2028\nExperience\nRHA TechnologiesJun 2026 ",
+        "skills": [
+          "Python",
+          "PostgreSQL",
+          "RAG & AI Workflows",
+          "JavaScript / Node.js",
+          "FastAPI"
+        ],
+        "careerProgression": "Currently an undergraduate B.Tech student (2024–2028) serving as a Software Engineering Intern at RHA Technologies. Hands-on experience centers on QA/testing for RAG pipelines and AI workflows, alongside building full-stack Web/AI personal projects leveraging Node.js, Python, PostgreSQL, and LLM APIs (Gemini).",
+        "notableClaims": [
+          "Built and maintained a quality assurance framework for 250+ AI skills and workflows",
+          "Engineered dual-layer voter registry separating PII in Firebase from state truth on Ethereum via keccak256 hashes"
+        ],
+        "interviewHooks": [
+          "In ExpensWise and your Python AI modules, how do you manage asynchronous I/O and latency spikes when calling external LLM gateways like Gemini during user sessions?",
+          "When testing and validating 250+ AI skills and RAG pipelines at RHA Technologies, how did you measure and debug retrieval accuracy, database query performance, and context window limits under concurrent load?",
+          "How would you design a FastAPI and Redis Pub/Sub orchestration service to process streaming audio chunks and LLM tokens with sub-50ms latency targets?",
+          "In PostgreSQL, what indexing and connection pooling strategies would you apply when scaling transactional persistence layers for thousands of concurrent WebSocket connections?",
+          "Describe a scenario where an automated AI skill or pipeline failed due to unhandled edge cases or non-deterministic output. How did you isolate the root cause and collaborate with developers to fix it?",
+          "Given your target background in backend infrastructure, walk us through a technical design disagreement you had regarding database choice (e.g., PostgreSQL vs NoSQL/Firebase) and how you reached a resolution.",
+          "How do you approach testing and monitoring for systems where downstream dependencies (like third-party LLM APIs) have unpredictable SLAs or rate limits?"
+        ],
+        "enrichmentSource": "resume",
+        "enrichedAt": "2026-09-04T10:03:39.351Z",
+        "githubContext": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "name": "mdhv",
+          "bio": "I code sometimes",
+          "location": "Delhi",
+          "publicReposCount": 19,
+          "followers": 1,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
+          "totalCommits": 278,
+          "recentCommits30Days": 117,
+          "commitVelocityNarrative": "117 commits in the past 30 days • 278 total commits",
+          "technicalHighlights": [
+            "Full-stack and backend development using JavaScript/TypeScript, Python, Node.js, and SQL/NoSQL databases like PostgreSQL and Firestore.",
+            "Integration of generative AI APIs (Gemini API) for natural language processing, unstructured PDF document extraction, and context-aware query responses.",
+            "Architecting hybrid web3 systems combining Solidity smart contracts with off-chain privacy-preserving data stores (Firebase) and cryptographic hashing.",
+            "Building real-time data flow mechanisms such as Firestore listeners for access control and multi-tier authentication pipelines."
+          ],
+          "githubProjects": [
+            {
+              "name": "ExpensWise",
+              "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "keyInsights": "Parses natural language inputs into structured transactional records using Gemini API, backed by PostgreSQL and Express with custom budget threshold rules.",
+              "url": "https://github.com/madhavgairola/ExpensWise",
+              "isPinned": true,
+              "candidateCommits": 40,
+              "isRecent": false
+            },
+            {
+              "name": "HealthLens",
+              "description": "Patient-first medical platform that translates complex clinical reports into plain English.",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "keyInsights": "Parses medical report PDFs client-side using PDF.js and injects extracted context into Gemini API prompts, incorporating a real-time Firestore listener pattern for patient consent control.",
+              "url": "https://github.com/madhavgairola/HealthLens",
+              "isPinned": true,
+              "candidateCommits": 1,
+              "isRecent": false
+            },
+            {
+              "name": "electora",
+              "description": "Trustless voter roll management platform solving double enrollment while protecting PII.",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "keyInsights": "Architects a dual-layer strategy separating sensitive PII in Firebase from state truth stored on Ethereum via keccak256 identity hashes and Solidity time-locks.",
+              "url": "https://github.com/madhavgairola/electora",
+              "isPinned": true,
+              "candidateCommits": 9,
+              "isRecent": false
+            },
+            {
+              "name": "ECHOSPHERE",
+              "description": "Multi-language AI repository featuring TypeScript and Python backends.",
+              "language": "TypeScript",
+              "stars": 0,
+              "topics": [],
+              "keyInsights": "Combines a TypeScript web tier with Python modules for complex data processing and AI workflow automation.",
+              "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+              "isPinned": false,
+              "candidateCommits": 57,
+              "isRecent": true
+            }
+          ],
+          "githubInterviewHooks": [
+            "In ExpensWise, how did you structure the schema and handle validation when parsing free-form natural language inputs (e.g. 'coffee 50') via Gemini API before writing into PostgreSQL?",
+            "In Electora, you used a hybrid architecture storing keccak256 hashes on Ethereum while keeping PII in Firebase. How did you handle potential race conditions or state synchronization failures between off-chain database updates and on-chain contract transactions?",
+            "For HealthLens, you implemented real-time consent tracking using Cloud Firestore listeners. How would you redesign this access control layer to scale for millions of high-throughput real-time requests while keeping audit logging latency below 50ms?",
+            "In ECHOSPHERE, where both Python and TypeScript are heavily used, how would you approach IPC or event passing between a TypeScript gateway and a Python inference engine streaming real-time tokens?"
+          ],
+          "enrichedAt": "2026-09-04T10:02:28.564Z"
+        },
+        "githubProjects": [
+          {
+            "name": "ExpensWise",
+            "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "keyInsights": "Parses natural language inputs into structured transactional records using Gemini API, backed by PostgreSQL and Express with custom budget threshold rules.",
+            "url": "https://github.com/madhavgairola/ExpensWise",
+            "isPinned": true,
+            "candidateCommits": 40,
+            "isRecent": false
+          },
+          {
+            "name": "HealthLens",
+            "description": "Patient-first medical platform that translates complex clinical reports into plain English.",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "keyInsights": "Parses medical report PDFs client-side using PDF.js and injects extracted context into Gemini API prompts, incorporating a real-time Firestore listener pattern for patient consent control.",
+            "url": "https://github.com/madhavgairola/HealthLens",
+            "isPinned": true,
+            "candidateCommits": 1,
+            "isRecent": false
+          },
+          {
+            "name": "electora",
+            "description": "Trustless voter roll management platform solving double enrollment while protecting PII.",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "keyInsights": "Architects a dual-layer strategy separating sensitive PII in Firebase from state truth stored on Ethereum via keccak256 identity hashes and Solidity time-locks.",
+            "url": "https://github.com/madhavgairola/electora",
+            "isPinned": true,
+            "candidateCommits": 9,
+            "isRecent": false
+          },
+          {
+            "name": "ECHOSPHERE",
+            "description": "Multi-language AI repository featuring TypeScript and Python backends.",
+            "language": "TypeScript",
+            "stars": 0,
+            "topics": [],
+            "keyInsights": "Combines a TypeScript web tier with Python modules for complex data processing and AI workflow automation.",
+            "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+            "isPinned": false,
+            "candidateCommits": 57,
+            "isRecent": true
+          }
+        ],
+        "githubInterviewHooks": [
+          "In ExpensWise and your Python AI modules, how do you manage asynchronous I/O and latency spikes when calling external LLM gateways like Gemini during user sessions?",
+          "When testing and validating 250+ AI skills and RAG pipelines at RHA Technologies, how did you measure and debug retrieval accuracy, database query performance, and context window limits under concurrent load?",
+          "How would you design a FastAPI and Redis Pub/Sub orchestration service to process streaming audio chunks and LLM tokens with sub-50ms latency targets?",
+          "In PostgreSQL, what indexing and connection pooling strategies would you apply when scaling transactional persistence layers for thousands of concurrent WebSocket connections?"
+        ]
+      }
     }
   ],
   "applications": [
@@ -3346,6 +3779,442 @@
       "status": "REJECTED",
       "decisionStage": "ROUND_1_TECHNICAL",
       "decisionReason": "Strong fundamentals but missing production WebRTC and streaming audio experience."
+    },
+    {
+      "id": "app_ieboyrp",
+      "jobId": "j1",
+      "candidateId": "cand_afb6tpx",
+      "resumeText": "Madhav Gairola\n(+91) 7895936487|madhavgairola05@gmail.com|linkedin.com/in/madhavgairola|github.com/madhavgairola|Portfolio\nEducation\nJaypee Institute of Information TechnologyNoida, Uttar Pradesh\nBachelor of Technology, Information TechnologyJul. 2024 – May. 2028\nExperience\nRHA TechnologiesJun 2026 – Present\nSoftware Engineering Intern\n•\nLed end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA\nOne platform, uncovering critical edge cases across diverse enterprise use cases\n•\nEngineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL\nintegrations, analyzing retrieval accuracy, data ingestion behavior, and system reliability\n•\nBuilt and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug\nreports, validating feature releases, and accelerating issue resolution through close collaboration with engineering\nteams\nProjects\nExpensWise (Personal Financial Assistant)| Node.js , PostgreSQL, Prisma, React, Gemini API| GitHub| Live\n•\nEliminated manual expense entry by parsing natural language inputs (e.g., ”coffee 50”, ”rent 5k”) into\nstructured financial records using Gemini API\n•\nArchitected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL\ndatabase supporting real-time expense tracking and analytics\n•\nDesigned an intelligent classification engine categorizing expenses into Needs vs Wants with budget threshold\nalerts, enabling actionable spending insights\n•\nBuilt a CLI interface for rapid expense logging secured via JWT authentication, allowing power users to log\nand query expenses without leaving the terminal\nHealthLens| JavaScript, Firebase Auth, Cloud Firestore, Gemini API, PDF.js| GitHub| Live\n•\nEliminated the medical jargon barrier by extracting PDF text via PDF.js and generating role-specific summaries\nincluding a patient-friendly explanation and clinical brief from a single Gemini API call\n•\nDesigned Firestore schema (Users, Reports, Requests, Audit) with security rules enforcing patient-controlled\naccess, ensuring doctors cannot view records without explicit patient approval\n•\nImplemented a real-time consent system using Firestore listeners enabling instant approve/deny actions, with\nevery access request logged in a dedicated audit collection\n•\nDeveloped a context-aware medical chatbot retrieving patient data (medications, history) from Firestore and\ninjecting it into Gemini prompts for grounded, record-specific responses\nElectora| Solidity, Node.js, Express, Firebase, Ethers.js| GitHub\n•\nEngineered a blockchain-based voter registry eliminating duplicate identity fraud by anchoring electoral\nrecords to Ethereum smart contracts as a single immutable source of truth\n•\nBuilt a multi-stage identity verification pipeline validating voter credentials off-chain before on-chain\nregistration, preventing unauthorized entries at every stage\n•\nDesigned a hybrid storage architecture segregating sensitive PII in Firebase from on-chain identity mappings\nusing keccak256 hashing, balancing privacy with blockchain transparency\n•\nImplemented time-locked voting cycle logic in Solidity enforcing strict state transitions, making duplicate\nvoting cryptographically impossible across the entire election lifecycle\nTechnical Skills\nLanguages: C/C++, JavaScript, Python, SQL, Solidity, PHP\nFrameworks:Node.js, Express, FastAPI, Django, Tailwind CSS\nLibraries & Tools: Prisma, Pandas, NumPy, Matplotlib, Git\nDatabases & Platforms: MySQL, MongoDB, PostgreSQL, Firebase, Supabase\n\nAchievements\n• Co-inventor on a patent application filed through Jaypee Institute of Information Technology for an\nAutonomous Smart Waste Segregation System\n• Built and published a Chrome Extension implementing dynamic theme injection with 3000+ active\nusers; awarded the Chrome Web Store Featured Badge [Link]\n• Selected from 25,000+ applicants to present a project at Bharat Mandapam as part of a national\ninnovation showcase\n• Led multiple teams to become a 4-time hackathon finalist across competitive events.\n(Hackfest’25· GDG Delhi, Hack4Delhi, India Innovates’26, Innovate 3.0-JIIT)",
+      "resumeDriveUrl": "https://drive.google.com/file/d/1U_D1vBg_-QY_3u8-WwBDVoZxGlvJ1Flc/view?usp=sharing",
+      "githubUrl": "https://github.com/madhavgairola",
+      "relevantExperience": "Experienced with full-stack and AI pipelines",
+      "status": "APPLIED",
+      "candidateContext": {
+        "resume": {
+          "textSnippet": "Madhav Gairola\n(+91) 7895936487|madhavgairola05@gmail.com|linkedin.com/in/madhavgairola|github.com/madhavgairola|Portfolio\nEducation\nJaypee Institute of Information TechnologyNoida, Uttar Pradesh\nBachelor of Technology, Information TechnologyJul. 2024 – May. 2028\nExperience\nRHA TechnologiesJun 2026 – Present\nSoftware Engineering Intern\n•\nLed end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA\nOne platform, uncovering critical edge cases across diverse enterprise use cases\n•\nEngineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL\nintegrations, analyzing retrieval accuracy, data ingestion behavior, and system reliability\n•\nBuilt and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug\nreports, validating feature releases, and accelerating issue resolution through close collaboration with engineering\nteams\nProjects\nExpensWise (Personal Financial Assistant)",
+          "driveUrl": "https://drive.google.com/file/d/1U_D1vBg_-QY_3u8-WwBDVoZxGlvJ1Flc/view?usp=sharing",
+          "skills": [
+            "Python",
+            "FastAPI",
+            "Django",
+            "Node.js",
+            "JavaScript",
+            "React",
+            "PostgreSQL",
+            "RAG",
+            "SQL"
+          ],
+          "experienceTitles": [
+            "Software Engineering Intern",
+            "Engineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL",
+            "reports, validating feature releases, and accelerating issue resolution through close collaboration with engineering",
+            "Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL",
+            "Engineered a blockchain-based voter registry eliminating duplicate identity fraud by anchoring electoral"
+          ],
+          "projects": [
+            "Built and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug",
+            "Projects",
+            "Designed an intelligent classification engine categorizing expenses into Needs vs Wants with budget threshold",
+            "Built a CLI interface for rapid expense logging secured via JWT authentication, allowing power users to log",
+            "Designed Firestore schema (Users, Reports, Requests, Audit) with security rules enforcing patient-controlled"
+          ],
+          "notableHighlights": [
+            "Eliminated manual expense entry by parsing natural language inputs (e.g., ”coffee 50”, ”rent 5k”) into",
+            "Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL"
+          ]
+        },
+        "github": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "bio": "I code sometimes",
+          "publicReposCount": 19,
+          "repositories": [
+            {
+              "name": "ExpensWise",
+              "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+              "language": "JavaScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/ExpensWise",
+              "isPinned": true,
+              "readmeSnippet": "Parses natural language inputs into structured transactional records using Gemini API, backed by PostgreSQL and Express with custom budget threshold rules."
+            },
+            {
+              "name": "HealthLens",
+              "description": "Patient-first medical platform that translates complex clinical reports into plain English.",
+              "language": "JavaScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/HealthLens",
+              "isPinned": true,
+              "readmeSnippet": "Parses medical report PDFs client-side using PDF.js and injects extracted context into Gemini API prompts, incorporating a real-time Firestore listener pattern for patient consent control."
+            },
+            {
+              "name": "electora",
+              "description": "Trustless voter roll management platform solving double enrollment while protecting PII.",
+              "language": "JavaScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/electora",
+              "isPinned": true,
+              "readmeSnippet": "Architects a dual-layer strategy separating sensitive PII in Firebase from state truth stored on Ethereum via keccak256 identity hashes and Solidity time-locks."
+            },
+            {
+              "name": "ECHOSPHERE",
+              "description": "Multi-language AI repository featuring TypeScript and Python backends.",
+              "language": "TypeScript",
+              "topics": [],
+              "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+              "isPinned": false,
+              "readmeSnippet": "Combines a TypeScript web tier with Python modules for complex data processing and AI workflow automation."
+            }
+          ],
+          "activeProjects": [
+            "ExpensWise",
+            "HealthLens",
+            "electora",
+            "ECHOSPHERE"
+          ]
+        },
+        "crossSourceContext": {
+          "corroboratedSkills": [
+            {
+              "skill": "Python",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "PostgreSQL",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "RAG & AI Workflows",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "JavaScript / Node.js",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "FastAPI",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM"
+            }
+          ],
+          "corroboratedProjects": [
+            {
+              "projectName": "ExpensWise",
+              "description": "AI-powered expense manager using natural language processing with Gemini API, Express/Node.js backend, and PostgreSQL database.",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "details": "Resume highlights natural language input parsing and budget thresholds; GitHub repo confirms Gemini API integration, Express backend, and PostgreSQL storage."
+            },
+            {
+              "projectName": "HealthLens",
+              "description": "Medical platform translating clinical reports into plain language using PDF parsing, Gemini API, and Firestore real-time listeners.",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "details": "Resume notes Firestore schema and security rules; GitHub details client-side PDF parsing with PDF.js and consent control workflow."
+            },
+            {
+              "projectName": "electora",
+              "description": "Blockchain-based voter registration platform preventing duplicate enrollment.",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "details": "Resume outlines voter registry architecture; GitHub details keccak256 identity hashes, Firebase PII storage, and Solidity smart contracts."
+            },
+            {
+              "projectName": "ECHOSPHERE",
+              "description": "Multi-language AI repository with TypeScript web tier and Python modules for complex AI processing.",
+              "sources": [
+                "github"
+              ],
+              "details": "GitHub repository features TypeScript and Python modules for AI workflow automation."
+            }
+          ],
+          "corroboratedExperience": [
+            {
+              "role": "Software Engineering Intern",
+              "company": "RHA Technologies",
+              "duration": "Jun 2026 – Present",
+              "sources": [
+                "resume"
+              ],
+              "corroborationNotes": "Appears only on Resume as LinkedIn profile data was not provided. Focuses on testing and validating RAG pipelines, AI skills, and database integrations."
+            }
+          ],
+          "careerProgressionSummary": "Currently an undergraduate B.Tech student (2024–2028) serving as a Software Engineering Intern at RHA Technologies. Hands-on experience centers on QA/testing for RAG pipelines and AI workflows, alongside building full-stack Web/AI personal projects leveraging Node.js, Python, PostgreSQL, and LLM APIs (Gemini).",
+          "notableClaims": [
+            {
+              "claim": "Built and maintained a quality assurance framework for 250+ AI skills and workflows",
+              "source": "resume",
+              "verificationFocus": "Probe test automation design, isolation of flaky LLM calls, and validation metrics for retrieval/generation accuracy."
+            },
+            {
+              "claim": "Engineered dual-layer voter registry separating PII in Firebase from state truth on Ethereum via keccak256 hashes",
+              "source": "resume",
+              "verificationFocus": "Probe state management, transactional guarantees, and latency/gas cost trade-offs."
+            }
+          ]
+        },
+        "interviewContext": {
+          "targetRole": "Senior Backend Engineer — Distributed Systems & AI Infrastructure",
+          "highRelevanceEvidence": [
+            {
+              "topic": "Python & Async AI Workflows",
+              "relevance": "HIGH",
+              "reason": "Target role requires scaling Python (FastAPI/asyncio) services for real-time AI inference and agent systems.",
+              "evidenceSources": [
+                "resume",
+                "github"
+              ]
+            },
+            {
+              "topic": "Relational Databases & Schema Design (PostgreSQL)",
+              "relevance": "HIGH",
+              "reason": "Role heavily emphasizes PostgreSQL optimization, indexing, and connection pooling for transactional persistence.",
+              "evidenceSources": [
+                "resume",
+                "github"
+              ]
+            },
+            {
+              "topic": "RAG Pipelines & AI Integration",
+              "relevance": "HIGH",
+              "reason": "Direct experience validating enterprise RAG pipelines, data connectors, and AI agent skills aligns with AI infrastructure tooling.",
+              "evidenceSources": [
+                "resume",
+                "github"
+              ]
+            }
+          ],
+          "technicalInterviewHooks": [
+            "In ExpensWise and your Python AI modules, how do you manage asynchronous I/O and latency spikes when calling external LLM gateways like Gemini during user sessions?",
+            "When testing and validating 250+ AI skills and RAG pipelines at RHA Technologies, how did you measure and debug retrieval accuracy, database query performance, and context window limits under concurrent load?",
+            "How would you design a FastAPI and Redis Pub/Sub orchestration service to process streaming audio chunks and LLM tokens with sub-50ms latency targets?",
+            "In PostgreSQL, what indexing and connection pooling strategies would you apply when scaling transactional persistence layers for thousands of concurrent WebSocket connections?"
+          ],
+          "behavioralInterviewHooks": [
+            "Describe a scenario where an automated AI skill or pipeline failed due to unhandled edge cases or non-deterministic output. How did you isolate the root cause and collaborate with developers to fix it?",
+            "Given your target background in backend infrastructure, walk us through a technical design disagreement you had regarding database choice (e.g., PostgreSQL vs NoSQL/Firebase) and how you reached a resolution.",
+            "How do you approach testing and monitoring for systems where downstream dependencies (like third-party LLM APIs) have unpredictable SLAs or rate limits?"
+          ],
+          "projectsWorthProbing": [
+            {
+              "name": "ExpensWise",
+              "relevanceLevel": "HIGH",
+              "reasonToProbe": "Combines natural language parsing, PostgreSQL persistence, and structured schema storage.",
+              "suggestedQuestions": [
+                "How did you structure the PostgreSQL schema and queries to handle natural language expense inputs efficiently?",
+                "How would you re-architect ExpensWise using FastAPI and asyncio to handle real-time streaming audio inputs instead of text?"
+              ],
+              "sourceUrl": "https://github.com/madhavgairola/ExpensWise"
+            },
+            {
+              "name": "ECHOSPHERE",
+              "relevanceLevel": "HIGH",
+              "reasonToProbe": "Contains Python backend modules intended for AI workflow automation, matching the target company name and core technology stack.",
+              "suggestedQuestions": [
+                "Walk through the boundary between the TypeScript web tier and Python processing modules in this architecture.",
+                "How are background tasks and concurrency managed within the Python backend?"
+              ],
+              "sourceUrl": "https://github.com/ReneshaSagar/ECHOSPHERE"
+            },
+            {
+              "name": "HealthLens",
+              "relevanceLevel": "MEDIUM",
+              "reasonToProbe": "Demonstrates prompt contextualization and real-time state listeners using Firestore.",
+              "suggestedQuestions": [
+                "How did you handle race conditions or latency during real-time consent updates in Firestore?",
+                "What were the bottlenecks when extracting PDF context client-side versus server-side?"
+              ],
+              "sourceUrl": "https://github.com/madhavgairola/HealthLens"
+            }
+          ],
+          "ignoredOrLowRelevanceTopics": [
+            "React frontend components, CSS layout design, and generic UI styling",
+            "Ethereum smart contract deployment and Solidity time-locks (electora project)",
+            "Client-side browser PDF parsing with PDF.js"
+          ]
+        },
+        "headline": "Software Engineering Intern",
+        "about": "Madhav Gairola\n(+91) 7895936487|madhavgairola05@gmail.com|linkedin.com/in/madhavgairola|github.com/madhavgairola|Portfolio\nEducation\nJaypee Institute of Information TechnologyNoida, Uttar Pradesh\nBachelor of Technology, Information TechnologyJul. 2024 – May. 2028\nExperience\nRHA TechnologiesJun 2026 ",
+        "skills": [
+          "Python",
+          "PostgreSQL",
+          "RAG & AI Workflows",
+          "JavaScript / Node.js",
+          "FastAPI"
+        ],
+        "careerProgression": "Currently an undergraduate B.Tech student (2024–2028) serving as a Software Engineering Intern at RHA Technologies. Hands-on experience centers on QA/testing for RAG pipelines and AI workflows, alongside building full-stack Web/AI personal projects leveraging Node.js, Python, PostgreSQL, and LLM APIs (Gemini).",
+        "notableClaims": [
+          "Built and maintained a quality assurance framework for 250+ AI skills and workflows",
+          "Engineered dual-layer voter registry separating PII in Firebase from state truth on Ethereum via keccak256 hashes"
+        ],
+        "interviewHooks": [
+          "In ExpensWise and your Python AI modules, how do you manage asynchronous I/O and latency spikes when calling external LLM gateways like Gemini during user sessions?",
+          "When testing and validating 250+ AI skills and RAG pipelines at RHA Technologies, how did you measure and debug retrieval accuracy, database query performance, and context window limits under concurrent load?",
+          "How would you design a FastAPI and Redis Pub/Sub orchestration service to process streaming audio chunks and LLM tokens with sub-50ms latency targets?",
+          "In PostgreSQL, what indexing and connection pooling strategies would you apply when scaling transactional persistence layers for thousands of concurrent WebSocket connections?",
+          "Describe a scenario where an automated AI skill or pipeline failed due to unhandled edge cases or non-deterministic output. How did you isolate the root cause and collaborate with developers to fix it?",
+          "Given your target background in backend infrastructure, walk us through a technical design disagreement you had regarding database choice (e.g., PostgreSQL vs NoSQL/Firebase) and how you reached a resolution.",
+          "How do you approach testing and monitoring for systems where downstream dependencies (like third-party LLM APIs) have unpredictable SLAs or rate limits?"
+        ],
+        "enrichmentSource": "resume",
+        "enrichedAt": "2026-09-04T10:03:39.351Z",
+        "githubContext": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "name": "mdhv",
+          "bio": "I code sometimes",
+          "location": "Delhi",
+          "publicReposCount": 19,
+          "followers": 1,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
+          "totalCommits": 278,
+          "recentCommits30Days": 117,
+          "commitVelocityNarrative": "117 commits in the past 30 days • 278 total commits",
+          "technicalHighlights": [
+            "Full-stack and backend development using JavaScript/TypeScript, Python, Node.js, and SQL/NoSQL databases like PostgreSQL and Firestore.",
+            "Integration of generative AI APIs (Gemini API) for natural language processing, unstructured PDF document extraction, and context-aware query responses.",
+            "Architecting hybrid web3 systems combining Solidity smart contracts with off-chain privacy-preserving data stores (Firebase) and cryptographic hashing.",
+            "Building real-time data flow mechanisms such as Firestore listeners for access control and multi-tier authentication pipelines."
+          ],
+          "githubProjects": [
+            {
+              "name": "ExpensWise",
+              "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "keyInsights": "Parses natural language inputs into structured transactional records using Gemini API, backed by PostgreSQL and Express with custom budget threshold rules.",
+              "url": "https://github.com/madhavgairola/ExpensWise",
+              "isPinned": true,
+              "candidateCommits": 40,
+              "isRecent": false
+            },
+            {
+              "name": "HealthLens",
+              "description": "Patient-first medical platform that translates complex clinical reports into plain English.",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "keyInsights": "Parses medical report PDFs client-side using PDF.js and injects extracted context into Gemini API prompts, incorporating a real-time Firestore listener pattern for patient consent control.",
+              "url": "https://github.com/madhavgairola/HealthLens",
+              "isPinned": true,
+              "candidateCommits": 1,
+              "isRecent": false
+            },
+            {
+              "name": "electora",
+              "description": "Trustless voter roll management platform solving double enrollment while protecting PII.",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "keyInsights": "Architects a dual-layer strategy separating sensitive PII in Firebase from state truth stored on Ethereum via keccak256 identity hashes and Solidity time-locks.",
+              "url": "https://github.com/madhavgairola/electora",
+              "isPinned": true,
+              "candidateCommits": 9,
+              "isRecent": false
+            },
+            {
+              "name": "ECHOSPHERE",
+              "description": "Multi-language AI repository featuring TypeScript and Python backends.",
+              "language": "TypeScript",
+              "stars": 0,
+              "topics": [],
+              "keyInsights": "Combines a TypeScript web tier with Python modules for complex data processing and AI workflow automation.",
+              "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+              "isPinned": false,
+              "candidateCommits": 57,
+              "isRecent": true
+            }
+          ],
+          "githubInterviewHooks": [
+            "In ExpensWise, how did you structure the schema and handle validation when parsing free-form natural language inputs (e.g. 'coffee 50') via Gemini API before writing into PostgreSQL?",
+            "In Electora, you used a hybrid architecture storing keccak256 hashes on Ethereum while keeping PII in Firebase. How did you handle potential race conditions or state synchronization failures between off-chain database updates and on-chain contract transactions?",
+            "For HealthLens, you implemented real-time consent tracking using Cloud Firestore listeners. How would you redesign this access control layer to scale for millions of high-throughput real-time requests while keeping audit logging latency below 50ms?",
+            "In ECHOSPHERE, where both Python and TypeScript are heavily used, how would you approach IPC or event passing between a TypeScript gateway and a Python inference engine streaming real-time tokens?"
+          ],
+          "enrichedAt": "2026-09-04T10:02:28.564Z"
+        },
+        "githubProjects": [
+          {
+            "name": "ExpensWise",
+            "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "keyInsights": "Parses natural language inputs into structured transactional records using Gemini API, backed by PostgreSQL and Express with custom budget threshold rules.",
+            "url": "https://github.com/madhavgairola/ExpensWise",
+            "isPinned": true,
+            "candidateCommits": 40,
+            "isRecent": false
+          },
+          {
+            "name": "HealthLens",
+            "description": "Patient-first medical platform that translates complex clinical reports into plain English.",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "keyInsights": "Parses medical report PDFs client-side using PDF.js and injects extracted context into Gemini API prompts, incorporating a real-time Firestore listener pattern for patient consent control.",
+            "url": "https://github.com/madhavgairola/HealthLens",
+            "isPinned": true,
+            "candidateCommits": 1,
+            "isRecent": false
+          },
+          {
+            "name": "electora",
+            "description": "Trustless voter roll management platform solving double enrollment while protecting PII.",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "keyInsights": "Architects a dual-layer strategy separating sensitive PII in Firebase from state truth stored on Ethereum via keccak256 identity hashes and Solidity time-locks.",
+            "url": "https://github.com/madhavgairola/electora",
+            "isPinned": true,
+            "candidateCommits": 9,
+            "isRecent": false
+          },
+          {
+            "name": "ECHOSPHERE",
+            "description": "Multi-language AI repository featuring TypeScript and Python backends.",
+            "language": "TypeScript",
+            "stars": 0,
+            "topics": [],
+            "keyInsights": "Combines a TypeScript web tier with Python modules for complex data processing and AI workflow automation.",
+            "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+            "isPinned": false,
+            "candidateCommits": 57,
+            "isRecent": true
+          }
+        ],
+        "githubInterviewHooks": [
+          "In ExpensWise and your Python AI modules, how do you manage asynchronous I/O and latency spikes when calling external LLM gateways like Gemini during user sessions?",
+          "When testing and validating 250+ AI skills and RAG pipelines at RHA Technologies, how did you measure and debug retrieval accuracy, database query performance, and context window limits under concurrent load?",
+          "How would you design a FastAPI and Redis Pub/Sub orchestration service to process streaming audio chunks and LLM tokens with sub-50ms latency targets?",
+          "In PostgreSQL, what indexing and connection pooling strategies would you apply when scaling transactional persistence layers for thousands of concurrent WebSocket connections?"
+        ]
+      }
     }
   ],
   "interviews": [
@@ -3768,6 +4637,20 @@
         "messageId": "<ae772ca6-6937-27cc-d8dc-8c371e2385fc@gmail.com>",
         "provider": "gmail_smtp",
         "timezone": "Asia/Kolkata"
+      }
+    },
+    {
+      "id": "email_oaniarn",
+      "recipientEmail": "madhav.test.drive@gmail.com",
+      "recipientName": "Madhav Gairola",
+      "type": "APPLICATION_RECEIVED",
+      "subject": "Application Received: Senior Backend Engineer — Distributed Systems & AI Infrastructure at EchoSphere",
+      "bodyText": "Hi Madhav Gairola,\n\nThank you for applying for the Senior Backend Engineer — Distributed Systems & AI Infrastructure position at EchoSphere!\n\nWe have successfully received your application, resume, and technical links. Our autonomous evaluation engine and talent team are currently reviewing your qualifications and codecraft.\n\nWhat to expect next:\n- If your experience aligns with the core requirements of the role, you will be invited to our autonomous AI Voice Technical Interview led by our technical lead persona, Alex.\n- You will receive a separate invitation email with your scheduled date, time, and private room link.\n\nThank you again for your enthusiasm about building with EchoSphere.\n\nBest regards,\nThe EchoSphere Talent & Recruiting Team",
+      "sentAt": "2026-09-04T10:03:42.259Z",
+      "metadata": {
+        "jobTitle": "Senior Backend Engineer — Distributed Systems & AI Infrastructure",
+        "deliveryId": "<e16bde6d-6037-2cf9-133a-676e6ff2293a@gmail.com>",
+        "provider": "gmail_smtp"
       }
     }
   ]
