@@ -133,7 +133,11 @@ export default function ApplicantsClient({
   };
 
   const filtered = applicants.filter(app => {
-    if (selectedStatus !== 'ALL' && app.status !== selectedStatus) return false;
+    if (selectedStatus === 'UNDER_REVIEW') {
+      if (app.status !== 'UNDER_REVIEW' && app.status !== 'APPLIED') return false;
+    } else if (selectedStatus !== 'ALL' && app.status !== selectedStatus) {
+      return false;
+    }
     if (selectedJob !== 'ALL' && app.jobId !== selectedJob) return false;
 
     if (searchQuery.trim()) {
@@ -232,8 +236,8 @@ export default function ApplicantsClient({
             className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
           >
             <option value="ALL">All Statuses</option>
-            <option value="APPLIED">Applied</option>
-            <option value="UNDER_REVIEW">Under Review</option>
+            <option value="UNDER_REVIEW">In Review (Applied & Reviewing)</option>
+            <option value="APPLIED">Applied (Fresh Only)</option>
             <option value="INTERVIEW_SCHEDULED">Interview Scheduled</option>
             <option value="SELECTED">Selected / Accepted</option>
             <option value="CONSIDER_FOR_OTHER_ROLES">Consider for Other Roles</option>

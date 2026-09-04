@@ -15,7 +15,9 @@ type Applicant = {
 const STAGES = [
   { id: 'APPLIED', label: 'Applied' },
   { id: 'UNDER_REVIEW', label: 'Under Review' },
-  { id: 'SELECTED', label: 'Selected for Interview' },
+  { id: 'INTERVIEW_SCHEDULED', label: 'Interview Scheduled' },
+  { id: 'SELECTED', label: 'Selected / Offer' },
+  { id: 'CONSIDER_FOR_OTHER_ROLES', label: 'Talent Pool' },
   { id: 'REJECTED', label: 'Rejected' }
 ];
 
