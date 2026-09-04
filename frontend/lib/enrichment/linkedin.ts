@@ -93,7 +93,7 @@ async function fetchFromBrightData(cleanUrl: string, apiToken: string): Promise<
   const scrapeEndpoint = 'https://api.brightdata.com/datasets/v3/scrape?dataset_id=' + datasetId + '&format=json&include_errors=true';
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 40000);
+  const timeoutId = setTimeout(() => controller.abort(), 8000);
 
   try {
     console.log('[Bright Data] Calling live synchronous scrape endpoint for:', cleanUrl);
@@ -109,9 +109,9 @@ async function fetchFromBrightData(cleanUrl: string, apiToken: string): Promise<
 
     if (!scrapeRes.ok) {
       const errText = await scrapeRes.text();
-      console.error('[Bright Data] Scrape request failed (HTTP ' + scrapeRes.status + '):', errText);
+      console.warn('[Bright Data] Scrape request returned (HTTP ' + scrapeRes.status + '):', errText.slice(0, 100));
       clearTimeout(timeoutId);
-      throw new Error('Bright Data API Error (HTTP ' + scrapeRes.status + '): ' + errText);
+      return null;
     }
 
     const results = await scrapeRes.json();
@@ -123,16 +123,17 @@ async function fetchFromBrightData(cleanUrl: string, apiToken: string): Promise<
 
     // Handle asynchronous snapshot response
     if (results && results.snapshot_id) {
-      console.log(`[Bright Data] Scrape queued as snapshot: ${results.snapshot_id}. Polling for completion...`);
+      console.log(`[Bright Data] Scrape queued as snapshot: ${results.snapshot_id}. Polling briefly (max 10s)...`);
       const snapshotUrl = `https://api.brightdata.com/datasets/v3/snapshot/${results.snapshot_id}?format=json`;
       const startTime = Date.now();
-      const maxPollMs = 120000; // Poll up to 2 minutes
+      const maxPollMs = 10000; // Fast 10s max wait for responsive UI
 
       while (Date.now() - startTime < maxPollMs) {
-        await new Promise(r => setTimeout(r, 6000));
+        await new Promise(r => setTimeout(r, 4000));
         try {
           const snapRes = await fetch(snapshotUrl, {
-            headers: { 'Authorization': 'Bearer ' + apiToken }
+            headers: { 'Authorization': 'Bearer ' + apiToken },
+            signal: AbortSignal.timeout(6000)
           });
           if (snapRes.status === 200) {
             const snapData = await snapRes.json();
@@ -142,17 +143,18 @@ async function fetchFromBrightData(cleanUrl: string, apiToken: string): Promise<
             }
           }
         } catch (pollErr: any) {
-          console.warn('[Bright Data] Transient polling error:', pollErr.message);
+          console.warn('[Bright Data] Transient polling notice:', pollErr.message);
         }
       }
-      throw new Error(`Bright Data snapshot ${results.snapshot_id} timed out after 2 minutes.`);
+      console.log(`[Bright Data] Snapshot ${results.snapshot_id} still pending after 10s; proceeding with candidate resume & GitHub context.`);
+      return null;
     }
 
-    throw new Error('Bright Data returned no records for: ' + cleanUrl);
+    return null;
   } catch (err: any) {
     clearTimeout(timeoutId);
-    console.error('[Bright Data] API request error:', err.message);
-    throw err;
+    console.warn('[Bright Data] Live scrape notice (gracefully proceeding):', err.message);
+    return null;
   }
 }
 
@@ -497,25 +499,10 @@ export async function enrichLinkedInProfile(
       if (rawData) {
         // Log ONLY provider response field names (not personal data)
         console.log('[Bright Data Enrichment] Provider response field names:', Object.keys(rawData));
-        const structuredContext = mapBrightDataToCandidateContext(rawData);
-        return await synthesizeInterviewHooks(structuredContext, resumeText);
+        return mapBrightDataToCandidateContext(rawData);
       }
     } catch (apiErr: any) {
-      console.warn('[Bright Data Enrichment] Profile is private, restricted, or temporarily unavailable:', apiErr.message);
-      // For private or restricted profiles: extract as much as possible, ground cleanly in resume, NEVER invent fake data
-      const restrictedContext: CandidateContext = {
-        headline: undefined,
-        about: "LinkedIn profile is private or restricted by user privacy settings. Verification and context are grounded directly from the candidate's verified application.",
-        experience: [],
-        skills: [],
-        education: [],
-        projects: [],
-        certifications: [],
-        organizations: [],
-        enrichmentSource: 'brightdata_restricted',
-        enrichedAt: new Date().toISOString()
-      };
-      return await synthesizeInterviewHooks(restrictedContext, resumeText);
+      console.warn('[Bright Data Enrichment] Profile is private or temporarily unavailable:', apiErr.message);
     }
   }
 

@@ -69,29 +69,22 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       }, { status: 400 });
     }
 
-    // 1. Ingest LinkedIn Profile if URL provided
-    let rawLinkedIn: any = null;
-    if (linkedinUrl && typeof linkedinUrl === 'string' && linkedinUrl.trim() !== '') {
-      try {
-        rawLinkedIn = await enrichLinkedInProfile(linkedinUrl.trim(), resumeText);
-      } catch (enrichErr: any) {
-        console.error("[Apply Route] Bright Data LinkedIn profile enrichment error:", enrichErr?.message);
-        if (process.env.MOCK_LINKEDIN_ENRICHMENT === 'false') {
-          return NextResponse.json({ error: "Bright Data Enrichment Failed: " + enrichErr?.message }, { status: 502 });
-        }
-      }
-    }
-
-    // 2. Ingest GitHub Profile/Repo if URL provided
-    let rawGitHub: any = null;
-    if (githubUrl && typeof githubUrl === 'string' && githubUrl.trim() !== '') {
-      try {
-        console.log('[Apply Route] Ingesting GitHub context for:', githubUrl);
-        rawGitHub = await enrichGitHubUrl(githubUrl.trim(), resumeText, job.description);
-      } catch (ghErr: any) {
-        console.warn("[Apply Route] GitHub ingestion failed gracefully without blocking application:", ghErr?.message);
-      }
-    }
+    // 1 & 2. Ingest LinkedIn and GitHub Concurrently in Parallel
+    console.log('[Apply Route] Ingesting profile sources in parallel...');
+    const [rawLinkedIn, rawGitHub] = await Promise.all([
+      (linkedinUrl && typeof linkedinUrl === 'string' && linkedinUrl.trim() !== '')
+        ? enrichLinkedInProfile(linkedinUrl.trim(), resumeText).catch(enrichErr => {
+            console.warn('[Apply Route] LinkedIn ingestion notice:', enrichErr?.message);
+            return null;
+          })
+        : Promise.resolve(null),
+      (githubUrl && typeof githubUrl === 'string' && githubUrl.trim() !== '')
+        ? enrichGitHubUrl(githubUrl.trim(), resumeText, job.description).catch(ghErr => {
+            console.warn('[Apply Route] GitHub ingestion notice:', ghErr?.message);
+            return null;
+          })
+        : Promise.resolve(null)
+    ]);
 
     // 3. Relevance & Cross-Source Correlation Layer (Resume + LinkedIn + GitHub -> CandidateContext)
     const { correlateAndBuildCandidateContext } = await import('@/lib/enrichment/correlation');

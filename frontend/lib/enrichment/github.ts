@@ -677,8 +677,43 @@ export async function enrichGitHubUrl(
     }
 
     console.log(`[GitHub Enrichment] Extracted ${profileData.allRepoNames.length} total repos, ${profileData.pinnedRepoNames.length} pinned repos, ${profileData.totalCommits ?? 0} total commits (${profileData.recentCommits30Days ?? 0} in past month) for ${profileData.username}.`);
-    const enriched = await synthesizeGitHubContext(profileData, resumeText, jobDescription);
-    return enriched;
+    
+    let commitVelocityNarrative: string | undefined = undefined;
+    if (profileData.recentCommits30Days !== undefined || profileData.totalCommits !== undefined) {
+      const recent = profileData.recentCommits30Days ? `${profileData.recentCommits30Days} commits in the past 30 days` : 'recent activity';
+      const total = profileData.totalCommits ? `${profileData.totalCommits} total commits` : '';
+      commitVelocityNarrative = [recent, total].filter(Boolean).join(' • ');
+    }
+
+    const githubContext: GitHubContext = {
+      username: profileData.username,
+      profileUrl: profileData.profileUrl,
+      name: profileData.name,
+      bio: profileData.bio,
+      company: profileData.company,
+      location: profileData.location,
+      publicReposCount: profileData.publicReposCount,
+      followers: profileData.followers,
+      avatarUrl: profileData.avatarUrl,
+      totalCommits: profileData.totalCommits,
+      recentCommits30Days: profileData.recentCommits30Days,
+      commitVelocityNarrative,
+      technicalHighlights: [],
+      githubProjects: profileData.repos.map(r => ({
+        name: r.name,
+        description: r.description,
+        language: r.language,
+        stars: r.stars,
+        topics: r.topics,
+        url: r.url,
+        isPinned: r.isPinned,
+        candidateCommits: r.candidateCommits,
+        isRecent: r.isRecent
+      })),
+      githubInterviewHooks: [],
+      enrichedAt: new Date().toISOString()
+    };
+    return githubContext;
   } catch (err: any) {
     console.warn('[GitHub Enrichment] Failed gracefully without blocking application:', err.message);
     return null;
