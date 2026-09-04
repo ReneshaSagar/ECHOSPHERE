@@ -1180,6 +1180,11 @@
           "Walk me through the architectural decisions behind echosphere and how you structured the code for maintainability."
         ]
       }
+    },
+    {
+      "id": "cand_6cjxccz",
+      "name": "PDF Candidate Verified",
+      "email": "pdf.candidate.verified@example.com"
     }
   ],
   "applications": [
@@ -2365,6 +2370,14 @@
           "Walk me through the architectural decisions behind echosphere and how you structured the code for maintainability."
         ]
       }
+    },
+    {
+      "id": "app_gs5p3su",
+      "jobId": "j1",
+      "candidateId": "cand_6cjxccz",
+      "resumeText": "Dummy PDF file",
+      "resumeFileName": "Candidate_Resume.pdf",
+      "status": "APPLIED"
     }
   ],
   "interviews": [

@@ -121,6 +121,7 @@ export interface Candidate {
   linkedinUrl?: string;
   githubUrl?: string;
   portfolioUrl?: string;
+  resumeDriveUrl?: string;
   candidateContext?: CandidateContext;
 }
 
@@ -129,6 +130,8 @@ export interface Application {
   jobId: string;
   candidateId: string;
   resumeText: string;
+  resumeDriveUrl?: string;
+  resumeFileName?: string;
   linkedinUrl?: string;
   githubUrl?: string;
   relevantExperience?: string;
