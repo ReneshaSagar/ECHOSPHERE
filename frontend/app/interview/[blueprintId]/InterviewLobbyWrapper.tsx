@@ -21,6 +21,8 @@ export default function InterviewLobbyWrapper({
   scheduledAt,
   candidateName,
   jobTitle,
+  candidateContext,
+  resumeText,
   mcpServerUrl
 }: {
   blueprint: any;
@@ -28,6 +30,8 @@ export default function InterviewLobbyWrapper({
   scheduledAt: string;
   candidateName: string;
   jobTitle: string;
+  candidateContext?: any;
+  resumeText?: string;
   mcpServerUrl?: string;
 }) {
   const [hasStarted, setHasStarted] = useState(false);
@@ -102,6 +106,9 @@ export default function InterviewLobbyWrapper({
         blueprint={blueprint}
         interviewId={interviewId}
         candidateName={candidateName}
+        jobTitle={jobTitle}
+        candidateContext={candidateContext}
+        resumeText={resumeText}
         mcpServerUrl={mcpServerUrl}
       />
     );

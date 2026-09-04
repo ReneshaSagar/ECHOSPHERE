@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import ProctorEngine from './ProctorEngine';
+import { injectKnowledgeBaseIntoAgentInstructions } from '@/lib/enrichment/knowledgeBase';
 
 type Blueprint = {
   interview_rounds: {
@@ -23,11 +24,17 @@ export default function InterviewRoom({
   blueprint, 
   interviewId, 
   candidateName,
+  jobTitle,
+  candidateContext,
+  resumeText,
   mcpServerUrl
 }: { 
   blueprint: Blueprint; 
   interviewId: string;
   candidateName: string;
+  jobTitle?: string;
+  candidateContext?: any;
+  resumeText?: string;
   mcpServerUrl?: string;
 }) {
   const router = useRouter();
@@ -101,16 +108,14 @@ export default function InterviewRoom({
       addLog('Backend', 'Requesting Agora Conversational AI Agent spawn...');
       const interviewer = round.interviewer;
       
-      // Inject Anti-Hallucination Guardrails into Agora Gemini Live instructions
-      let agentInstructions = interviewer.instructions || '';
-      if (!agentInstructions.includes('ANTI-HALLUCINATION')) {
-        agentInstructions += `\n\nSTRICT ANTI-HALLUCINATION & CONVERSATIONAL RULES:
-- Ask ONE question at a time and listen patiently to ${candidateName}'s response.
-- Speak concisely and naturally (2-3 sentences max per turn). Do not monologue.
-- ZERO ASSUMPTIONS: Ground all technical questions strictly in verified background. Do not claim or pretend the candidate used tools or frameworks they have not used.
-- DO NOT ask about irrelevant topics (e.g. Blockchain, Smart Contracts, Crypto, or unrelated hobby projects) unless the candidate specifically brings them up.
-- Focus on evaluating their core problem solving, system architecture, and real-world engineering depth.`;
-      }
+      // Inject Candidate Knowledge Base & Anti-Hallucination Guardrails into Agora Gemini Live instructions
+      const agentInstructions = injectKnowledgeBaseIntoAgentInstructions(
+        interviewer.instructions || '',
+        candidateContext,
+        candidateName,
+        jobTitle || 'Engineering Role',
+        resumeText
+      );
       
       const res = await fetch(`/api/agora-mllm/start-dynamic-mllm`, {
         method: 'POST',

@@ -14,6 +14,7 @@ import {
   Layers,
   Radio
 } from 'lucide-react';
+import { injectKnowledgeBaseIntoAgentInstructions } from '@/lib/enrichment/knowledgeBase';
 
 export default async function AgentPersonaInspectorPage({ params }: { params: Promise<{ blueprintId: string }> }) {
   const resolvedParams = await params;
@@ -110,7 +111,16 @@ export default async function AgentPersonaInspectorPage({ params }: { params: Pr
             </span>
           </div>
 
-          {parsedBlueprint?.interview_rounds?.map((round: any, idx: number) => (
+          {parsedBlueprint?.interview_rounds?.map((round: any, idx: number) => {
+            const injectedInstructions = injectKnowledgeBaseIntoAgentInstructions(
+              round.interviewer?.instructions || '',
+              candidateContext,
+              candidate?.name || 'Candidate',
+              job?.title || 'Engineering Role',
+              application?.resumeText
+            );
+
+            return (
             <div 
               key={idx} 
               className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl"
@@ -150,10 +160,10 @@ export default async function AgentPersonaInspectorPage({ params }: { params: Pr
                 <div>
                   <div className="text-xs font-bold uppercase text-blue-400 tracking-wider mb-2 flex items-center gap-1.5">
                     <FileCode className="w-3.5 h-3.5" />
-                    System Instructions (Live Prompt Injected into Gemini Live)
+                    System Instructions (Live Prompt Injected into Gemini Live with Candidate Knowledge Base)
                   </div>
                   <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-gray-300 whitespace-pre-wrap leading-relaxed">
-                    {round.interviewer?.instructions}
+                    {injectedInstructions}
                   </div>
                 </div>
 
@@ -174,7 +184,8 @@ export default async function AgentPersonaInspectorPage({ params }: { params: Pr
                 )}
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
 
         {/* Anti-Hallucination & Relevance Filter Context */}
@@ -256,7 +267,13 @@ export default async function AgentPersonaInspectorPage({ params }: { params: Pr
   payload: {
     session_id: `ses_${interview?.id || 'int_bs0z9ge'}_r1`,
     candidate_uid: 1001,
-    instructions: parsedBlueprint?.interview_rounds?.[0]?.interviewer?.instructions || "Alex instructions",
+    instructions: injectKnowledgeBaseIntoAgentInstructions(
+      parsedBlueprint?.interview_rounds?.[0]?.interviewer?.instructions || "Alex instructions",
+      candidateContext,
+      candidate?.name || 'Candidate',
+      job?.title || 'Engineering Role',
+      application?.resumeText
+    ),
     greeting_message: parsedBlueprint?.interview_rounds?.[0]?.interviewer?.greeting_message || "Alex greeting"
   },
   sdk_config: {

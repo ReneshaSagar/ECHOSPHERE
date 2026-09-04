@@ -134,6 +134,8 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
           scheduledAt={interview.scheduledAt}
           candidateName={candidate.name} 
           jobTitle={job.title}
+          candidateContext={application.candidateContext || candidate.candidateContext}
+          resumeText={application.resumeText}
           mcpServerUrl={job?.mcpServerUrl}
         />
       </main>
