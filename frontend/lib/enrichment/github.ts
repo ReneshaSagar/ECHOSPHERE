@@ -1,4 +1,4 @@
-﻿import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { GitHubContext } from '@/lib/db';
 
 export interface ParsedGitHubUrl {
@@ -535,21 +535,24 @@ async function synthesizeGitHubContext(
   try {
     const genAI = new GoogleGenerativeAI(geminiKey);
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.6-flash",
       generationConfig: { responseMimeType: "application/json" }
     });
 
     const prompt = `You are a Principal Software Architect and Lead Technical Interviewer.
-Analyze this candidate's comprehensive GitHub activity (analyzed across all ${profile.publicReposCount} repositories, including pinned repositories and commit velocity).
+Analyze this candidate's public GitHub repositories to identify active, relevant engineering projects and technical topics worth discussing during their interview.
+
+IMPORTANT GUIDELINES:
+- Do NOT use commit count, commit frequency, stars, or follower counts as evidence of candidate quality, evaluation scores, or verification/disqualification mechanisms.
+- GitHub activity is purely contextual information to discover active repositories, technologies used, and real architectural areas worth exploring.
+- Strict evaluation boundary: External profile data must NEVER be used to score, rank, penalize, or judge candidate suitability. Live interview responses are the primary evidence.
 
 Candidate Summary:
 - Username: ${profile.username}
-- Total Commits across GitHub: ${profile.totalCommits ?? 'Unknown'}
-- Recent Commits in the Past 30 Days: ${profile.recentCommits30Days ?? 'Unknown'}
-- Pinned Showcase Projects: ${profile.pinnedRepoNames.length > 0 ? profile.pinnedRepoNames.join(', ') : 'None'}
-- All Repositories Analyzed: ${profile.allRepoNames.slice(0, 25).join(', ')}
+- Repositories Available: ${profile.allRepoNames.slice(0, 25).join(', ')}
+- Pinned Repositories: ${profile.pinnedRepoNames.length > 0 ? profile.pinnedRepoNames.join(', ') : 'None'}
 
-Top Prioritized Repositories (Pinned & Most Committed):
+Repositories Data:
 ${JSON.stringify(profile.repos, null, 2)}
 
 Target Job:
@@ -560,26 +563,24 @@ ${resumeText || 'None provided'}
 
 Synthesize technical interview context:
 1. "technicalHighlights": An array of 3-4 bullet points highlighting:
-   - Their active commit velocity and hands-on code development (cite their recent 30-day commits and total commits if available).
-   - Architectural strengths, programming languages, and frameworks evident in their pinned/most committed projects.
-   - Codecraft signals, system complexity, and problem domains tackled.
-2. "githubProjects": An array of 3-5 deep project summaries for their most significant/pinned repositories:
+   - Primary technologies, languages, and architectural patterns visible in their repositories.
+   - Domains tackled (e.g. backend distributed services, concurrency, streaming, RAG pipelines).
+2. "githubProjects": An array of 3-5 project summaries for their most technically significant repositories:
    - "name": Repository name
-   - "description": Concise description
+   - "description": Concise description of what the project does
    - "language": Primary language
    - "stars": Star count
    - "topics": Array of topics
-   - "keyInsights": 1-2 sentences explaining the technical architecture, design patterns, or engineering challenges solved.
+   - "keyInsights": 1-2 sentences explaining technical architecture, design patterns, or engineering challenges.
    - "url": Repository URL
    - "isPinned": boolean
-   - "candidateCommits": number (if provided)
    - "isRecent": boolean
-3. "githubInterviewHooks": An array of 3-4 deep, respectful, and engaging technical questions the AI interviewer can ask to explore their actual codebase, design decisions, data structures, concurrency, or optimization in their pinned or most committed repositories.
+3. "githubInterviewHooks": An array of 3-4 deep, conversational technical questions the AI interviewer can ask to explore their actual architecture, design decisions, data structures, concurrency, or bottlenecks in their relevant repositories.
 
 CRITICAL RULES:
-- NEVER hallucinate or invent fake repositories or statistics.
-- Use GitHub data ONLY to personalize technical interview questions and follow-ups.
-- Keep questions technical, curious, and appreciative of their codecraft and commit activity.
+- NEVER hallucinate fake repositories.
+- Use GitHub data ONLY to discover relevant engineering projects for conversation.
+- Frame questions around architecture, trade-offs, and design rationale.
 
 Return ONLY a JSON object matching this schema:
 {

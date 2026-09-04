@@ -987,197 +987,471 @@
       "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
       "githubUrl": "https://github.com/madhavgairola",
       "candidateContext": {
+        "resume": {
+          "textSnippet": "Headline: Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida\n\nExperience\nSoftware Engineer Intern\nRHA Technologies � Internship\nJun 2026 - Aug 2026 � 3 mos\n. Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform\n\nEducation\nJaypee Institute of Information Technology\nBachelor of Technology - BTech\nJul 2024 - Present\n\nKendriya Vidyalaya\n2018 - 2023\n\nSkills\nTypeScript, JavaScript, Python, React, Next.js, Node.js, SQL",
+          "skills": [
+            "Python",
+            "Node.js",
+            "TypeScript",
+            "JavaScript",
+            "React",
+            "Next.js",
+            "RAG",
+            "SQL"
+          ],
+          "experienceTitles": [
+            "Headline: Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida",
+            "Software Engineer Intern",
+            "RHA Technologies � Internship"
+          ],
+          "projects": [],
+          "notableHighlights": []
+        },
+        "linkedin": {
+          "headline": "Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida",
+          "about": "Software engineer building RAG pipelines, AI agents, and high-throughput systems.",
+          "experience": [
+            {
+              "title": "Software Engineer Intern",
+              "company": "RHA Technologies",
+              "duration": "Jun 2026 - Aug 2026 · 3 mos",
+              "description": "Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform."
+            }
+          ],
+          "skills": [
+            "TypeScript",
+            "JavaScript",
+            "Python",
+            "React",
+            "Next.js",
+            "Node.js",
+            "SQL",
+            "FastAPI",
+            "Redis",
+            "Kafka"
+          ],
+          "education": [
+            {
+              "school": "Jaypee Institute of Information Technology",
+              "degree": "Bachelor of Technology - BTech",
+              "year": "Jul 2024 – Present"
+            }
+          ],
+          "notableClaims": [
+            "Led validation of enterprise RAG pipelines handling thousands of concurrent queries"
+          ]
+        },
+        "github": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "bio": "I code sometimes",
+          "publicReposCount": 19,
+          "repositories": [
+            {
+              "name": "echosphere",
+              "description": "Autonomous voice agent hiring engine with real-time WebRTC audio pipelines and LLM orchestration",
+              "language": "TypeScript",
+              "topics": [],
+              "isPinned": true
+            },
+            {
+              "name": "syn-2",
+              "description": "Synthetic high-concurrency event stream coordinator and LLM multi-persona arbiter",
+              "language": "Python",
+              "topics": [],
+              "isPinned": true
+            },
+            {
+              "name": "ExpensWise",
+              "description": "Distributed expense tracking and invoice processing backend service using FastAPI and PostgreSQL",
+              "language": "Python",
+              "topics": [],
+              "isPinned": true
+            },
+            {
+              "name": "HealthLens",
+              "description": "Healthcare analytics engine with asynchronous medical record indexing",
+              "language": "Python",
+              "topics": [],
+              "isPinned": true
+            },
+            {
+              "name": "react-landing-page",
+              "description": "Landing page demo with CSS animations and Tailwind",
+              "language": "HTML",
+              "topics": [],
+              "isPinned": false
+            },
+            {
+              "name": "js-tutorial-beginner",
+              "description": "Beginner practice exercises for JavaScript",
+              "language": "JavaScript",
+              "topics": [],
+              "isPinned": false
+            }
+          ],
+          "activeProjects": [
+            "echosphere",
+            "syn-2",
+            "ExpensWise",
+            "HealthLens",
+            "react-landing-page",
+            "js-tutorial-beginner"
+          ]
+        },
+        "crossSourceContext": {
+          "corroboratedSkills": [
+            {
+              "skill": "Python",
+              "sources": [
+                "resume",
+                "linkedin",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "TypeScript",
+              "sources": [
+                "resume",
+                "linkedin",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "FastAPI",
+              "sources": [
+                "linkedin",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "SQL / Relational Databases",
+              "sources": [
+                "resume",
+                "linkedin",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "RAG & AI Agent Architectures",
+              "sources": [
+                "resume",
+                "linkedin",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "Redis & Message Streaming (Kafka)",
+              "sources": [
+                "linkedin"
+              ],
+              "confidence": "MEDIUM"
+            }
+          ],
+          "corroboratedProjects": [
+            {
+              "projectName": "RHA One Platform RAG Pipeline",
+              "description": "Validation and integration of RAG pipelines, semantic search, and data connectors.",
+              "sources": [
+                "resume",
+                "linkedin"
+              ],
+              "details": "Corroborated across Resume and LinkedIn as primary internship deliverable."
+            },
+            {
+              "projectName": "echosphere",
+              "description": "Autonomous voice agent hiring engine with real-time WebRTC audio pipelines and LLM orchestration.",
+              "sources": [
+                "github"
+              ],
+              "details": "Pinned GitHub repository directly mapping to EchoSphere's core product domain."
+            },
+            {
+              "projectName": "syn-2",
+              "description": "Synthetic high-concurrency event stream coordinator and LLM multi-persona arbiter.",
+              "sources": [
+                "github"
+              ],
+              "details": "Pinned Python repository demonstrating event stream coordination and LLM state management."
+            },
+            {
+              "projectName": "ExpensWise",
+              "description": "Distributed expense tracking and invoice processing backend service using FastAPI and PostgreSQL.",
+              "sources": [
+                "github"
+              ],
+              "details": "Backend service implementing FastAPI asynchronous REST endpoints and PostgreSQL persistence."
+            }
+          ],
+          "corroboratedExperience": [
+            {
+              "role": "Software Engineer Intern",
+              "company": "RHA Technologies",
+              "duration": "Jun 2026 - Aug 2026 (3 mos)",
+              "sources": [
+                "resume",
+                "linkedin"
+              ],
+              "corroborationNotes": "Identical title and responsibilities listed across both Resume and LinkedIn profiles."
+            }
+          ],
+          "careerProgressionSummary": "Early-career engineer/undergraduate candidate with internship experience in AI pipeline validation and active hands-on open-source development focusing on FastAPI, WebRTC voice pipelines, high-concurrency event processing, and LLM orchestration.",
+          "notableClaims": [
+            {
+              "claim": "Led validation of enterprise RAG pipelines handling thousands of concurrent queries",
+              "source": "linkedin",
+              "verificationFocus": "Probe load testing methodology, concurrent query bottlenecks, backpressure, and vector database latency targets."
+            },
+            {
+              "claim": "Built autonomous voice agent hiring engine with real-time WebRTC audio pipelines",
+              "source": "github",
+              "verificationFocus": "Probe audio chunking, jitter buffer handling, WebRTC gateway architecture, and LLM streaming latency."
+            }
+          ]
+        },
+        "interviewContext": {
+          "targetRole": "Senior Backend Engineer — Distributed Systems & AI Infrastructure",
+          "highRelevanceEvidence": [
+            {
+              "topic": "Real-time Voice & WebRTC Orchestration",
+              "relevance": "HIGH",
+              "reason": "Direct overlap with EchoSphere core voice orchestration backend requirements.",
+              "evidenceSources": [
+                "github"
+              ]
+            },
+            {
+              "topic": "FastAPI Async Architecture & Event Streaming",
+              "relevance": "HIGH",
+              "reason": "Core requirement for building ultra-low-latency microservices with asyncio and streaming LLM responses.",
+              "evidenceSources": [
+                "linkedin",
+                "github"
+              ]
+            },
+            {
+              "topic": "PostgreSQL & Database Optimization",
+              "relevance": "HIGH",
+              "reason": "Required for transactional persistence, connection pooling, and indexing strategies.",
+              "evidenceSources": [
+                "resume",
+                "linkedin",
+                "github"
+              ]
+            },
+            {
+              "topic": "High-Concurrency Event Coordination (syn-2)",
+              "relevance": "HIGH",
+              "reason": "Demonstrates practical exposure to state coordination and event loop management under load.",
+              "evidenceSources": [
+                "github"
+              ]
+            }
+          ],
+          "technicalInterviewHooks": [
+            "In your 'echosphere' project, how did you structure the audio frame pipeline between WebRTC endpoints and the LLM inference gateway to minimize end-to-end user audio latency under 500ms?",
+            "For 'syn-2', walk through how your synthetic event coordinator handles concurrent state updates without race conditions or thread starvation in Python's asyncio loop.",
+            "You listed Kafka and Redis on LinkedIn for high-throughput messaging. How would you design a fault-tolerant message pipeline that guarantees at-least-once delivery during broker failures while enforcing sub-50ms p99 latency?",
+            "In 'ExpensWise', how did you manage PostgreSQL connection pooling, transaction isolation levels, and query indexing when handling peak concurrent backend requests?"
+          ],
+          "behavioralInterviewHooks": [
+            "Describe a scenario in your RAG validation work where the pipeline failed under concurrent load. How did you isolate whether the bottleneck was network I/O, database locking, or LLM latency?",
+            "When designing real-time audio systems, trade-offs exist between raw latency and audio quality/transcription accuracy. How do you evaluate and negotiate these trade-offs with product and research teams?",
+            "Tell me about a technical architecture disagreement regarding async frameworks or message queues you experienced, and how you used benchmarks to drive the final engineering decision."
+          ],
+          "projectsWorthProbing": [
+            {
+              "name": "echosphere",
+              "relevanceLevel": "HIGH",
+              "reasonToProbe": "Directly mirrors EchoSphere's stack (WebRTC, real-time voice, LLM orchestration). Primary candidate signal for system design capabilities.",
+              "suggestedQuestions": [
+                "How did you implement WebSocket/WebRTC signaling and handle media packet loss or jitter during real-time sessions?",
+                "How was streaming context managed when forwarding audio transcript tokens to the LLM agent?"
+              ],
+              "sourceUrl": "github.com/candidate/echosphere"
+            },
+            {
+              "name": "syn-2",
+              "relevanceLevel": "HIGH",
+              "reasonToProbe": "Focuses on high-concurrency event stream coordination and multi-persona arbiter state machines.",
+              "suggestedQuestions": [
+                "What concurrency primitives did you use to coordinate event streams across multiple LLM personas?",
+                "How did you prevent deadlocks or unhandled exceptions from crashing the event loop?"
+              ],
+              "sourceUrl": "github.com/candidate/syn-2"
+            },
+            {
+              "name": "ExpensWise",
+              "relevanceLevel": "HIGH",
+              "reasonToProbe": "Demonstrates production backend patterns with FastAPI and PostgreSQL relational data design.",
+              "suggestedQuestions": [
+                "How did you design the schema and database migrations for high-throughput writes?",
+                "What caching strategies using Redis did or would you implement to relieve database read pressure?"
+              ],
+              "sourceUrl": "github.com/candidate/ExpensWise"
+            }
+          ],
+          "ignoredOrLowRelevanceTopics": [
+            "react-landing-page (HTML/Tailwind CSS landing page repository - evaluated as irrelevant for distributed backend role)",
+            "js-tutorial-beginner (Beginner JavaScript practice repository - non-production practice code ignored)",
+            "Basic React and Next.js frontend code snippets (Deprioritized relative to backend & AI infrastructure requirements)"
+          ]
+        },
         "headline": "Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida",
+        "about": "Software engineer building RAG pipelines, AI agents, and high-throughput systems.",
         "experience": [
           {
-            "company": "RHA Technologies",
             "title": "Software Engineer Intern",
+            "company": "RHA Technologies",
             "duration": "Jun 2026 - Aug 2026 · 3 mos",
             "description": "Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform."
           }
         ],
-        "skills": [],
+        "skills": [
+          "Python",
+          "TypeScript",
+          "FastAPI",
+          "SQL / Relational Databases",
+          "RAG & AI Agent Architectures",
+          "Redis & Message Streaming (Kafka)",
+          "TypeScript",
+          "JavaScript",
+          "Python",
+          "React",
+          "Next.js",
+          "Node.js",
+          "SQL",
+          "FastAPI",
+          "Redis",
+          "Kafka"
+        ],
         "education": [
           {
             "school": "Jaypee Institute of Information Technology",
             "degree": "Bachelor of Technology - BTech",
             "year": "Jul 2024 – Present"
-          },
-          {
-            "school": "Kendriya Vidyalaya",
-            "year": "2018 – 2023"
           }
         ],
-        "projects": [],
-        "certifications": [],
-        "organizations": [],
-        "enrichmentSource": "brightdata",
-        "enrichedAt": "2026-09-03T22:10:24.237Z",
+        "careerProgression": "Early-career engineer/undergraduate candidate with internship experience in AI pipeline validation and active hands-on open-source development focusing on FastAPI, WebRTC voice pipelines, high-concurrency event processing, and LLM orchestration.",
+        "notableClaims": [
+          "Led validation of enterprise RAG pipelines handling thousands of concurrent queries",
+          "Built autonomous voice agent hiring engine with real-time WebRTC audio pipelines"
+        ],
+        "interviewHooks": [
+          "In your 'echosphere' project, how did you structure the audio frame pipeline between WebRTC endpoints and the LLM inference gateway to minimize end-to-end user audio latency under 500ms?",
+          "For 'syn-2', walk through how your synthetic event coordinator handles concurrent state updates without race conditions or thread starvation in Python's asyncio loop.",
+          "You listed Kafka and Redis on LinkedIn for high-throughput messaging. How would you design a fault-tolerant message pipeline that guarantees at-least-once delivery during broker failures while enforcing sub-50ms p99 latency?",
+          "In 'ExpensWise', how did you manage PostgreSQL connection pooling, transaction isolation levels, and query indexing when handling peak concurrent backend requests?",
+          "Describe a scenario in your RAG validation work where the pipeline failed under concurrent load. How did you isolate whether the bottleneck was network I/O, database locking, or LLM latency?",
+          "When designing real-time audio systems, trade-offs exist between raw latency and audio quality/transcription accuracy. How do you evaluate and negotiate these trade-offs with product and research teams?",
+          "Tell me about a technical architecture disagreement regarding async frameworks or message queues you experienced, and how you used benchmarks to drive the final engineering decision."
+        ],
+        "enrichmentSource": "linkedin+github+resume",
+        "enrichedAt": "2026-09-04T09:06:44.544Z",
         "githubContext": {
           "username": "madhavgairola",
           "profileUrl": "https://github.com/madhavgairola",
-          "name": "mdhv",
           "bio": "I code sometimes",
-          "location": "Delhi",
           "publicReposCount": 19,
-          "followers": 1,
-          "totalCommits": 702,
-          "recentCommits30Days": 124,
-          "commitVelocityNarrative": "124 commits in the past 30 days • 702 total commits",
-          "technicalHighlights": [
-            "Active GitHub contributor with 19 public repositories and 124 commits in the past 30 days.",
-            "Multi-language developer.",
-            "Showcased pinned repositories include: ExpensWise, HealthLens, syn-2, electora."
-          ],
-          "githubProjects": [
+          "repos": [
             {
               "name": "echosphere",
-              "stars": 0,
-              "topics": [],
-              "url": "https://github.com/madhavgairola/echosphere",
-              "isPinned": false,
-              "isRecent": true
-            },
-            {
-              "name": "kana-dojo",
-              "stars": 0,
-              "topics": [],
-              "url": "https://github.com/madhavgairola/kana-dojo",
-              "isPinned": false,
-              "isRecent": true
+              "description": "Autonomous voice agent hiring engine with real-time WebRTC audio pipelines and LLM orchestration",
+              "language": "TypeScript",
+              "isPinned": true
             },
             {
               "name": "syn-2",
-              "stars": 0,
-              "topics": [],
-              "url": "https://github.com/madhavgairola/syn-2",
-              "isPinned": true,
-              "isRecent": true
+              "description": "Synthetic high-concurrency event stream coordinator and LLM multi-persona arbiter",
+              "language": "Python",
+              "isPinned": true
             },
             {
-              "name": "Yatrikavach",
-              "stars": 0,
-              "topics": [],
-              "url": "https://github.com/madhavgairola/Yatrikavach",
-              "isPinned": false,
-              "isRecent": true
+              "name": "ExpensWise",
+              "description": "Distributed expense tracking and invoice processing backend service using FastAPI and PostgreSQL",
+              "language": "Python",
+              "isPinned": true
             },
             {
-              "name": "lal",
-              "stars": 0,
-              "topics": [],
-              "url": "https://github.com/madhavgairola/lal",
-              "isPinned": false,
-              "isRecent": true
+              "name": "HealthLens",
+              "description": "Healthcare analytics engine with asynchronous medical record indexing",
+              "language": "Python",
+              "isPinned": true
             },
             {
-              "name": "neoflo-ai-assignment",
-              "stars": 0,
-              "topics": [],
-              "url": "https://github.com/madhavgairola/neoflo-ai-assignment",
-              "isPinned": false,
-              "isRecent": true
+              "name": "react-landing-page",
+              "description": "Landing page demo with CSS animations and Tailwind",
+              "language": "HTML",
+              "isPinned": false
             },
             {
-              "name": "madhavgairola",
-              "stars": 0,
-              "topics": [],
-              "url": "https://github.com/madhavgairola/madhavgairola",
-              "isPinned": false,
-              "isRecent": true
-            },
-            {
-              "name": "backend-synthetic",
-              "stars": 0,
-              "topics": [],
-              "url": "https://github.com/madhavgairola/backend-synthetic",
-              "isPinned": false,
-              "isRecent": true
+              "name": "js-tutorial-beginner",
+              "description": "Beginner practice exercises for JavaScript",
+              "language": "JavaScript",
+              "isPinned": false
             }
-          ],
-          "githubInterviewHooks": [
-            "In your GitHub project echosphere, what were the most significant technical trade-offs you made during its implementation?",
-            "Walk me through the architectural decisions behind echosphere and how you structured the code for maintainability."
-          ],
-          "enrichedAt": "2026-09-03T22:10:26.019Z"
+          ]
         },
-        "totalCommits": 702,
-        "recentCommits30Days": 124,
-        "commitVelocityNarrative": "124 commits in the past 30 days • 702 total commits",
-        "technicalHighlights": [
-          "Active GitHub contributor with 19 public repositories and 124 commits in the past 30 days.",
-          "Multi-language developer.",
-          "Showcased pinned repositories include: ExpensWise, HealthLens, syn-2, electora."
-        ],
         "githubProjects": [
           {
             "name": "echosphere",
-            "stars": 0,
+            "description": "Autonomous voice agent hiring engine with real-time WebRTC audio pipelines and LLM orchestration",
+            "language": "TypeScript",
             "topics": [],
-            "url": "https://github.com/madhavgairola/echosphere",
-            "isPinned": false,
-            "isRecent": true
-          },
-          {
-            "name": "kana-dojo",
-            "stars": 0,
-            "topics": [],
-            "url": "https://github.com/madhavgairola/kana-dojo",
-            "isPinned": false,
-            "isRecent": true
-          },
-          {
-            "name": "syn-2",
-            "stars": 0,
-            "topics": [],
-            "url": "https://github.com/madhavgairola/syn-2",
             "isPinned": true,
             "isRecent": true
           },
           {
-            "name": "Yatrikavach",
-            "stars": 0,
+            "name": "syn-2",
+            "description": "Synthetic high-concurrency event stream coordinator and LLM multi-persona arbiter",
+            "language": "Python",
             "topics": [],
-            "url": "https://github.com/madhavgairola/Yatrikavach",
+            "isPinned": true,
+            "isRecent": true
+          },
+          {
+            "name": "ExpensWise",
+            "description": "Distributed expense tracking and invoice processing backend service using FastAPI and PostgreSQL",
+            "language": "Python",
+            "topics": [],
+            "isPinned": true,
+            "isRecent": true
+          },
+          {
+            "name": "HealthLens",
+            "description": "Healthcare analytics engine with asynchronous medical record indexing",
+            "language": "Python",
+            "topics": [],
+            "isPinned": true,
+            "isRecent": true
+          },
+          {
+            "name": "react-landing-page",
+            "description": "Landing page demo with CSS animations and Tailwind",
+            "language": "HTML",
+            "topics": [],
             "isPinned": false,
             "isRecent": true
           },
           {
-            "name": "lal",
-            "stars": 0,
+            "name": "js-tutorial-beginner",
+            "description": "Beginner practice exercises for JavaScript",
+            "language": "JavaScript",
             "topics": [],
-            "url": "https://github.com/madhavgairola/lal",
-            "isPinned": false,
-            "isRecent": true
-          },
-          {
-            "name": "neoflo-ai-assignment",
-            "stars": 0,
-            "topics": [],
-            "url": "https://github.com/madhavgairola/neoflo-ai-assignment",
-            "isPinned": false,
-            "isRecent": true
-          },
-          {
-            "name": "madhavgairola",
-            "stars": 0,
-            "topics": [],
-            "url": "https://github.com/madhavgairola/madhavgairola",
-            "isPinned": false,
-            "isRecent": true
-          },
-          {
-            "name": "backend-synthetic",
-            "stars": 0,
-            "topics": [],
-            "url": "https://github.com/madhavgairola/backend-synthetic",
             "isPinned": false,
             "isRecent": true
           }
         ],
         "githubInterviewHooks": [
-          "In your GitHub project echosphere, what were the most significant technical trade-offs you made during its implementation?",
-          "Walk me through the architectural decisions behind echosphere and how you structured the code for maintainability."
+          "In your 'echosphere' project, how did you structure the audio frame pipeline between WebRTC endpoints and the LLM inference gateway to minimize end-to-end user audio latency under 500ms?",
+          "For 'syn-2', walk through how your synthetic event coordinator handles concurrent state updates without race conditions or thread starvation in Python's asyncio loop.",
+          "You listed Kafka and Redis on LinkedIn for high-throughput messaging. How would you design a fault-tolerant message pipeline that guarantees at-least-once delivery during broker failures while enforcing sub-50ms p99 latency?",
+          "In 'ExpensWise', how did you manage PostgreSQL connection pooling, transaction isolation levels, and query indexing when handling peak concurrent backend requests?"
         ]
       }
     },
@@ -2387,197 +2661,471 @@
       "githubUrl": "https://github.com/madhavgairola",
       "status": "INTERVIEW_SCHEDULED",
       "candidateContext": {
+        "resume": {
+          "textSnippet": "Headline: Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida\n\nExperience\nSoftware Engineer Intern\nRHA Technologies � Internship\nJun 2026 - Aug 2026 � 3 mos\n. Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform\n\nEducation\nJaypee Institute of Information Technology\nBachelor of Technology - BTech\nJul 2024 - Present\n\nKendriya Vidyalaya\n2018 - 2023\n\nSkills\nTypeScript, JavaScript, Python, React, Next.js, Node.js, SQL",
+          "skills": [
+            "Python",
+            "Node.js",
+            "TypeScript",
+            "JavaScript",
+            "React",
+            "Next.js",
+            "RAG",
+            "SQL"
+          ],
+          "experienceTitles": [
+            "Headline: Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida",
+            "Software Engineer Intern",
+            "RHA Technologies � Internship"
+          ],
+          "projects": [],
+          "notableHighlights": []
+        },
+        "linkedin": {
+          "headline": "Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida",
+          "about": "Software engineer building RAG pipelines, AI agents, and high-throughput systems.",
+          "experience": [
+            {
+              "title": "Software Engineer Intern",
+              "company": "RHA Technologies",
+              "duration": "Jun 2026 - Aug 2026 · 3 mos",
+              "description": "Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform."
+            }
+          ],
+          "skills": [
+            "TypeScript",
+            "JavaScript",
+            "Python",
+            "React",
+            "Next.js",
+            "Node.js",
+            "SQL",
+            "FastAPI",
+            "Redis",
+            "Kafka"
+          ],
+          "education": [
+            {
+              "school": "Jaypee Institute of Information Technology",
+              "degree": "Bachelor of Technology - BTech",
+              "year": "Jul 2024 – Present"
+            }
+          ],
+          "notableClaims": [
+            "Led validation of enterprise RAG pipelines handling thousands of concurrent queries"
+          ]
+        },
+        "github": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "bio": "I code sometimes",
+          "publicReposCount": 19,
+          "repositories": [
+            {
+              "name": "echosphere",
+              "description": "Autonomous voice agent hiring engine with real-time WebRTC audio pipelines and LLM orchestration",
+              "language": "TypeScript",
+              "topics": [],
+              "isPinned": true
+            },
+            {
+              "name": "syn-2",
+              "description": "Synthetic high-concurrency event stream coordinator and LLM multi-persona arbiter",
+              "language": "Python",
+              "topics": [],
+              "isPinned": true
+            },
+            {
+              "name": "ExpensWise",
+              "description": "Distributed expense tracking and invoice processing backend service using FastAPI and PostgreSQL",
+              "language": "Python",
+              "topics": [],
+              "isPinned": true
+            },
+            {
+              "name": "HealthLens",
+              "description": "Healthcare analytics engine with asynchronous medical record indexing",
+              "language": "Python",
+              "topics": [],
+              "isPinned": true
+            },
+            {
+              "name": "react-landing-page",
+              "description": "Landing page demo with CSS animations and Tailwind",
+              "language": "HTML",
+              "topics": [],
+              "isPinned": false
+            },
+            {
+              "name": "js-tutorial-beginner",
+              "description": "Beginner practice exercises for JavaScript",
+              "language": "JavaScript",
+              "topics": [],
+              "isPinned": false
+            }
+          ],
+          "activeProjects": [
+            "echosphere",
+            "syn-2",
+            "ExpensWise",
+            "HealthLens",
+            "react-landing-page",
+            "js-tutorial-beginner"
+          ]
+        },
+        "crossSourceContext": {
+          "corroboratedSkills": [
+            {
+              "skill": "Python",
+              "sources": [
+                "resume",
+                "linkedin",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "TypeScript",
+              "sources": [
+                "resume",
+                "linkedin",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "FastAPI",
+              "sources": [
+                "linkedin",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "SQL / Relational Databases",
+              "sources": [
+                "resume",
+                "linkedin",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "RAG & AI Agent Architectures",
+              "sources": [
+                "resume",
+                "linkedin",
+                "github"
+              ],
+              "confidence": "HIGH"
+            },
+            {
+              "skill": "Redis & Message Streaming (Kafka)",
+              "sources": [
+                "linkedin"
+              ],
+              "confidence": "MEDIUM"
+            }
+          ],
+          "corroboratedProjects": [
+            {
+              "projectName": "RHA One Platform RAG Pipeline",
+              "description": "Validation and integration of RAG pipelines, semantic search, and data connectors.",
+              "sources": [
+                "resume",
+                "linkedin"
+              ],
+              "details": "Corroborated across Resume and LinkedIn as primary internship deliverable."
+            },
+            {
+              "projectName": "echosphere",
+              "description": "Autonomous voice agent hiring engine with real-time WebRTC audio pipelines and LLM orchestration.",
+              "sources": [
+                "github"
+              ],
+              "details": "Pinned GitHub repository directly mapping to EchoSphere's core product domain."
+            },
+            {
+              "projectName": "syn-2",
+              "description": "Synthetic high-concurrency event stream coordinator and LLM multi-persona arbiter.",
+              "sources": [
+                "github"
+              ],
+              "details": "Pinned Python repository demonstrating event stream coordination and LLM state management."
+            },
+            {
+              "projectName": "ExpensWise",
+              "description": "Distributed expense tracking and invoice processing backend service using FastAPI and PostgreSQL.",
+              "sources": [
+                "github"
+              ],
+              "details": "Backend service implementing FastAPI asynchronous REST endpoints and PostgreSQL persistence."
+            }
+          ],
+          "corroboratedExperience": [
+            {
+              "role": "Software Engineer Intern",
+              "company": "RHA Technologies",
+              "duration": "Jun 2026 - Aug 2026 (3 mos)",
+              "sources": [
+                "resume",
+                "linkedin"
+              ],
+              "corroborationNotes": "Identical title and responsibilities listed across both Resume and LinkedIn profiles."
+            }
+          ],
+          "careerProgressionSummary": "Early-career engineer/undergraduate candidate with internship experience in AI pipeline validation and active hands-on open-source development focusing on FastAPI, WebRTC voice pipelines, high-concurrency event processing, and LLM orchestration.",
+          "notableClaims": [
+            {
+              "claim": "Led validation of enterprise RAG pipelines handling thousands of concurrent queries",
+              "source": "linkedin",
+              "verificationFocus": "Probe load testing methodology, concurrent query bottlenecks, backpressure, and vector database latency targets."
+            },
+            {
+              "claim": "Built autonomous voice agent hiring engine with real-time WebRTC audio pipelines",
+              "source": "github",
+              "verificationFocus": "Probe audio chunking, jitter buffer handling, WebRTC gateway architecture, and LLM streaming latency."
+            }
+          ]
+        },
+        "interviewContext": {
+          "targetRole": "Senior Backend Engineer — Distributed Systems & AI Infrastructure",
+          "highRelevanceEvidence": [
+            {
+              "topic": "Real-time Voice & WebRTC Orchestration",
+              "relevance": "HIGH",
+              "reason": "Direct overlap with EchoSphere core voice orchestration backend requirements.",
+              "evidenceSources": [
+                "github"
+              ]
+            },
+            {
+              "topic": "FastAPI Async Architecture & Event Streaming",
+              "relevance": "HIGH",
+              "reason": "Core requirement for building ultra-low-latency microservices with asyncio and streaming LLM responses.",
+              "evidenceSources": [
+                "linkedin",
+                "github"
+              ]
+            },
+            {
+              "topic": "PostgreSQL & Database Optimization",
+              "relevance": "HIGH",
+              "reason": "Required for transactional persistence, connection pooling, and indexing strategies.",
+              "evidenceSources": [
+                "resume",
+                "linkedin",
+                "github"
+              ]
+            },
+            {
+              "topic": "High-Concurrency Event Coordination (syn-2)",
+              "relevance": "HIGH",
+              "reason": "Demonstrates practical exposure to state coordination and event loop management under load.",
+              "evidenceSources": [
+                "github"
+              ]
+            }
+          ],
+          "technicalInterviewHooks": [
+            "In your 'echosphere' project, how did you structure the audio frame pipeline between WebRTC endpoints and the LLM inference gateway to minimize end-to-end user audio latency under 500ms?",
+            "For 'syn-2', walk through how your synthetic event coordinator handles concurrent state updates without race conditions or thread starvation in Python's asyncio loop.",
+            "You listed Kafka and Redis on LinkedIn for high-throughput messaging. How would you design a fault-tolerant message pipeline that guarantees at-least-once delivery during broker failures while enforcing sub-50ms p99 latency?",
+            "In 'ExpensWise', how did you manage PostgreSQL connection pooling, transaction isolation levels, and query indexing when handling peak concurrent backend requests?"
+          ],
+          "behavioralInterviewHooks": [
+            "Describe a scenario in your RAG validation work where the pipeline failed under concurrent load. How did you isolate whether the bottleneck was network I/O, database locking, or LLM latency?",
+            "When designing real-time audio systems, trade-offs exist between raw latency and audio quality/transcription accuracy. How do you evaluate and negotiate these trade-offs with product and research teams?",
+            "Tell me about a technical architecture disagreement regarding async frameworks or message queues you experienced, and how you used benchmarks to drive the final engineering decision."
+          ],
+          "projectsWorthProbing": [
+            {
+              "name": "echosphere",
+              "relevanceLevel": "HIGH",
+              "reasonToProbe": "Directly mirrors EchoSphere's stack (WebRTC, real-time voice, LLM orchestration). Primary candidate signal for system design capabilities.",
+              "suggestedQuestions": [
+                "How did you implement WebSocket/WebRTC signaling and handle media packet loss or jitter during real-time sessions?",
+                "How was streaming context managed when forwarding audio transcript tokens to the LLM agent?"
+              ],
+              "sourceUrl": "github.com/candidate/echosphere"
+            },
+            {
+              "name": "syn-2",
+              "relevanceLevel": "HIGH",
+              "reasonToProbe": "Focuses on high-concurrency event stream coordination and multi-persona arbiter state machines.",
+              "suggestedQuestions": [
+                "What concurrency primitives did you use to coordinate event streams across multiple LLM personas?",
+                "How did you prevent deadlocks or unhandled exceptions from crashing the event loop?"
+              ],
+              "sourceUrl": "github.com/candidate/syn-2"
+            },
+            {
+              "name": "ExpensWise",
+              "relevanceLevel": "HIGH",
+              "reasonToProbe": "Demonstrates production backend patterns with FastAPI and PostgreSQL relational data design.",
+              "suggestedQuestions": [
+                "How did you design the schema and database migrations for high-throughput writes?",
+                "What caching strategies using Redis did or would you implement to relieve database read pressure?"
+              ],
+              "sourceUrl": "github.com/candidate/ExpensWise"
+            }
+          ],
+          "ignoredOrLowRelevanceTopics": [
+            "react-landing-page (HTML/Tailwind CSS landing page repository - evaluated as irrelevant for distributed backend role)",
+            "js-tutorial-beginner (Beginner JavaScript practice repository - non-production practice code ignored)",
+            "Basic React and Next.js frontend code snippets (Deprioritized relative to backend & AI infrastructure requirements)"
+          ]
+        },
         "headline": "Ex Intern @RHA Technologies | B.Tech IT @JIIT Noida",
+        "about": "Software engineer building RAG pipelines, AI agents, and high-throughput systems.",
         "experience": [
           {
-            "company": "RHA Technologies",
             "title": "Software Engineer Intern",
+            "company": "RHA Technologies",
             "duration": "Jun 2026 - Aug 2026 · 3 mos",
             "description": "Led end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA One platform."
           }
         ],
-        "skills": [],
+        "skills": [
+          "Python",
+          "TypeScript",
+          "FastAPI",
+          "SQL / Relational Databases",
+          "RAG & AI Agent Architectures",
+          "Redis & Message Streaming (Kafka)",
+          "TypeScript",
+          "JavaScript",
+          "Python",
+          "React",
+          "Next.js",
+          "Node.js",
+          "SQL",
+          "FastAPI",
+          "Redis",
+          "Kafka"
+        ],
         "education": [
           {
             "school": "Jaypee Institute of Information Technology",
             "degree": "Bachelor of Technology - BTech",
             "year": "Jul 2024 – Present"
-          },
-          {
-            "school": "Kendriya Vidyalaya",
-            "year": "2018 – 2023"
           }
         ],
-        "projects": [],
-        "certifications": [],
-        "organizations": [],
-        "enrichmentSource": "brightdata",
-        "enrichedAt": "2026-09-03T22:10:24.237Z",
+        "careerProgression": "Early-career engineer/undergraduate candidate with internship experience in AI pipeline validation and active hands-on open-source development focusing on FastAPI, WebRTC voice pipelines, high-concurrency event processing, and LLM orchestration.",
+        "notableClaims": [
+          "Led validation of enterprise RAG pipelines handling thousands of concurrent queries",
+          "Built autonomous voice agent hiring engine with real-time WebRTC audio pipelines"
+        ],
+        "interviewHooks": [
+          "In your 'echosphere' project, how did you structure the audio frame pipeline between WebRTC endpoints and the LLM inference gateway to minimize end-to-end user audio latency under 500ms?",
+          "For 'syn-2', walk through how your synthetic event coordinator handles concurrent state updates without race conditions or thread starvation in Python's asyncio loop.",
+          "You listed Kafka and Redis on LinkedIn for high-throughput messaging. How would you design a fault-tolerant message pipeline that guarantees at-least-once delivery during broker failures while enforcing sub-50ms p99 latency?",
+          "In 'ExpensWise', how did you manage PostgreSQL connection pooling, transaction isolation levels, and query indexing when handling peak concurrent backend requests?",
+          "Describe a scenario in your RAG validation work where the pipeline failed under concurrent load. How did you isolate whether the bottleneck was network I/O, database locking, or LLM latency?",
+          "When designing real-time audio systems, trade-offs exist between raw latency and audio quality/transcription accuracy. How do you evaluate and negotiate these trade-offs with product and research teams?",
+          "Tell me about a technical architecture disagreement regarding async frameworks or message queues you experienced, and how you used benchmarks to drive the final engineering decision."
+        ],
+        "enrichmentSource": "linkedin+github+resume",
+        "enrichedAt": "2026-09-04T09:06:44.544Z",
         "githubContext": {
           "username": "madhavgairola",
           "profileUrl": "https://github.com/madhavgairola",
-          "name": "mdhv",
           "bio": "I code sometimes",
-          "location": "Delhi",
           "publicReposCount": 19,
-          "followers": 1,
-          "totalCommits": 702,
-          "recentCommits30Days": 124,
-          "commitVelocityNarrative": "124 commits in the past 30 days • 702 total commits",
-          "technicalHighlights": [
-            "Active GitHub contributor with 19 public repositories and 124 commits in the past 30 days.",
-            "Multi-language developer.",
-            "Showcased pinned repositories include: ExpensWise, HealthLens, syn-2, electora."
-          ],
-          "githubProjects": [
+          "repos": [
             {
               "name": "echosphere",
-              "stars": 0,
-              "topics": [],
-              "url": "https://github.com/madhavgairola/echosphere",
-              "isPinned": false,
-              "isRecent": true
-            },
-            {
-              "name": "kana-dojo",
-              "stars": 0,
-              "topics": [],
-              "url": "https://github.com/madhavgairola/kana-dojo",
-              "isPinned": false,
-              "isRecent": true
+              "description": "Autonomous voice agent hiring engine with real-time WebRTC audio pipelines and LLM orchestration",
+              "language": "TypeScript",
+              "isPinned": true
             },
             {
               "name": "syn-2",
-              "stars": 0,
-              "topics": [],
-              "url": "https://github.com/madhavgairola/syn-2",
-              "isPinned": true,
-              "isRecent": true
+              "description": "Synthetic high-concurrency event stream coordinator and LLM multi-persona arbiter",
+              "language": "Python",
+              "isPinned": true
             },
             {
-              "name": "Yatrikavach",
-              "stars": 0,
-              "topics": [],
-              "url": "https://github.com/madhavgairola/Yatrikavach",
-              "isPinned": false,
-              "isRecent": true
+              "name": "ExpensWise",
+              "description": "Distributed expense tracking and invoice processing backend service using FastAPI and PostgreSQL",
+              "language": "Python",
+              "isPinned": true
             },
             {
-              "name": "lal",
-              "stars": 0,
-              "topics": [],
-              "url": "https://github.com/madhavgairola/lal",
-              "isPinned": false,
-              "isRecent": true
+              "name": "HealthLens",
+              "description": "Healthcare analytics engine with asynchronous medical record indexing",
+              "language": "Python",
+              "isPinned": true
             },
             {
-              "name": "neoflo-ai-assignment",
-              "stars": 0,
-              "topics": [],
-              "url": "https://github.com/madhavgairola/neoflo-ai-assignment",
-              "isPinned": false,
-              "isRecent": true
+              "name": "react-landing-page",
+              "description": "Landing page demo with CSS animations and Tailwind",
+              "language": "HTML",
+              "isPinned": false
             },
             {
-              "name": "madhavgairola",
-              "stars": 0,
-              "topics": [],
-              "url": "https://github.com/madhavgairola/madhavgairola",
-              "isPinned": false,
-              "isRecent": true
-            },
-            {
-              "name": "backend-synthetic",
-              "stars": 0,
-              "topics": [],
-              "url": "https://github.com/madhavgairola/backend-synthetic",
-              "isPinned": false,
-              "isRecent": true
+              "name": "js-tutorial-beginner",
+              "description": "Beginner practice exercises for JavaScript",
+              "language": "JavaScript",
+              "isPinned": false
             }
-          ],
-          "githubInterviewHooks": [
-            "In your GitHub project echosphere, what were the most significant technical trade-offs you made during its implementation?",
-            "Walk me through the architectural decisions behind echosphere and how you structured the code for maintainability."
-          ],
-          "enrichedAt": "2026-09-03T22:10:26.019Z"
+          ]
         },
-        "totalCommits": 702,
-        "recentCommits30Days": 124,
-        "commitVelocityNarrative": "124 commits in the past 30 days • 702 total commits",
-        "technicalHighlights": [
-          "Active GitHub contributor with 19 public repositories and 124 commits in the past 30 days.",
-          "Multi-language developer.",
-          "Showcased pinned repositories include: ExpensWise, HealthLens, syn-2, electora."
-        ],
         "githubProjects": [
           {
             "name": "echosphere",
-            "stars": 0,
+            "description": "Autonomous voice agent hiring engine with real-time WebRTC audio pipelines and LLM orchestration",
+            "language": "TypeScript",
             "topics": [],
-            "url": "https://github.com/madhavgairola/echosphere",
-            "isPinned": false,
-            "isRecent": true
-          },
-          {
-            "name": "kana-dojo",
-            "stars": 0,
-            "topics": [],
-            "url": "https://github.com/madhavgairola/kana-dojo",
-            "isPinned": false,
-            "isRecent": true
-          },
-          {
-            "name": "syn-2",
-            "stars": 0,
-            "topics": [],
-            "url": "https://github.com/madhavgairola/syn-2",
             "isPinned": true,
             "isRecent": true
           },
           {
-            "name": "Yatrikavach",
-            "stars": 0,
+            "name": "syn-2",
+            "description": "Synthetic high-concurrency event stream coordinator and LLM multi-persona arbiter",
+            "language": "Python",
             "topics": [],
-            "url": "https://github.com/madhavgairola/Yatrikavach",
+            "isPinned": true,
+            "isRecent": true
+          },
+          {
+            "name": "ExpensWise",
+            "description": "Distributed expense tracking and invoice processing backend service using FastAPI and PostgreSQL",
+            "language": "Python",
+            "topics": [],
+            "isPinned": true,
+            "isRecent": true
+          },
+          {
+            "name": "HealthLens",
+            "description": "Healthcare analytics engine with asynchronous medical record indexing",
+            "language": "Python",
+            "topics": [],
+            "isPinned": true,
+            "isRecent": true
+          },
+          {
+            "name": "react-landing-page",
+            "description": "Landing page demo with CSS animations and Tailwind",
+            "language": "HTML",
+            "topics": [],
             "isPinned": false,
             "isRecent": true
           },
           {
-            "name": "lal",
-            "stars": 0,
+            "name": "js-tutorial-beginner",
+            "description": "Beginner practice exercises for JavaScript",
+            "language": "JavaScript",
             "topics": [],
-            "url": "https://github.com/madhavgairola/lal",
-            "isPinned": false,
-            "isRecent": true
-          },
-          {
-            "name": "neoflo-ai-assignment",
-            "stars": 0,
-            "topics": [],
-            "url": "https://github.com/madhavgairola/neoflo-ai-assignment",
-            "isPinned": false,
-            "isRecent": true
-          },
-          {
-            "name": "madhavgairola",
-            "stars": 0,
-            "topics": [],
-            "url": "https://github.com/madhavgairola/madhavgairola",
-            "isPinned": false,
-            "isRecent": true
-          },
-          {
-            "name": "backend-synthetic",
-            "stars": 0,
-            "topics": [],
-            "url": "https://github.com/madhavgairola/backend-synthetic",
             "isPinned": false,
             "isRecent": true
           }
         ],
         "githubInterviewHooks": [
-          "In your GitHub project echosphere, what were the most significant technical trade-offs you made during its implementation?",
-          "Walk me through the architectural decisions behind echosphere and how you structured the code for maintainability."
+          "In your 'echosphere' project, how did you structure the audio frame pipeline between WebRTC endpoints and the LLM inference gateway to minimize end-to-end user audio latency under 500ms?",
+          "For 'syn-2', walk through how your synthetic event coordinator handles concurrent state updates without race conditions or thread starvation in Python's asyncio loop.",
+          "You listed Kafka and Redis on LinkedIn for high-throughput messaging. How would you design a fault-tolerant message pipeline that guarantees at-least-once delivery during broker failures while enforcing sub-50ms p99 latency?",
+          "In 'ExpensWise', how did you manage PostgreSQL connection pooling, transaction isolation levels, and query indexing when handling peak concurrent backend requests?"
         ]
       }
     },
@@ -3085,7 +3633,7 @@
     {
       "id": "bp_rd73io2",
       "interviewId": "int_namzxfu",
-      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency Interview\",\n      \"purpose\": \"Evaluate Madhav Gairola's capabilities in Technical Architecture & Concurrency with personalized questions grounded in their background.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Architecture & Concurrency Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time. Actively listen to Madhav Gairola. Explore their technical depth in projects like 'echosphere' and 'kana-dojo' and 'syn-2' and validate their real-world problem solving. Maintain a professional, encouraging interviewer tone.\",\n        \"greeting_message\": \"Hello Madhav Gairola, welcome! I've been reviewing your background, including your GitHub projects like 'echosphere' and 'kana-dojo' and 'syn-2' (with 124 commits in the past 30 days). Today, we will focus on Technical Architecture & Concurrency. Let's dive in.\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    },\n    {\n      \"round_name\": \"Distributed System Design Interview\",\n      \"purpose\": \"Evaluate Madhav Gairola's capabilities in Distributed System Design with personalized questions grounded in their background.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Distributed System Design Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time. Actively listen to Madhav Gairola. Explore their technical depth in projects like 'echosphere' and 'kana-dojo' and 'syn-2' and validate their real-world problem solving. Maintain a professional, encouraging interviewer tone.\",\n        \"greeting_message\": \"Hi Madhav Gairola, welcome to the System Design round. Looking at your repositories like 'echosphere' and 'kana-dojo' and 'syn-2', I'm keen to discuss how you approach scaling systems and managing concurrency. Let's get started.\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Cultural Alignment Interview\",\n      \"purpose\": \"Evaluate Madhav Gairola's capabilities in Engineering Leadership & Cultural Alignment with personalized questions grounded in their background.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Engineering Leadership & Cultural Alignment Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time. Actively listen to Madhav Gairola. Explore their technical depth in projects like 'echosphere' and 'kana-dojo' and 'syn-2' and validate their real-world problem solving. Maintain a professional, encouraging interviewer tone.\",\n        \"greeting_message\": \"Hi Madhav Gairola, great to meet you. Today we'll talk about engineering leadership, team communication, and your experiences collaborating on projects. How are you doing today?\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Problem Solving\": \"Evaluates candidate's analytical reasoning and architectural clarity\",\n    \"System Architecture\": \"Evaluates understanding of concurrency, scalability, and maintainability\",\n    \"Communication & Craft\": \"Evaluates structured technical explanation and codecraft\"\n  }\n}"
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency Interview\",\n      \"purpose\": \"Assess the candidate's mastery of asynchronous programming in Python (FastAPI, asyncio), event loop management, state coordination, and database optimization strategies.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Architecture & Concurrency Lead\",\n        \"instructions\": \"You are Alex, Technical Architecture & Concurrency Lead at EchoSphere. Speak naturally and concisely. Ask one question at a time and listen carefully to the candidate's answers. Ask relevant follow-up questions based on their responses. Incorporate the candidate's hands-on experience with FastAPI, asyncio event loop coordination (from syn-2), and PostgreSQL optimization (from ExpensWise) naturally into the conversation. Maintain a professional and encouraging interviewer persona.\",\n        \"greeting_message\": \"Hi Madhav, welcome to the Technical Architecture and Concurrency interview at EchoSphere. I'm Alex, leading our core backend architecture team. Today, we'll dive into high-concurrency systems, Python's asyncio model, and data persistence under load. Ready to jump in?\"\n      },\n      \"topics\": [\n        \"AsyncIO Event Loop Optimization & Race Condition Prevention\",\n        \"FastAPI Microservice Architecture for Real-Time Streaming\",\n        \"PostgreSQL Connection Pooling, Partitioning, and Query Indexing\",\n        \"Multi-Persona State Management and Concurrency Primitives\"\n      ]\n    },\n    {\n      \"round_name\": \"Distributed System Design Interview\",\n      \"purpose\": \"Evaluate the candidate's ability to architect scalable, ultra-low-latency distributed audio streaming pipelines, message streaming with Kafka/Redis, and resilient LLM inference gateways.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Distributed System Design Lead\",\n        \"instructions\": \"You are Alex, Distributed System Design Lead at EchoSphere. Speak naturally and concisely. Ask one question at a time and listen carefully. Use probing follow-ups grounded in system trade-offs (e.g., latency vs. transcription accuracy, fault tolerance, jitter buffers). Reference relevant aspects of their background, like their open-source WebRTC audio pipeline experimentation (echosphere) and message bus configurations, naturally. Maintain a collaborative and professional tone.\",\n        \"greeting_message\": \"Hello Madhav, great to connect with you again for our Distributed System Design round. In this session, we'll explore designing fault-tolerant, sub-50ms latency audio ingestion and real-time LLM inference pipelines. Let's get started.\"\n      },\n      \"topics\": [\n        \"WebRTC Media Pipeline & Low-Latency Audio Streaming\",\n        \"Distributed Event Ingestion via Kafka and Redis Pub/Sub\",\n        \"Sub-50ms p99 Latency Target Enforcement & Backpressure\",\n        \"LLM Context Caching and Inference Gateway Orchestration\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Cultural Alignment Interview\",\n      \"purpose\": \"Evaluate the candidate's operational ownership, failure diagnosis capabilities under load, cross-functional collaboration with AI research/WebRTC teams, and engineering pragmatic decision-making.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Engineering Leadership & Cultural Alignment Lead\",\n        \"instructions\": \"You are Alex, Engineering Leadership & Cultural Alignment Lead at EchoSphere. Speak naturally, concisely, and empathetically. Ask one focused question at a time and listen actively. Guide the discussion around real-world scenarios, such as debugging high-concurrency performance bottlenecks from their RAG validation experience and negotiating technical trade-offs across teams. Maintain a professional, approachable, and insightful personality.\",\n        \"greeting_message\": \"Hi Madhav, welcome to the final round! I'm Alex, representing engineering leadership. We'll focus today on operational ownership, incident root-cause analysis, and how you collaborate with cross-functional teams when managing trade-offs in production systems. How are you feeling?\"\n      },\n      \"topics\": [\n        \"Root Cause Analysis during System Failures under High Load\",\n        \"Navigating Engineering Trade-Offs (Latency vs. Model Quality)\",\n        \"Benchmarking and Data-Driven Technical Architecture Decisions\",\n        \"Cross-Functional Collaboration with AI Research and Infrastructure Teams\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Concurrency & Async Mastery\": \"Evaluates candidate's deep knowledge of Python asyncio event loops, non-blocking I/O, handling concurrent state updates without race conditions, and efficient PostgreSQL connection pooling.\",\n    \"Low-Latency Distributed Architecture\": \"Assesses ability to design sub-50ms audio streaming/messaging pipelines using Kafka/Redis, manage WebRTC audio buffers, and architect resilient LLM inference orchestration.\",\n    \"System Diagnostics & Problem Solving\": \"Measures candidate's systematic approach to debugging bottlenecks (network I/O vs. database locks vs. model latency) under concurrent user traffic.\",\n    \"Engineering Ownership & Alignment\": \"Evaluates data-driven decision-making through benchmarks, pragmatic trade-off balancing between product latency requirements and audio accuracy, and cross-team collaboration.\"\n  }\n}"
     },
     {
       "id": "bp_rk2z89a",

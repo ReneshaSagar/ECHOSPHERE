@@ -60,7 +60,121 @@ export interface GitHubContext {
   enrichedAt: string;
 }
 
+export interface NormalizedResumeContext {
+  textSnippet?: string;
+  fileName?: string;
+  driveUrl?: string;
+  skills?: string[];
+  experienceTitles?: string[];
+  projects?: string[];
+  notableHighlights?: string[];
+}
+
+export interface NormalizedLinkedInContext {
+  profileUrl?: string;
+  headline?: string;
+  about?: string;
+  experience?: Array<{
+    title: string;
+    company: string;
+    duration?: string;
+    description?: string;
+  }>;
+  skills?: string[];
+  education?: Array<{
+    school: string;
+    degree?: string;
+    fieldOfStudy?: string;
+    year?: string;
+  }>;
+  projects?: Array<{
+    title: string;
+    description?: string;
+    url?: string;
+  }>;
+  certifications?: Array<{
+    name: string;
+    issuer?: string;
+    year?: string;
+  }>;
+  careerProgression?: string;
+  notableClaims?: string[];
+}
+
+export interface NormalizedGitHubContext {
+  username?: string;
+  profileUrl?: string;
+  bio?: string;
+  publicReposCount?: number;
+  // Repositories are used solely as context to identify active/relevant work, never as candidate quality scores
+  repositories?: Array<{
+    name: string;
+    description?: string;
+    language?: string;
+    topics?: string[];
+    url?: string;
+    isPinned?: boolean;
+    readmeSnippet?: string;
+  }>;
+  activeProjects?: string[];
+}
+
+export interface CrossSourceContext {
+  corroboratedSkills: Array<{
+    skill: string;
+    sources: ('resume' | 'linkedin' | 'github')[];
+    confidence: 'HIGH' | 'MEDIUM';
+  }>;
+  corroboratedProjects: Array<{
+    projectName: string;
+    description: string;
+    sources: ('resume' | 'linkedin' | 'github')[];
+    details: string;
+  }>;
+  corroboratedExperience: Array<{
+    role: string;
+    company: string;
+    duration?: string;
+    sources: ('resume' | 'linkedin' | 'github')[];
+    corroborationNotes?: string;
+  }>;
+  careerProgressionSummary?: string;
+  notableClaims: Array<{
+    claim: string;
+    source: string;
+    verificationFocus: string; // e.g. "Probe real-world concurrency benchmarks and scale handling"
+  }>;
+}
+
+export interface InterviewContext {
+  targetRole: string;
+  highRelevanceEvidence: Array<{
+    topic: string;
+    relevance: 'HIGH' | 'MEDIUM' | 'LOW';
+    reason: string;
+    evidenceSources: string[];
+  }>;
+  technicalInterviewHooks: string[];
+  behavioralInterviewHooks: string[];
+  projectsWorthProbing: Array<{
+    name: string;
+    relevanceLevel: 'HIGH' | 'MEDIUM';
+    reasonToProbe: string;
+    suggestedQuestions: string[];
+    sourceUrl?: string;
+  }>;
+  ignoredOrLowRelevanceTopics?: string[];
+}
+
 export interface CandidateContext {
+  // --- 5 Core Normalized Pipeline Layers ---
+  resume?: NormalizedResumeContext;
+  linkedin?: NormalizedLinkedInContext;
+  github?: NormalizedGitHubContext;
+  crossSourceContext?: CrossSourceContext;
+  interviewContext?: InterviewContext;
+
+  // --- Backwards Compatibility Accessors ---
   headline?: string;
   about?: string;
   experience?: {
@@ -93,7 +207,7 @@ export interface CandidateContext {
   enrichmentSource?: string;
   enrichedAt?: string;
 
-  // GitHub Technical Enrichment
+  // GitHub Context (backwards-compat)
   githubContext?: GitHubContext;
   totalCommits?: number;
   recentCommits30Days?: number;

@@ -63,31 +63,39 @@ The instructions for the AI interviewers MUST explicitly tell them to:
 - use the candidate's specific background context naturally
 - maintain a professional interviewer personality
 
-CRITICAL RULES FOR LINKEDIN & GITHUB CONTEXT PERSONALIZATION:
-- If CandidateContext from LinkedIn is provided, use it to personalize the interviewer's opening greeting message, topic selection, and follow-up probes (e.g., asking about specific career milestones, past projects, or notable claims).
-- If GitHub context (repositories, technical highlights, project insights, and GitHub interview hooks) is provided, weave these real projects and codecraft signals directly into Round 1 (Technical Architecture) and Round 2 (System Design) questions.
+CRITICAL RULES FOR RELEVANCE & EVALUATION BOUNDARIES:
+- Use the provided "interviewContext" (high-relevance evidence, technical interview hooks, behavioral hooks, projects worth probing) to deeply personalize the interviewer's questions and follow-ups.
+- Prioritize high-relevance evidence specific to ${job.title}. Ignore or deprioritize unrelated tech or generic tutorial repos.
+- Weave corroborated projects and notable claims into Round 1 (Technical Architecture) and Round 2 (System Design) questions.
 - GitHub and LinkedIn information MUST be used ONLY to personalize questions, build conversational rapport, and guide deep technical discussions.
-- NEVER use LinkedIn or GitHub information to directly score, penalize, or reject the candidate. Evaluation is based strictly on candidate answers during the live interview.`;
+- Do NOT mention commit counts, commit frequencies, stars, or follower metrics. They are not quality signals.
+- STRICT: NEVER use external profile data to directly score, rank, penalize, or reject the candidate. Evaluation is based strictly on candidate answers during the live interview.`;
 
-    const candidateContextStr = candidateContext ? `
---- CANDIDATE LINKEDIN CONTEXT ---
-Headline: ${candidateContext.headline || 'N/A'}
-About: ${candidateContext.about || 'N/A'}
-Career Progression: ${candidateContext.careerProgression || 'N/A'}
-Key Skills: ${(candidateContext.skills || []).join(', ') || 'N/A'}
-Notable Claims: ${(candidateContext.notableClaims || []).join('; ') || 'N/A'}
-Personalized Interview Hooks: ${(candidateContext.interviewHooks || []).join('; ') || 'N/A'}
-Experience Details: ${JSON.stringify(candidateContext.experience || [], null, 2)}
+    const crossSourceStr = candidateContext?.crossSourceContext ? `
+--- CORROBORATED CROSS-SOURCE CONTEXT ---
+Corroborated Skills: ${candidateContext.crossSourceContext.corroboratedSkills?.map(s => `${s.skill} (${s.confidence} confidence across ${s.sources.join(', ')})`).join('; ') || 'N/A'}
+Corroborated Projects: ${candidateContext.crossSourceContext.corroboratedProjects?.map(p => `${p.projectName}: ${p.details}`).join('; ') || 'N/A'}
+Corroborated Experience: ${candidateContext.crossSourceContext.corroboratedExperience?.map(e => `${e.role} at ${e.company} (${e.corroborationNotes || ''})`).join('; ') || 'N/A'}
+Career Progression: ${candidateContext.crossSourceContext.careerProgressionSummary || candidateContext.careerProgression || 'N/A'}
+Notable Claims to Probe: ${candidateContext.crossSourceContext.notableClaims?.map(c => `${c.claim} -> ${c.verificationFocus}`).join('; ') || 'N/A'}
 ` : '';
 
-    const githubContextStr = candidateContext?.githubContext ? `
---- CANDIDATE GITHUB CONTEXT (VERIFIED REPOSITORIES & CODE) ---
-GitHub Profile: ${candidateContext.githubContext.profileUrl} (${candidateContext.githubContext.username})
-Bio: ${candidateContext.githubContext.bio || 'N/A'}
-Public Repositories: ${candidateContext.githubContext.publicReposCount}
-Technical Highlights: ${(candidateContext.technicalHighlights || candidateContext.githubContext.technicalHighlights || []).join('; ') || 'N/A'}
-Key GitHub Projects: ${JSON.stringify(candidateContext.githubProjects || candidateContext.githubContext.githubProjects || [], null, 2)}
-GitHub Deep Technical Hooks: ${(candidateContext.githubInterviewHooks || candidateContext.githubContext.githubInterviewHooks || []).join('; ') || 'N/A'}
+    const interviewContextStr = candidateContext?.interviewContext ? `
+--- JD-SPECIFIC INTERVIEW CONTEXT (TARGET: ${job.title}) ---
+High Relevance Evidence:
+${candidateContext.interviewContext.highRelevanceEvidence?.map(e => `• [${e.relevance}] ${e.topic}: ${e.reason} (Source: ${e.evidenceSources?.join(', ')})`).join('\n')}
+
+High-Value Technical Interview Hooks:
+${candidateContext.interviewContext.technicalInterviewHooks?.map(h => `• ${h}`).join('\n')}
+
+Behavioral & Ownership Hooks:
+${candidateContext.interviewContext.behavioralInterviewHooks?.map(h => `• ${h}`).join('\n')}
+
+Projects Specifically Worth Probing:
+${candidateContext.interviewContext.projectsWorthProbing?.map(p => `• Project "${p.name}" (${p.relevanceLevel} relevance): ${p.reasonToProbe}\n  Questions: ${p.suggestedQuestions?.join(' | ')}`).join('\n')}
+
+Low Relevance / Ignored Topics:
+${candidateContext.interviewContext.ignoredOrLowRelevanceTopics?.map(t => `• (Skipped) ${t}`).join('\n') || 'None'}
 ` : '';
 
     const userPrompt = `
@@ -102,13 +110,13 @@ Candidate Name: ${candidate.name}
 Candidate Resume:
 ${application.resumeText}
 ${application.relevantExperience ? `\nHighlighted Experience:\n${application.relevantExperience}` : ''}
-${candidateContextStr}
-${githubContextStr}
+${crossSourceStr}
+${interviewContextStr}
 
-Generate the personalized JSON Interview Blueprint containing EXACTLY the requested rounds for ${job.title}, using the candidate's background context, LinkedIn hooks, and GitHub projects for natural, deep technical personalization.`;
+Generate the personalized JSON Interview Blueprint containing EXACTLY the requested rounds for ${job.title}, prioritizing the high-relevance evidence, technical interview hooks, and corroborated projects for deep, natural technical probing.`;
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.6-flash",
       systemInstruction,
       generationConfig: { responseMimeType: "application/json" },
     });
@@ -130,15 +138,14 @@ Generate the personalized JSON Interview Blueprint containing EXACTLY the reques
       blueprintJsonText = result.response.text();
     } catch (genErr: any) {
       console.warn('[Blueprint Route] Gemini API limit reached. Utilizing personalized deterministic blueprint fallback:', genErr.message);
-      const topProjects = (candidateContext?.githubProjects || []).slice(0, 3).map(p => `'${p.name}'`).join(' and ') || 'your recent technical projects';
-      const commitNote = candidateContext?.recentCommits30Days ? `with ${candidateContext.recentCommits30Days} commits in the past 30 days` : 'active hands-on development';
+      const topProjects = (candidateContext?.interviewContext?.projectsWorthProbing || candidateContext?.githubProjects || []).slice(0, 3).map((p: any) => `'${p.name}'`).join(' and ') || 'your recent technical projects';
 
       const fallbackBlueprint = {
         interview_rounds: stages.map((s, idx) => {
           let role = `${s} Lead`;
-          let greeting = `Hello ${candidate.name}, welcome! I've been reviewing your background, including your GitHub projects like ${topProjects} (${commitNote}). Today, we will focus on ${s}. Let's dive in.`;
+          let greeting = `Hello ${candidate.name}, welcome! I've been reviewing your background and your relevant technical projects like ${topProjects}. Today, we will focus on ${s}. Let's dive in.`;
           if (idx === 1) {
-            greeting = `Hi ${candidate.name}, welcome to the System Design round. Looking at your repositories like ${topProjects}, I'm keen to discuss how you approach scaling systems and managing concurrency. Let's get started.`;
+            greeting = `Hi ${candidate.name}, welcome to the System Design round. Looking at your architecture in projects like ${topProjects}, I'm keen to discuss how you approach scaling systems and managing concurrency. Let's get started.`;
           } else if (idx === 2) {
             greeting = `Hi ${candidate.name}, great to meet you. Today we'll talk about engineering leadership, team communication, and your experiences collaborating on projects. How are you doing today?`;
           }

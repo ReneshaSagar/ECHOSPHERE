@@ -69,14 +69,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       }, { status: 400 });
     }
 
-    // Automatically trigger LinkedIn profile enrichment if URL is provided
-    let candidateContext: CandidateContext | undefined = undefined;
+    // 1. Ingest LinkedIn Profile if URL provided
+    let rawLinkedIn: any = null;
     if (linkedinUrl && typeof linkedinUrl === 'string' && linkedinUrl.trim() !== '') {
       try {
-        const enriched = await enrichLinkedInProfile(linkedinUrl.trim(), resumeText);
-        if (enriched) {
-          candidateContext = enriched;
-        }
+        rawLinkedIn = await enrichLinkedInProfile(linkedinUrl.trim(), resumeText);
       } catch (enrichErr: any) {
         console.error("[Apply Route] Bright Data LinkedIn profile enrichment error:", enrichErr?.message);
         if (process.env.MOCK_LINKEDIN_ENRICHMENT === 'false') {
@@ -85,30 +82,27 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       }
     }
 
-    // Automatically trigger GitHub profile/repository enrichment if URL is provided
+    // 2. Ingest GitHub Profile/Repo if URL provided
+    let rawGitHub: any = null;
     if (githubUrl && typeof githubUrl === 'string' && githubUrl.trim() !== '') {
       try {
-        console.log('[Apply Route] Triggering GitHub enrichment for:', githubUrl);
-        const enrichedGh = await enrichGitHubUrl(githubUrl.trim(), resumeText, job.description);
-        if (enrichedGh) {
-          if (!candidateContext) {
-            candidateContext = {
-              enrichmentSource: 'github',
-              enrichedAt: new Date().toISOString()
-            };
-          }
-          candidateContext.githubContext = enrichedGh;
-          candidateContext.totalCommits = enrichedGh.totalCommits;
-          candidateContext.recentCommits30Days = enrichedGh.recentCommits30Days;
-          candidateContext.commitVelocityNarrative = enrichedGh.commitVelocityNarrative;
-          candidateContext.technicalHighlights = enrichedGh.technicalHighlights;
-          candidateContext.githubProjects = enrichedGh.githubProjects;
-          candidateContext.githubInterviewHooks = enrichedGh.githubInterviewHooks;
-        }
+        console.log('[Apply Route] Ingesting GitHub context for:', githubUrl);
+        rawGitHub = await enrichGitHubUrl(githubUrl.trim(), resumeText, job.description);
       } catch (ghErr: any) {
-        console.warn("[Apply Route] GitHub enrichment failed gracefully without blocking application:", ghErr?.message);
+        console.warn("[Apply Route] GitHub ingestion failed gracefully without blocking application:", ghErr?.message);
       }
     }
+
+    // 3. Relevance & Cross-Source Correlation Layer (Resume + LinkedIn + GitHub -> CandidateContext)
+    const { correlateAndBuildCandidateContext } = await import('@/lib/enrichment/correlation');
+    const candidateContext: CandidateContext = await correlateAndBuildCandidateContext({
+      rawResumeText: resumeText,
+      rawResumeFileName: resumeFileName || undefined,
+      rawResumeDriveUrl: resumeDriveUrl || undefined,
+      rawLinkedIn,
+      rawGitHub,
+      job
+    });
 
     // Find or create candidate based on email
     let candidate = db.candidates.find(c => c.email.toLowerCase() === email.toLowerCase());

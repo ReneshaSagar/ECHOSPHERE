@@ -87,74 +87,227 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
           </div>
         )}
 
-        {/* Enriched LinkedIn Profile & Interview Hooks (Phase: Profile Enrichment) */}
-        {candidateContext && (
+        {/* 1. JD-Specific Interview Context Layer */}
+        {candidateContext?.interviewContext && (
           <div className="mt-8 border-t pt-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-lg text-blue-900 flex items-center gap-2">
-                <span className="text-xl">💼</span> LinkedIn Enriched Candidate Context
-              </h3>
-              <span className="text-xs bg-blue-100 text-blue-800 font-semibold px-2.5 py-1 rounded-full">
-                Source: {candidateContext.enrichmentSource || 'LinkedIn'}
+              <div>
+                <h3 className="font-bold text-lg text-emerald-950 flex items-center gap-2">
+                  <span className="text-xl">🎯</span> JD-Specific Technical Relevance & Interview Hooks
+                </h3>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Targeted exclusively for <strong>{candidateContext.interviewContext.targetRole}</strong>. External profiles are context for discussion, never candidate scores.
+                </p>
+              </div>
+              <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-full border border-emerald-200">
+                JD Relevance Engine
               </span>
             </div>
 
-            {candidateContext.headline && (
-              <p className="text-sm font-semibold text-gray-700 mb-2 italic">
-                "{candidateContext.headline}"
-              </p>
-            )}
-
-            {candidateContext.about && (
-              <p className="text-sm text-gray-600 mb-4 bg-gray-50 p-3 rounded border">
-                {candidateContext.about}
-              </p>
-            )}
-
-            {candidateContext.careerProgression && (
-              <div className="mb-4">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Career Progression Narrative</h4>
-                <p className="text-sm text-gray-800 bg-purple-50 border border-purple-100 p-3 rounded">
-                  {candidateContext.careerProgression}
-                </p>
+            {/* High Relevance Evidence */}
+            {candidateContext.interviewContext.highRelevanceEvidence && candidateContext.interviewContext.highRelevanceEvidence.length > 0 && (
+              <div className="mb-5">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">High-Relevance Evidence & Match Rationale</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {candidateContext.interviewContext.highRelevanceEvidence.map((ev, idx) => (
+                    <div key={idx} className="p-3 bg-emerald-50/60 border border-emerald-200 rounded-lg text-xs">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-bold text-emerald-900">{ev.topic}</span>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold ${ev.relevance === 'HIGH' ? 'bg-emerald-200 text-emerald-900' : 'bg-blue-100 text-blue-800'}`}>
+                          {ev.relevance} RELEVANCE
+                        </span>
+                      </div>
+                      <p className="text-gray-700 leading-relaxed">{ev.reason}</p>
+                      {ev.evidenceSources && ev.evidenceSources.length > 0 && (
+                        <div className="mt-1.5 text-[10px] text-gray-500 font-semibold">
+                          Sources: {ev.evidenceSources.join(' + ')}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
-            {candidateContext.interviewHooks && candidateContext.interviewHooks.length > 0 && (
-              <div className="mb-4">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-blue-700 mb-2">AI Interview Hooks (Provided to AI Interviewer)</h4>
-                <ul className="space-y-1.5 text-sm text-gray-800">
-                  {candidateContext.interviewHooks.map((hook, idx) => (
-                    <li key={idx} className="flex items-start gap-2 bg-blue-50/70 p-2 rounded border border-blue-100">
-                      <span className="text-blue-500 font-bold">🎯</span>
-                      <span>{hook}</span>
+            {/* Technical Interview Hooks */}
+            {candidateContext.interviewContext.technicalInterviewHooks && candidateContext.interviewContext.technicalInterviewHooks.length > 0 && (
+              <div className="mb-5">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-blue-700 mb-2">Technical Interview Probing Hooks</h4>
+                <ul className="space-y-2 text-xs text-gray-800">
+                  {candidateContext.interviewContext.technicalInterviewHooks.map((hook, idx) => (
+                    <li key={idx} className="flex items-start gap-2.5 bg-blue-50/70 p-2.5 rounded-lg border border-blue-200">
+                      <span className="text-blue-600 font-bold mt-0.5">⚡</span>
+                      <span className="leading-relaxed">{hook}</span>
                     </li>
                   ))}
                 </ul>
               </div>
             )}
 
-            {candidateContext.skills && candidateContext.skills.length > 0 && (
+            {/* Projects Specifically Worth Probing */}
+            {candidateContext.interviewContext.projectsWorthProbing && candidateContext.interviewContext.projectsWorthProbing.length > 0 && (
+              <div className="mb-5">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">Projects Worth Probing in Live Session</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {candidateContext.interviewContext.projectsWorthProbing.map((p, idx) => (
+                    <div key={idx} className="p-3.5 bg-white border border-gray-200 rounded-lg shadow-2xs">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-bold text-sm text-gray-900">{p.name}</span>
+                        <span className="px-2 py-0.5 bg-indigo-50 border border-indigo-200 text-indigo-800 rounded text-[10px] font-bold">
+                          {p.relevanceLevel} PRIORITY
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-600 mb-2">{p.reasonToProbe}</p>
+                      {p.suggestedQuestions && p.suggestedQuestions.length > 0 && (
+                        <div className="border-t border-gray-100 pt-2 space-y-1">
+                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Suggested Probing Questions:</span>
+                          {p.suggestedQuestions.map((q, qIdx) => (
+                            <div key={qIdx} className="text-xs text-gray-700 flex items-start gap-1.5">
+                              <span className="text-indigo-500 font-bold">›</span>
+                              <span>{q}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Ignored or Low Relevance Topics */}
+            {candidateContext.interviewContext.ignoredOrLowRelevanceTopics && candidateContext.interviewContext.ignoredOrLowRelevanceTopics.length > 0 && (
+              <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-600">
+                <span className="font-bold text-gray-700">Omitted / Low-Relevance Topics for this Role: </span>
+                <span>{candidateContext.interviewContext.ignoredOrLowRelevanceTopics.join('; ')}</span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 2. Cross-Source Corroborated Context Layer */}
+        {candidateContext?.crossSourceContext && (
+          <div className="mt-8 border-t pt-6">
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <h3 className="font-bold text-lg text-purple-950 flex items-center gap-2">
+                  <span className="text-xl">🔗</span> Corroborated Cross-Source Evidence
+                </h3>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Relationships and claims corroborated across Resume, LinkedIn, and GitHub.
+                </p>
+              </div>
+              <span className="text-xs bg-purple-100 text-purple-800 font-bold px-3 py-1 rounded-full border border-purple-200">
+                Multi-Source Correlation
+              </span>
+            </div>
+
+            {/* Corroborated Skills */}
+            {candidateContext.crossSourceContext.corroboratedSkills && candidateContext.crossSourceContext.corroboratedSkills.length > 0 && (
               <div className="mb-4">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Verified Skills</h4>
-                <div className="flex flex-wrap gap-1.5">
-                  {candidateContext.skills.map((skill, idx) => (
-                    <span key={idx} className="text-xs bg-gray-100 text-gray-700 px-2.5 py-1 rounded-md font-medium border border-gray-200">
-                      {skill}
+                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Corroborated Technical Skills</h4>
+                <div className="flex flex-wrap gap-2">
+                  {candidateContext.crossSourceContext.corroboratedSkills.map((s, idx) => (
+                    <span key={idx} className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-50 text-purple-900 border border-purple-200 rounded-lg text-xs font-semibold">
+                      <span>{s.skill}</span>
+                      <span className="text-[10px] bg-purple-200/80 px-1.5 py-0.2 rounded font-bold uppercase text-purple-800">
+                        {s.sources.join('+')}
+                      </span>
                     </span>
                   ))}
                 </div>
               </div>
             )}
 
-            {candidateContext.notableClaims && candidateContext.notableClaims.length > 0 && (
+            {/* Corroborated Projects */}
+            {candidateContext.crossSourceContext.corroboratedProjects && candidateContext.crossSourceContext.corroboratedProjects.length > 0 && (
+              <div className="mb-4">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Corroborated Projects</h4>
+                <div className="space-y-2">
+                  {candidateContext.crossSourceContext.corroboratedProjects.map((p, idx) => (
+                    <div key={idx} className="p-2.5 bg-gray-50 border border-gray-200 rounded-lg text-xs">
+                      <div className="flex items-center gap-2 font-bold text-gray-900">
+                        <span>{p.projectName}</span>
+                        <span className="text-[10px] font-semibold bg-gray-200 px-1.5 py-0.5 rounded text-gray-700">
+                          {p.sources.join(' & ')}
+                        </span>
+                      </div>
+                      <p className="text-gray-600 mt-1">{p.details}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Corroborated Experience */}
+            {candidateContext.crossSourceContext.corroboratedExperience && candidateContext.crossSourceContext.corroboratedExperience.length > 0 && (
+              <div className="mb-4">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Corroborated Experience</h4>
+                <div className="space-y-1.5">
+                  {candidateContext.crossSourceContext.corroboratedExperience.map((e, idx) => (
+                    <div key={idx} className="p-2.5 bg-gray-50 border border-gray-200 rounded-lg text-xs flex justify-between items-center">
+                      <div>
+                        <span className="font-bold text-gray-900">{e.role}</span> at <span className="font-semibold text-gray-800">{e.company}</span>
+                        {e.duration && <span className="text-gray-500 ml-2">({e.duration})</span>}
+                      </div>
+                      <span className="text-[10px] bg-purple-100 text-purple-800 font-bold px-2 py-0.5 rounded">
+                        Verified ({e.sources.join(' + ')})
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Notable Claims */}
+            {candidateContext.crossSourceContext.notableClaims && candidateContext.crossSourceContext.notableClaims.length > 0 && (
               <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Notable Claims & Milestones</h4>
-                <ul className="list-disc list-inside text-xs text-gray-700 space-y-1">
-                  {candidateContext.notableClaims.map((claim, idx) => (
-                    <li key={idx}>{claim}</li>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Notable Claims to Probe</h4>
+                <ul className="space-y-1.5 text-xs text-gray-800">
+                  {candidateContext.crossSourceContext.notableClaims.map((c, idx) => (
+                    <li key={idx} className="p-2.5 bg-amber-50/60 border border-amber-200 rounded-lg">
+                      <span className="font-semibold text-amber-950">"{c.claim}"</span>
+                      <div className="text-[11px] text-amber-800 mt-1">
+                        <strong>Probing Focus:</strong> {c.verificationFocus}
+                      </div>
+                    </li>
                   ))}
                 </ul>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 3. Raw LinkedIn Source Card (Optional Detailed View) */}
+        {candidateContext?.linkedin && (
+          <div className="mt-8 border-t pt-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-lg text-blue-900 flex items-center gap-2">
+                <span className="text-xl">💼</span> LinkedIn Source Profile
+              </h3>
+              <span className="text-xs bg-blue-100 text-blue-800 font-semibold px-2.5 py-1 rounded-full">
+                Ingestion Source: LinkedIn
+              </span>
+            </div>
+
+            {candidateContext.linkedin.headline && (
+              <p className="text-sm font-semibold text-gray-700 mb-2 italic">
+                "{candidateContext.linkedin.headline}"
+              </p>
+            )}
+
+            {candidateContext.linkedin.about && (
+              <p className="text-sm text-gray-600 mb-4 bg-gray-50 p-3 rounded border">
+                {candidateContext.linkedin.about}
+              </p>
+            )}
+
+            {candidateContext.linkedin.careerProgression && (
+              <div className="mb-4">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Career Progression Narrative</h4>
+                <p className="text-sm text-gray-800 bg-purple-50 border border-purple-100 p-3 rounded">
+                  {candidateContext.linkedin.careerProgression}
+                </p>
               </div>
             )}
           </div>
@@ -164,11 +317,16 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
         {(candidateContext?.githubContext || candidateContext?.githubProjects) && (
           <div className="mt-8 border-t pt-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-lg text-gray-900 flex items-center gap-2">
-                <span className="text-xl">🐙</span> GitHub Technical Context & Codecraft
-              </h3>
-              <span className="text-xs bg-gray-900 text-gray-100 font-semibold px-2.5 py-1 rounded-full">
-                Official GitHub REST API
+              <div>
+                <h3 className="font-bold text-lg text-gray-900 flex items-center gap-2">
+                  <span className="text-xl">🐙</span> GitHub Engineering Repositories & Artifacts
+                </h3>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Used solely to identify active projects and architectural topics for discussion. Never used for candidate scoring.
+                </p>
+              </div>
+              <span className="text-xs bg-gray-100 text-gray-700 font-semibold px-2.5 py-1 rounded-full border border-gray-300">
+                Contextual Project Discovery
               </span>
             </div>
 

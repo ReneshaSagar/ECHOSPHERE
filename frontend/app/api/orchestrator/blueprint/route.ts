@@ -41,9 +41,11 @@ The instructions for Alex MUST explicitly tell him to:
 - never give the candidate the answers
 - maintain a professional interviewer personality
 
-CRITICAL RULES FOR LINKEDIN & GITHUB CONTEXT:
-- If CandidateContext (LinkedIn or GitHub) is present, use it to personalize questions, projects, and technical follow-ups.
-- NEVER use LinkedIn or GitHub context directly to score or reject the candidate.
+CRITICAL RULES FOR RELEVANCE & EVALUATION BOUNDARIES:
+- If CandidateContext (crossSourceContext or interviewContext) is present, use high-relevance evidence, technical interview hooks, and corroborated projects to personalize questions.
+- Prioritize high-relevance evidence specific to the Job Description. Ignore or deprioritize unrelated tech or generic tutorial repos.
+- Do NOT use GitHub commit count, commit frequency, stars, or follower metrics as quality signals.
+- STRICT: NEVER use external profile data to directly score, rank, penalize, or reject the candidate. Candidate live interview responses are the primary evidence for evaluation.
 
 Keep the instructions highly contextual to the specific JD, Resume, and CandidateContext provided.`;
 
@@ -51,7 +53,7 @@ Keep the instructions highly contextual to the specific JD, Resume, and Candidat
     const userPrompt = `Job Description:\n${job_description}\n\nCandidate Resume:\n${resume}${contextPart}\n\nGenerate the JSON Interview Blueprint.`;
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.6-flash",
       systemInstruction,
       generationConfig: { responseMimeType: "application/json" },
     });

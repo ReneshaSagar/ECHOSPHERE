@@ -38,7 +38,7 @@ ${transcript.map((t: any) => `[${t.speaker}]: ${t.text}`).join('\n')}
 Evaluate this round and return the JSON decision.`;
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.6-flash",
       systemInstruction,
       generationConfig: { responseMimeType: "application/json" },
     });
