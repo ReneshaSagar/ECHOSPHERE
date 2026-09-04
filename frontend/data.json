@@ -1382,14 +1382,23 @@
       "jobId": "j1",
       "candidateId": "cand1",
       "resumeText": "Alice Smith\n5 years of Python, FastAPI, and Postgres.",
-      "status": "INTERVIEW_SCHEDULED"
+      "status": "SELECTED",
+      "decisionStage": "FINAL_DECISION",
+      "evaluationScore": 94,
+      "evaluationSummary": "Exceptional FastAPI and PostgreSQL architecture, crisp communication, and strong system scale knowledge."
     },
     {
       "id": "app2",
       "jobId": "j2",
       "candidateId": "cand2",
       "resumeText": "Bob Johnson\nFull Stack Dev with 3 years Next.js experience.",
-      "status": "REJECTED"
+      "status": "CONSIDER_FOR_OTHER_ROLES",
+      "decisionStage": "ROUND_1_TECHNICAL",
+      "recommendedAlternativeRoles": [
+        "Fullstack Next.js Engineer",
+        "Frontend UI Architect"
+      ],
+      "decisionReason": "Strong Next.js and frontend skills, but lacks the deep distributed systems background required for Staff level."
     },
     {
       "id": "app_s3de21q",
@@ -1397,7 +1406,9 @@
       "candidateId": "cand_y0c6uwk",
       "resumeText": "I am great.",
       "relevantExperience": "Did a hackathon.",
-      "status": "APPLIED"
+      "status": "REJECTED",
+      "decisionStage": "ROUND_2_SYSTEM_DESIGN",
+      "decisionReason": "Struggled to articulate distributed locking and concurrency guarantees in the system design round."
     },
     {
       "id": "app_jqgx5o3",
