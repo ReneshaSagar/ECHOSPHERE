@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from typing import Optional, List, Dict, Any
 import os
 import json
 
@@ -14,8 +15,17 @@ class StartDynamicMLLMRequest(BaseModel):
     candidate_uid: int
     instructions: str
     greeting_message: str
+    voice: Optional[str] = "Charon"
+    agent_uid: Optional[int] = 9999
+    channel_name: Optional[str] = None
 
-mllm_test_sessions = {}
+class StopMLLMRequest(BaseModel):
+    session_id: str
+    agent_id: Optional[str] = None
+    agent_ids: Optional[List[str]] = None
+
+# Multi-agent session store: session_id -> { "agents": { agent_id: session_obj }, "channel": str }
+mllm_test_sessions: Dict[str, Dict[str, Any]] = {}
 
 @router.post("/start-mllm")
 async def start_mllm_test(req: StartMLLMRequest):
@@ -29,23 +39,16 @@ async def start_mllm_test(req: StartMLLMRequest):
     from app.core.config import settings
     from app.core.agora_client import agora_client, build_rtc_token
     
-    # Check if Gemini key is available
     gemini_key = settings.GEMINI_API_KEY
     
-    # 1. Generate RTC tokens
     candidate_token = build_rtc_token(channel_name, candidate_uid)
     agent_uid = 9999
     agent_token = build_rtc_token(channel_name, agent_uid)
     
     system_instructions = (
-        "You are Alex, a senior software engineer conducting a friendly technical interview. "
-        "You are a real conversational interviewer. "
+        "You are a technical interviewer conducting a structured, conversational interview. "
         "Speak naturally and concisely. "
-        "Start by introducing yourself. "
-        "Ask the candidate about their software engineering experience. "
-        "Listen carefully to their answers. "
         "Ask relevant follow-up questions. "
-        "Do not evaluate or score the candidate yet. "
         "Maintain conversational context throughout the interview."
     )
     
@@ -70,7 +73,7 @@ async def start_mllm_test(req: StartMLLMRequest):
                 model='gemini-3.1-flash-live-preview', 
                 voice='Charon',
                 instructions=system_instructions,
-                greeting_message="Hi, I'm Alex. I'm your technical interviewer. Can you hear me?",
+                greeting_message="Hi, I'm your technical interviewer. Can you hear me?",
                 transcribe_agent=True,
                 transcribe_user=True,
                 input_modalities=['audio'],
@@ -79,21 +82,9 @@ async def start_mllm_test(req: StartMLLMRequest):
             )
         )
         
-        # Log the internal config structure sent by AgentKit
-        if hasattr(agent, 'mllm') and agent.mllm:
-            try:
-                config_dump = agent.mllm.model_dump()
-                if 'api_key' in config_dump:
-                    config_dump['api_key'] = '***REDACTED***'
-                print(f"\n[AGORA MLLM] GENERATED CONFIG: {json.dumps(config_dump, indent=2)}")
-            except Exception:
-                print("\n[AGORA MLLM] MLLM Config:", agent.mllm)
-        
-        # Start the agent using the SDK
         agent_uid_str = str(agent_uid)
         candidate_uid_str = str(candidate_uid)
         
-        # We need the task or start object
         session_obj = agent.create_session(
             channel=channel_name,
             agent_uid=agent_uid_str,
@@ -102,15 +93,11 @@ async def start_mllm_test(req: StartMLLMRequest):
         )
         
         response = session_obj.start()
-        
         agent_id = session_obj.id
         
-        mllm_test_sessions[session_id] = {
-            "agent_session": session_obj,
-            "agent_id": agent_id,
-            "channel": channel_name,
-            "status": "running"
-        }
+        if session_id not in mllm_test_sessions:
+            mllm_test_sessions[session_id] = {"agents": {}, "channel": channel_name}
+        mllm_test_sessions[session_id]["agents"][agent_id] = session_obj
         
         return {
             "status": "started",
@@ -121,22 +108,39 @@ async def start_mllm_test(req: StartMLLMRequest):
         }
     except Exception as e:
         print(f"[AGORA MLLM] ERROR: {str(e)}")
-        if hasattr(e, 'response') and e.response is not None:
-            print(f"[AGORA MLLM] RESPONSE BODY: {e.response.text}")
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/stop-mllm")
-async def stop_mllm_test(req: StartMLLMRequest):
+async def stop_mllm_test(req: StopMLLMRequest):
+    """
+    Stops specified agent(s) or ALL active agents for a session (Anti-Zombie Guarantee).
+    """
     session = mllm_test_sessions.get(req.session_id)
     if not session:
         return {"status": "not_found"}
+    
     try:
-        if "agent_session" in session:
-            session["agent_session"].stop()
-        mllm_test_sessions.pop(req.session_id, None)
-        return {"status": "stopped"}
+        agents_dict = session.get("agents", {})
+        stopped_ids = []
+        
+        target_ids = req.agent_ids or ([req.agent_id] if req.agent_id else list(agents_dict.keys()))
+        
+        for aid in target_ids:
+            if aid in agents_dict:
+                try:
+                    agents_dict[aid].stop()
+                    stopped_ids.append(aid)
+                    print(f"[AGORA MLLM] STOPPED AGENT: {aid}")
+                except Exception as stop_err:
+                    print(f"[AGORA MLLM] Warning stopping agent {aid}: {stop_err}")
+                agents_dict.pop(aid, None)
+        
+        if not agents_dict:
+            mllm_test_sessions.pop(req.session_id, None)
+            
+        return {"status": "stopped", "stopped_agents": stopped_ids}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -144,7 +148,9 @@ async def stop_mllm_test(req: StartMLLMRequest):
 async def start_dynamic_mllm(req: StartDynamicMLLMRequest):
     session_id = req.session_id
     candidate_uid = req.candidate_uid
-    channel_name = f'interview_{session_id}'
+    target_agent_uid = req.agent_uid if req.agent_uid else 9999
+    target_voice = req.voice if req.voice else "Charon"
+    channel_name = req.channel_name if req.channel_name else f'interview_{session_id}'
     
     from app.core.config import settings
     from app.core.agora_client import build_rtc_token
@@ -152,13 +158,12 @@ async def start_dynamic_mllm(req: StartDynamicMLLMRequest):
     gemini_key = settings.GEMINI_API_KEY
     
     candidate_token = build_rtc_token(channel_name, candidate_uid)
-    agent_uid = 9999
-    agent_token = build_rtc_token(channel_name, agent_uid)
+    agent_token = build_rtc_token(channel_name, target_agent_uid)
     
     from agora_agent import Agent, Agora, Area
     from agora_agent.agentkit.vendors import GeminiLive
     
-    print(f'\n[AGORA MLLM] STARTING DYNAMIC AGENT via SDK')
+    print(f'\n[AGORA MLLM] STARTING DYNAMIC AGENT (Voice: {target_voice}, UID: {target_agent_uid}, Channel: {channel_name})')
     
     try:
         client = Agora(
@@ -173,7 +178,7 @@ async def start_dynamic_mllm(req: StartDynamicMLLMRequest):
             GeminiLive(
                 api_key=gemini_key,
                 model='gemini-3.1-flash-live-preview', 
-                voice='Charon',
+                voice=target_voice,
                 instructions=req.instructions,
                 greeting_message=req.greeting_message,
                 transcribe_agent=True,
@@ -184,18 +189,10 @@ async def start_dynamic_mllm(req: StartDynamicMLLMRequest):
             )
         )
         
-        if hasattr(agent, 'mllm') and agent.mllm:
-            try:
-                config_dump = agent.mllm.model_dump()
-                if 'api_key' in config_dump:
-                    config_dump['api_key'] = '***REDACTED***'
-                print(f'\n[AGORA MLLM] DYNAMIC CONFIG: {json.dumps(config_dump, indent=2)}')
-            except Exception:
-                pass
-                
-        agent_uid_str = str(agent_uid)
+        agent_uid_str = str(target_agent_uid)
         candidate_uid_str = str(candidate_uid)
         
+        # Each agent only listens to the candidate's UID — eliminating agent-to-agent feedback loops
         session_obj = agent.create_session(
             channel=channel_name,
             agent_uid=agent_uid_str,
@@ -206,16 +203,16 @@ async def start_dynamic_mllm(req: StartDynamicMLLMRequest):
         response = session_obj.start()
         agent_id = session_obj.id
         
-        mllm_test_sessions[session_id] = {
-            'agent_session': session_obj,
-            'agent_id': agent_id,
-            'channel': channel_name,
-            'status': 'running'
-        }
+        if session_id not in mllm_test_sessions:
+            mllm_test_sessions[session_id] = {"agents": {}, "channel": channel_name}
+        mllm_test_sessions[session_id]["agents"][agent_id] = session_obj
+        
+        print(f'[AGORA MLLM] Dynamic Agent started successfully: {agent_id}')
         
         return {
             'status': 'started',
             'agent_id': agent_id,
+            'agent_uid': target_agent_uid,
             'channel_name': channel_name,
             'candidate_token': candidate_token,
             'raw_response': 'SDK started successfully'

@@ -24,14 +24,24 @@ function buildRtcToken(channelName: string, uid: number) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { session_id, candidate_uid, instructions, greeting_message } = await req.json();
+    const { 
+      session_id, 
+      candidate_uid, 
+      instructions, 
+      greeting_message,
+      voice,
+      agent_uid,
+      channel_name: customChannel 
+    } = await req.json();
     
-    console.log(`[AGENT_START_REQUEST] session_id: ${session_id}, timestamp: ${new Date().toISOString()}`);
+    const targetAgentUid = agent_uid ? Number(agent_uid) : 9999;
+    const targetVoice = voice || 'Charon';
+    const channelName = customChannel || `interview_${session_id.replace(/[^a-zA-Z0-9]/g, '_')}`.substring(0, 60);
+    
+    console.log(`[AGENT_START_REQUEST] session_id: ${session_id}, agent_uid: ${targetAgentUid}, voice: ${targetVoice}, channel: ${channelName}, timestamp: ${new Date().toISOString()}`);
 
-    const channelName = `interview_${session_id.replace(/[^a-zA-Z0-9]/g, '_')}`.substring(0, 60);
     const candidateToken = buildRtcToken(channelName, candidate_uid);
-    const agentUid = 9999;
-    const agentToken = buildRtcToken(channelName, agentUid);
+    const agentToken = buildRtcToken(channelName, targetAgentUid);
 
     const appId = process.env.AGORA_APP_ID;
     const appCertificate = process.env.AGORA_APP_CERTIFICATE;
@@ -54,7 +64,7 @@ export async function POST(req: NextRequest) {
     const agent = new Agent({ client }).withMllm(new GeminiLive({
       apiKey: geminiKey,
       model: 'gemini-3.1-flash-live-preview',
-      voice: 'Charon',
+      voice: targetVoice,
       instructions: instructions,
       greetingMessage: greeting_message,
       transcribeAgent: true,
@@ -65,18 +75,19 @@ export async function POST(req: NextRequest) {
 
     const sessionObj = await agent.createSession({
       channel: channelName,
-      agentUid: String(agentUid),
+      agentUid: String(targetAgentUid),
       remoteUids: [String(candidate_uid)],
       token: agentToken
     });
 
     await sessionObj.start();
 
-    console.log(`[AGENT_STARTED] session_id: ${session_id}, agent_id: ${sessionObj.id}, timestamp: ${new Date().toISOString()}`);
+    console.log(`[AGENT_STARTED] session_id: ${session_id}, agent_id: ${sessionObj.id}, agent_uid: ${targetAgentUid}, timestamp: ${new Date().toISOString()}`);
     
     return NextResponse.json({
       status: "started",
       agent_id: sessionObj.id,
+      agent_uid: targetAgentUid,
       channel_name: channelName,
       candidate_token: candidateToken,
       raw_response: "SDK started successfully"

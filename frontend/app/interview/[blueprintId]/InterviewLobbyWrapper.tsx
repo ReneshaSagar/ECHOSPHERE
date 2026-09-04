@@ -208,7 +208,7 @@ export default function InterviewLobbyWrapper({
         <div className="bg-blue-50/60 border border-blue-100 rounded-xl p-4 text-xs text-blue-900 max-w-lg mx-auto flex items-start gap-3 text-left">
           <Zap className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
           <div>
-            <span className="font-bold">All the best!</span> Our AI technical lead, <strong>Alex</strong>, is excited to discuss your hands-on codecraft and project architecture. Speak naturally, ask questions, and take your time.
+            <span className="font-bold">All the best!</span> Our autonomous AI interview panel is excited to discuss your hands-on codecraft, project architecture, and system design. Speak naturally, ask questions, and take your time.
           </div>
         </div>
 

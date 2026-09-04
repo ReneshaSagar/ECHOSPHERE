@@ -186,7 +186,7 @@ Thank you for applying for the ${job.title} position at EchoSphere!
 We have successfully received your application, resume, and technical links. Our autonomous evaluation engine and talent team are currently reviewing your qualifications and codecraft.
 
 What to expect next:
-- If your experience aligns with the core requirements of the role, you will be invited to our autonomous AI Voice Technical Interview led by our technical lead persona, Alex.
+- If your experience aligns with the core requirements of the role, you will be invited to our autonomous AI Voice Technical Interview led by our specialized technical panel.
 - You will receive a separate invitation email with your scheduled date, time, and private room link.
 
 Thank you again for your enthusiasm about building with EchoSphere.
@@ -277,7 +277,7 @@ When you open your room link before the scheduled time, a live countdown will di
 💡 Quick Tips to Prepare:
 - Find a quiet space and use headphones with a clear microphone.
 - Be prepared to discuss your architectural trade-offs, recent projects, and hands-on technical problem solving.
-- Our AI technical interviewer, Alex, will conduct the discussion conversationally.
+- Our AI technical interview panel will conduct the discussion conversationally.
 
 We look forward to meeting you!
 
@@ -297,7 +297,7 @@ The EchoSphere Talent & Engineering Team`;
     </div>
 
     <p>Hi <strong>${candidate.name}</strong>,</p>
-    <p>Congratulations! We were impressed by your background, codecraft, and experience. We are excited to invite you to participate in an autonomous AI Voice Technical Interview led by our technical persona, <strong>Alex</strong>.</p>
+    <p>Congratulations! We were impressed by your background, codecraft, and experience. We are excited to invite you to participate in an autonomous AI Voice Technical Interview led by our specialized technical panel.</p>
     
     <!-- Interview Details Card -->
     <div style="background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 24px; text-align: center; margin: 24px 0;">

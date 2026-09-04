@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest, { params }: { params: { agent_id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ agent_id: string }> }) {
   try {
-    const agent_id = params.agent_id;
+    const { agent_id } = await params;
     const appId = process.env.AGORA_APP_ID;
     const customerId = process.env.AGORA_CUSTOMER_ID;
     const customerSecret = process.env.AGORA_CUSTOMER_SECRET;

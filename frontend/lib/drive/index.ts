@@ -1,4 +1,4 @@
-import { extractTextFromPdfBuffer } from '../resume/extract.ts';
+import { extractTextFromPdfBuffer } from '../resume/extract';
 
 /**
  * Extracts Google Drive file ID from standard shareable links.

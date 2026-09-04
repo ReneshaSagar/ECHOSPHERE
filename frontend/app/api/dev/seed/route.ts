@@ -48,7 +48,10 @@ export async function POST() {
       applications: [
         { id: 'app1', jobId: 'j1', candidateId: 'cand1', resumeText: 'Alice Smith\n5 years of Python, FastAPI, and Postgres.', status: 'UNDER_REVIEW' },
         { id: 'app2', jobId: 'j2', candidateId: 'cand2', resumeText: 'Bob Johnson\nFull Stack Dev with 3 years Next.js experience.', status: 'APPLIED' }
-      ]
+      ],
+      interviews: [],
+      blueprints: [],
+      emails: []
     };
     
     saveDb(defaultDb);

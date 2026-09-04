@@ -58,6 +58,7 @@ export interface GitHubContext {
   }>;
   githubInterviewHooks?: string[];
   enrichedAt: string;
+  rawProviderJson?: any;
 }
 
 export interface NormalizedResumeContext {
@@ -295,6 +296,65 @@ export interface Application {
   candidateContext?: CandidateContext;
 }
 
+export interface InterviewerProfile {
+  interviewerId: string;
+  name: string;
+  role: string;
+  department: string;
+  voice: string; // 'Aoede' | 'Charon' | 'Fenrir' | 'Kore' | 'Puck'
+  avatarUrl?: string;
+  color: string;
+  persona: {
+    style: string;
+    seniority: 'senior' | 'staff' | 'lead' | 'manager';
+    focusAreas: string[];
+    behavior: string[];
+  };
+}
+
+export interface CompanyInterviewerPool {
+  [categoryOrRole: string]: InterviewerProfile[];
+}
+
+export interface FloorRequest {
+  id: string;
+  agentId: string;
+  agentName: string;
+  reason: string;
+  urgency: 'normal' | 'high';
+  proposedProbe?: string;
+  timestamp: number;
+}
+
+export interface ActivePanelAgent {
+  agentId: string;
+  name: string;
+  role: string;
+  voice: string;
+  color: string;
+  isPrimary: boolean;
+  isActive: boolean;
+  hasFloor: boolean;
+}
+
+export interface InterviewState {
+  interviewId: string;
+  currentRound: 'technical' | 'hr';
+  currentTopic?: string;
+  currentSpeaker?: string; // 'candidate' | agentId
+  lastQuestion?: string;
+  candidateAnswer?: string;
+  conversationSummary: string;
+  questionsAsked: string[];
+  topicsCovered: string[];
+  evidenceCollected: string[];
+  agentFloorRequests: FloorRequest[];
+  roundProgress: number; // 0 to 100
+  interviewStatus: 'NOT_STARTED' | 'IN_PROGRESS' | 'ROUND_COMPLETE' | 'PASSED' | 'FAILED' | 'COMPLETED';
+  activeAgents: ActivePanelAgent[];
+  updatedAt: string;
+}
+
 export interface Interview {
   id: string;
   applicationId: string;
@@ -304,6 +364,7 @@ export interface Interview {
   evaluations?: { round: string, decision: string, score: number, reason: string }[];
   suspiciousEvents?: { timestamp: string, type: string, details: string }[];
   scorecard?: any;
+  interviewState?: InterviewState;
 }
 
 export interface InterviewBlueprint {
@@ -331,6 +392,7 @@ export interface Database {
   interviews: Interview[];
   blueprints: InterviewBlueprint[];
   emails?: EmailNotification[];
+  interviewerPool?: CompanyInterviewerPool;
 }
 
 const dbPath = path.join(process.cwd(), 'data.json');
@@ -380,15 +442,16 @@ const defaultDb: Database = {
   applications: [
     { id: 'app1', jobId: 'j1', candidateId: 'cand1', resumeText: 'Alice Smith\n5 years of Python, FastAPI, and Postgres.', status: 'UNDER_REVIEW' },
     { id: 'app2', jobId: 'j2', candidateId: 'cand2', resumeText: 'Bob Johnson\nFull Stack Dev with 3 years Next.js experience.', status: 'APPLIED' }
-  ]
+  ],
+  interviews: [],
+  blueprints: [],
+  emails: []
 };
 
 export function getDb(): Database {
   if (!fs.existsSync(dbPath)) {
-    // Add new arrays to defaultDb
-    const fullDefaultDb = { ...defaultDb, interviews: [], blueprints: [] };
-    fs.writeFileSync(dbPath, JSON.stringify(fullDefaultDb, null, 2));
-    return fullDefaultDb;
+    fs.writeFileSync(dbPath, JSON.stringify(defaultDb, null, 2));
+    return defaultDb;
   }
   const data = fs.readFileSync(dbPath, 'utf8');
   const parsed = JSON.parse(data);

@@ -1,5 +1,7 @@
 import React from 'react';
 import { getDb, saveDb } from '@/lib/db';
+import { selectPanelForJob } from '@/lib/interview/interviewerPool';
+import { createInitialInterviewState } from '@/lib/interview/interviewState';
 import InterviewLobbyWrapper from './InterviewLobbyWrapper';
 
 export default async function InterviewPage({ params }: { params: Promise<{ blueprintId: string }> }) {
@@ -14,7 +16,7 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
   );
 
   let interview = blueprint 
-    ? db.interviews.find(i => i.id === blueprint.interviewId)
+    ? db.interviews.find(i => i.id === blueprint?.interviewId)
     : db.interviews.find(i => i.id === targetId);
 
   if (!interview) {
@@ -45,38 +47,70 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
 
   // If blueprint doesn't exist yet, generate default on the fly
   if (!blueprint) {
+    const panel = selectPanelForJob(job.title);
+    const candidateContext = application.candidateContext || candidate.candidateContext;
+    const topProjects = (candidateContext?.interviewContext?.projectsWorthProbing || candidateContext?.githubProjects || []).slice(0, 3).map((p: any) => `'${p.name}'`).join(' and ') || 'your recent technical projects';
+
     const defaultBp = {
       interview_rounds: [
         {
           round_name: "Technical Architecture & Concurrency",
-          purpose: "Evaluate core technical architecture and systems thinking",
+          round_type: "technical",
+          purpose: `Evaluate ${candidate.name}'s capabilities in core engineering, concurrency, and real-world system architecture for ${job.title}.`,
+          interviewers: [
+            {
+              interviewer_id: panel.technicalPrimary.interviewerId,
+              name: panel.technicalPrimary.name,
+              role: panel.technicalPrimary.role,
+              voice: panel.technicalPrimary.voice,
+              color: panel.technicalPrimary.color,
+              is_primary: true,
+              agent_uid: 9991,
+              instructions: `Speak naturally and concisely with ${candidate.name}. Explore their codecraft and system design depth in ${topProjects}.`,
+              greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. Today, my colleague ${panel.technicalChallenger.name} and I will explore your system architecture and codecraft. Let's dive in.`
+            },
+            {
+              interviewer_id: panel.technicalChallenger.interviewerId,
+              name: panel.technicalChallenger.name,
+              role: panel.technicalChallenger.role,
+              voice: panel.technicalChallenger.voice,
+              color: panel.technicalChallenger.color,
+              is_primary: false,
+              agent_uid: 9992,
+              instructions: `You are ${panel.technicalChallenger.name}, ${panel.technicalChallenger.role}. Challenge architectural trade-offs, probe scalability bottlenecks, evaluate latency budgets, and ask about edge cases and failure modes.`,
+              greeting_message: `Hi ${candidate.name}, I'm ${panel.technicalChallenger.name}, ${panel.technicalChallenger.role}. I'll be focusing on system design trade-offs, scalability boundaries, and failure modes with you today.`
+            }
+          ],
           interviewer: {
-            name: "Alex",
-            role: "Technical Lead",
-            instructions: `Speak naturally and concisely with ${candidate.name}. Explore their codecraft and system design depth.`,
-            greeting_message: `Hello ${candidate.name}, welcome! I have reviewed your background for the ${job.title} position. Today we will explore your technical architecture and problem-solving skills. Let's dive in.`
+            name: panel.technicalPrimary.name,
+            role: panel.technicalPrimary.role,
+            instructions: `Speak naturally and concisely with ${candidate.name}. Explore their codecraft and system design depth in ${topProjects}.`,
+            greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. Let's dive into technical architecture.`
           },
-          topics: ["Core Architecture", "Data Structures", "System Scale"]
-        },
-        {
-          round_name: "Distributed System Design",
-          purpose: "Evaluate system scalability, reliability, and trade-offs",
-          interviewer: {
-            name: "Alex",
-            role: "System Architect Lead",
-            instructions: `Discuss scaling, caching, and resiliency.`,
-            greeting_message: `Hi ${candidate.name}, welcome to the System Design round. Let's discuss how you approach scaling systems and managing concurrency.`
-          },
-          topics: ["Scalability", "Caching", "Concurrency"]
+          topics: ["Core Architecture", "Data Structures", "System Scale", "Engineering Trade-offs"]
         },
         {
           round_name: "Engineering Leadership & Culture",
-          purpose: "Evaluate collaboration, ownership, and technical communication",
+          round_type: "hr",
+          purpose: `Evaluate ${candidate.name}'s collaboration, ownership, and technical communication`,
+          interviewers: [
+            {
+              interviewer_id: panel.hrInterviewer.interviewerId,
+              name: panel.hrInterviewer.name,
+              role: panel.hrInterviewer.role,
+              voice: panel.hrInterviewer.voice,
+              color: panel.hrInterviewer.color,
+              is_primary: true,
+              agent_uid: 9993,
+              instructions: `Evaluate communication, ownership, and engineering culture.`,
+              greeting_message: `Hi ${candidate.name}, great to meet you! I'm ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role}. Today we will discuss team collaboration, problem solving, and technical ownership.`
+            }
+          ],
           interviewer: {
-            name: "Alex",
-            role: "Engineering Director",
+            name: panel.hrInterviewer.name,
+            role: panel.hrInterviewer.role,
             instructions: `Evaluate communication, ownership, and engineering culture.`,
-            greeting_message: `Hi ${candidate.name}, great to meet you. Today we will discuss team collaboration, problem solving, and technical ownership.`
+            greeting_message: `Hi ${candidate.name}, great to meet you! I'm ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role}.`
           },
           topics: ["Ownership", "Collaboration", "Conflict Resolution"]
         }
@@ -87,6 +121,14 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
         "Communication": "Evaluates clarity and structured thought"
       }
     };
+
+    if (!interview.interviewState) {
+      interview.interviewState = createInitialInterviewState(
+        interview.id,
+        panel.technicalPrimary,
+        panel.technicalChallenger
+      );
+    }
 
     blueprint = {
       id: `bp_${Math.random().toString(36).substring(2, 9)}`,
