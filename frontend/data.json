@@ -1379,6 +1379,11 @@
       "id": "cand_2r8rbzn",
       "name": "Maya Lin",
       "email": "maya.lin.candidate@example.com"
+    },
+    {
+      "id": "cand_wkwauui",
+      "name": "Resend Live Test Candidate",
+      "email": "delivered@resend.dev"
     }
   ],
   "applications": [
@@ -2783,6 +2788,16 @@
       "resumeText": "Maya Lin. Staff Systems Engineer with 6 years experience building distributed microservices, WebRTC streaming, and event queues.",
       "relevantExperience": "I built an open-source real-time audio pipeline processing audio streams at 50ms latency.",
       "status": "INTERVIEW_SCHEDULED"
+    },
+    {
+      "id": "app_bldqgtj",
+      "jobId": "j1",
+      "candidateId": "cand_wkwauui",
+      "resumeText": "Full Stack Engineer with 4 years experience in TypeScript, React, and Node.js.",
+      "relevantExperience": "Testing live Resend email integration",
+      "status": "REJECTED",
+      "decisionStage": "ROUND_1_TECHNICAL",
+      "decisionReason": "Strong fundamentals but missing production WebRTC and streaming audio experience."
     }
   ],
   "interviews": [
@@ -2988,6 +3003,12 @@
       "applicationId": "app_h5luer5",
       "scheduledAt": "2026-09-04T09:26:49.358Z",
       "status": "PENDING"
+    },
+    {
+      "id": "int_cj0mz7n",
+      "applicationId": "app_bldqgtj",
+      "scheduledAt": "2026-09-26T15:00:00Z",
+      "status": "PENDING"
     }
   ],
   "blueprints": [
@@ -3116,6 +3137,49 @@
         "jobTitle": "Senior Backend Engineer — Distributed Systems & AI Infrastructure",
         "stage": "ROUND_2_SYSTEM_DESIGN",
         "reason": "Struggled with concurrency guarantees and distributed locking."
+      }
+    },
+    {
+      "id": "email_ltf4b2e",
+      "recipientEmail": "delivered@resend.dev",
+      "recipientName": "Resend Live Test Candidate",
+      "type": "APPLICATION_RECEIVED",
+      "subject": "Application Received: Senior Backend Engineer — Distributed Systems & AI Infrastructure at EchoSphere",
+      "bodyText": "Hi Resend Live Test Candidate,\n\nThank you for applying for the Senior Backend Engineer — Distributed Systems & AI Infrastructure position at EchoSphere!\n\nWe have successfully received your application, resume, and technical links. Our autonomous evaluation engine and talent team are currently reviewing your qualifications and codecraft.\n\nWhat to expect next:\n- If your experience aligns with the core requirements of the role, you will be invited to our autonomous AI Voice Technical Interview led by our technical lead persona, Alex.\n- You will receive a separate invitation email with your scheduled date, time, and private room link.\n\nThank you again for your enthusiasm about building with EchoSphere.\n\nBest regards,\nThe EchoSphere Talent & Recruiting Team",
+      "sentAt": "2026-09-04T07:46:26.779Z",
+      "metadata": {
+        "jobTitle": "Senior Backend Engineer — Distributed Systems & AI Infrastructure",
+        "resendId": "6b845ceb-2c79-4bfe-b6ae-b578572c1ce9"
+      }
+    },
+    {
+      "id": "email_qkynx3b",
+      "recipientEmail": "delivered@resend.dev",
+      "recipientName": "Resend Live Test Candidate",
+      "type": "INTERVIEW_INVITATION",
+      "subject": "Congratulations! You're Selected for an Interview: Senior Backend Engineer — Distributed Systems & AI Infrastructure at EchoSphere",
+      "bodyText": "Hi Resend Live Test Candidate,\n\nCongratulations! We were impressed by your background, codecraft, and experience, and we are excited to invite you to the next stage of our evaluation process for the Senior Backend Engineer — Distributed Systems & AI Infrastructure role.\n\n📅 Scheduled Interview Time:\nSaturday, September 26, 2026 at 08:30 PM GMT+5:30\n\n🔗 Your Personal Interview Room Link:\nhttp://localhost:3000/interview/int_cj0mz7n\n\n⏱️ How the Waiting Room & Interview Works:\nYour interview is scheduled to start promptly at 08:30 PM GMT+5:30 on Saturday, September 26, 2026.\nWhen you open your room link before the scheduled time, a live countdown will display on your screen. The \"Join Interview\" button will unlock automatically as soon as your scheduled time arrives. All the best!\n\n💡 Quick Tips to Prepare:\n- Find a quiet space and use headphones with a clear microphone.\n- Be prepared to discuss your architectural trade-offs, recent projects, and hands-on technical problem solving.\n- Our AI technical interviewer, Alex, will conduct the discussion conversationally.\n\nWe look forward to meeting you!\n\nWarm regards,\nThe EchoSphere Talent & Engineering Team",
+      "sentAt": "2026-09-04T07:46:27.278Z",
+      "metadata": {
+        "jobTitle": "Senior Backend Engineer — Distributed Systems & AI Infrastructure",
+        "scheduledAt": "2026-09-26T15:00:00Z",
+        "interviewLink": "http://localhost:3000/interview/int_cj0mz7n",
+        "resendId": "ae639228-b743-4667-9be5-eb305ffe32df"
+      }
+    },
+    {
+      "id": "email_wztxhxw",
+      "recipientEmail": "delivered@resend.dev",
+      "recipientName": "Resend Live Test Candidate",
+      "type": "APPLICATION_REJECTED",
+      "subject": "Update regarding your application for Senior Backend Engineer — Distributed Systems & AI Infrastructure at EchoSphere",
+      "bodyText": "Hi Resend Live Test Candidate,\n\nThank you for your interest in EchoSphere and for the time you took to apply for the Senior Backend Engineer — Distributed Systems & AI Infrastructure position.\n\nOur team reviewed your background and qualifications thoroughly. We received many strong applications, and after careful consideration after our round 1 technical evaluation, we have decided not to move forward with your candidacy for this specific opening at this time.\n\nSpecific Feedback from the Review Team:\n\"Strong fundamentals but missing production WebRTC and streaming audio experience.\"\n\nPlease know that this was a difficult decision. We were very glad to learn about your background, and we will keep your profile in our talent pool should another opportunity arise that matches your strengths and trajectory.\n\nWe wish you the very best of luck in your job search and your ongoing engineering journey.\n\nSincerely,\nThe EchoSphere Talent Team",
+      "sentAt": "2026-09-04T07:46:35.180Z",
+      "metadata": {
+        "jobTitle": "Senior Backend Engineer — Distributed Systems & AI Infrastructure",
+        "stage": "ROUND_1_TECHNICAL",
+        "reason": "Strong fundamentals but missing production WebRTC and streaming audio experience.",
+        "resendId": "d7a25d75-8240-4fea-bea1-c0d34739068b"
       }
     }
   ]
