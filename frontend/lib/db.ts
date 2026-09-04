@@ -124,12 +124,14 @@ export interface CrossSourceContext {
     skill: string;
     sources: ('resume' | 'linkedin' | 'github')[];
     confidence: 'HIGH' | 'MEDIUM';
+    evidenceSnippet?: string;
   }>;
   corroboratedProjects: Array<{
     projectName: string;
     description: string;
     sources: ('resume' | 'linkedin' | 'github')[];
     details: string;
+    evidenceSnippet?: string;
   }>;
   corroboratedExperience: Array<{
     role: string;

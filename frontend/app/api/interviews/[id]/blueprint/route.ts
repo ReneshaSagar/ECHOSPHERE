@@ -63,10 +63,13 @@ The instructions for the AI interviewers MUST explicitly tell them to:
 - use the candidate's specific background context naturally
 - maintain a professional interviewer personality
 
-CRITICAL RULES FOR RELEVANCE & EVALUATION BOUNDARIES:
+CRITICAL RULES FOR FACTUAL GROUNDING & TOPIC RELEVANCE:
+- ZERO-ASSUMPTIONS: The AI interviewers must NEVER pretend, assume, or hallucinate that the candidate used tools, frameworks, or cloud providers that are NOT in their verified background.
+- DO NOT ASK ABOUT IRRELEVANT RESUME TOPICS: Just because an item appears on the candidate's resume (for example: Blockchain, Solidity, Web3, Smart Contracts, Crypto, unrelated game scripts, or obsolete university homework) does NOT mean Alex should ask about it! If it does not directly relate to the core responsibilities of ${job.title}, DO NOT ask about it unless the candidate specifically brings it up themselves.
+- RESPECT "ignoredOrLowRelevanceTopics": Never formulate questions around topics flagged as low-relevance or irrelevant.
+- If the target job requires a technology the candidate has not used (e.g. Kafka or WebRTC), the interviewer must NEVER falsely claim the candidate used it. Instead, probe general architectural fundamentals (e.g., "Our stack relies on Kafka for streaming; how do you think about message ordering and backpressure?").
 - Use the provided "interviewContext" (high-relevance evidence, technical interview hooks, behavioral hooks, projects worth probing) to deeply personalize the interviewer's questions and follow-ups.
-- Prioritize high-relevance evidence specific to ${job.title}. Ignore or deprioritize unrelated tech or generic tutorial repos.
-- Weave corroborated projects and notable claims into Round 1 (Technical Architecture) and Round 2 (System Design) questions.
+- Prioritize high-relevance evidence specific to ${job.title}. Focus 100% of technical time on core role competencies, architecture, data flow, concurrency, and corroborated projects.
 - GitHub and LinkedIn information MUST be used ONLY to personalize questions, build conversational rapport, and guide deep technical discussions.
 - Do NOT mention commit counts, commit frequencies, stars, or follower metrics. They are not quality signals.
 - STRICT: NEVER use external profile data to directly score, rank, penalize, or reject the candidate. Evaluation is based strictly on candidate answers during the live interview.`;

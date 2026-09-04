@@ -244,6 +244,151 @@ function buildHeuristicCorrelation(
 }
 
 /**
+ * Deterministic Anti-Hallucination & Relevance Validator.
+ * 1. Verifies every AI-extracted skill against the raw candidate text. If the skill does not appear
+ *    anywhere in the candidate's raw data, it is permanently purged.
+ * 2. Filters out irrelevant buzzwords (e.g., blockchain, smart contracts, crypto, game scripts)
+ *    from interview question hooks unless the target job is specifically in that domain.
+ */
+function sanitizeAndVerifyGrounding(
+  crossSource: CrossSourceContext,
+  interview: InterviewContext,
+  rawResumeText: string,
+  rawLinkedIn: any,
+  rawGitHub: any,
+  job: { title: string; description: string; requirements: string }
+): { crossSourceContext: CrossSourceContext; interviewContext: InterviewContext } {
+  // Build unified search corpus from candidate's raw sources
+  const resumeStr = (rawResumeText || '').toLowerCase();
+  
+  const linkedinParts: string[] = [];
+  if (rawLinkedIn) {
+    if (rawLinkedIn.headline) linkedinParts.push(rawLinkedIn.headline);
+    if (rawLinkedIn.about) linkedinParts.push(rawLinkedIn.about);
+    if (Array.isArray(rawLinkedIn.skills)) {
+      rawLinkedIn.skills.forEach((s: any) => linkedinParts.push(typeof s === 'string' ? s : s.name || s.title || ''));
+    }
+    if (Array.isArray(rawLinkedIn.experience)) {
+      rawLinkedIn.experience.forEach((e: any) => linkedinParts.push(`${e.title || ''} ${e.company || ''} ${e.description || ''}`));
+    }
+    if (Array.isArray(rawLinkedIn.projects)) {
+      rawLinkedIn.projects.forEach((p: any) => linkedinParts.push(`${p.title || p.name || ''} ${p.description || ''}`));
+    }
+  }
+  const linkedinStr = linkedinParts.join(' ').toLowerCase();
+
+  const githubParts: string[] = [];
+  if (rawGitHub) {
+    const repos = rawGitHub.repos || rawGitHub.githubProjects || [];
+    repos.forEach((r: any) => {
+      githubParts.push(`${r.name || ''} ${r.description || ''} ${r.language || ''} ${(r.topics || []).join(' ')}`);
+      if (r.readmeSnippet) githubParts.push(r.readmeSnippet);
+    });
+  }
+  const githubStr = githubParts.join(' ').toLowerCase();
+
+  const fullCorpus = `${resumeStr} ${linkedinStr} ${githubStr}`;
+
+  // Helper to test if a term exists in text (handling symbols like C++, C#, .NET, Node.js)
+  const isTermGrounded = (term: string): boolean => {
+    if (!term || term.trim().length === 0) return false;
+    const clean = term.trim().toLowerCase();
+    
+    // Short acronyms or common terms
+    const escaped = clean.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(?:^|[^a-zA-Z0-9#+.-])${escaped}(?:$|[^a-zA-Z0-9#+.-])`, 'i');
+    return regex.test(fullCorpus);
+  };
+
+  // 1. Audit Corroborated Skills: purge any hallucinated skill
+  const verifiedSkills: CrossSourceContext['corroboratedSkills'] = [];
+  for (const s of (crossSource.corroboratedSkills || [])) {
+    if (isTermGrounded(s.skill)) {
+      // Validated against real candidate text
+      verifiedSkills.push(s);
+    } else {
+      console.warn(`[Anti-Hallucination Guard] Discarded ungrounded skill: "${s.skill}" (not found in candidate raw data)`);
+    }
+  }
+
+  // 2. Audit Corroborated Projects: must appear in resume or match a GitHub/LinkedIn project
+  const verifiedProjects: CrossSourceContext['corroboratedProjects'] = [];
+  for (const p of (crossSource.corroboratedProjects || [])) {
+    if (isTermGrounded(p.projectName)) {
+      verifiedProjects.push(p);
+    } else {
+      console.warn(`[Anti-Hallucination Guard] Discarded ungrounded project: "${p.projectName}"`);
+    }
+  }
+
+  // 3. Strict Relevance & Noise Filtering (User requirement: "just cuz you saw something on the resume doesnt mean you have to ask about it like if its not relevant at all like asking blockchain is irrelevant unless until it comes up")
+  const targetJobText = `${job.title} ${job.description} ${job.requirements}`.toLowerCase();
+  const isJobBlockchain = /blockchain|solidity|web3|ethereum|smart contract|crypto|defi/i.test(targetJobText);
+  const isJobGameDev = /unreal|unity|gameplay|godot/i.test(targetJobText);
+
+  const ignoredOrLowRelevance = new Set(interview.ignoredOrLowRelevanceTopics || []);
+
+  // Irrelevant domains to flag if NOT part of target job
+  const irrelevantCheckers = [
+    {
+      domain: 'Blockchain / Web3 / Smart Contracts',
+      regex: /\b(blockchain|solidity|web3|ethereum|smart contract|crypto|nft|token|hardhat|truffle|defi)\b/i,
+      relevantToJob: isJobBlockchain,
+      reason: 'Candidate mentioned blockchain/smart contract technology on profile, but it is outside the scope of this role. Omit from interview unless candidate introduces it.'
+    },
+    {
+      domain: 'Unrelated Game Engines',
+      regex: /\b(unity|unreal engine|godot|roblox)\b/i,
+      relevantToJob: isJobGameDev,
+      reason: 'Game development framework noted on resume is not applicable to target engineering role. Do not probe.'
+    }
+  ];
+
+  for (const check of irrelevantCheckers) {
+    if (!check.relevantToJob && check.regex.test(fullCorpus)) {
+      ignoredOrLowRelevance.add(`[IRRELEVANT TO ROLE] ${check.domain}: ${check.reason}`);
+    }
+  }
+
+  // Filter Interview Hooks: remove any questions that ask about ignored/irrelevant topics
+  const sanitizedTechnicalHooks = (interview.technicalInterviewHooks || []).filter(hook => {
+    for (const check of irrelevantCheckers) {
+      if (!check.relevantToJob && check.regex.test(hook)) {
+        console.log(`[Relevance Filter] Removed irrelevant interview hook mentioning ${check.domain}: "${hook}"`);
+        return false;
+      }
+    }
+    return true;
+  });
+
+  // Filter Projects Worth Probing: do not probe projects focused on irrelevant tech
+  const sanitizedProjectsToProbe = (interview.projectsWorthProbing || []).filter(proj => {
+    for (const check of irrelevantCheckers) {
+      if (!check.relevantToJob && (check.regex.test(proj.name) || check.regex.test(proj.reasonToProbe))) {
+        console.log(`[Relevance Filter] Excluded irrelevant project probing for ${check.domain}: "${proj.name}"`);
+        ignoredOrLowRelevance.add(`${proj.name} (${check.domain} project; excluded from technical interview)`);
+        return false;
+      }
+    }
+    return true;
+  });
+
+  return {
+    crossSourceContext: {
+      ...crossSource,
+      corroboratedSkills: verifiedSkills,
+      corroboratedProjects: verifiedProjects
+    },
+    interviewContext: {
+      ...interview,
+      technicalInterviewHooks: sanitizedTechnicalHooks,
+      projectsWorthProbing: sanitizedProjectsToProbe,
+      ignoredOrLowRelevanceTopics: Array.from(ignoredOrLowRelevance)
+    }
+  };
+}
+
+/**
  * Main Pipeline Function:
  * Takes raw Ingestion Sources (Resume, LinkedIn, GitHub) + Job Description,
  * executes Cross-Source Correlation & JD-Specific Relevance Filtering,
@@ -287,30 +432,27 @@ export async function correlateAndBuildCandidateContext({
       const prompt = `You are a Principal Software Architect & Head of Technical Hiring.
 You are given candidate data from 3 ingestion sources (Resume, LinkedIn, GitHub) and a target Job Description.
 
-Perform a deep Cross-Source Correlation and JD-Specific Relevance Filtering.
+Perform a deep Cross-Source Correlation, Strict Factual Grounding, and JD-Specific Relevance Filtering.
 
-CRITICAL INSTRUCTIONS & STRICT BOUNDARIES:
-1. Cross-Source Correlation (crossSourceContext):
-   - Identify corroborated skills (appearing in 2 or 3 sources).
-   - Identify corroborated projects (mentioned in Resume/LinkedIn that correspond to GitHub repositories).
-   - Corroborate employment and roles between Resume and LinkedIn.
-   - Extract notable claims (e.g., "10M events/day", "built real-time pipeline").
+CRITICAL POLICY 1: ANTI-HALLUCINATION & STRICT FACTUAL GROUNDING (ZERO ASSUMPTIONS)
+- CLOSED-BOOK EVALUATION: You may ONLY use information explicitly stated in the candidate's Resume, LinkedIn, or GitHub data. Assume NOTHING else.
+- ZERO EXTRAPOLATION: Never infer, guess, or extrapolate unmentioned companion technologies:
+  * Stating "Python" does NOT mean they know Django, FastAPI, or Celery unless explicitly written.
+  * Stating "React" does NOT mean they know Next.js, Redux, or Tailwind unless explicitly written.
+  * Stating "Backend" does NOT mean they know Docker, Kubernetes, Kafka, or AWS unless explicitly written.
+- ZERO JD CONTAMINATION: Technologies in the Target Job are employer requirements, NOT candidate skills. Never attribute any technology from the target job to the candidate unless candidate raw sources explicitly state they have used it.
+- EVIDENCE CITATION: For every item in "corroboratedSkills", provide an "evidenceSnippet" citing the exact quote or repository proving the candidate actually stated or used it.
 
-2. JD-Specific Relevance (interviewContext):
-   - Tailor relevance EXCLUSIVELY to the target Job Description: "${job.title}".
-   - Prioritize technologies, architectures, and projects directly relevant to this specific role.
-   - For example, if target is a Backend Engineer:
-     * FastAPI, Kafka, Redis, WebRTC audio, concurrency, distributed storage -> HIGH RELEVANCE
-     * Static CSS landing pages, basic React templates -> LOW RELEVANCE
-     * Generic practice/tutorial repos -> IGNORE in ignoredOrLowRelevanceTopics
-   - Formulate 3-4 deep technical interview hooks targeting corroborated high-relevance claims.
-   - Formulate 2-3 behavioral/trade-off hooks (ownership, design disagreements, scalability failures).
-   - Select 2-4 projects worth probing in the live voice interview with specific questions.
+CRITICAL POLICY 2: STRICT RELEVANCE & NOISE FILTERING (DO NOT ASK ABOUT IRRELEVANT RESUME TOPICS)
+- JUST BECAUSE IT IS ON THE RESUME DOES NOT MEAN YOU SHOULD ASK ABOUT IT:
+  * If a candidate mentioned an irrelevant, niche, or mismatched technology (for example: Blockchain, Solidity, Web3, Smart Contracts, Crypto, unrelated game scripts, or obsolete coursework) that does NOT directly relate to the core duties of "${job.title}", DO NOT generate interview questions or hooks for it!
+  * Put these unrelated technologies into "ignoredOrLowRelevanceTopics" with an explicit reason (e.g. "Blockchain / Solidity on resume: irrelevant to ${job.title}; omit from interview unless candidate initiates").
+- FOCUS 100% OF INTERVIEW HOOKS ON HIGH-RELEVANCE COMPETENCIES:
+  * Only formulate "technicalInterviewHooks" and "projectsWorthProbing" around technologies and projects that directly inform their ability to succeed in "${job.title}".
 
-3. STRICT EVALUATION RULES:
-   - NEVER use GitHub commit count, commit frequency, stars, or followers as candidate-quality signals, verification scores, or disqualification mechanisms.
-   - GitHub data is solely contextual information to discover real projects for technical discussion.
-   - External profile data must NEVER score, penalize, or judge the candidate. The candidate's live spoken responses during the interview remain the primary evidence for evaluation.
+CRITICAL POLICY 3: STRICT EVALUATION BOUNDARIES
+- NEVER use GitHub commit count, commit frequency, stars, or followers as candidate-quality signals, verification scores, or disqualification mechanisms.
+- External profile data is solely contextual information to discover real projects for technical discussion.
 
 Target Job:
 Title: ${job.title}
@@ -325,16 +467,27 @@ LinkedIn Profile:
 ${JSON.stringify(linkedin || {}, null, 2)}
 
 GitHub Repositories:
-${JSON.stringify(github?.repositories || [], null, 2)}
+${JSON.stringify((github?.repositories || []).slice(0, 15), null, 2)}
 
 Return ONLY valid JSON matching this exact schema:
 {
   "crossSourceContext": {
     "corroboratedSkills": [
-      { "skill": "...", "sources": ["resume", "github"], "confidence": "HIGH" }
+      { 
+        "skill": "Exact skill name", 
+        "sources": ["resume", "github"], 
+        "confidence": "HIGH",
+        "evidenceSnippet": "Resume: 'Built microservices with Python' | GitHub repo: ExpensWise (Python)"
+      }
     ],
     "corroboratedProjects": [
-      { "projectName": "...", "description": "...", "sources": ["resume", "github"], "details": "..." }
+      { 
+        "projectName": "Exact project name", 
+        "description": "...", 
+        "sources": ["resume", "github"], 
+        "details": "...",
+        "evidenceSnippet": "..." 
+      }
     ],
     "corroboratedExperience": [
       { "role": "...", "company": "...", "duration": "...", "sources": ["resume", "linkedin"], "corroborationNotes": "..." }
@@ -350,11 +503,10 @@ Return ONLY valid JSON matching this exact schema:
       { "topic": "...", "relevance": "HIGH", "reason": "...", "evidenceSources": ["resume", "github"] }
     ],
     "technicalInterviewHooks": [
-      "In project X, walk me through how you handled concurrency and locking...",
-      "You mentioned scaling Y to 10M events/day, what were the memory and network bottlenecks?"
+      "Targeting only high-relevance corroborated tech: In project X, walk me through how you handled..."
     ],
     "behavioralInterviewHooks": [
-      "Tell me about a production failure in system Z and how you led the recovery..."
+      "Tell me about a production challenge in system Z and how you navigated the trade-offs..."
     ],
     "projectsWorthProbing": [
       {
@@ -366,7 +518,7 @@ Return ONLY valid JSON matching this exact schema:
       }
     ],
     "ignoredOrLowRelevanceTopics": [
-      "..."
+      "[IRRELEVANT TO ROLE] e.g. Blockchain/Solidity — on resume but unrelated to ${job.title}; omit from interview unless candidate initiates."
     ]
   }
 }`;
@@ -381,6 +533,18 @@ Return ONLY valid JSON matching this exact schema:
       console.warn('[Correlation Engine] Gemini synthesis fallback to heuristic:', llmErr.message);
     }
   }
+
+  // 4. Programmatic Deterministic Anti-Hallucination & Relevance Audit
+  const sanitized = sanitizeAndVerifyGrounding(
+    crossSourceContext,
+    interviewContext,
+    rawResumeText,
+    rawLinkedIn,
+    rawGitHub,
+    job
+  );
+  crossSourceContext = sanitized.crossSourceContext;
+  interviewContext = sanitized.interviewContext;
 
   // 4. Construct Full Unified CandidateContext
   const fullContext: CandidateContext = {
