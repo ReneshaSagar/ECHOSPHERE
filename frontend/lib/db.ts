@@ -162,6 +162,17 @@ export interface InterviewBlueprint {
   blueprintJson: string;
 }
 
+export interface EmailNotification {
+  id: string;
+  recipientEmail: string;
+  recipientName: string;
+  type: 'APPLICATION_RECEIVED' | 'INTERVIEW_INVITATION' | 'APPLICATION_REJECTED';
+  subject: string;
+  bodyText: string;
+  sentAt: string;
+  metadata?: Record<string, any>;
+}
+
 export interface Database {
   companies: Company[];
   jobs: Job[];
@@ -169,6 +180,7 @@ export interface Database {
   applications: Application[];
   interviews: Interview[];
   blueprints: InterviewBlueprint[];
+  emails?: EmailNotification[];
 }
 
 const dbPath = path.join(process.cwd(), 'data.json');

@@ -1374,6 +1374,11 @@
           "Walk me through the architectural decisions behind syn-2 and how you structured the code for maintainability."
         ]
       }
+    },
+    {
+      "id": "cand_2r8rbzn",
+      "name": "Maya Lin",
+      "email": "maya.lin.candidate@example.com"
     }
   ],
   "applications": [
@@ -1408,7 +1413,7 @@
       "relevantExperience": "Did a hackathon.",
       "status": "REJECTED",
       "decisionStage": "ROUND_2_SYSTEM_DESIGN",
-      "decisionReason": "Struggled to articulate distributed locking and concurrency guarantees in the system design round."
+      "decisionReason": "Struggled with concurrency guarantees and distributed locking."
     },
     {
       "id": "app_jqgx5o3",
@@ -2770,6 +2775,14 @@
           "Walk me through the architectural decisions behind syn-2 and how you structured the code for maintainability."
         ]
       }
+    },
+    {
+      "id": "app_h5luer5",
+      "jobId": "j1",
+      "candidateId": "cand_2r8rbzn",
+      "resumeText": "Maya Lin. Staff Systems Engineer with 6 years experience building distributed microservices, WebRTC streaming, and event queues.",
+      "relevantExperience": "I built an open-source real-time audio pipeline processing audio streams at 50ms latency.",
+      "status": "INTERVIEW_SCHEDULED"
     }
   ],
   "interviews": [
@@ -2969,6 +2982,12 @@
       "applicationId": "app_bpjv4dp",
       "scheduledAt": "2026-09-25T14:00:00Z",
       "status": "PENDING"
+    },
+    {
+      "id": "int_xjy2bws",
+      "applicationId": "app_h5luer5",
+      "scheduledAt": "2026-09-04T09:26:49.358Z",
+      "status": "PENDING"
     }
   ],
   "blueprints": [
@@ -3051,6 +3070,53 @@
       "id": "bp_rk2z89a",
       "interviewId": "int_lpdbjax",
       "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency Interview\",\n      \"purpose\": \"Evaluate Jordan Lee's capabilities in Technical Architecture & Concurrency with personalized questions grounded in their background.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Architecture & Concurrency Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time. Actively listen to Jordan Lee. Explore their technical depth in projects like 'syn-2' and 'ExpensWise' and 'HealthLens' and validate their real-world problem solving. Maintain a professional, encouraging interviewer tone.\",\n        \"greeting_message\": \"Hello Jordan Lee, welcome! I've been reviewing your background, including your GitHub projects like 'syn-2' and 'ExpensWise' and 'HealthLens' (with 117 commits in the past 30 days). Today, we will focus on Technical Architecture & Concurrency. Let's dive in.\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    },\n    {\n      \"round_name\": \"Distributed System Design Interview\",\n      \"purpose\": \"Evaluate Jordan Lee's capabilities in Distributed System Design with personalized questions grounded in their background.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Distributed System Design Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time. Actively listen to Jordan Lee. Explore their technical depth in projects like 'syn-2' and 'ExpensWise' and 'HealthLens' and validate their real-world problem solving. Maintain a professional, encouraging interviewer tone.\",\n        \"greeting_message\": \"Hi Jordan Lee, welcome to the System Design round. Looking at your repositories like 'syn-2' and 'ExpensWise' and 'HealthLens', I'm keen to discuss how you approach scaling systems and managing concurrency. Let's get started.\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Cultural Alignment Interview\",\n      \"purpose\": \"Evaluate Jordan Lee's capabilities in Engineering Leadership & Cultural Alignment with personalized questions grounded in their background.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Engineering Leadership & Cultural Alignment Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time. Actively listen to Jordan Lee. Explore their technical depth in projects like 'syn-2' and 'ExpensWise' and 'HealthLens' and validate their real-world problem solving. Maintain a professional, encouraging interviewer tone.\",\n        \"greeting_message\": \"Hi Jordan Lee, great to meet you. Today we'll talk about engineering leadership, team communication, and your experiences collaborating on projects. How are you doing today?\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Problem Solving\": \"Evaluates candidate's analytical reasoning and architectural clarity\",\n    \"System Architecture\": \"Evaluates understanding of concurrency, scalability, and maintainability\",\n    \"Communication & Craft\": \"Evaluates structured technical explanation and codecraft\"\n  }\n}"
+    },
+    {
+      "id": "bp_ffynird",
+      "interviewId": "int_xjy2bws",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency\",\n      \"purpose\": \"Evaluate core technical architecture and systems thinking\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Lead\",\n        \"instructions\": \"Speak naturally and concisely with Maya Lin. Explore their codecraft and system design depth.\",\n        \"greeting_message\": \"Hello Maya Lin, welcome! I have reviewed your background for the Senior Backend Engineer — Distributed Systems & AI Infrastructure position. Today we will explore your technical architecture and problem-solving skills. Let's dive in.\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\"\n      ]\n    },\n    {\n      \"round_name\": \"Distributed System Design\",\n      \"purpose\": \"Evaluate system scalability, reliability, and trade-offs\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"System Architect Lead\",\n        \"instructions\": \"Discuss scaling, caching, and resiliency.\",\n        \"greeting_message\": \"Hi Maya Lin, welcome to the System Design round. Let's discuss how you approach scaling systems and managing concurrency.\"\n      },\n      \"topics\": [\n        \"Scalability\",\n        \"Caching\",\n        \"Concurrency\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Culture\",\n      \"purpose\": \"Evaluate collaboration, ownership, and technical communication\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Engineering Director\",\n        \"instructions\": \"Evaluate communication, ownership, and engineering culture.\",\n        \"greeting_message\": \"Hi Maya Lin, great to meet you. Today we will discuss team collaboration, problem solving, and technical ownership.\"\n      },\n      \"topics\": [\n        \"Ownership\",\n        \"Collaboration\",\n        \"Conflict Resolution\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Depth\": \"Evaluates codecraft and architecture\",\n    \"System Scale\": \"Evaluates distributed systems concepts\",\n    \"Communication\": \"Evaluates clarity and structured thought\"\n  }\n}"
+    }
+  ],
+  "emails": [
+    {
+      "id": "email_mtk9ghq",
+      "recipientEmail": "maya.lin.candidate@example.com",
+      "recipientName": "Maya Lin",
+      "type": "APPLICATION_RECEIVED",
+      "subject": "Application Received: Senior Backend Engineer — Distributed Systems & AI Infrastructure at EchoSphere",
+      "bodyText": "Hi Maya Lin,\n\nThank you for applying for the Senior Backend Engineer — Distributed Systems & AI Infrastructure position at EchoSphere!\n\nWe have successfully received your application, resume, and technical links. Our autonomous evaluation engine and talent team are currently reviewing your qualifications and codecraft.\n\nWhat to expect next:\n- If your experience aligns with the core requirements of the role, you will be invited to our autonomous AI Voice Technical Interview led by our technical lead persona, Alex.\n- You will receive a separate invitation email with your scheduled date, time, and private room link.\n\nThank you again for your enthusiasm about building with EchoSphere.\n\nBest regards,\nThe EchoSphere Talent & Recruiting Team",
+      "sentAt": "2026-09-04T07:26:49.334Z",
+      "metadata": {
+        "jobTitle": "Senior Backend Engineer — Distributed Systems & AI Infrastructure"
+      }
+    },
+    {
+      "id": "email_h1eq2v2",
+      "recipientEmail": "maya.lin.candidate@example.com",
+      "recipientName": "Maya Lin",
+      "type": "INTERVIEW_INVITATION",
+      "subject": "Congratulations! You're Selected for an Interview: Senior Backend Engineer — Distributed Systems & AI Infrastructure at EchoSphere",
+      "bodyText": "Hi Maya Lin,\n\nCongratulations! We were impressed by your background, codecraft, and experience, and we are excited to invite you to the next stage of our evaluation process for the Senior Backend Engineer — Distributed Systems & AI Infrastructure role.\n\n📅 Scheduled Interview Time:\nFriday, September 4, 2026 at 02:56 PM GMT+5:30\n\n🔗 Your Personal Interview Room Link:\nhttp://localhost:3000/interview/int_xjy2bws\n\n⏱️ How the Waiting Room & Interview Works:\nYour interview is scheduled to start promptly at 02:56 PM GMT+5:30 on Friday, September 4, 2026.\nWhen you open your room link before the scheduled time, a live countdown will display on your screen. The \"Join Interview\" button will unlock automatically as soon as your scheduled time arrives. All the best!\n\n💡 Quick Tips to Prepare:\n- Find a quiet space and use headphones with a clear microphone.\n- Be prepared to discuss your architectural trade-offs, recent projects, and hands-on technical problem solving.\n- Our AI technical interviewer, Alex, will conduct the discussion conversationally.\n\nWe look forward to meeting you!\n\nWarm regards,\nThe EchoSphere Talent & Engineering Team",
+      "sentAt": "2026-09-04T07:26:49.456Z",
+      "metadata": {
+        "jobTitle": "Senior Backend Engineer — Distributed Systems & AI Infrastructure",
+        "scheduledAt": "2026-09-04T09:26:49.358Z",
+        "interviewLink": "http://localhost:3000/interview/int_xjy2bws"
+      }
+    },
+    {
+      "id": "email_9f5kuqw",
+      "recipientEmail": "charlie@test.com",
+      "recipientName": "Charlie Applicant",
+      "type": "APPLICATION_REJECTED",
+      "subject": "Update regarding your application for Senior Backend Engineer — Distributed Systems & AI Infrastructure at EchoSphere",
+      "bodyText": "Hi Charlie Applicant,\n\nThank you for your interest in EchoSphere and for the time you took to apply for the Senior Backend Engineer — Distributed Systems & AI Infrastructure position.\n\nOur team reviewed your background and qualifications thoroughly. We received many strong applications, and after careful consideration after our round 2 system design evaluation, we have decided not to move forward with your candidacy for this specific opening at this time.\n\nSpecific Feedback from the Review Team:\n\"Struggled with concurrency guarantees and distributed locking.\"\n\nPlease know that this was a difficult decision. We were very glad to learn about your background, and we will keep your profile in our talent pool should another opportunity arise that matches your strengths and trajectory.\n\nWe wish you the very best of luck in your job search and your ongoing engineering journey.\n\nSincerely,\nThe EchoSphere Talent Team",
+      "sentAt": "2026-09-04T07:26:50.373Z",
+      "metadata": {
+        "jobTitle": "Senior Backend Engineer — Distributed Systems & AI Infrastructure",
+        "stage": "ROUND_2_SYSTEM_DESIGN",
+        "reason": "Struggled with concurrency guarantees and distributed locking."
+      }
     }
   ]
 }

@@ -32,10 +32,23 @@ export async function POST(req: NextRequest) {
 
     db.interviews.push(newInterview);
     
-    // Update Application Status to INTERVIEW_SCHEDULED
     db.applications[appIndex].status = 'INTERVIEW_SCHEDULED';
 
     saveDb(db);
+
+    // Send Interview Invitation Email
+    try {
+      const app = db.applications[appIndex];
+      const candidate = db.candidates.find(c => c.id === app.candidateId);
+      const job = db.jobs.find(j => j.id === app.jobId);
+      if (candidate && job) {
+        const interviewLink = `http://localhost:3000/interview/${newInterview.id}`;
+        const { sendInterviewInvitationEmail } = await import('@/lib/email');
+        await sendInterviewInvitationEmail(candidate, job, scheduledAt, interviewLink);
+      }
+    } catch (mailErr: any) {
+      console.warn('[Interviews Route] Failed to send invitation email:', mailErr.message);
+    }
 
     return NextResponse.json({ success: true, interview: newInterview });
   } catch (err: any) {

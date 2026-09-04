@@ -240,9 +240,9 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">Relevant Experience Highlight (Optional)</label>
-            <p className="text-xs text-gray-500 mb-2">Briefly describe the most relevant project or experience you have for this specific role.</p>
-            <textarea name="relevantExperience" rows={3} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+            <label className="block text-sm font-bold text-gray-700 mb-1">Anything else you'd like to share with us? (Optional)</label>
+            <p className="text-xs text-gray-500 mb-2">Tell us about a side project you're proud of, a tough engineering challenge you solved, or anything special you want the hiring team to know.</p>
+            <textarea name="relevantExperience" rows={3} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm placeholder-gray-400" placeholder="e.g. In my spare time, I built an open-source real-time tool, won a hackathon, or led a performance revamp..."></textarea>
           </div>
 
           <div className="pt-6 border-t mt-8">

@@ -4,6 +4,7 @@ import { enrichLinkedInProfile } from '@/lib/enrichment/linkedin';
 import { enrichGitHubUrl } from '@/lib/enrichment/github';
 import { extractResumeFromGoogleDrive } from '@/lib/drive';
 import { extractTextFromPdfBuffer } from '@/lib/resume/extract';
+import { sendApplicationReceivedEmail } from '@/lib/email';
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   console.log('[Apply Route Handler Entered]', req.url);
@@ -157,6 +158,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     db.applications.push(newApplication);
     saveDb(db);
+
+    // Send Application Received Confirmation Email
+    try {
+      await sendApplicationReceivedEmail({ name, email }, { title: job.title });
+    } catch (mailErr: any) {
+      console.warn('[Apply Route] Failed to send confirmation email:', mailErr.message);
+    }
 
     return NextResponse.json({ success: true, applicationId: newApplication.id });
   } catch (err: any) {
