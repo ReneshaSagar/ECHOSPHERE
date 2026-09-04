@@ -1,4 +1,3 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { GitHubContext } from '@/lib/db';
 
 export interface ParsedGitHubUrl {
@@ -49,7 +48,7 @@ export function parseGitHubUrl(rawUrl?: string | null): ParsedGitHubUrl | null {
   }
 }
 
-interface RawRepoInfo {
+export interface RawRepoInfo {
   name: string;
   fullName: string;
   description?: string;
@@ -67,7 +66,7 @@ interface RawRepoInfo {
   isRecent?: boolean;
 }
 
-interface RawGitHubProfile {
+export interface RawGitHubProfile {
   username: string;
   name?: string;
   bio?: string;
@@ -99,9 +98,50 @@ function getGitHubHeaders(): HeadersInit {
 }
 
 /**
- * Extracts pinned repositories from candidate's profile page HTML.
+ * Extracts pinned repositories strictly from GitHub GraphQL API or public profile page HTML.
+ * ZERO LLM INTERVENTION: Gemini is never used to invent or derive pinned repositories.
  */
 async function fetchPinnedRepoNames(username: string): Promise<string[]> {
+  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+  if (token && token.trim()) {
+    try {
+      const gqlQuery = {
+        query: `query {
+          user(login: "${username}") {
+            pinnedItems(first: 6, types: REPOSITORY) {
+              nodes {
+                ... on Repository {
+                  name
+                }
+              }
+            }
+          }
+        }`
+      };
+      const res = await fetch('https://api.github.com/graphql', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token.trim()}`,
+          'Content-Type': 'application/json',
+          'User-Agent': 'EchoSphere-Hiring-Engine/1.0'
+        },
+        body: JSON.stringify(gqlQuery),
+        signal: AbortSignal.timeout(5000)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const nodes = data?.data?.user?.pinnedItems?.nodes;
+        if (Array.isArray(nodes) && nodes.length > 0) {
+          const pinned = nodes.map((n: any) => n.name).filter(Boolean);
+          if (pinned.length > 0) return pinned;
+        }
+      }
+    } catch (e: any) {
+      console.warn(`[GitHub GraphQL] Pinned items query failed: ${e.message}. Falling back to web parse.`);
+    }
+  }
+
+  // Fallback: public web HTML parse
   try {
     const res = await fetch(`https://github.com/${username}`, {
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; EchoSphereBot/1.0)' },
@@ -315,7 +355,7 @@ async function fetchGitHubProfileViaPublicWeb(username: string): Promise<RawGitH
 }
 
 /**
- * Fetches complete GitHub profile data, analyzing all repositories, pinned repos, and commits.
+ * Fetches complete GitHub profile data, analyzing repositories, pinned repos, and commits.
  */
 async function fetchGitHubProfile(username: string): Promise<RawGitHubProfile | null> {
   try {
@@ -379,120 +419,116 @@ async function fetchGitHubProfile(username: string): Promise<RawGitHubProfile | 
 
         return {
           name: r.name,
-          fullName: r.full_name,
+          fullName: r.full_name || `${username}/${r.name}`,
           description: r.description || undefined,
           language: r.language || undefined,
           stars: r.stargazers_count || 0,
           forks: r.forks_count || 0,
           topics: Array.isArray(r.topics) ? r.topics : [],
-          url: r.html_url,
+          url: r.html_url || `https://github.com/${username}/${r.name}`,
+          languages,
+          readmeSnippet,
           updatedAt: r.updated_at,
           pushedAt: r.pushed_at,
           isPinned,
           candidateCommits,
-          isRecent,
-          languages,
-          readmeSnippet
+          isRecent
         };
       })
     );
 
     return {
-      username: userData.login,
+      username: userData.login || username,
       name: userData.name || undefined,
       bio: userData.bio || undefined,
       company: userData.company || undefined,
       location: userData.location || undefined,
-      publicReposCount: userData.public_repos || 0,
+      publicReposCount: userData.public_repos || allRepoNames.length,
       followers: userData.followers || 0,
       avatarUrl: userData.avatar_url || undefined,
       profileUrl: userData.html_url || `https://github.com/${username}`,
-      totalCommits: commitMetrics.totalCommits ?? 278,
-      recentCommits30Days: commitMetrics.recentCommits30Days ?? 119,
+      totalCommits: commitMetrics.totalCommits,
+      recentCommits30Days: commitMetrics.recentCommits30Days,
       pinnedRepoNames,
       repos: enrichedRepos,
       allRepoNames
     };
   } catch (err: any) {
-    console.warn(`[GitHub API] Network error for profile ${username}:`, err.message);
+    console.warn(`[GitHub API] Network error for ${username}:`, err.message);
     return await fetchGitHubProfileViaPublicWeb(username);
   }
 }
 
 /**
- * Fetches repository data when candidate provided a specific repo URL.
+ * Fetches a single repository profile when candidate provides a direct repo URL.
  */
-async function fetchGitHubRepo(owner: string, repoName: string): Promise<RawGitHubProfile | null> {
+async function fetchGitHubRepo(owner: string, repo: string): Promise<RawGitHubProfile | null> {
   try {
-    const repoRes = await fetch(`https://api.github.com/repos/${owner}/${repoName}`, {
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}`, {
       headers: getGitHubHeaders(),
       signal: AbortSignal.timeout(8000)
     });
 
-    if (!repoRes.ok) {
-      console.warn(`[GitHub API] Failed to fetch repo ${owner}/${repoName}: HTTP ${repoRes.status}`);
+    if (!res.ok) {
+      console.warn(`[GitHub API] Failed to fetch repo ${owner}/${repo}: HTTP ${res.status}`);
       return await fetchGitHubProfile(owner);
     }
 
-    const r = await repoRes.json();
+    const r = await res.json();
+    const [candidateCommits, languages, readmeSnippet] = await Promise.all([
+      fetchRepoCandidateCommits(owner, repo, owner),
+      fetchRepoLanguages(owner, repo),
+      fetchReadmeSnippet(owner, repo)
+    ]);
+
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     const isRecent = r.pushed_at ? new Date(r.pushed_at) >= thirtyDaysAgo : false;
 
-    const [candidateCommits, languages, readmeSnippet] = await Promise.all([
-      fetchRepoCandidateCommits(owner, repoName, owner),
-      fetchRepoLanguages(owner, repoName),
-      fetchReadmeSnippet(owner, repoName)
-    ]);
-
-    const targetRepo: RawRepoInfo = {
+    const repoInfo: RawRepoInfo = {
       name: r.name,
-      fullName: r.full_name,
+      fullName: r.full_name || `${owner}/${repo}`,
       description: r.description || undefined,
       language: r.language || undefined,
       stars: r.stargazers_count || 0,
       forks: r.forks_count || 0,
       topics: Array.isArray(r.topics) ? r.topics : [],
-      url: r.html_url,
+      url: r.html_url || `https://github.com/${owner}/${repo}`,
+      languages,
+      readmeSnippet,
       updatedAt: r.updated_at,
       pushedAt: r.pushed_at,
       isPinned: true,
       candidateCommits,
-      isRecent,
-      languages,
-      readmeSnippet
+      isRecent
     };
-
-    const ownerProfile = await fetchGitHubProfile(owner);
-    if (ownerProfile) {
-      ownerProfile.repos = [targetRepo, ...ownerProfile.repos.filter(repo => repo.name !== r.name)];
-      return ownerProfile;
-    }
 
     return {
       username: owner,
+      name: owner,
       publicReposCount: 1,
       followers: 0,
       profileUrl: `https://github.com/${owner}`,
-      pinnedRepoNames: [repoName],
-      repos: [targetRepo],
-      allRepoNames: [repoName]
+      pinnedRepoNames: [r.name],
+      repos: [repoInfo],
+      allRepoNames: [r.name]
     };
   } catch (err: any) {
-    console.warn(`[GitHub API] Network error for repo ${owner}/${repoName}:`, err.message);
+    console.warn(`[GitHub API] Error fetching repo ${owner}/${repo}:`, err.message);
     return await fetchGitHubProfile(owner);
   }
 }
 
 /**
- * Uses Gemini Flash to synthesize technical highlights, deep project breakdowns,
- * and high-value technical interview hooks incorporating commit velocity and pinned projects.
+ * Pure, deterministic mapper from RawGitHubProfile to GitHubContext.
+ * 
+ * STRICT ARCHITECTURAL RULES:
+ * 1. Provider responses are the single source of truth.
+ * 2. ZERO LLM / Gemini intervention in factual extraction.
+ * 3. Never invent repository names, languages, stars, or commit counts.
+ * 4. Pinned repositories are derived strictly from provider / GraphQL / HTML responses.
  */
-async function synthesizeGitHubContext(
-  profile: RawGitHubProfile,
-  resumeText?: string,
-  jobDescription?: string
-): Promise<GitHubContext> {
+export function mapRawGitHubToCandidateContext(profile: RawGitHubProfile): GitHubContext {
   let commitVelocityNarrative: string | undefined = undefined;
   if (profile.recentCommits30Days !== undefined || profile.totalCommits !== undefined) {
     const recent = profile.recentCommits30Days ? `${profile.recentCommits30Days} commits in the past 30 days` : 'recent activity';
@@ -500,151 +536,40 @@ async function synthesizeGitHubContext(
     commitVelocityNarrative = [recent, total].filter(Boolean).join(' • ');
   }
 
-  const defaultContext: GitHubContext = {
+  return {
     username: profile.username,
     profileUrl: profile.profileUrl,
-    name: profile.name,
-    bio: profile.bio,
-    company: profile.company,
-    location: profile.location,
+    name: profile.name || undefined,
+    bio: profile.bio || undefined,
+    company: profile.company || undefined,
+    location: profile.location || undefined,
     publicReposCount: profile.publicReposCount,
     followers: profile.followers,
-    avatarUrl: profile.avatarUrl,
+    avatarUrl: profile.avatarUrl || undefined,
     totalCommits: profile.totalCommits,
     recentCommits30Days: profile.recentCommits30Days,
     commitVelocityNarrative,
     technicalHighlights: [],
     githubProjects: profile.repos.map(r => ({
       name: r.name,
-      description: r.description,
-      language: r.language,
+      description: r.description || undefined,
+      language: r.language || undefined,
       stars: r.stars,
-      topics: r.topics,
+      topics: r.topics || [],
       url: r.url,
       isPinned: r.isPinned,
       candidateCommits: r.candidateCommits,
       isRecent: r.isRecent
     })),
     githubInterviewHooks: [],
-    enrichedAt: new Date().toISOString()
+    enrichedAt: new Date().toISOString(),
+    rawProviderJson: profile
   };
-
-  const geminiKey = process.env.GEMINI_API_KEY;
-  if (!geminiKey) return defaultContext;
-
-  try {
-    const genAI = new GoogleGenerativeAI(geminiKey);
-    const model = genAI.getGenerativeModel({
-      model: "gemini-3.6-flash",
-      generationConfig: { responseMimeType: "application/json" }
-    });
-
-    const prompt = `You are a Principal Software Architect and Lead Technical Interviewer.
-Analyze this candidate's public GitHub repositories to identify active, relevant engineering projects and technical topics worth discussing during their interview.
-
-IMPORTANT GUIDELINES:
-- Do NOT use commit count, commit frequency, stars, or follower counts as evidence of candidate quality, evaluation scores, or verification/disqualification mechanisms.
-- GitHub activity is purely contextual information to discover active repositories, technologies used, and real architectural areas worth exploring.
-- Strict evaluation boundary: External profile data must NEVER be used to score, rank, penalize, or judge candidate suitability. Live interview responses are the primary evidence.
-
-Candidate Summary:
-- Username: ${profile.username}
-- Repositories Available: ${profile.allRepoNames.slice(0, 25).join(', ')}
-- Pinned Repositories: ${profile.pinnedRepoNames.length > 0 ? profile.pinnedRepoNames.join(', ') : 'None'}
-
-Repositories Data:
-${JSON.stringify(profile.repos, null, 2)}
-
-Target Job:
-${jobDescription || 'Senior Software Engineer'}
-
-Resume Ground Truth:
-${resumeText || 'None provided'}
-
-Synthesize technical interview context:
-1. "technicalHighlights": An array of 3-4 bullet points highlighting:
-   - Primary technologies, languages, and architectural patterns visible in their repositories.
-   - Domains tackled (e.g. backend distributed services, concurrency, streaming, RAG pipelines).
-2. "githubProjects": An array of 3-5 project summaries for their most technically significant repositories:
-   - "name": Repository name
-   - "description": Concise description of what the project does
-   - "language": Primary language
-   - "stars": Star count
-   - "topics": Array of topics
-   - "keyInsights": 1-2 sentences explaining technical architecture, design patterns, or engineering challenges.
-   - "url": Repository URL
-   - "isPinned": boolean
-   - "isRecent": boolean
-3. "githubInterviewHooks": An array of 3-4 deep, conversational technical questions the AI interviewer can ask to explore their actual architecture, design decisions, data structures, concurrency, or bottlenecks in their relevant repositories.
-
-CRITICAL RULES:
-- NEVER hallucinate fake repositories.
-- Use GitHub data ONLY to discover relevant engineering projects for conversation.
-- Frame questions around architecture, trade-offs, and design rationale.
-
-Return ONLY a JSON object matching this schema:
-{
-  "technicalHighlights": ["highlight 1", "highlight 2"],
-  "githubProjects": [
-    {
-      "name": "...",
-      "description": "...",
-      "language": "...",
-      "stars": 0,
-      "topics": [],
-      "keyInsights": "...",
-      "url": "...",
-      "isPinned": true,
-      "candidateCommits": 0,
-      "isRecent": true
-    }
-  ],
-  "githubInterviewHooks": ["hook 1", "hook 2"]
-}`;
-
-    let res: any = null;
-    let attempts = 0;
-    while (attempts < 3) {
-      try {
-        res = await model.generateContent(prompt);
-        break;
-      } catch (gemErr: any) {
-        attempts++;
-        if (attempts >= 3) throw gemErr;
-        await new Promise(r => setTimeout(r, 1500));
-      }
-    }
-    const text = res.response.text();
-    const parsed = JSON.parse(text);
-
-    return {
-      ...defaultContext,
-      technicalHighlights: Array.isArray(parsed.technicalHighlights) ? parsed.technicalHighlights : [],
-      githubProjects: Array.isArray(parsed.githubProjects) && parsed.githubProjects.length > 0 
-        ? parsed.githubProjects 
-        : defaultContext.githubProjects,
-      githubInterviewHooks: Array.isArray(parsed.githubInterviewHooks) ? parsed.githubInterviewHooks : []
-    };
-  } catch (err: any) {
-    console.warn('[GitHub Enrichment] AI synthesis fallback:', err.message);
-    if (defaultContext.githubProjects && defaultContext.githubProjects.length > 0) {
-      const topRepo = defaultContext.githubProjects[0];
-      defaultContext.technicalHighlights = [
-        `Active GitHub contributor with ${profile.publicReposCount} public repositories${profile.recentCommits30Days ? ` and ${profile.recentCommits30Days} commits in the past 30 days` : ''}.`,
-        topRepo.language ? `Demonstrated codebase experience in ${topRepo.language}.` : 'Multi-language developer.',
-        profile.pinnedRepoNames.length > 0 ? `Showcased pinned repositories include: ${profile.pinnedRepoNames.join(', ')}.` : 'Broad open-source repository portfolio.'
-      ];
-      defaultContext.githubInterviewHooks = [
-        `In your GitHub project ${topRepo.name}${topRepo.candidateCommits ? ` where you made ${topRepo.candidateCommits} commits` : ''}, what were the most significant technical trade-offs you made during its implementation?`,
-        `Walk me through the architectural decisions behind ${topRepo.name} and how you structured the code for maintainability.`
-      ];
-    }
-    return defaultContext;
-  }
 }
 
 /**
  * Main GitHub enrichment function.
+ * Deterministic ingestion from GitHub API. ZERO GEMINI EXTRACTION.
  */
 export async function enrichGitHubUrl(
   rawUrl?: string | null,
@@ -662,7 +587,7 @@ export async function enrichGitHubUrl(
   }
 
   try {
-    console.log(`[GitHub Enrichment] Analyzing all repositories, commit metrics, and pinned projects for ${parsed.owner}${parsed.repo ? '/' + parsed.repo : ''}`);
+    console.log(`[GitHub Enrichment] Ingesting profile and repositories for ${parsed.owner}${parsed.repo ? '/' + parsed.repo : ''}`);
     
     let profileData: RawGitHubProfile | null = null;
     if (parsed.type === 'repo' && parsed.repo) {
@@ -676,44 +601,27 @@ export async function enrichGitHubUrl(
       return null;
     }
 
-    console.log(`[GitHub Enrichment] Extracted ${profileData.allRepoNames.length} total repos, ${profileData.pinnedRepoNames.length} pinned repos, ${profileData.totalCommits ?? 0} total commits (${profileData.recentCommits30Days ?? 0} in past month) for ${profileData.username}.`);
-    
-    let commitVelocityNarrative: string | undefined = undefined;
-    if (profileData.recentCommits30Days !== undefined || profileData.totalCommits !== undefined) {
-      const recent = profileData.recentCommits30Days ? `${profileData.recentCommits30Days} commits in the past 30 days` : 'recent activity';
-      const total = profileData.totalCommits ? `${profileData.totalCommits} total commits` : '';
-      commitVelocityNarrative = [recent, total].filter(Boolean).join(' • ');
-    }
+    // Deterministic Mapping (Zero LLM)
+    const mapped = mapRawGitHubToCandidateContext(profileData);
 
-    const githubContext: GitHubContext = {
+    // Source Logging Stages
+    console.log('[ENRICHMENT STAGE 1: RAW PROVIDER JSON (GitHub)]', JSON.stringify({
       username: profileData.username,
-      profileUrl: profileData.profileUrl,
-      name: profileData.name,
-      bio: profileData.bio,
-      company: profileData.company,
-      location: profileData.location,
-      publicReposCount: profileData.publicReposCount,
-      followers: profileData.followers,
-      avatarUrl: profileData.avatarUrl,
+      totalReposExtracted: profileData.allRepoNames.length,
+      pinnedRepoNames: profileData.pinnedRepoNames,
       totalCommits: profileData.totalCommits,
-      recentCommits30Days: profileData.recentCommits30Days,
-      commitVelocityNarrative,
-      technicalHighlights: [],
-      githubProjects: profileData.repos.map(r => ({
-        name: r.name,
-        description: r.description,
-        language: r.language,
-        stars: r.stars,
-        topics: r.topics,
-        url: r.url,
-        isPinned: r.isPinned,
-        candidateCommits: r.candidateCommits,
-        isRecent: r.isRecent
-      })),
-      githubInterviewHooks: [],
-      enrichedAt: new Date().toISOString()
-    };
-    return githubContext;
+      recentCommits30Days: profileData.recentCommits30Days
+    }));
+
+    console.log('[ENRICHMENT STAGE 2: MAPPED CANDIDATE CONTEXT (GitHub)]', JSON.stringify({
+      username: mapped.username,
+      publicReposCount: mapped.publicReposCount,
+      githubProjectsCount: mapped.githubProjects?.length || 0,
+      pinnedCount: (mapped.githubProjects || []).filter(p => p.isPinned).length,
+      repositories: (mapped.githubProjects || []).map(p => ({ name: p.name, isPinned: p.isPinned, lang: p.language }))
+    }));
+
+    return mapped;
   } catch (err: any) {
     console.warn('[GitHub Enrichment] Failed gracefully without blocking application:', err.message);
     return null;

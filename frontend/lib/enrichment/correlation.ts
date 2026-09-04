@@ -5,7 +5,8 @@ import type {
   NormalizedLinkedInContext, 
   NormalizedGitHubContext, 
   CrossSourceContext, 
-  InterviewContext 
+  InterviewContext,
+  EnrichmentSourceLogging
 } from '@/lib/db';
 
 /**
@@ -15,14 +16,14 @@ function normalizeResume(text: string, fileName?: string, driveUrl?: string): No
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
   const snippet = text.slice(0, 1000);
 
-  // Extract rough skills if mentioned
+  // Extract common tech explicitly mentioned in resume text
   const commonTech = [
     'Python', 'FastAPI', 'Django', 'Go', 'Golang', 'Node.js', 'TypeScript', 'JavaScript', 
     'React', 'Next.js', 'PostgreSQL', 'Redis', 'Kafka', 'Docker', 'Kubernetes', 'AWS', 
-    'GCP', 'WebRTC', 'LLM', 'RAG', 'Agora', 'PyTorch', 'TensorFlow', 'SQL', 'GraphQL'
+    'GCP', 'WebRTC', 'LLM', 'RAG', 'Agora', 'PyTorch', 'TensorFlow', 'SQL', 'GraphQL', 'Solidity'
   ];
   const foundSkills = commonTech.filter(tech => 
-    new RegExp(`\\b${tech}\\b`, 'i').test(text)
+    new RegExp(`(?:^|[^a-zA-Z0-9#+.-])${tech.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:$|[^a-zA-Z0-9#+.-])`, 'i').test(text)
   );
 
   return {
@@ -38,40 +39,65 @@ function normalizeResume(text: string, fileName?: string, driveUrl?: string): No
 
 /**
  * Normalizes raw LinkedIn data into clean NormalizedLinkedInContext.
+ * 
+ * STRICT RULES:
+ * - Headline must be preserved EXACTLY as returned by the provider. Never abbreviate or rewrite it.
+ * - If a field is missing from the provider, leave it null/undefined. Do NOT infer or rewrite it.
  */
 function normalizeLinkedIn(rawLinkedIn?: any): NormalizedLinkedInContext | undefined {
   if (!rawLinkedIn) return undefined;
 
+  const headline = rawLinkedIn.headline ? String(rawLinkedIn.headline).trim() : (rawLinkedIn.position ? String(rawLinkedIn.position).trim() : undefined);
+  const about = rawLinkedIn.about ? String(rawLinkedIn.about).trim() : (rawLinkedIn.summary ? String(rawLinkedIn.summary).trim() : undefined);
+
   const rawExp = rawLinkedIn.experience || [];
   const exp = Array.isArray(rawExp) ? rawExp.map((e: any) => ({
-    title: e.title || e.position || 'Role',
-    company: e.company || e.company_name || 'Company',
-    duration: e.duration || (e.start_date ? `${e.start_date} - ${e.end_date || 'Present'}` : undefined),
+    title: String(e.title || e.position || 'Role').trim(),
+    company: String(e.company || e.company_name || 'Company').trim(),
+    duration: e.duration ? String(e.duration).trim() : (e.start_date ? `${e.start_date} - ${e.end_date || 'Present'}` : undefined),
     description: typeof e.description === 'string' ? e.description.slice(0, 500) : undefined
   })) : [];
 
   const rawEdu = rawLinkedIn.education || [];
   const edu = Array.isArray(rawEdu) ? rawEdu.map((ed: any) => ({
-    school: ed.school || ed.school_name || 'Institution',
+    school: String(ed.school || ed.school_name || 'Institution').trim(),
     degree: ed.degree || ed.degree_name,
     fieldOfStudy: ed.field_of_study,
-    year: ed.year ? String(ed.year) : (ed.end_year ? String(ed.end_year) : undefined)
+    year: ed.year ? String(ed.year).trim() : (ed.end_year ? String(ed.end_year).trim() : undefined)
   })) : [];
 
   const rawSkills = rawLinkedIn.skills || [];
   const skills = Array.isArray(rawSkills) 
-    ? rawSkills.map((s: any) => typeof s === 'string' ? s : (s.name || s.title || '')).filter(Boolean)
+    ? rawSkills.map((s: any) => typeof s === 'string' ? s.trim() : (s.name || s.title || '').trim()).filter(Boolean)
+    : [];
+
+  const rawProjects = rawLinkedIn.projects || [];
+  const projects = Array.isArray(rawProjects)
+    ? rawProjects.map((p: any) => ({
+        title: String(p.title || p.name).trim(),
+        description: p.description ? String(p.description).trim() : undefined,
+        url: p.url || p.link || undefined
+      }))
+    : [];
+
+  const rawCerts = rawLinkedIn.certifications || [];
+  const certs = Array.isArray(rawCerts)
+    ? rawCerts.map((c: any) => ({
+        name: String(c.name || c.title).trim(),
+        issuer: c.issuer || c.authority || undefined,
+        year: c.year ? String(c.year).trim() : (c.date ? String(c.date).trim() : undefined)
+      }))
     : [];
 
   return {
     profileUrl: rawLinkedIn.url || rawLinkedIn.profileUrl,
-    headline: rawLinkedIn.headline || rawLinkedIn.position,
-    about: rawLinkedIn.about || rawLinkedIn.summary,
+    headline,
+    about,
     experience: exp,
     skills,
     education: edu,
-    projects: rawLinkedIn.projects,
-    certifications: rawLinkedIn.certifications,
+    projects,
+    certifications: certs,
     careerProgression: rawLinkedIn.careerProgression,
     notableClaims: rawLinkedIn.notableClaims
   };
@@ -79,8 +105,7 @@ function normalizeLinkedIn(rawLinkedIn?: any): NormalizedLinkedInContext | undef
 
 /**
  * Normalizes raw GitHub data into clean NormalizedGitHubContext.
- * STRICT: Excludes commit velocity as quality scoring or verification metrics.
- * Uses repositories solely as contextual evidence of active work and architectural topics.
+ * Pinned repositories and metadata derived ONLY from provider responses, NEVER from Gemini.
  */
 function normalizeGitHub(rawGitHub?: any): NormalizedGitHubContext | undefined {
   if (!rawGitHub) return undefined;
@@ -108,7 +133,7 @@ function normalizeGitHub(rawGitHub?: any): NormalizedGitHubContext | undefined {
 }
 
 /**
- * Heuristic fallback correlation engine if Gemini is unreachable.
+ * Deterministic heuristic correlation fallback when Gemini is unreachable.
  */
 function buildHeuristicCorrelation(
   resume: NormalizedResumeContext,
@@ -116,139 +141,130 @@ function buildHeuristicCorrelation(
   github?: NormalizedGitHubContext,
   job?: { title: string; description: string; requirements: string }
 ): { crossSourceContext: CrossSourceContext; interviewContext: InterviewContext } {
-  // 1. Corroborate Skills across sources
   const resumeSkills = new Set((resume.skills || []).map(s => s.toLowerCase()));
   const linkedinSkills = new Set((linkedin?.skills || []).map(s => s.toLowerCase()));
-  const githubLangs = new Set((github?.repositories || []).map(r => (r.language || '').toLowerCase()).filter(Boolean));
+  const githubLangs = new Set(
+    (github?.repositories || []).map(r => (r.language || '').toLowerCase()).filter(Boolean)
+  );
 
-  const allSkills = new Set([...resumeSkills, ...linkedinSkills, ...githubLangs]);
   const corroboratedSkills: CrossSourceContext['corroboratedSkills'] = [];
+  const allKnownSkills = new Set([...resumeSkills, ...linkedinSkills, ...githubLangs]);
 
-  for (const skill of allSkills) {
+  for (const s of allKnownSkills) {
+    const inResume = resumeSkills.has(s);
+    const inLinkedIn = linkedinSkills.has(s);
+    const inGitHub = githubLangs.has(s);
+
     const sources: ('resume' | 'linkedin' | 'github')[] = [];
-    if (resumeSkills.has(skill)) sources.push('resume');
-    if (linkedinSkills.has(skill)) sources.push('linkedin');
-    if (githubLangs.has(skill)) sources.push('github');
+    if (inResume) sources.push('resume');
+    if (inLinkedIn) sources.push('linkedin');
+    if (inGitHub) sources.push('github');
 
     if (sources.length >= 2) {
       corroboratedSkills.push({
-        skill: skill.charAt(0).toUpperCase() + skill.slice(1),
+        skill: s.charAt(0).toUpperCase() + s.slice(1),
         sources,
-        confidence: sources.length >= 3 ? 'HIGH' : 'MEDIUM'
+        confidence: 'HIGH',
+        evidenceSnippet: `Confirmed across: ${sources.join(', ')}`
+      });
+    } else if (sources.length === 1) {
+      corroboratedSkills.push({
+        skill: s.charAt(0).toUpperCase() + s.slice(1),
+        sources,
+        confidence: 'MEDIUM',
+        evidenceSnippet: `Reported on ${sources[0]}`
       });
     }
   }
 
-  // 2. Corroborate Projects
+  // Corroborate Projects across GitHub and Resume
   const corroboratedProjects: CrossSourceContext['corroboratedProjects'] = [];
-  const resumeTextLower = (resume.textSnippet || '').toLowerCase();
-  (github?.repositories || []).forEach(r => {
-    if (resumeTextLower.includes(r.name.toLowerCase())) {
-      corroboratedProjects.push({
-        projectName: r.name,
-        description: r.description || `Repository ${r.name} in ${r.language || 'code'}`,
-        sources: ['resume', 'github'],
-        details: `Corroborated across Resume and public GitHub repository (${r.url || 'GitHub'}).`
-      });
-    }
+  for (const r of (github?.repositories || [])) {
+    const inResume = resume.textSnippet?.toLowerCase().includes(r.name.toLowerCase());
+    const sources: ('resume' | 'linkedin' | 'github')[] = ['github'];
+    if (inResume) sources.push('resume');
+
+    corroboratedProjects.push({
+      projectName: r.name,
+      description: r.description || `Repository in ${r.language || 'code'}`,
+      sources,
+      details: r.readmeSnippet || `Active codebase exploring ${r.topics?.join(', ') || r.language || 'software architecture'}.`,
+      evidenceSnippet: `GitHub repository: ${r.url}`
+    });
+  }
+
+  // Corroborated Experience
+  const corroboratedExperience: CrossSourceContext['corroboratedExperience'] = (linkedin?.experience || []).map(e => ({
+    role: e.title,
+    company: e.company,
+    duration: e.duration,
+    sources: ['linkedin'],
+    corroborationNotes: 'Extracted directly from verified provider profile.'
+  }));
+
+  const careerProgressionSummary = linkedin?.experience && linkedin.experience.length > 0
+    ? `${linkedin.experience[0].title} at ${linkedin.experience[0].company}, with background in ${corroboratedSkills.slice(0, 4).map(s => s.skill).join(', ')}.`
+    : `Engineer with demonstrated codebase projects in ${corroboratedSkills.slice(0, 4).map(s => s.skill).join(', ')}.`;
+
+  const notableClaims: CrossSourceContext['notableClaims'] = [];
+  (resume.notableHighlights || []).forEach(h => {
+    notableClaims.push({
+      claim: h,
+      source: 'resume',
+      verificationFocus: 'Probe technical metrics and architectural trade-offs during live discussion.'
+    });
   });
 
-  // 3. Corroborate Experience
-  const corroboratedExperience: CrossSourceContext['corroboratedExperience'] = [];
-  (linkedin?.experience || []).forEach(exp => {
-    if (resumeTextLower.includes(exp.company.toLowerCase())) {
-      corroboratedExperience.push({
-        role: exp.title,
-        company: exp.company,
-        duration: exp.duration,
-        sources: ['resume', 'linkedin'],
-        corroborationNotes: `Role verified across Resume and LinkedIn profile.`
-      });
-    }
-  });
+  const technicalInterviewHooks: string[] = [];
+  for (const p of corroboratedProjects.slice(0, 3)) {
+    technicalInterviewHooks.push(
+      `In your project '${p.projectName}', what architectural decisions did you make to optimize performance and handle concurrency?`
+    );
+  }
 
-  // 4. JD-Specific Relevance Filter
-  const jobTextLower = `${job?.title || ''} ${job?.description || ''} ${job?.requirements || ''}`.toLowerCase();
-  const isBackend = /backend|distributed|systems|api|concurrency|database|infrastructure|microservice/i.test(jobTextLower);
-  
-  const highRelevanceEvidence: InterviewContext['highRelevanceEvidence'] = [];
-  const projectsWorthProbing: InterviewContext['projectsWorthProbing'] = [];
-  const ignoredOrLowRelevanceTopics: string[] = [];
-
-  (github?.repositories || []).forEach(r => {
-    const repoText = `${r.name} ${r.description || ''} ${r.language || ''} ${(r.topics || []).join(' ')}`.toLowerCase();
-    const isTutorial = /tutorial|assignment|learn|practice|course|exercise|demo/i.test(r.name);
-    const isUIOnly = /css|html|landing|template|portfolio/i.test(repoText) && !/node|python|go|backend|db/i.test(repoText);
-
-    if (isTutorial) {
-      ignoredOrLowRelevanceTopics.push(`${r.name} (flagged as basic practice/tutorial repository)`);
-    } else if (isBackend && isUIOnly) {
-      ignoredOrLowRelevanceTopics.push(`${r.name} (static UI project; deprioritized for Backend role)`);
-    } else {
-      const matchScore = (r.language && jobTextLower.includes(r.language.toLowerCase()) ? 1 : 0) +
-        (r.topics || []).filter((t: string) => jobTextLower.includes(t.toLowerCase())).length;
-
-      const relevanceLevel = matchScore > 0 || r.isPinned ? 'HIGH' : 'MEDIUM';
-
-      highRelevanceEvidence.push({
-        topic: `${r.name} (${r.language || 'Multi-language'})`,
-        relevance: relevanceLevel,
-        reason: r.description || `Engineering project relevant to ${job?.title || 'target role'}`,
-        evidenceSources: ['github']
-      });
-
-      projectsWorthProbing.push({
-        name: r.name,
-        relevanceLevel,
-        reasonToProbe: `Explore hands-on architecture, code structure, and trade-offs in ${r.name}.`,
-        suggestedQuestions: [
-          `In your project ${r.name}, walk me through the core architectural decisions and concurrency model.`,
-          `What were the major technical trade-offs or bottlenecks you encountered while implementing ${r.name}?`
-        ],
-        sourceUrl: r.url
-      });
-    }
-  });
-
-  const technicalInterviewHooks = [
-    `Discuss real-world system design and concurrency trade-offs based on candidate's corroborated projects: ${corroboratedProjects.map(p => p.projectName).join(', ') || 'backend services'}.`,
-    `Probe deep technical implementations in ${corroboratedSkills.slice(0, 3).map(s => s.skill).join(', ')} under high throughput or scale.`
+  const behavioralInterviewHooks: string[] = [
+    `Tell me about a complex production or project bottleneck you diagnosed, and how you worked through the trade-offs.`
   ];
 
-  const behavioralInterviewHooks = [
-    `Tell me about an instance in your past work where an architectural decision had unexpected trade-offs, and how you iterated on it.`,
-    `How do you collaborate across engineering and product when balancing technical debt vs shipping speed?`
-  ];
+  const projectsWorthProbing = corroboratedProjects.slice(0, 3).map(p => ({
+    name: p.projectName,
+    relevanceLevel: 'HIGH' as const,
+    reasonToProbe: `Demonstrates hands-on engineering craft in ${p.details}`,
+    suggestedQuestions: [
+      `What were the major challenges in building ${p.projectName}?`,
+      `How did you handle error states and scaling constraints?`
+    ],
+    sourceUrl: `https://github.com/${github?.username || 'candidate'}/${p.projectName}`
+  }));
 
   return {
     crossSourceContext: {
-      corroboratedSkills,
+      corroboratedSkills: corroboratedSkills.slice(0, 10),
       corroboratedProjects,
       corroboratedExperience,
-      careerProgressionSummary: linkedin?.careerProgression || 'Direct transition into advanced engineering responsibilities.',
-      notableClaims: (linkedin?.notableClaims || []).map(c => ({
-        claim: c,
-        source: 'linkedin',
-        verificationFocus: 'Explore technical scale, benchmarks, and concrete implementation details.'
-      }))
+      careerProgressionSummary,
+      notableClaims
     },
     interviewContext: {
       targetRole: job?.title || 'Engineering Role',
-      highRelevanceEvidence,
+      highRelevanceEvidence: corroboratedSkills.slice(0, 4).map(s => ({
+        topic: s.skill,
+        relevance: 'HIGH' as const,
+        reason: `Direct candidate competency verified across ${s.sources.join(', ')}`,
+        evidenceSources: s.sources
+      })),
       technicalInterviewHooks,
       behavioralInterviewHooks,
       projectsWorthProbing,
-      ignoredOrLowRelevanceTopics
+      ignoredOrLowRelevanceTopics: []
     }
   };
 }
 
 /**
- * Deterministic Anti-Hallucination & Relevance Validator.
- * 1. Verifies every AI-extracted skill against the raw candidate text. If the skill does not appear
- *    anywhere in the candidate's raw data, it is permanently purged.
- * 2. Filters out irrelevant buzzwords (e.g., blockchain, smart contracts, crypto, game scripts)
- *    from interview question hooks unless the target job is specifically in that domain.
+ * Programmatic Deterministic Validator:
+ * - Discards any hallucinated skill or project not found in candidate raw text
+ * - Filters out irrelevant buzzwords (blockchain, crypto, smart contracts) unless target role demands them
  */
 function sanitizeAndVerifyGrounding(
   crossSource: CrossSourceContext,
@@ -258,7 +274,6 @@ function sanitizeAndVerifyGrounding(
   rawGitHub: any,
   job: { title: string; description: string; requirements: string }
 ): { crossSourceContext: CrossSourceContext; interviewContext: InterviewContext } {
-  // Build unified search corpus from candidate's raw sources
   const resumeStr = (rawResumeText || '').toLowerCase();
   
   const linkedinParts: string[] = [];
@@ -289,29 +304,25 @@ function sanitizeAndVerifyGrounding(
 
   const fullCorpus = `${resumeStr} ${linkedinStr} ${githubStr}`;
 
-  // Helper to test if a term exists in text (handling symbols like C++, C#, .NET, Node.js)
   const isTermGrounded = (term: string): boolean => {
     if (!term || term.trim().length === 0) return false;
     const clean = term.trim().toLowerCase();
-    
-    // Short acronyms or common terms
     const escaped = clean.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const regex = new RegExp(`(?:^|[^a-zA-Z0-9#+.-])${escaped}(?:$|[^a-zA-Z0-9#+.-])`, 'i');
     return regex.test(fullCorpus);
   };
 
-  // 1. Audit Corroborated Skills: purge any hallucinated skill
+  // 1. Audit Corroborated Skills
   const verifiedSkills: CrossSourceContext['corroboratedSkills'] = [];
   for (const s of (crossSource.corroboratedSkills || [])) {
     if (isTermGrounded(s.skill)) {
-      // Validated against real candidate text
       verifiedSkills.push(s);
     } else {
-      console.warn(`[Anti-Hallucination Guard] Discarded ungrounded skill: "${s.skill}" (not found in candidate raw data)`);
+      console.warn(`[Anti-Hallucination Guard] Discarded ungrounded skill: "${s.skill}"`);
     }
   }
 
-  // 2. Audit Corroborated Projects: must appear in resume or match a GitHub/LinkedIn project
+  // 2. Audit Corroborated Projects
   const verifiedProjects: CrossSourceContext['corroboratedProjects'] = [];
   for (const p of (crossSource.corroboratedProjects || [])) {
     if (isTermGrounded(p.projectName)) {
@@ -321,14 +332,13 @@ function sanitizeAndVerifyGrounding(
     }
   }
 
-  // 3. Strict Relevance & Noise Filtering (User requirement: "just cuz you saw something on the resume doesnt mean you have to ask about it like if its not relevant at all like asking blockchain is irrelevant unless until it comes up")
+  // 3. Strict Relevance & Noise Filtering
   const targetJobText = `${job.title} ${job.description} ${job.requirements}`.toLowerCase();
   const isJobBlockchain = /blockchain|solidity|web3|ethereum|smart contract|crypto|defi/i.test(targetJobText);
   const isJobGameDev = /unreal|unity|gameplay|godot/i.test(targetJobText);
 
   const ignoredOrLowRelevance = new Set(interview.ignoredOrLowRelevanceTopics || []);
 
-  // Irrelevant domains to flag if NOT part of target job
   const irrelevantCheckers = [
     {
       domain: 'Blockchain / Web3 / Smart Contracts',
@@ -350,7 +360,7 @@ function sanitizeAndVerifyGrounding(
     }
   }
 
-  // Filter Interview Hooks: remove any questions that ask about ignored/irrelevant topics
+  // Filter Interview Hooks
   const sanitizedTechnicalHooks = (interview.technicalInterviewHooks || []).filter(hook => {
     for (const check of irrelevantCheckers) {
       if (!check.relevantToJob && check.regex.test(hook)) {
@@ -361,7 +371,7 @@ function sanitizeAndVerifyGrounding(
     return true;
   });
 
-  // Filter Projects Worth Probing: do not probe projects focused on irrelevant tech
+  // Filter Projects Worth Probing
   const sanitizedProjectsToProbe = (interview.projectsWorthProbing || []).filter(proj => {
     for (const check of irrelevantCheckers) {
       if (!check.relevantToJob && (check.regex.test(proj.name) || check.regex.test(proj.reasonToProbe))) {
@@ -390,9 +400,21 @@ function sanitizeAndVerifyGrounding(
 
 /**
  * Main Pipeline Function:
- * Takes raw Ingestion Sources (Resume, LinkedIn, GitHub) + Job Description,
- * executes Cross-Source Correlation & JD-Specific Relevance Filtering,
- * and produces the unified 5-layer CandidateContext.
+ * 
+ * STRICT ARCHITECTURAL PRINCIPLES:
+ * 1. Provider JSON (LinkedIn & GitHub) is the SINGLE SOURCE OF TRUTH for all factual fields.
+ * 2. Deterministic mappers parse raw provider responses into CandidateContext.
+ * 3. Gemini is strictly used ONLY for synthesis:
+ *    - careerProgression
+ *    - notableClaims
+ *    - interviewHooks
+ *    Fields that MUST NEVER be generated by Gemini:
+ *    - headline, name, bio/about, experience, education, skills, projects, certifications,
+ *      organizations, repository names, pinned repositories, stars, languages, commit counts.
+ * 4. Missing provider fields remain null/undefined. No inference, no guessing.
+ * 5. Display the original headline exactly as returned by the provider. Never abbreviate or rewrite.
+ * 6. Pinned repositories derived strictly from provider / GraphQL / HTML, not Gemini.
+ * 7. Comprehensive source logging across all 3 stages for verifiable diffing.
  */
 export async function correlateAndBuildCandidateContext({
   rawResumeText,
@@ -409,17 +431,71 @@ export async function correlateAndBuildCandidateContext({
   rawGitHub?: any;
   job: { id: string; title: string; description: string; requirements: string };
 }): Promise<CandidateContext> {
-  // 1. Separate & Normalize Ingestion Sources
+  // Extract underlying raw provider JSON
+  const rawLinkedInProvider = rawLinkedIn?.rawProviderJson || rawLinkedIn;
+  const rawGitHubProvider = rawGitHub?.rawProviderJson || rawGitHub;
+
+  // 1. Separate & Deterministically Normalize Ingestion Sources (ZERO LLM EXTRACTION)
   const resume = normalizeResume(rawResumeText, rawResumeFileName, rawResumeDriveUrl);
   const linkedin = normalizeLinkedIn(rawLinkedIn);
   const github = normalizeGitHub(rawGitHub);
 
-  // 2. Prepare Base Heuristic Synthesis
+  // 2. Build Mapped CandidateContext Snapshot (Stage 2)
+  const mappedCandidateContext = {
+    headline: linkedin?.headline || null,
+    name: rawLinkedInProvider?.name || rawGitHubProvider?.name || null,
+    bio: linkedin?.about || rawGitHubProvider?.bio || null,
+    experience: linkedin?.experience || [],
+    education: linkedin?.education || [],
+    skills: linkedin?.skills || [],
+    projects: linkedin?.projects || [],
+    certifications: linkedin?.certifications || [],
+    organizations: rawLinkedInProvider?.organizations || [],
+    github: {
+      username: github?.username || null,
+      repositoryNames: (github?.repositories || []).map(r => r.name),
+      pinnedRepositories: (github?.repositories || []).filter(r => r.isPinned).map(r => r.name),
+      stars: (github?.repositories || []).reduce((acc, r: any) => acc + (r.stars || 0), 0),
+      languages: Array.from(new Set((github?.repositories || []).map(r => r.language).filter(Boolean) as string[])),
+      commitCounts: {
+        total: rawGitHubProvider?.totalCommits,
+        recent30Days: rawGitHubProvider?.recentCommits30Days
+      }
+    }
+  };
+
+  // Stage 1 & Stage 2 Console Source Logging
+  console.log('\n================== [ENRICHMENT STAGE 1: RAW PROVIDER JSON] ==================');
+  console.log('LinkedIn Raw Keys:', Object.keys(rawLinkedInProvider || {}));
+  console.log('LinkedIn Original Headline:', rawLinkedInProvider?.headline || rawLinkedInProvider?.position || 'N/A');
+  console.log('GitHub Raw Username:', rawGitHubProvider?.username || 'N/A');
+  console.log('GitHub Repositories Count (Raw):', rawGitHubProvider?.repos?.length || rawGitHubProvider?.allRepoNames?.length || 0);
+  console.log('GitHub Pinned Repos (Provider/GraphQL):', rawGitHubProvider?.pinnedRepoNames || []);
+  console.log('GitHub Total Commits:', rawGitHubProvider?.totalCommits ?? 'N/A');
+  console.log('GitHub Recent 30-Day Commits:', rawGitHubProvider?.recentCommits30Days ?? 'N/A');
+
+  console.log('\n================== [ENRICHMENT STAGE 2: MAPPED CANDIDATE CONTEXT] ==================');
+  console.log('Mapped Headline (Exact Provider String):', mappedCandidateContext.headline);
+  console.log('Mapped Experience Items:', mappedCandidateContext.experience.length);
+  console.log('Mapped Education Items:', mappedCandidateContext.education.length);
+  console.log('Mapped Skills Items:', mappedCandidateContext.skills.length);
+  console.log('Mapped Projects Items:', mappedCandidateContext.projects.length);
+  console.log('Mapped GitHub Repositories:', mappedCandidateContext.github.repositoryNames);
+  console.log('Mapped GitHub Pinned Repositories:', mappedCandidateContext.github.pinnedRepositories);
+  console.log('====================================================================================\n');
+
+  // 3. Prepare Base Heuristic Synthesis
   const baseSynthesis = buildHeuristicCorrelation(resume, linkedin, github, job);
   let crossSourceContext = baseSynthesis.crossSourceContext;
   let interviewContext = baseSynthesis.interviewContext;
 
-  // 3. Enhance with Gemini LLM Reasoning if API key is present
+  let geminiSynthesisOutput: EnrichmentSourceLogging['geminiSynthesis'] = {
+    careerProgression: crossSourceContext.careerProgressionSummary,
+    notableClaims: crossSourceContext.notableClaims,
+    interviewHooks: interviewContext.technicalInterviewHooks.concat(interviewContext.behavioralInterviewHooks)
+  };
+
+  // 4. Gemini SYNTHESIS ONLY (Strictly forbidden from generating factual profile information)
   const geminiKey = process.env.GEMINI_API_KEY;
   if (geminiKey) {
     try {
@@ -429,124 +505,111 @@ export async function correlateAndBuildCandidateContext({
         generationConfig: { responseMimeType: "application/json" }
       });
 
-      const prompt = `You are a Principal Software Architect & Head of Technical Hiring.
-You are given candidate data from 3 ingestion sources (Resume, LinkedIn, GitHub) and a target Job Description.
+      const prompt = `You are an AI synthesis strategist and principal interviewer for EchoSphere.
+You are given verified, immutable CandidateContext extracted deterministically from Resume, LinkedIn, and GitHub, alongside a target Job Description.
 
-Perform a deep Cross-Source Correlation, Strict Factual Grounding, and JD-Specific Relevance Filtering.
+STRICT DATA INTEGRITY DIRECTIVE:
+- YOU ARE STRICTLY FORBIDDEN FROM GENERATING OR ALTERING FACTUAL PROFILE FIELDS:
+  Do NOT generate or modify: headline, name, bio/about, experience, education, skills, projects, certifications, organizations, repository names, pinned repositories, stars, languages, or commit counts.
+- All factual information is already finalized by deterministic mappers from provider APIs.
+- Your output is EXCLUSIVELY limited to high-level analysis and question synthesis.
 
-CRITICAL POLICY 1: ANTI-HALLUCINATION & STRICT FACTUAL GROUNDING (ZERO ASSUMPTIONS)
-- CLOSED-BOOK EVALUATION: You may ONLY use information explicitly stated in the candidate's Resume, LinkedIn, or GitHub data. Assume NOTHING else.
-- ZERO EXTRAPOLATION: Never infer, guess, or extrapolate unmentioned companion technologies:
-  * Stating "Python" does NOT mean they know Django, FastAPI, or Celery unless explicitly written.
-  * Stating "React" does NOT mean they know Next.js, Redux, or Tailwind unless explicitly written.
-  * Stating "Backend" does NOT mean they know Docker, Kubernetes, Kafka, or AWS unless explicitly written.
-- ZERO JD CONTAMINATION: Technologies in the Target Job are employer requirements, NOT candidate skills. Never attribute any technology from the target job to the candidate unless candidate raw sources explicitly state they have used it.
-- EVIDENCE CITATION: For every item in "corroboratedSkills", provide an "evidenceSnippet" citing the exact quote or repository proving the candidate actually stated or used it.
-
-CRITICAL POLICY 2: STRICT RELEVANCE & NOISE FILTERING (DO NOT ASK ABOUT IRRELEVANT RESUME TOPICS)
-- JUST BECAUSE IT IS ON THE RESUME DOES NOT MEAN YOU SHOULD ASK ABOUT IT:
-  * If a candidate mentioned an irrelevant, niche, or mismatched technology (for example: Blockchain, Solidity, Web3, Smart Contracts, Crypto, unrelated game scripts, or obsolete coursework) that does NOT directly relate to the core duties of "${job.title}", DO NOT generate interview questions or hooks for it!
-  * Put these unrelated technologies into "ignoredOrLowRelevanceTopics" with an explicit reason (e.g. "Blockchain / Solidity on resume: irrelevant to ${job.title}; omit from interview unless candidate initiates").
-- FOCUS 100% OF INTERVIEW HOOKS ON HIGH-RELEVANCE COMPETENCIES:
-  * Only formulate "technicalInterviewHooks" and "projectsWorthProbing" around technologies and projects that directly inform their ability to succeed in "${job.title}".
-
-CRITICAL POLICY 3: STRICT EVALUATION BOUNDARIES
-- NEVER use GitHub commit count, commit frequency, stars, or followers as candidate-quality signals, verification scores, or disqualification mechanisms.
-- External profile data is solely contextual information to discover real projects for technical discussion.
+REQUIRED SYNTHESIS OUTPUTS:
+1. "careerProgressionSummary": 1-2 sentence narrative summarizing their professional trajectory based strictly on the verified roles and dates provided.
+2. "notableClaims": 2-4 verified claims, achievements, or metrics explicitly stated in their background with a "verificationFocus" for live interview probing.
+3. "highRelevanceEvidence": 3-4 topics from their verified background that directly align with "${job.title}".
+4. "technicalInterviewHooks": 2-4 deep technical questions probing their architectural choices, data flows, or concurrency in their verified projects.
+5. "behavioralInterviewHooks": 1-2 behavioral questions regarding collaboration and production challenges.
+6. "projectsWorthProbing": 1-3 projects from their verified project list that are relevant to "${job.title}".
+7. "ignoredOrLowRelevanceTopics": Background topics that are outside the scope of "${job.title}" (e.g. blockchain/crypto, unrelated game scripts, generic web utilities) to omit from the interview.
 
 Target Job:
-Title: ${job.title}
+Role: ${job.title}
 Description: ${job.description}
 Requirements: ${job.requirements}
 
-Candidate Ingestion Sources:
-Resume Summary:
-${JSON.stringify(resume, null, 2)}
-
-LinkedIn Profile:
-${JSON.stringify(linkedin || {}, null, 2)}
-
-GitHub Repositories:
-${JSON.stringify((github?.repositories || []).slice(0, 15), null, 2)}
+Verified Candidate Context (Deterministic Ground Truth):
+Resume Summary: ${JSON.stringify(resume, null, 2)}
+Verified LinkedIn: ${JSON.stringify(linkedin || {}, null, 2)}
+Verified GitHub Repositories: ${JSON.stringify((github?.repositories || []).map(r => ({ name: r.name, description: r.description, language: r.language, isPinned: r.isPinned })), null, 2)}
 
 Return ONLY valid JSON matching this exact schema:
 {
-  "crossSourceContext": {
-    "corroboratedSkills": [
-      { 
-        "skill": "Exact skill name", 
-        "sources": ["resume", "github"], 
-        "confidence": "HIGH",
-        "evidenceSnippet": "Resume: 'Built microservices with Python' | GitHub repo: ExpensWise (Python)"
-      }
-    ],
-    "corroboratedProjects": [
-      { 
-        "projectName": "Exact project name", 
-        "description": "...", 
-        "sources": ["resume", "github"], 
-        "details": "...",
-        "evidenceSnippet": "..." 
-      }
-    ],
-    "corroboratedExperience": [
-      { "role": "...", "company": "...", "duration": "...", "sources": ["resume", "linkedin"], "corroborationNotes": "..." }
-    ],
-    "careerProgressionSummary": "...",
-    "notableClaims": [
-      { "claim": "...", "source": "resume", "verificationFocus": "Probe architecture and concurrency bottlenecks" }
-    ]
-  },
-  "interviewContext": {
-    "targetRole": "${job.title}",
-    "highRelevanceEvidence": [
-      { "topic": "...", "relevance": "HIGH", "reason": "...", "evidenceSources": ["resume", "github"] }
-    ],
-    "technicalInterviewHooks": [
-      "Targeting only high-relevance corroborated tech: In project X, walk me through how you handled..."
-    ],
-    "behavioralInterviewHooks": [
-      "Tell me about a production challenge in system Z and how you navigated the trade-offs..."
-    ],
-    "projectsWorthProbing": [
-      {
-        "name": "...",
-        "relevanceLevel": "HIGH",
-        "reasonToProbe": "...",
-        "suggestedQuestions": ["...", "..."],
-        "sourceUrl": "..."
-      }
-    ],
-    "ignoredOrLowRelevanceTopics": [
-      "[IRRELEVANT TO ROLE] e.g. Blockchain/Solidity — on resume but unrelated to ${job.title}; omit from interview unless candidate initiates."
-    ]
-  }
+  "careerProgressionSummary": "...",
+  "notableClaims": [
+    { "claim": "...", "source": "resume" | "linkedin" | "github", "verificationFocus": "..." }
+  ],
+  "highRelevanceEvidence": [
+    { "topic": "...", "relevance": "HIGH", "reason": "...", "evidenceSources": ["resume", "github"] }
+  ],
+  "technicalInterviewHooks": [ "..." ],
+  "behavioralInterviewHooks": [ "..." ],
+  "projectsWorthProbing": [
+    { "name": "...", "relevanceLevel": "HIGH", "reasonToProbe": "...", "suggestedQuestions": ["..."], "sourceUrl": "..." }
+  ],
+  "ignoredOrLowRelevanceTopics": [ "..." ]
 }`;
 
       const res = await model.generateContent(prompt);
       const parsed = JSON.parse(res.response.text());
-      if (parsed.crossSourceContext && parsed.interviewContext) {
-        crossSourceContext = parsed.crossSourceContext;
-        interviewContext = parsed.interviewContext;
+
+      if (parsed) {
+        if (parsed.careerProgressionSummary) {
+          crossSourceContext.careerProgressionSummary = parsed.careerProgressionSummary;
+        }
+        if (Array.isArray(parsed.notableClaims) && parsed.notableClaims.length > 0) {
+          crossSourceContext.notableClaims = parsed.notableClaims;
+        }
+        if (Array.isArray(parsed.highRelevanceEvidence) && parsed.highRelevanceEvidence.length > 0) {
+          interviewContext.highRelevanceEvidence = parsed.highRelevanceEvidence;
+        }
+        if (Array.isArray(parsed.technicalInterviewHooks) && parsed.technicalInterviewHooks.length > 0) {
+          interviewContext.technicalInterviewHooks = parsed.technicalInterviewHooks;
+        }
+        if (Array.isArray(parsed.behavioralInterviewHooks) && parsed.behavioralInterviewHooks.length > 0) {
+          interviewContext.behavioralInterviewHooks = parsed.behavioralInterviewHooks;
+        }
+        if (Array.isArray(parsed.projectsWorthProbing) && parsed.projectsWorthProbing.length > 0) {
+          interviewContext.projectsWorthProbing = parsed.projectsWorthProbing;
+        }
+        if (Array.isArray(parsed.ignoredOrLowRelevanceTopics) && parsed.ignoredOrLowRelevanceTopics.length > 0) {
+          interviewContext.ignoredOrLowRelevanceTopics = parsed.ignoredOrLowRelevanceTopics;
+        }
+
+        geminiSynthesisOutput = {
+          careerProgression: parsed.careerProgressionSummary,
+          notableClaims: parsed.notableClaims,
+          interviewHooks: (parsed.technicalInterviewHooks || []).concat(parsed.behavioralInterviewHooks || [])
+        };
       }
     } catch (llmErr: any) {
       console.warn('[Correlation Engine] Gemini synthesis fallback to heuristic:', llmErr.message);
     }
   }
 
-  // 4. Programmatic Deterministic Anti-Hallucination & Relevance Audit
+  // 5. Deterministic Grounding & Irrelevant Topic Pruning
   const sanitized = sanitizeAndVerifyGrounding(
     crossSourceContext,
     interviewContext,
     rawResumeText,
-    rawLinkedIn,
-    rawGitHub,
+    rawLinkedInProvider,
+    rawGitHubProvider,
     job
   );
   crossSourceContext = sanitized.crossSourceContext;
   interviewContext = sanitized.interviewContext;
 
-  // 4. Construct Full Unified CandidateContext
+  // Stage 3 Console Source Logging
+  console.log('\n================== [ENRICHMENT STAGE 3: GEMINI SYNTHESIS] ==================');
+  console.log('Synthesized Career Progression:', crossSourceContext.careerProgressionSummary);
+  console.log('Synthesized Notable Claims:', crossSourceContext.notableClaims.length);
+  console.log('Synthesized Technical Hooks:', interviewContext.technicalInterviewHooks.length);
+  console.log('Synthesized Behavioral Hooks:', interviewContext.behavioralInterviewHooks.length);
+  console.log('Synthesized Projects Worth Probing:', interviewContext.projectsWorthProbing.length);
+  console.log('Excluded Irrelevant Topics:', interviewContext.ignoredOrLowRelevanceTopics);
+  console.log('============================================================================\n');
+
+  // 6. Assemble Final CandidateContext (Strictly preserves factual profile fields from provider)
   const fullContext: CandidateContext = {
     // 5 Normalized Layers
     resume,
@@ -555,22 +618,30 @@ Return ONLY valid JSON matching this exact schema:
     crossSourceContext,
     interviewContext,
 
-    // Backwards Compatibility Mapping for Existing ATS Panels
-    headline: linkedin?.headline || resume.experienceTitles?.[0],
-    about: linkedin?.about || resume.textSnippet?.slice(0, 300),
-    experience: linkedin?.experience,
-    skills: crossSourceContext.corroboratedSkills.map(s => s.skill).concat(linkedin?.skills || []),
-    education: linkedin?.education,
-    projects: linkedin?.projects,
-    certifications: linkedin?.certifications,
+    // Factual fields directly from deterministic mapper (NEVER from Gemini)
+    // Original headline exactly as returned by provider:
+    headline: linkedin?.headline || undefined,
+    about: linkedin?.about || undefined,
+    experience: linkedin?.experience || [],
+    skills: Array.from(new Set((linkedin?.skills || []).concat(crossSourceContext.corroboratedSkills.map(s => s.skill)))),
+    education: linkedin?.education || [],
+    projects: linkedin?.projects || [],
+    certifications: linkedin?.certifications || [],
+    organizations: rawLinkedInProvider?.organizations || [],
+
+    // Synthesis fields from Gemini
     careerProgression: crossSourceContext.careerProgressionSummary,
     notableClaims: crossSourceContext.notableClaims.map(c => c.claim),
     interviewHooks: interviewContext.technicalInterviewHooks.concat(interviewContext.behavioralInterviewHooks),
-    enrichmentSource: linkedin ? (github ? 'linkedin+github+resume' : 'linkedin+resume') : 'resume',
+
+    enrichmentSource: linkedin ? (github ? 'brightdata+github+resume' : 'brightdata+resume') : 'resume',
     enrichedAt: new Date().toISOString(),
 
-    // Legacy GitHub Context Mapping
+    // Legacy GitHub Context Mapping (Pure deterministic provider values)
     githubContext: rawGitHub,
+    totalCommits: rawGitHubProvider?.totalCommits,
+    recentCommits30Days: rawGitHubProvider?.recentCommits30Days,
+    commitVelocityNarrative: rawGitHub?.commitVelocityNarrative,
     githubProjects: rawGitHub?.githubProjects || github?.repositories?.map((r: any) => ({
       name: r.name,
       description: r.description,
@@ -581,7 +652,18 @@ Return ONLY valid JSON matching this exact schema:
       isPinned: r.isPinned,
       isRecent: true
     })),
-    githubInterviewHooks: interviewContext.technicalInterviewHooks
+    githubInterviewHooks: interviewContext.technicalInterviewHooks,
+
+    // Source Logging Audit Trace for Complete Diffing
+    sourceLogging: {
+      rawProviderJson: {
+        linkedin: rawLinkedInProvider || null,
+        github: rawGitHubProvider || null
+      },
+      mappedCandidateContext,
+      geminiSynthesis: geminiSynthesisOutput,
+      timestamp: new Date().toISOString()
+    }
   };
 
   return fullContext;

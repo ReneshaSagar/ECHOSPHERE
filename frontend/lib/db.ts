@@ -168,6 +168,38 @@ export interface InterviewContext {
   ignoredOrLowRelevanceTopics?: string[];
 }
 
+export interface EnrichmentSourceLogging {
+  rawProviderJson: {
+    linkedin?: any;
+    github?: any;
+  };
+  mappedCandidateContext: {
+    headline: string | null;
+    name?: string | null;
+    bio?: string | null;
+    experience: any[];
+    education: any[];
+    skills: string[];
+    projects: any[];
+    certifications: any[];
+    organizations: string[];
+    github: {
+      username?: string | null;
+      repositoryNames: string[];
+      pinnedRepositories: string[];
+      stars?: number;
+      languages?: string[];
+      commitCounts?: { total?: number; recent30Days?: number };
+    };
+  };
+  geminiSynthesis: {
+    careerProgression?: string | null;
+    notableClaims?: Array<{ claim: string; source: string; verificationFocus: string }>;
+    interviewHooks?: string[];
+  };
+  timestamp: string;
+}
+
 export interface CandidateContext {
   // --- 5 Core Normalized Pipeline Layers ---
   resume?: NormalizedResumeContext;
@@ -208,6 +240,8 @@ export interface CandidateContext {
   interviewHooks?: string[];
   enrichmentSource?: string;
   enrichedAt?: string;
+  rawProviderJson?: any;
+  sourceLogging?: EnrichmentSourceLogging;
 
   // GitHub Context (backwards-compat)
   githubContext?: GitHubContext;

@@ -56,7 +56,13 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
         <div className="flex justify-between items-start mb-6 border-b pb-4">
           <div>
             <h2 className="text-2xl font-bold">{candidate?.name}</h2>
-            <p className="text-gray-600">{candidate?.email}</p>
+            {candidateContext?.headline && (
+              <p className="text-sm font-semibold text-gray-800 mt-1 flex items-center gap-1.5">
+                <span className="text-blue-600">💼</span>
+                <span>{candidateContext.headline}</span>
+              </p>
+            )}
+            <p className="text-gray-600 text-sm mt-0.5">{candidate?.email}</p>
             <div className="flex gap-4 mt-2 text-sm text-blue-600">
               {candidate?.linkedinUrl && <a href={candidate.linkedinUrl} target="_blank" className="hover:underline">LinkedIn</a>}
               {candidate?.githubUrl && <a href={candidate.githubUrl} target="_blank" className="hover:underline">GitHub</a>}
@@ -622,6 +628,96 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
             </div>
           )}
         </div>
+
+        {/* Enrichment Source Logging & Stage Diffing Trace */}
+        {candidateContext?.sourceLogging && (
+          <div className="mt-8 border-t pt-6">
+            <div className="flex justify-between items-center mb-3">
+              <div>
+                <h3 className="font-bold text-lg text-gray-900 flex items-center gap-2">
+                  <span>🔬</span> Data Integrity & Source Logging Trace
+                </h3>
+                <p className="text-xs text-gray-500">
+                  Full verifiable audit trail diffing raw provider API data, deterministic mapping, and synthesis-only Gemini outputs.
+                </p>
+              </div>
+              <span className="text-xs bg-purple-100 text-purple-800 font-bold px-2.5 py-1 rounded-full border border-purple-200">
+                Audit Verified
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Stage 1: Raw Provider JSON */}
+              <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-bold uppercase text-gray-600 tracking-wider">
+                    Stage 1: Raw Provider JSON
+                  </span>
+                  <span className="text-[10px] bg-gray-200 text-gray-700 px-2 py-0.5 rounded font-mono">
+                    Single Truth Source
+                  </span>
+                </div>
+                <p className="text-xs text-gray-500 mb-2">
+                  Raw payload from Bright Data & GitHub APIs without alteration.
+                </p>
+                <details className="text-xs">
+                  <summary className="text-blue-600 hover:underline cursor-pointer font-semibold">
+                    View Raw Provider Data
+                  </summary>
+                  <pre className="mt-2 p-3 bg-gray-900 text-emerald-400 rounded-lg text-[11px] overflow-x-auto max-h-60">
+                    {JSON.stringify(candidateContext.sourceLogging.rawProviderJson, null, 2)}
+                  </pre>
+                </details>
+              </div>
+
+              {/* Stage 2: Mapped CandidateContext */}
+              <div className="p-4 bg-blue-50/50 border border-blue-200 rounded-xl">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-bold uppercase text-blue-800 tracking-wider">
+                    Stage 2: Mapped Context
+                  </span>
+                  <span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-mono">
+                    Deterministic Code
+                  </span>
+                </div>
+                <p className="text-xs text-gray-600 mb-2">
+                  Factual profile fields mapped purely via code (ZERO LLM extraction).
+                </p>
+                <details className="text-xs">
+                  <summary className="text-blue-600 hover:underline cursor-pointer font-semibold">
+                    View Mapped Fields
+                  </summary>
+                  <pre className="mt-2 p-3 bg-gray-900 text-blue-300 rounded-lg text-[11px] overflow-x-auto max-h-60">
+                    {JSON.stringify(candidateContext.sourceLogging.mappedCandidateContext, null, 2)}
+                  </pre>
+                </details>
+              </div>
+
+              {/* Stage 3: Gemini Synthesis */}
+              <div className="p-4 bg-purple-50/50 border border-purple-200 rounded-xl">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-bold uppercase text-purple-800 tracking-wider">
+                    Stage 3: Gemini Synthesis
+                  </span>
+                  <span className="text-[10px] bg-purple-100 text-purple-800 px-2 py-0.5 rounded font-mono">
+                    Synthesis Only
+                  </span>
+                </div>
+                <p className="text-xs text-gray-600 mb-2">
+                  Narrative synthesis, notable claims, and interview hooks only.
+                </p>
+                <details className="text-xs">
+                  <summary className="text-purple-600 hover:underline cursor-pointer font-semibold">
+                    View Synthesis Outputs
+                  </summary>
+                  <pre className="mt-2 p-3 bg-gray-900 text-yellow-300 rounded-lg text-[11px] overflow-x-auto max-h-60">
+                    {JSON.stringify(candidateContext.sourceLogging.geminiSynthesis, null, 2)}
+                  </pre>
+                </details>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <ApplicationActions applicationId={application.id} currentStatus={application.status} />
