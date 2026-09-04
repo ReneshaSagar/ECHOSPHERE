@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen bg-gray-100 text-gray-900">
+    <div className="flex h-screen pt-16 bg-gray-100 text-gray-900 overflow-hidden">
       <div className="w-64 bg-white border-r flex flex-col">
         <div className="p-4 border-b">
           <h1 className="text-xl font-bold text-blue-600">EchoSphere Admin</h1>

@@ -1185,6 +1185,195 @@
       "id": "cand_6cjxccz",
       "name": "PDF Candidate Verified",
       "email": "pdf.candidate.verified@example.com"
+    },
+    {
+      "id": "cand_2g52i9s",
+      "name": "Jordan Lee",
+      "email": "jordan.lee.pipeline@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
+      "githubUrl": "https://github.com/madhavgairola",
+      "candidateContext": {
+        "experience": [],
+        "skills": [],
+        "education": [
+          {
+            "school": "Jaypee Institute of Information Technology",
+            "degree": null,
+            "year": null
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-04T06:55:28.569Z",
+        "careerProgression": "Based on the provided information, the candidate's career progression cannot be determined as no work experience is listed in either the LinkedIn profile data or the resume.",
+        "notableClaims": [],
+        "interviewHooks": [],
+        "githubContext": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "name": "mdhv",
+          "bio": "I code sometimes",
+          "location": "Delhi",
+          "publicReposCount": 19,
+          "followers": 1,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
+          "totalCommits": 278,
+          "recentCommits30Days": 117,
+          "commitVelocityNarrative": "117 commits in the past 30 days • 278 total commits",
+          "technicalHighlights": [
+            "Active GitHub contributor with 19 public repositories and 117 commits in the past 30 days.",
+            "Demonstrated codebase experience in TypeScript.",
+            "Showcased pinned repositories include: ExpensWise, HealthLens, syn-2, electora."
+          ],
+          "githubProjects": [
+            {
+              "name": "syn-2",
+              "language": "TypeScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/syn-2",
+              "isPinned": true,
+              "candidateCommits": 0,
+              "isRecent": true
+            },
+            {
+              "name": "ExpensWise",
+              "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/ExpensWise",
+              "isPinned": true,
+              "candidateCommits": 40,
+              "isRecent": false
+            },
+            {
+              "name": "HealthLens",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/HealthLens",
+              "isPinned": true,
+              "candidateCommits": 1,
+              "isRecent": false
+            },
+            {
+              "name": "electora",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/electora",
+              "isPinned": true,
+              "candidateCommits": 9,
+              "isRecent": false
+            },
+            {
+              "name": "lal",
+              "description": "leetcode accountability league",
+              "language": "Python",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/lal",
+              "isPinned": false,
+              "candidateCommits": 3,
+              "isRecent": true
+            },
+            {
+              "name": "ECHOSPHERE",
+              "language": "TypeScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+              "isPinned": false,
+              "candidateCommits": 57,
+              "isRecent": true
+            }
+          ],
+          "githubInterviewHooks": [
+            "In your GitHub project syn-2, what were the most significant technical trade-offs you made during its implementation?",
+            "Walk me through the architectural decisions behind syn-2 and how you structured the code for maintainability."
+          ],
+          "enrichedAt": "2026-09-04T06:55:43.414Z"
+        },
+        "totalCommits": 278,
+        "recentCommits30Days": 117,
+        "commitVelocityNarrative": "117 commits in the past 30 days • 278 total commits",
+        "technicalHighlights": [
+          "Active GitHub contributor with 19 public repositories and 117 commits in the past 30 days.",
+          "Demonstrated codebase experience in TypeScript.",
+          "Showcased pinned repositories include: ExpensWise, HealthLens, syn-2, electora."
+        ],
+        "githubProjects": [
+          {
+            "name": "syn-2",
+            "language": "TypeScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/syn-2",
+            "isPinned": true,
+            "candidateCommits": 0,
+            "isRecent": true
+          },
+          {
+            "name": "ExpensWise",
+            "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/ExpensWise",
+            "isPinned": true,
+            "candidateCommits": 40,
+            "isRecent": false
+          },
+          {
+            "name": "HealthLens",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/HealthLens",
+            "isPinned": true,
+            "candidateCommits": 1,
+            "isRecent": false
+          },
+          {
+            "name": "electora",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/electora",
+            "isPinned": true,
+            "candidateCommits": 9,
+            "isRecent": false
+          },
+          {
+            "name": "lal",
+            "description": "leetcode accountability league",
+            "language": "Python",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/lal",
+            "isPinned": false,
+            "candidateCommits": 3,
+            "isRecent": true
+          },
+          {
+            "name": "ECHOSPHERE",
+            "language": "TypeScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+            "isPinned": false,
+            "candidateCommits": 57,
+            "isRecent": true
+          }
+        ],
+        "githubInterviewHooks": [
+          "In your GitHub project syn-2, what were the most significant technical trade-offs you made during its implementation?",
+          "Walk me through the architectural decisions behind syn-2 and how you structured the code for maintainability."
+        ]
+      }
     }
   ],
   "applications": [
@@ -2378,6 +2567,198 @@
       "resumeText": "Dummy PDF file",
       "resumeFileName": "Candidate_Resume.pdf",
       "status": "APPLIED"
+    },
+    {
+      "id": "app_bpjv4dp",
+      "jobId": "j1",
+      "candidateId": "cand_2g52i9s",
+      "resumeText": "Dummy PDF file",
+      "resumeFileName": "Jordan_Lee_Resume.pdf",
+      "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
+      "githubUrl": "https://github.com/madhavgairola",
+      "status": "INTERVIEW_SCHEDULED",
+      "candidateContext": {
+        "experience": [],
+        "skills": [],
+        "education": [
+          {
+            "school": "Jaypee Institute of Information Technology",
+            "degree": null,
+            "year": null
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "enrichmentSource": "brightdata",
+        "enrichedAt": "2026-09-04T06:55:28.569Z",
+        "careerProgression": "Based on the provided information, the candidate's career progression cannot be determined as no work experience is listed in either the LinkedIn profile data or the resume.",
+        "notableClaims": [],
+        "interviewHooks": [],
+        "githubContext": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "name": "mdhv",
+          "bio": "I code sometimes",
+          "location": "Delhi",
+          "publicReposCount": 19,
+          "followers": 1,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
+          "totalCommits": 278,
+          "recentCommits30Days": 117,
+          "commitVelocityNarrative": "117 commits in the past 30 days • 278 total commits",
+          "technicalHighlights": [
+            "Active GitHub contributor with 19 public repositories and 117 commits in the past 30 days.",
+            "Demonstrated codebase experience in TypeScript.",
+            "Showcased pinned repositories include: ExpensWise, HealthLens, syn-2, electora."
+          ],
+          "githubProjects": [
+            {
+              "name": "syn-2",
+              "language": "TypeScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/syn-2",
+              "isPinned": true,
+              "candidateCommits": 0,
+              "isRecent": true
+            },
+            {
+              "name": "ExpensWise",
+              "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/ExpensWise",
+              "isPinned": true,
+              "candidateCommits": 40,
+              "isRecent": false
+            },
+            {
+              "name": "HealthLens",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/HealthLens",
+              "isPinned": true,
+              "candidateCommits": 1,
+              "isRecent": false
+            },
+            {
+              "name": "electora",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/electora",
+              "isPinned": true,
+              "candidateCommits": 9,
+              "isRecent": false
+            },
+            {
+              "name": "lal",
+              "description": "leetcode accountability league",
+              "language": "Python",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/lal",
+              "isPinned": false,
+              "candidateCommits": 3,
+              "isRecent": true
+            },
+            {
+              "name": "ECHOSPHERE",
+              "language": "TypeScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+              "isPinned": false,
+              "candidateCommits": 57,
+              "isRecent": true
+            }
+          ],
+          "githubInterviewHooks": [
+            "In your GitHub project syn-2, what were the most significant technical trade-offs you made during its implementation?",
+            "Walk me through the architectural decisions behind syn-2 and how you structured the code for maintainability."
+          ],
+          "enrichedAt": "2026-09-04T06:55:43.414Z"
+        },
+        "totalCommits": 278,
+        "recentCommits30Days": 117,
+        "commitVelocityNarrative": "117 commits in the past 30 days • 278 total commits",
+        "technicalHighlights": [
+          "Active GitHub contributor with 19 public repositories and 117 commits in the past 30 days.",
+          "Demonstrated codebase experience in TypeScript.",
+          "Showcased pinned repositories include: ExpensWise, HealthLens, syn-2, electora."
+        ],
+        "githubProjects": [
+          {
+            "name": "syn-2",
+            "language": "TypeScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/syn-2",
+            "isPinned": true,
+            "candidateCommits": 0,
+            "isRecent": true
+          },
+          {
+            "name": "ExpensWise",
+            "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/ExpensWise",
+            "isPinned": true,
+            "candidateCommits": 40,
+            "isRecent": false
+          },
+          {
+            "name": "HealthLens",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/HealthLens",
+            "isPinned": true,
+            "candidateCommits": 1,
+            "isRecent": false
+          },
+          {
+            "name": "electora",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/electora",
+            "isPinned": true,
+            "candidateCommits": 9,
+            "isRecent": false
+          },
+          {
+            "name": "lal",
+            "description": "leetcode accountability league",
+            "language": "Python",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/lal",
+            "isPinned": false,
+            "candidateCommits": 3,
+            "isRecent": true
+          },
+          {
+            "name": "ECHOSPHERE",
+            "language": "TypeScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+            "isPinned": false,
+            "candidateCommits": 57,
+            "isRecent": true
+          }
+        ],
+        "githubInterviewHooks": [
+          "In your GitHub project syn-2, what were the most significant technical trade-offs you made during its implementation?",
+          "Walk me through the architectural decisions behind syn-2 and how you structured the code for maintainability."
+        ]
+      }
     }
   ],
   "interviews": [
@@ -2571,6 +2952,12 @@
       "applicationId": "app_pqfntku",
       "scheduledAt": "2026-09-24T10:00:00Z",
       "status": "PENDING"
+    },
+    {
+      "id": "int_lpdbjax",
+      "applicationId": "app_bpjv4dp",
+      "scheduledAt": "2026-09-25T14:00:00Z",
+      "status": "PENDING"
     }
   ],
   "blueprints": [
@@ -2648,6 +3035,11 @@
       "id": "bp_rd73io2",
       "interviewId": "int_namzxfu",
       "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency Interview\",\n      \"purpose\": \"Evaluate Madhav Gairola's capabilities in Technical Architecture & Concurrency with personalized questions grounded in their background.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Architecture & Concurrency Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time. Actively listen to Madhav Gairola. Explore their technical depth in projects like 'echosphere' and 'kana-dojo' and 'syn-2' and validate their real-world problem solving. Maintain a professional, encouraging interviewer tone.\",\n        \"greeting_message\": \"Hello Madhav Gairola, welcome! I've been reviewing your background, including your GitHub projects like 'echosphere' and 'kana-dojo' and 'syn-2' (with 124 commits in the past 30 days). Today, we will focus on Technical Architecture & Concurrency. Let's dive in.\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    },\n    {\n      \"round_name\": \"Distributed System Design Interview\",\n      \"purpose\": \"Evaluate Madhav Gairola's capabilities in Distributed System Design with personalized questions grounded in their background.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Distributed System Design Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time. Actively listen to Madhav Gairola. Explore their technical depth in projects like 'echosphere' and 'kana-dojo' and 'syn-2' and validate their real-world problem solving. Maintain a professional, encouraging interviewer tone.\",\n        \"greeting_message\": \"Hi Madhav Gairola, welcome to the System Design round. Looking at your repositories like 'echosphere' and 'kana-dojo' and 'syn-2', I'm keen to discuss how you approach scaling systems and managing concurrency. Let's get started.\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Cultural Alignment Interview\",\n      \"purpose\": \"Evaluate Madhav Gairola's capabilities in Engineering Leadership & Cultural Alignment with personalized questions grounded in their background.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Engineering Leadership & Cultural Alignment Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time. Actively listen to Madhav Gairola. Explore their technical depth in projects like 'echosphere' and 'kana-dojo' and 'syn-2' and validate their real-world problem solving. Maintain a professional, encouraging interviewer tone.\",\n        \"greeting_message\": \"Hi Madhav Gairola, great to meet you. Today we'll talk about engineering leadership, team communication, and your experiences collaborating on projects. How are you doing today?\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Problem Solving\": \"Evaluates candidate's analytical reasoning and architectural clarity\",\n    \"System Architecture\": \"Evaluates understanding of concurrency, scalability, and maintainability\",\n    \"Communication & Craft\": \"Evaluates structured technical explanation and codecraft\"\n  }\n}"
+    },
+    {
+      "id": "bp_rk2z89a",
+      "interviewId": "int_lpdbjax",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency Interview\",\n      \"purpose\": \"Evaluate Jordan Lee's capabilities in Technical Architecture & Concurrency with personalized questions grounded in their background.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Technical Architecture & Concurrency Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time. Actively listen to Jordan Lee. Explore their technical depth in projects like 'syn-2' and 'ExpensWise' and 'HealthLens' and validate their real-world problem solving. Maintain a professional, encouraging interviewer tone.\",\n        \"greeting_message\": \"Hello Jordan Lee, welcome! I've been reviewing your background, including your GitHub projects like 'syn-2' and 'ExpensWise' and 'HealthLens' (with 117 commits in the past 30 days). Today, we will focus on Technical Architecture & Concurrency. Let's dive in.\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    },\n    {\n      \"round_name\": \"Distributed System Design Interview\",\n      \"purpose\": \"Evaluate Jordan Lee's capabilities in Distributed System Design with personalized questions grounded in their background.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Distributed System Design Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time. Actively listen to Jordan Lee. Explore their technical depth in projects like 'syn-2' and 'ExpensWise' and 'HealthLens' and validate their real-world problem solving. Maintain a professional, encouraging interviewer tone.\",\n        \"greeting_message\": \"Hi Jordan Lee, welcome to the System Design round. Looking at your repositories like 'syn-2' and 'ExpensWise' and 'HealthLens', I'm keen to discuss how you approach scaling systems and managing concurrency. Let's get started.\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Cultural Alignment Interview\",\n      \"purpose\": \"Evaluate Jordan Lee's capabilities in Engineering Leadership & Cultural Alignment with personalized questions grounded in their background.\",\n      \"interviewer\": {\n        \"name\": \"Alex\",\n        \"role\": \"Engineering Leadership & Cultural Alignment Lead\",\n        \"instructions\": \"Speak naturally and concisely. Ask one question at a time. Actively listen to Jordan Lee. Explore their technical depth in projects like 'syn-2' and 'ExpensWise' and 'HealthLens' and validate their real-world problem solving. Maintain a professional, encouraging interviewer tone.\",\n        \"greeting_message\": \"Hi Jordan Lee, great to meet you. Today we'll talk about engineering leadership, team communication, and your experiences collaborating on projects. How are you doing today?\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Problem Solving\": \"Evaluates candidate's analytical reasoning and architectural clarity\",\n    \"System Architecture\": \"Evaluates understanding of concurrency, scalability, and maintainability\",\n    \"Communication & Craft\": \"Evaluates structured technical explanation and codecraft\"\n  }\n}"
     }
   ]
 }

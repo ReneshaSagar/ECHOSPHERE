@@ -30,7 +30,7 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col pt-16">
       <header className="bg-white border-b shadow-sm py-4 px-6 flex justify-between items-center">
         <h1 className="text-2xl font-bold text-blue-600">EchoSphere Interview</h1>
         <div className="text-gray-600 font-medium">{candidate.name}</div>
