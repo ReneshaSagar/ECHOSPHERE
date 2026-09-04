@@ -1,8 +1,22 @@
 import { getDb, saveDb, EmailNotification } from '../db';
 import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
 const resendApiKey = process.env.RESEND_API_KEY;
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
+
+// Gmail SMTP configuration for universal hackathon delivery (Zero domain required)
+const gmailUser = process.env.GMAIL_USER;
+const gmailPass = process.env.GMAIL_APP_PASSWORD;
+const gmailTransporter = (gmailUser && gmailPass)
+  ? nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: gmailUser,
+        pass: gmailPass
+      }
+    })
+  : null;
 
 /**
  * Base email layout wrapper with EchoSphere branding
@@ -55,7 +69,8 @@ function wrapHtmlEmail(title: string, bodyContent: string): string {
 }
 
 /**
- * Dispatches an automated email via Resend and logs it to db.emails for full ATS auditability.
+ * Dispatches an automated email via Gmail SMTP (universal delivery) or Resend,
+ * and logs it to db.emails for full ATS auditability.
  */
 export async function sendEmail({
   recipientEmail,
@@ -77,22 +92,46 @@ export async function sendEmail({
   const db = getDb();
   if (!db.emails) db.emails = [];
 
-  let resendId: string | undefined = undefined;
+  let deliveryId: string | undefined = undefined;
+  let deliveryProvider: 'gmail_smtp' | 'resend' | 'none' = 'none';
+  const renderedHtml = htmlContent || wrapHtmlEmail(subject, `<p>${bodyText.replace(/\n/g, '<br/>')}</p>`);
 
-  // 1. Live Resend Delivery
-  if (resend) {
+  // 1. Primary: Gmail SMTP (Universal delivery to any email without requiring a custom domain)
+  if (gmailTransporter && gmailUser) {
+    try {
+      const info = await gmailTransporter.sendMail({
+        from: `"EchoSphere Talent" <${gmailUser}>`,
+        to: recipientEmail,
+        subject,
+        text: bodyText,
+        html: renderedHtml
+      });
+
+      if (info.messageId) {
+        deliveryId = info.messageId;
+        deliveryProvider = 'gmail_smtp';
+        console.log(`[Gmail SMTP Success] Live email dispatched to: ${recipientEmail} | ID: ${deliveryId}`);
+      }
+    } catch (smtpErr: any) {
+      console.warn(`[Gmail SMTP Notice]: ${smtpErr.message}. Attempting Resend fallback...`);
+    }
+  }
+
+  // 2. Secondary: Resend Delivery (if Gmail SMTP unavailable or fallback needed)
+  if (!deliveryId && resend) {
     try {
       const response = await resend.emails.send({
         from: 'EchoSphere Talent <onboarding@resend.dev>',
         to: recipientEmail,
         subject,
         text: bodyText,
-        html: htmlContent || wrapHtmlEmail(subject, `<p>${bodyText.replace(/\n/g, '<br/>')}</p>`)
+        html: renderedHtml
       });
 
       if (response.data) {
-        resendId = response.data.id;
-        console.log(`[Resend Delivery Success] Live email dispatched to: ${recipientEmail} | ID: ${resendId}`);
+        deliveryId = response.data.id;
+        deliveryProvider = 'resend';
+        console.log(`[Resend Delivery Success] Live email dispatched to: ${recipientEmail} | ID: ${deliveryId}`);
       } else if (response.error) {
         console.warn(`[Resend Delivery Notice]: ${response.error.message}`);
       }
@@ -112,7 +151,9 @@ export async function sendEmail({
     sentAt: new Date().toISOString(),
     metadata: {
       ...metadata,
-      resendId
+      deliveryId,
+      provider: deliveryProvider,
+      resendId: deliveryProvider === 'resend' ? deliveryId : undefined
     }
   };
 
@@ -123,7 +164,7 @@ export async function sendEmail({
   console.log(`[EMAIL DISPATCHED] -> To: ${recipientName} <${recipientEmail}>`);
   console.log(`Type: ${type}`);
   console.log(`Subject: ${subject}`);
-  if (resendId) console.log(`Resend ID: ${resendId}`);
+  if (deliveryId) console.log(`Delivery ID (${deliveryProvider}): ${deliveryId}`);
   console.log(`========================================\n`);
 
   return emailRecord;

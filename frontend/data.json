@@ -3754,6 +3754,21 @@
         "resendId": "485444cb-c35a-4d6a-83db-23d22a67087e",
         "timezone": "Asia/Kolkata"
       }
+    },
+    {
+      "id": "email_mtmr737x",
+      "recipientEmail": "reneshasagar@gmail.com",
+      "recipientName": "Renesha Sagar",
+      "type": "INTERVIEW_INVITATION",
+      "subject": "Congratulations! You're Selected for an Interview: Senior Full Stack Engineer — Next.js & Real-Time WebRTC at EchoSphere",
+      "sentAt": "2026-09-04T09:30:34.125Z",
+      "metadata": {
+        "scheduledAt": "2026-09-17T12:00:00Z",
+        "interviewLink": "http://localhost:3000/interview/int_67z12dp",
+        "messageId": "<ae772ca6-6937-27cc-d8dc-8c371e2385fc@gmail.com>",
+        "provider": "gmail_smtp",
+        "timezone": "Asia/Kolkata"
+      }
     }
   ]
 }
