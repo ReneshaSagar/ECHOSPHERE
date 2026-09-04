@@ -587,20 +587,12 @@
         "crossSourceContext": {
           "corroboratedSkills": [
             {
-              "skill": "React",
+              "skill": "Python",
               "sources": [
                 "resume"
               ],
               "confidence": "HIGH",
-              "evidenceSnippet": "Resume: 'Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL'"
-            },
-            {
-              "skill": "Node.js",
-              "sources": [
-                "resume"
-              ],
-              "confidence": "HIGH",
-              "evidenceSnippet": "Resume skills list: 'Node.js' | Resume text: 'Express backend'"
+              "evidenceSnippet": "Resume skills list: 'Python'"
             },
             {
               "skill": "PostgreSQL",
@@ -608,43 +600,52 @@
                 "resume"
               ],
               "confidence": "HIGH",
-              "evidenceSnippet": "Resume: 'testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL integrations' and 'Express backend, and PostgreSQL'"
+              "evidenceSnippet": "Resume skills list: 'PostgreSQL' and experience bullet: 'testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL'"
             },
             {
-              "skill": "JavaScript",
+              "skill": "FastAPI",
               "sources": [
                 "resume"
               ],
               "confidence": "HIGH",
-              "evidenceSnippet": "Resume skills list: 'JavaScript'"
+              "evidenceSnippet": "Resume skills list: 'FastAPI'"
             },
             {
-              "skill": "Python",
+              "skill": "Django",
               "sources": [
                 "resume"
               ],
               "confidence": "HIGH",
-              "evidenceSnippet": "Resume skills list: 'Python'"
+              "evidenceSnippet": "Resume skills list: 'Django'"
             }
           ],
           "corroboratedProjects": [
             {
-              "projectName": "ExpensWise (Personal Financial Assistant)",
-              "description": "Personal financial assistant with natural language processing and JWT-secured CLI interface.",
-              "sources": [
-                "resume"
-              ],
-              "details": "Parsed natural language expense inputs and used JWT authentication for logging user expenses.",
-              "evidenceSnippet": "Resume: 'Built a CLI interface for rapid expense logging secured via JWT authentication'"
-            },
-            {
               "projectName": "echosphere",
-              "description": "Public GitHub repository under candidate account.",
+              "description": "Public repository hosted on candidate's GitHub account.",
               "sources": [
                 "github"
               ],
-              "details": "Public repository listed on candidate's GitHub profile.",
-              "evidenceSnippet": "GitHub: Repository 'echosphere' (https://github.com/madhavgairola/echosphere)"
+              "details": "GitHub Repository URL: https://github.com/madhavgairola/echosphere",
+              "evidenceSnippet": "GitHub Repositories: name 'echosphere', url 'https://github.com/madhavgairola/echosphere'"
+            },
+            {
+              "projectName": "ExpensWise (Personal Financial Assistant)",
+              "description": "Personal Financial Assistant with a CLI interface, JWT authentication, and natural language parsing.",
+              "sources": [
+                "resume"
+              ],
+              "details": "Built a CLI interface for expense logging secured via JWT and automated natural language input parsing.",
+              "evidenceSnippet": "Resume: 'ExpensWise (Personal Financial Assistant)... Built a CLI interface for rapid expense logging secured via JWT authentication'"
+            },
+            {
+              "projectName": "Blockchain-based Voter Registry",
+              "description": "Voter registry anchored on blockchain to prevent duplicate identity fraud.",
+              "sources": [
+                "resume"
+              ],
+              "details": "Anchored electoral identity data on a blockchain network.",
+              "evidenceSnippet": "Resume: 'Engineered a blockchain-based voter registry eliminating duplicate identity fraud by anchoring electoral'"
             }
           ],
           "corroboratedExperience": [
@@ -655,107 +656,85 @@
               "sources": [
                 "resume"
               ],
-              "corroborationNotes": "Validated RAG pipelines, AI agents, and semantic search; engineered QA frameworks for 250+ AI skills."
+              "corroborationNotes": "Executed end-to-end testing strategies for RAG pipelines, AI agents, semantic search, and database connectors across 250+ AI skills."
             }
           ],
-          "careerProgressionSummary": "Currently pursuing a Bachelor of Technology in Information Technology (2024–2028). Gained internship experience at RHA Technologies in AI pipeline validation and QA engineering, alongside building personal projects utilizing React, Node.js/Express, and PostgreSQL.",
+          "careerProgressionSummary": "Candidate is an undergraduate student (B.Tech IT, 2024–2028) at Jaypee Institute of Information Technology, with intern experience in Software Engineering QA/Testing at RHA Technologies and personal web/AI projects.",
           "notableClaims": [
             {
-              "claim": "Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL",
+              "claim": "Built and maintained a quality assurance framework for 250+ AI skills and workflows on RHA One platform.",
               "source": "resume",
-              "verificationFocus": "Probe component state management, REST API endpoints, DB queries, and production deployment pipeline"
-            },
-            {
-              "claim": "Built and maintained a quality assurance framework for 250+ AI skills and workflows",
-              "source": "resume",
-              "verificationFocus": "Probe automation setup, test suite execution, and bug tracking workflows"
+              "verificationFocus": "Probe test framework design, automated regression strategy, and edge-case detection methods."
             }
           ]
         },
         "interviewContext": {
-          "targetRole": "Senior Full Stack Engineer — Next.js & Real-Time WebRTC",
+          "targetRole": "Senior DevOps / Cloud Infrastructure Engineer — Kubernetes & GPU Platform",
           "highRelevanceEvidence": [
             {
-              "topic": "React Frontend Development",
-              "relevance": "HIGH",
-              "reason": "Directly matches core requirement for building frontend UI components in React.",
-              "evidenceSources": [
-                "resume"
-              ]
-            },
-            {
-              "topic": "Node.js / Express Backend & API Handling",
-              "relevance": "HIGH",
-              "reason": "Matches required backend experience with Node.js and API services.",
-              "evidenceSources": [
-                "resume"
-              ]
-            },
-            {
-              "topic": "PostgreSQL & Database Integration",
-              "relevance": "HIGH",
-              "reason": "Aligns with database integration requirements for full-stack applications.",
+              "topic": "Python Automation & Scripting",
+              "relevance": "MODERATE",
+              "reason": "The Senior DevOps role requires strong scripting and automation skills in Python, Bash, or Go. Candidate has documented hands-on experience in Python.",
               "evidenceSources": [
                 "resume"
               ]
             }
           ],
           "technicalInterviewHooks": [
-            "In your React frontend and Express backend architecture, how did you structure state management and async HTTP requests when fetching data?",
-            "When designing database schemas with PostgreSQL, how did you handle database connections, indexing, and query optimization?"
+            "Targeting Python scripting: You list Python on your resume. How would you structure a Python script using SDKs (e.g., Boto3 or Kubernetes Python Client) to automate infrastructure checks or resource cleanups?",
+            "Targeting testing/validation experience: In your QA framework work at RHA Technologies, how did you handle automated execution and integration with CI/CD tools?"
           ],
           "behavioralInterviewHooks": [
-            "Describe a time while interning at RHA Technologies when you uncovered a critical edge case during testing—how did you collaborate with engineering teams to resolve it?"
+            "Tell me about a time you encountered a critical system defect or edge case during integration testing, and how you collaborated with engineering teams to resolve it."
           ],
           "projectsWorthProbing": [
             {
-              "name": "Production-Ready Full-Stack System (React / Express / PostgreSQL)",
-              "relevanceLevel": "HIGH",
-              "reasonToProbe": "Demonstrates practical full-stack engineering skills covering React, Express, and relational database interaction.",
+              "name": "echosphere",
+              "relevanceLevel": "MODERATE",
+              "reasonToProbe": "The repository name matches the target employer/platform name ('EchoSphere'). Probe to see if candidate has containerization, Dockerfiles, or deployment configurations in this repository.",
               "suggestedQuestions": [
-                "How did you structure client-side rendering and component state management in React?",
-                "How did you secure and structure your API routes in the Express backend?"
+                "Walk me through the architecture and deployment setup of your 'echosphere' GitHub repository.",
+                "Did you implement any containerization (Docker), CI/CD pipelines, or cloud hosting for this project?"
               ],
-              "sourceUrl": "https://drive.google.com/file/d/1U_D1vBg_-QY_3u8-WwBDVoZxGlvJ1Flc/view?usp=sharing"
+              "sourceUrl": "https://github.com/madhavgairola/echosphere"
             },
             {
-              "name": "ExpensWise",
-              "relevanceLevel": "MEDIUM",
-              "reasonToProbe": "Demonstrates understanding of authentication mechanisms (JWT) and data persistence.",
+              "name": "ExpensWise CLI",
+              "relevanceLevel": "LOW",
+              "reasonToProbe": "Demonstrates CLI tool development and Python scripting.",
               "suggestedQuestions": [
-                "How did you implement JWT authentication and token verification on the backend?",
-                "How was user budget state and classification logic enforced?"
+                "How did you design the CLI interface and error handling in Python for rapid user input?"
               ],
-              "sourceUrl": "https://drive.google.com/file/d/1U_D1vBg_-QY_3u8-WwBDVoZxGlvJ1Flc/view?usp=sharing"
+              "sourceUrl": "Resume Project"
             }
           ],
           "ignoredOrLowRelevanceTopics": [
-            "Blockchain-based voter registry on resume: irrelevant to Senior Full Stack Engineer — Next.js & Real-Time WebRTC; omit from interview unless candidate initiates.",
-            "RAG pipeline validation and document parser testing (CSV/PDF/DOCX) at RHA Technologies: lower relevance to WebRTC browser APIs and real-time audio/video interfaces.",
+            "[IRRELEVANT TO ROLE] Blockchain / Voter Registry on resume: irrelevant to Senior DevOps / Cloud Infrastructure Engineer — Kubernetes & GPU Platform; omit from interview unless candidate initiates.",
+            "[IRRELEVANT TO ROLE] React / Frontend UI engineering on resume: irrelevant to Senior DevOps / Cloud Infrastructure Engineer; omit from interview.",
+            "[IRRELEVANT TO ROLE] Firestore schema design (Users, Reports, Requests, Audit) & patient-controlled security rules: irrelevant to cloud infrastructure / DevOps platform role.",
+            "[IRRELEVANT TO ROLE] RAG pipeline evaluation and semantic search testing: low relevance to Kubernetes cluster management, Terraform IaC, GPU operators, and multi-region networking.",
             "[IRRELEVANT TO ROLE] Blockchain / Web3 / Smart Contracts: Candidate mentioned blockchain/smart contract technology on profile, but it is outside the scope of this role. Omit from interview unless candidate introduces it."
           ]
         },
         "headline": "Software Engineering Intern",
         "about": "Madhav Gairola\n(+91) 7895936487|madhavgairola05@gmail.com|linkedin.com/in/madhavgairola|github.com/madhavgairola|Portfolio\nEducation\nJaypee Institute of Information TechnologyNoida, Uttar Pradesh\nBachelor of Technology, Information TechnologyJul. 2024 – May. 2028\nExperience\nRHA TechnologiesJun 2026 ",
         "skills": [
-          "React",
-          "Node.js",
+          "Python",
           "PostgreSQL",
-          "JavaScript",
-          "Python"
+          "FastAPI",
+          "Django"
         ],
-        "careerProgression": "Currently pursuing a Bachelor of Technology in Information Technology (2024–2028). Gained internship experience at RHA Technologies in AI pipeline validation and QA engineering, alongside building personal projects utilizing React, Node.js/Express, and PostgreSQL.",
+        "careerProgression": "Candidate is an undergraduate student (B.Tech IT, 2024–2028) at Jaypee Institute of Information Technology, with intern experience in Software Engineering QA/Testing at RHA Technologies and personal web/AI projects.",
         "notableClaims": [
-          "Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL",
-          "Built and maintained a quality assurance framework for 250+ AI skills and workflows"
+          "Built and maintained a quality assurance framework for 250+ AI skills and workflows on RHA One platform."
         ],
         "interviewHooks": [
-          "In your React frontend and Express backend architecture, how did you structure state management and async HTTP requests when fetching data?",
-          "When designing database schemas with PostgreSQL, how did you handle database connections, indexing, and query optimization?",
-          "Describe a time while interning at RHA Technologies when you uncovered a critical edge case during testing—how did you collaborate with engineering teams to resolve it?"
+          "Targeting Python scripting: You list Python on your resume. How would you structure a Python script using SDKs (e.g., Boto3 or Kubernetes Python Client) to automate infrastructure checks or resource cleanups?",
+          "Targeting testing/validation experience: In your QA framework work at RHA Technologies, how did you handle automated execution and integration with CI/CD tools?",
+          "Tell me about a time you encountered a critical system defect or edge case during integration testing, and how you collaborated with engineering teams to resolve it."
         ],
         "enrichmentSource": "resume",
-        "enrichedAt": "2026-09-04T10:19:44.578Z",
+        "enrichedAt": "2026-09-04T10:40:04.472Z",
         "githubContext": {
           "username": "madhavgairola",
           "profileUrl": "https://github.com/madhavgairola",
@@ -835,7 +814,7 @@
             }
           ],
           "githubInterviewHooks": [],
-          "enrichedAt": "2026-09-04T10:19:14.743Z"
+          "enrichedAt": "2026-09-04T10:39:15.186Z"
         },
         "githubProjects": [
           {
@@ -904,8 +883,8 @@
           }
         ],
         "githubInterviewHooks": [
-          "In your React frontend and Express backend architecture, how did you structure state management and async HTTP requests when fetching data?",
-          "When designing database schemas with PostgreSQL, how did you handle database connections, indexing, and query optimization?"
+          "Targeting Python scripting: You list Python on your resume. How would you structure a Python script using SDKs (e.g., Boto3 or Kubernetes Python Client) to automate infrastructure checks or resource cleanups?",
+          "Targeting testing/validation experience: In your QA framework work at RHA Technologies, how did you handle automated execution and integration with CI/CD tools?"
         ]
       },
       "resumeDriveUrl": "https://drive.google.com/file/d/1U_D1vBg_-QY_3u8-WwBDVoZxGlvJ1Flc/view?usp=sharing"
@@ -6433,6 +6412,418 @@
           "When evaluating PostgreSQL database integrations for RAG pipelines, what specific performance bottlenecks or indexing issues did you identify?"
         ]
       }
+    },
+    {
+      "id": "app_vpuzk28",
+      "jobId": "j_m769m72",
+      "candidateId": "cand_5ex6hwb",
+      "resumeText": "Madhav Gairola\n(+91) 7895936487|madhavgairola05@gmail.com|linkedin.com/in/madhavgairola|github.com/madhavgairola|Portfolio\nEducation\nJaypee Institute of Information TechnologyNoida, Uttar Pradesh\nBachelor of Technology, Information TechnologyJul. 2024 – May. 2028\nExperience\nRHA TechnologiesJun 2026 – Present\nSoftware Engineering Intern\n•\nLed end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA\nOne platform, uncovering critical edge cases across diverse enterprise use cases\n•\nEngineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL\nintegrations, analyzing retrieval accuracy, data ingestion behavior, and system reliability\n•\nBuilt and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug\nreports, validating feature releases, and accelerating issue resolution through close collaboration with engineering\nteams\nProjects\nExpensWise (Personal Financial Assistant)| Node.js , PostgreSQL, Prisma, React, Gemini API| GitHub| Live\n•\nEliminated manual expense entry by parsing natural language inputs (e.g., ”coffee 50”, ”rent 5k”) into\nstructured financial records using Gemini API\n•\nArchitected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL\ndatabase supporting real-time expense tracking and analytics\n•\nDesigned an intelligent classification engine categorizing expenses into Needs vs Wants with budget threshold\nalerts, enabling actionable spending insights\n•\nBuilt a CLI interface for rapid expense logging secured via JWT authentication, allowing power users to log\nand query expenses without leaving the terminal\nHealthLens| JavaScript, Firebase Auth, Cloud Firestore, Gemini API, PDF.js| GitHub| Live\n•\nEliminated the medical jargon barrier by extracting PDF text via PDF.js and generating role-specific summaries\nincluding a patient-friendly explanation and clinical brief from a single Gemini API call\n•\nDesigned Firestore schema (Users, Reports, Requests, Audit) with security rules enforcing patient-controlled\naccess, ensuring doctors cannot view records without explicit patient approval\n•\nImplemented a real-time consent system using Firestore listeners enabling instant approve/deny actions, with\nevery access request logged in a dedicated audit collection\n•\nDeveloped a context-aware medical chatbot retrieving patient data (medications, history) from Firestore and\ninjecting it into Gemini prompts for grounded, record-specific responses\nElectora| Solidity, Node.js, Express, Firebase, Ethers.js| GitHub\n•\nEngineered a blockchain-based voter registry eliminating duplicate identity fraud by anchoring electoral\nrecords to Ethereum smart contracts as a single immutable source of truth\n•\nBuilt a multi-stage identity verification pipeline validating voter credentials off-chain before on-chain\nregistration, preventing unauthorized entries at every stage\n•\nDesigned a hybrid storage architecture segregating sensitive PII in Firebase from on-chain identity mappings\nusing keccak256 hashing, balancing privacy with blockchain transparency\n•\nImplemented time-locked voting cycle logic in Solidity enforcing strict state transitions, making duplicate\nvoting cryptographically impossible across the entire election lifecycle\nTechnical Skills\nLanguages: C/C++, JavaScript, Python, SQL, Solidity, PHP\nFrameworks:Node.js, Express, FastAPI, Django, Tailwind CSS\nLibraries & Tools: Prisma, Pandas, NumPy, Matplotlib, Git\nDatabases & Platforms: MySQL, MongoDB, PostgreSQL, Firebase, Supabase\n\nAchievements\n• Co-inventor on a patent application filed through Jaypee Institute of Information Technology for an\nAutonomous Smart Waste Segregation System\n• Built and published a Chrome Extension implementing dynamic theme injection with 3000+ active\nusers; awarded the Chrome Web Store Featured Badge [Link]\n• Selected from 25,000+ applicants to present a project at Bharat Mandapam as part of a national\ninnovation showcase\n• Led multiple teams to become a 4-time hackathon finalist across competitive events.\n(Hackfest’25· GDG Delhi, Hack4Delhi, India Innovates’26, Innovate 3.0-JIIT)",
+      "resumeDriveUrl": "https://drive.google.com/file/d/1U_D1vBg_-QY_3u8-WwBDVoZxGlvJ1Flc/view?usp=sharing",
+      "githubUrl": "https://github.com/madhavgairola",
+      "status": "APPLIED",
+      "candidateContext": {
+        "resume": {
+          "textSnippet": "Madhav Gairola\n(+91) 7895936487|madhavgairola05@gmail.com|linkedin.com/in/madhavgairola|github.com/madhavgairola|Portfolio\nEducation\nJaypee Institute of Information TechnologyNoida, Uttar Pradesh\nBachelor of Technology, Information TechnologyJul. 2024 – May. 2028\nExperience\nRHA TechnologiesJun 2026 – Present\nSoftware Engineering Intern\n•\nLed end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA\nOne platform, uncovering critical edge cases across diverse enterprise use cases\n•\nEngineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL\nintegrations, analyzing retrieval accuracy, data ingestion behavior, and system reliability\n•\nBuilt and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug\nreports, validating feature releases, and accelerating issue resolution through close collaboration with engineering\nteams\nProjects\nExpensWise (Personal Financial Assistant)",
+          "driveUrl": "https://drive.google.com/file/d/1U_D1vBg_-QY_3u8-WwBDVoZxGlvJ1Flc/view?usp=sharing",
+          "skills": [
+            "Python",
+            "FastAPI",
+            "Django",
+            "Node.js",
+            "JavaScript",
+            "React",
+            "PostgreSQL",
+            "RAG",
+            "SQL"
+          ],
+          "experienceTitles": [
+            "Software Engineering Intern",
+            "Engineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL",
+            "reports, validating feature releases, and accelerating issue resolution through close collaboration with engineering",
+            "Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL",
+            "Engineered a blockchain-based voter registry eliminating duplicate identity fraud by anchoring electoral"
+          ],
+          "projects": [
+            "Built and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug",
+            "Projects",
+            "Designed an intelligent classification engine categorizing expenses into Needs vs Wants with budget threshold",
+            "Built a CLI interface for rapid expense logging secured via JWT authentication, allowing power users to log",
+            "Designed Firestore schema (Users, Reports, Requests, Audit) with security rules enforcing patient-controlled"
+          ],
+          "notableHighlights": [
+            "Eliminated manual expense entry by parsing natural language inputs (e.g., ”coffee 50”, ”rent 5k”) into",
+            "Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL"
+          ]
+        },
+        "github": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "bio": "I code sometimes",
+          "publicReposCount": 19,
+          "repositories": [
+            {
+              "name": "echosphere",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/echosphere",
+              "isPinned": false
+            },
+            {
+              "name": "kana-dojo",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/kana-dojo",
+              "isPinned": false
+            },
+            {
+              "name": "syn-2",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/syn-2",
+              "isPinned": true
+            },
+            {
+              "name": "Yatrikavach",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/Yatrikavach",
+              "isPinned": false
+            },
+            {
+              "name": "lal",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/lal",
+              "isPinned": false
+            },
+            {
+              "name": "neoflo-ai-assignment",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/neoflo-ai-assignment",
+              "isPinned": false
+            },
+            {
+              "name": "madhavgairola",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/madhavgairola",
+              "isPinned": false
+            },
+            {
+              "name": "backend-synthetic",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/backend-synthetic",
+              "isPinned": false
+            }
+          ],
+          "activeProjects": [
+            "echosphere",
+            "kana-dojo",
+            "syn-2",
+            "Yatrikavach",
+            "lal",
+            "neoflo-ai-assignment",
+            "madhavgairola",
+            "backend-synthetic"
+          ]
+        },
+        "crossSourceContext": {
+          "corroboratedSkills": [
+            {
+              "skill": "Python",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "HIGH",
+              "evidenceSnippet": "Resume skills list: 'Python'"
+            },
+            {
+              "skill": "PostgreSQL",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "HIGH",
+              "evidenceSnippet": "Resume skills list: 'PostgreSQL' and experience bullet: 'testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL'"
+            },
+            {
+              "skill": "FastAPI",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "HIGH",
+              "evidenceSnippet": "Resume skills list: 'FastAPI'"
+            },
+            {
+              "skill": "Django",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "HIGH",
+              "evidenceSnippet": "Resume skills list: 'Django'"
+            }
+          ],
+          "corroboratedProjects": [
+            {
+              "projectName": "echosphere",
+              "description": "Public repository hosted on candidate's GitHub account.",
+              "sources": [
+                "github"
+              ],
+              "details": "GitHub Repository URL: https://github.com/madhavgairola/echosphere",
+              "evidenceSnippet": "GitHub Repositories: name 'echosphere', url 'https://github.com/madhavgairola/echosphere'"
+            },
+            {
+              "projectName": "ExpensWise (Personal Financial Assistant)",
+              "description": "Personal Financial Assistant with a CLI interface, JWT authentication, and natural language parsing.",
+              "sources": [
+                "resume"
+              ],
+              "details": "Built a CLI interface for expense logging secured via JWT and automated natural language input parsing.",
+              "evidenceSnippet": "Resume: 'ExpensWise (Personal Financial Assistant)... Built a CLI interface for rapid expense logging secured via JWT authentication'"
+            },
+            {
+              "projectName": "Blockchain-based Voter Registry",
+              "description": "Voter registry anchored on blockchain to prevent duplicate identity fraud.",
+              "sources": [
+                "resume"
+              ],
+              "details": "Anchored electoral identity data on a blockchain network.",
+              "evidenceSnippet": "Resume: 'Engineered a blockchain-based voter registry eliminating duplicate identity fraud by anchoring electoral'"
+            }
+          ],
+          "corroboratedExperience": [
+            {
+              "role": "Software Engineering Intern",
+              "company": "RHA Technologies",
+              "duration": "Jun 2026 – Present",
+              "sources": [
+                "resume"
+              ],
+              "corroborationNotes": "Executed end-to-end testing strategies for RAG pipelines, AI agents, semantic search, and database connectors across 250+ AI skills."
+            }
+          ],
+          "careerProgressionSummary": "Candidate is an undergraduate student (B.Tech IT, 2024–2028) at Jaypee Institute of Information Technology, with intern experience in Software Engineering QA/Testing at RHA Technologies and personal web/AI projects.",
+          "notableClaims": [
+            {
+              "claim": "Built and maintained a quality assurance framework for 250+ AI skills and workflows on RHA One platform.",
+              "source": "resume",
+              "verificationFocus": "Probe test framework design, automated regression strategy, and edge-case detection methods."
+            }
+          ]
+        },
+        "interviewContext": {
+          "targetRole": "Senior DevOps / Cloud Infrastructure Engineer — Kubernetes & GPU Platform",
+          "highRelevanceEvidence": [
+            {
+              "topic": "Python Automation & Scripting",
+              "relevance": "MODERATE",
+              "reason": "The Senior DevOps role requires strong scripting and automation skills in Python, Bash, or Go. Candidate has documented hands-on experience in Python.",
+              "evidenceSources": [
+                "resume"
+              ]
+            }
+          ],
+          "technicalInterviewHooks": [
+            "Targeting Python scripting: You list Python on your resume. How would you structure a Python script using SDKs (e.g., Boto3 or Kubernetes Python Client) to automate infrastructure checks or resource cleanups?",
+            "Targeting testing/validation experience: In your QA framework work at RHA Technologies, how did you handle automated execution and integration with CI/CD tools?"
+          ],
+          "behavioralInterviewHooks": [
+            "Tell me about a time you encountered a critical system defect or edge case during integration testing, and how you collaborated with engineering teams to resolve it."
+          ],
+          "projectsWorthProbing": [
+            {
+              "name": "echosphere",
+              "relevanceLevel": "MODERATE",
+              "reasonToProbe": "The repository name matches the target employer/platform name ('EchoSphere'). Probe to see if candidate has containerization, Dockerfiles, or deployment configurations in this repository.",
+              "suggestedQuestions": [
+                "Walk me through the architecture and deployment setup of your 'echosphere' GitHub repository.",
+                "Did you implement any containerization (Docker), CI/CD pipelines, or cloud hosting for this project?"
+              ],
+              "sourceUrl": "https://github.com/madhavgairola/echosphere"
+            },
+            {
+              "name": "ExpensWise CLI",
+              "relevanceLevel": "LOW",
+              "reasonToProbe": "Demonstrates CLI tool development and Python scripting.",
+              "suggestedQuestions": [
+                "How did you design the CLI interface and error handling in Python for rapid user input?"
+              ],
+              "sourceUrl": "Resume Project"
+            }
+          ],
+          "ignoredOrLowRelevanceTopics": [
+            "[IRRELEVANT TO ROLE] Blockchain / Voter Registry on resume: irrelevant to Senior DevOps / Cloud Infrastructure Engineer — Kubernetes & GPU Platform; omit from interview unless candidate initiates.",
+            "[IRRELEVANT TO ROLE] React / Frontend UI engineering on resume: irrelevant to Senior DevOps / Cloud Infrastructure Engineer; omit from interview.",
+            "[IRRELEVANT TO ROLE] Firestore schema design (Users, Reports, Requests, Audit) & patient-controlled security rules: irrelevant to cloud infrastructure / DevOps platform role.",
+            "[IRRELEVANT TO ROLE] RAG pipeline evaluation and semantic search testing: low relevance to Kubernetes cluster management, Terraform IaC, GPU operators, and multi-region networking.",
+            "[IRRELEVANT TO ROLE] Blockchain / Web3 / Smart Contracts: Candidate mentioned blockchain/smart contract technology on profile, but it is outside the scope of this role. Omit from interview unless candidate introduces it."
+          ]
+        },
+        "headline": "Software Engineering Intern",
+        "about": "Madhav Gairola\n(+91) 7895936487|madhavgairola05@gmail.com|linkedin.com/in/madhavgairola|github.com/madhavgairola|Portfolio\nEducation\nJaypee Institute of Information TechnologyNoida, Uttar Pradesh\nBachelor of Technology, Information TechnologyJul. 2024 – May. 2028\nExperience\nRHA TechnologiesJun 2026 ",
+        "skills": [
+          "Python",
+          "PostgreSQL",
+          "FastAPI",
+          "Django"
+        ],
+        "careerProgression": "Candidate is an undergraduate student (B.Tech IT, 2024–2028) at Jaypee Institute of Information Technology, with intern experience in Software Engineering QA/Testing at RHA Technologies and personal web/AI projects.",
+        "notableClaims": [
+          "Built and maintained a quality assurance framework for 250+ AI skills and workflows on RHA One platform."
+        ],
+        "interviewHooks": [
+          "Targeting Python scripting: You list Python on your resume. How would you structure a Python script using SDKs (e.g., Boto3 or Kubernetes Python Client) to automate infrastructure checks or resource cleanups?",
+          "Targeting testing/validation experience: In your QA framework work at RHA Technologies, how did you handle automated execution and integration with CI/CD tools?",
+          "Tell me about a time you encountered a critical system defect or edge case during integration testing, and how you collaborated with engineering teams to resolve it."
+        ],
+        "enrichmentSource": "resume",
+        "enrichedAt": "2026-09-04T10:40:04.472Z",
+        "githubContext": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "name": "mdhv",
+          "bio": "I code sometimes",
+          "location": "Delhi",
+          "publicReposCount": 19,
+          "followers": 1,
+          "totalCommits": 703,
+          "recentCommits30Days": 124,
+          "commitVelocityNarrative": "124 commits in the past 30 days • 703 total commits",
+          "technicalHighlights": [],
+          "githubProjects": [
+            {
+              "name": "echosphere",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/echosphere",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "kana-dojo",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/kana-dojo",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "syn-2",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/syn-2",
+              "isPinned": true,
+              "isRecent": true
+            },
+            {
+              "name": "Yatrikavach",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/Yatrikavach",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "lal",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/lal",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "neoflo-ai-assignment",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/neoflo-ai-assignment",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "madhavgairola",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/madhavgairola",
+              "isPinned": false,
+              "isRecent": true
+            },
+            {
+              "name": "backend-synthetic",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/backend-synthetic",
+              "isPinned": false,
+              "isRecent": true
+            }
+          ],
+          "githubInterviewHooks": [],
+          "enrichedAt": "2026-09-04T10:39:15.186Z"
+        },
+        "githubProjects": [
+          {
+            "name": "echosphere",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/echosphere",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "kana-dojo",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/kana-dojo",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "syn-2",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/syn-2",
+            "isPinned": true,
+            "isRecent": true
+          },
+          {
+            "name": "Yatrikavach",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/Yatrikavach",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "lal",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/lal",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "neoflo-ai-assignment",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/neoflo-ai-assignment",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "madhavgairola",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/madhavgairola",
+            "isPinned": false,
+            "isRecent": true
+          },
+          {
+            "name": "backend-synthetic",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/backend-synthetic",
+            "isPinned": false,
+            "isRecent": true
+          }
+        ],
+        "githubInterviewHooks": [
+          "Targeting Python scripting: You list Python on your resume. How would you structure a Python script using SDKs (e.g., Boto3 or Kubernetes Python Client) to automate infrastructure checks or resource cleanups?",
+          "Targeting testing/validation experience: In your QA framework work at RHA Technologies, how did you handle automated execution and integration with CI/CD tools?"
+        ]
+      }
     }
   ],
   "interviews": [
@@ -6910,6 +7301,20 @@
       "metadata": {
         "jobTitle": "Senior Backend Engineer — Distributed Systems & AI Infrastructure",
         "deliveryId": "<42590a43-6e0d-daba-c879-2c89e16ed347@gmail.com>",
+        "provider": "gmail_smtp"
+      }
+    },
+    {
+      "id": "email_owbv82b",
+      "recipientEmail": "madhavgairola05@gmail.com",
+      "recipientName": "Madhav Gairola",
+      "type": "APPLICATION_RECEIVED",
+      "subject": "Application Received: Senior DevOps / Cloud Infrastructure Engineer — Kubernetes & GPU Platform at EchoSphere",
+      "bodyText": "Hi Madhav Gairola,\n\nThank you for applying for the Senior DevOps / Cloud Infrastructure Engineer — Kubernetes & GPU Platform position at EchoSphere!\n\nWe have successfully received your application, resume, and technical links. Our autonomous evaluation engine and talent team are currently reviewing your qualifications and codecraft.\n\nWhat to expect next:\n- If your experience aligns with the core requirements of the role, you will be invited to our autonomous AI Voice Technical Interview led by our technical lead persona, Alex.\n- You will receive a separate invitation email with your scheduled date, time, and private room link.\n\nThank you again for your enthusiasm about building with EchoSphere.\n\nBest regards,\nThe EchoSphere Talent & Recruiting Team",
+      "sentAt": "2026-09-04T10:40:08.442Z",
+      "metadata": {
+        "jobTitle": "Senior DevOps / Cloud Infrastructure Engineer — Kubernetes & GPU Platform",
+        "deliveryId": "<d1af1c43-3b2b-1959-18fc-385f01ef1361@gmail.com>",
         "provider": "gmail_smtp"
       }
     }

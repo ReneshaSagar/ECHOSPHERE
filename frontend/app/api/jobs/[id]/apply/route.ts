@@ -36,6 +36,25 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: "Job not found." }, { status: 404 });
     }
 
+    const cleanEmail = (email || '').trim().toLowerCase();
+    if (!cleanEmail) {
+      return NextResponse.json({ error: "Email address is required." }, { status: 400 });
+    }
+
+    // 0. Instant Pre-Flight Check: Prevent duplicate application for THIS specific role
+    const existingCandidate = db.candidates.find(c => c.email.toLowerCase() === cleanEmail);
+    if (existingCandidate) {
+      const alreadyAppliedThisJob = db.applications.find(a => a.jobId === jobId && a.candidateId === existingCandidate.id);
+      if (alreadyAppliedThisJob) {
+        console.log(`[Apply Route Pre-Flight] Blocked duplicate application: ${cleanEmail} already applied to ${job.title} (${jobId})`);
+        return NextResponse.json({ 
+          error: `You have already applied for ${job.title}. You cannot apply to the same role twice, but you are welcome to apply to other open positions at EchoSphere!`,
+          alreadyApplied: true,
+          jobTitle: job.title
+        }, { status: 400 });
+      }
+    }
+
     // Resolve resumeText from Google Drive link, uploaded PDF, or direct text
     let resumeText = (rawResumeText || '').trim();
 
@@ -97,8 +116,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       job
     });
 
-    // Find or create candidate based on email
-    let candidate = db.candidates.find(c => c.email.toLowerCase() === email.toLowerCase());
+    // Find or create candidate based on normalized email
+    let candidate = db.candidates.find(c => c.email.toLowerCase() === cleanEmail);
     
     if (candidate) {
       // Update optional fields if provided
@@ -111,7 +130,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       candidate = {
         id: `cand_${Math.random().toString(36).substring(2, 9)}`,
         name,
-        email,
+        email: cleanEmail,
         linkedinUrl,
         githubUrl,
         portfolioUrl,
@@ -121,10 +140,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       db.candidates.push(candidate);
     }
 
-    // Check for duplicate application
+    // Safety check for duplicate application
     const existingApp = db.applications.find(a => a.jobId === jobId && a.candidateId === candidate.id);
     if (existingApp) {
-      return NextResponse.json({ error: "You have already applied for this position." }, { status: 400 });
+      return NextResponse.json({ 
+        error: `You have already applied for ${job.title}. You cannot apply to the same position twice, but you are welcome to apply to other open roles!`, 
+        alreadyApplied: true,
+        jobTitle: job.title
+      }, { status: 400 });
     }
 
     // Create application

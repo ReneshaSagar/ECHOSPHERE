@@ -9,6 +9,8 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [alreadyApplied, setAlreadyApplied] = useState(false);
+  const [alreadyAppliedRole, setAlreadyAppliedRole] = useState("");
 
   // Resume submission mode: 'drive' | 'pdf' | 'text'
   const [resumeMode, setResumeMode] = useState<'drive' | 'pdf' | 'text'>('drive');
@@ -81,6 +83,10 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
       if (res.ok) {
         setSuccess(true);
       } else {
+        if (data.alreadyApplied) {
+          setAlreadyApplied(true);
+          setAlreadyAppliedRole(data.jobTitle || "");
+        }
         setErrorMsg(data.error || "Failed to submit application.");
       }
     } catch (err: any) {
@@ -109,12 +115,32 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
         <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Submit Your Application</h1>
         <p className="text-gray-500 mb-8">Please fill out the form below. Your resume and links will be automatically enriched for your AI interview.</p>
 
-        {errorMsg && (
+        {alreadyApplied ? (
+          <div className="mb-6 p-5 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl shadow-sm">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl shrink-0">📋</span>
+              <div>
+                <h3 className="font-bold text-base text-amber-900">Application Already Received for This Role</h3>
+                <p className="text-sm text-amber-800 mt-1 leading-relaxed">
+                  You have already submitted an application for <strong>{alreadyAppliedRole || "this position"}</strong>. Candidates can only apply once to each specific position, but we encourage you to apply to our other open roles!
+                </p>
+                <div className="mt-4">
+                  <Link
+                    href="/jobs"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow-sm transition"
+                  >
+                    Browse Other Open Roles →
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : errorMsg ? (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg font-medium flex items-start gap-2">
             <span className="text-red-500 font-bold">⚠️</span>
             <span>{errorMsg}</span>
           </div>
-        )}
+        ) : null}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
