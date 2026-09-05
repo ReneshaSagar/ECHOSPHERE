@@ -28,9 +28,10 @@ export default function BlueprintButton({ interviewId, hasBlueprint }: { intervi
     return (
       <Link 
         href={`/admin/interviews/${interviewId}/blueprint`}
-        className="text-green-600 hover:underline font-medium text-sm"
+        className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20 font-mono text-xs font-bold transition-all inline-flex items-center gap-1"
       >
-        View Blueprint →
+        <span>View Blueprint</span>
+        <span>→</span>
       </Link>
     );
   }
@@ -39,9 +40,17 @@ export default function BlueprintButton({ interviewId, hasBlueprint }: { intervi
     <button 
       onClick={generateBlueprint} 
       disabled={loading}
-      className="text-blue-600 hover:underline font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+      className="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/20 font-mono text-xs font-bold transition-all disabled:opacity-40 inline-flex items-center gap-1 cursor-pointer"
     >
-      {loading ? 'Generating...' : 'Generate Blueprint →'}
+      {loading ? (
+        <span>Generating...</span>
+      ) : (
+        <>
+          <span>Generate Blueprint</span>
+          <span>→</span>
+        </>
+      )}
     </button>
   );
 }
+

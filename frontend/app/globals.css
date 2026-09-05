@@ -2,116 +2,111 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── CSS Variables (Agora Blue Theme) ───────────────────────────────────── */
+/* ── Dark Luxury Theme ─────────────────────────────────────────── */
 :root {
-  --bg-primary: #F7FCFF;
-  --bg-surface: #FFFFFF;
-  --text-primary: #102A3A;
-  --text-muted: #527080;
-  --border: #BDEBFF;
-  --ring-color: rgba(0, 174, 239, 0.22);
+  --bg-primary: #030304;
+  --bg-surface: #0a0a0d;
+  --bg-card: #0f0f13;
+  --text-primary: #f4f4f5;
+  --text-muted: #82828e;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.18);
+  --ring-color: rgba(255, 255, 255, 0.15);
 }
 
 .dark {
-  --bg-primary: #E9F8FF;
-  --bg-surface: #FFFFFF;
-  --text-primary: #102A3A;
-  --text-muted: #527080;
-  --border: #9DE1FF;
-  --ring-color: rgba(0, 174, 239, 0.22);
+  --bg-primary: #030304;
+  --bg-surface: #0a0a0d;
+  --bg-card: #0f0f13;
+  --text-primary: #f4f4f5;
+  --text-muted: #82828e;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.18);
 }
 
-/* ── Base ────────────────────────────────────────────────────────────────── */
+/* ── Base ────────────────────────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
+  background-color: #030304;
+  color-scheme: dark;
 }
 
 body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.2s ease;
+  background-color: #030304;
+  color: #f4f4f5;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Custom Scrollbar ──────────────────────────────────────────────────── */
+/* ── Custom Scrollbar ──────────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #030304;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3);
-  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
+  background: rgba(255, 255, 255, 0.3);
 }
 
-/* ── Glassmorphic & Panel Grid Styles ─────────────────────────────────── */
+/* ── Glassmorphism & Custom Surfaces ──────────────────────────── */
 @layer components {
-  .glass {
-    @apply bg-white/75 dark:bg-white/85 backdrop-blur-lg border border-[#00AEEF]/20 dark:border-[#00AEEF]/30;
+  .glass-capsule {
+    @apply bg-[#0c0c10]/70 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)];
   }
 
-  /* Dynamic Active Persona Halo */
-  .glow-alex {
-    box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.3), 0 0 20px 2px rgba(6, 182, 212, 0.2);
-  }
-  .glow-maya {
-    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3), 0 0 20px 2px rgba(245, 158, 11, 0.2);
-  }
-  .glow-david {
-    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3), 0 0 20px 2px rgba(16, 185, 129, 0.2);
+  .glass-card {
+    @apply bg-[#09090c]/80 backdrop-blur-xl border border-white/[0.08] rounded-2xl transition-all duration-300;
   }
 
-  /* Active speaking ring */
-  .speaking-ring {
-    animation: speaking-pulse 1.8s ease-in-out infinite;
+  .glass-card-hover {
+    @apply hover:border-white/20 hover:bg-[#0e0e13]/90 hover:shadow-[0_0_30px_rgba(255,255,255,0.03)];
   }
 
-  /* Hyper-realistic Meet Grid */
-  .meet-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1rem;
-    width: 100%;
+  /* Dot Grid Overlay */
+  .dot-grid-bg {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 24px 24px;
   }
 
-  .meet-card {
-    @apply relative rounded-2xl overflow-hidden aspect-video bg-white border border-[#00AEEF]/25 shadow-xl transition-all duration-300;
+  .dot-grid-fine {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+    background-size: 14px 14px;
+  }
+
+  /* Prismatic Holographic Gradient */
+  .prism-gradient {
+    background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 30%, #3b82f6 70%, #f59e0b 100%);
+  }
+
+  .prism-glow {
+    filter: drop-shadow(0 0 45px rgba(168, 85, 247, 0.45)) drop-shadow(0 0 80px rgba(59, 130, 246, 0.3));
   }
 }
 
-/* ── Keyframes and Animations ────────────────────────────────────────────── */
+/* ── Keyframes and Animations ────────────────────────────────────── */
 @keyframes speaking-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.4); }
-  50%       { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.5); }
+  50%       { box-shadow: 0 0 0 12px rgba(139, 92, 246, 0); }
 }
 
-@keyframes wave {
-  0%, 100% { transform: scaleY(0.4); }
-  50%       { transform: scaleY(1.0); }
-}
-
-@keyframes float {
+@keyframes float-subtle {
   0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-10px); }
+  50%       { transform: translateY(-6px); }
 }
 
-/* Visualizer Wave Animation */
-.animate-wave {
-  animation: wave 1.2s ease-in-out infinite;
-  transform-origin: bottom;
+.animate-float-subtle {
+  animation: float-subtle 5s ease-in-out infinite;
 }
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-/* ── Print styles (report PDF) ──────────────────────────────────────────── */
+/* ── Print styles ──────────────────────────────────────────────── */
 @media print {
   nav, button, .no-print { display: none !important; }
   body { background: white !important; color: black !important; }
-  .glass { background: white !important; border: 1px solid #e2e8f0 !important; }
 }

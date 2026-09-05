@@ -2,6 +2,7 @@
 import React, { useState, use, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { ArrowLeft, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
 
 export default function ApplyPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -97,17 +98,22 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
 
   if (success) {
     return (
-      <div className="max-w-2xl mx-auto mt-10 p-8 sm:p-10 bg-emerald-50/80 border border-emerald-200 rounded-2xl text-center shadow-sm space-y-4">
-        <div className="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl font-bold">
-          ✓
+      <div className="max-w-2xl mx-auto mt-10 p-8 sm:p-12 bg-[#0a0a0d] border border-emerald-500/30 rounded-3xl text-center shadow-[0_0_50px_rgba(16,185,129,0.15)] space-y-6">
+        <div className="w-16 h-16 mx-auto rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center text-2xl font-bold shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+          <CheckCircle2 className="w-8 h-8" />
         </div>
-        <h2 className="text-3xl font-black text-emerald-900">Application Submitted!</h2>
-        <p className="text-emerald-800 text-base max-w-lg mx-auto leading-relaxed">
-          Thank you for applying to <strong>Nexora Labs</strong>. Our automated hiring engine is processing your credentials, and you will receive an email confirmation with your next steps shortly.
-        </p>
+        <div className="space-y-2">
+          <h2 className="text-3xl font-sans font-bold text-white">Application Submitted!</h2>
+          <p className="text-white/60 text-sm sm:text-base max-w-lg mx-auto leading-relaxed font-sans">
+            Thank you for applying to <strong className="text-white">Nexora Labs</strong>. Our automated hiring engine is processing your credentials, and you will receive an email confirmation with your next steps shortly.
+          </p>
+        </div>
         <div className="pt-4">
-          <Link href="/jobs" className="px-6 py-3 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition shadow-sm inline-block">
-            Return to Open Positions
+          <Link 
+            href="/jobs" 
+            className="px-8 py-3.5 bg-white text-black font-sans font-bold rounded-full hover:bg-neutral-200 transition shadow-[0_0_20px_rgba(255,255,255,0.2)] inline-block"
+          >
+            return to open positions
           </Link>
         </div>
       </div>
@@ -115,82 +121,115 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <Link href={`/jobs/${jobId}`} className="text-blue-600 hover:underline mb-6 inline-block font-medium">← Back to Job Details</Link>
+    <div className="max-w-3xl mx-auto space-y-6">
+      <Link 
+        href={`/jobs/${jobId}`} 
+        className="inline-flex items-center gap-2 text-xs font-mono text-white/50 hover:text-white transition group"
+      >
+        <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+        <span>back to job details</span>
+      </Link>
       
-      <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-            Nexora Labs
-          </span>
-          <span className="text-xs text-gray-400">Powered by OmniPanel</span>
+      <div className="bg-[#0a0a0d] p-8 sm:p-12 rounded-3xl border border-white/[0.08] shadow-[0_0_50px_rgba(0,0,0,0.6)] space-y-8">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-mono font-semibold px-3 py-1 rounded-full bg-white/[0.05] text-white/90 border border-white/[0.1]">
+              nexora labs
+            </span>
+            <span className="text-xs font-mono text-white/40">powered by omnipanel</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-sans font-bold text-white tracking-tight">
+            submit your application
+          </h1>
+          <p className="text-white/50 text-sm leading-relaxed font-sans">
+            Please fill out the form below. Your resume, GitHub, and portfolio links will be automatically analyzed and enriched by OmniPanel for your AI voice interview.
+          </p>
         </div>
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Submit Your Application</h1>
-        <p className="text-gray-500 mb-8">Please fill out the form below. Your resume, GitHub, and portfolio links will be automatically analyzed and enriched by OmniPanel for your AI voice interview.</p>
 
         {alreadyApplied ? (
-          <div className="mb-6 p-5 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl shadow-sm">
+          <div className="p-5 bg-amber-500/10 border border-amber-500/30 text-amber-200 rounded-2xl">
             <div className="flex items-start gap-3">
               <span className="text-2xl shrink-0">📋</span>
-              <div>
-                <h3 className="font-bold text-base text-amber-900">Application Already Received for This Role</h3>
-                <p className="text-sm text-amber-800 mt-1 leading-relaxed">
+              <div className="space-y-2">
+                <h3 className="font-sans font-bold text-base text-amber-100">Application Already Received for This Role</h3>
+                <p className="text-xs text-amber-200/80 leading-relaxed font-sans">
                   You have already submitted an application for <strong>{alreadyAppliedRole || "this position"}</strong>. Candidates can only apply once to each specific position, but we encourage you to apply to our other open roles!
                 </p>
-                <div className="mt-4">
+                <div className="pt-2">
                   <Link
                     href="/jobs"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow-sm transition"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-400 text-black text-xs font-bold rounded-full shadow-sm hover:bg-amber-300 transition"
                   >
-                    Browse Other Open Roles →
+                    browse other open roles →
                   </Link>
                 </div>
               </div>
             </div>
           </div>
         ) : errorMsg ? (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg font-medium flex items-start gap-2">
-            <span className="text-red-500 font-bold">⚠️</span>
+          <div className="p-4 bg-rose-500/10 border border-rose-500/30 text-rose-300 rounded-xl text-xs font-mono flex items-start gap-2.5">
+            <span className="text-rose-400 font-bold">⚠️</span>
             <span>{errorMsg}</span>
           </div>
         ) : null}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 font-sans">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">Full Name *</label>
-              <input name="name" required className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Jane Doe" />
+            <div className="space-y-2">
+              <label className="block text-xs font-mono font-medium text-white/70">Full Name *</label>
+              <input 
+                name="name" 
+                required 
+                className="w-full p-3.5 bg-white/[0.03] border border-white/[0.1] rounded-xl text-white text-sm focus:border-white/40 focus:ring-1 focus:ring-white/20 outline-none transition placeholder-white/20" 
+                placeholder="Jane Doe" 
+              />
             </div>
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">Email Address *</label>
-              <input name="email" type="email" required className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="jane@example.com" />
+            <div className="space-y-2">
+              <label className="block text-xs font-mono font-medium text-white/70">Email Address *</label>
+              <input 
+                name="email" 
+                type="email" 
+                required 
+                className="w-full p-3.5 bg-white/[0.03] border border-white/[0.1] rounded-xl text-white text-sm focus:border-white/40 focus:ring-1 focus:ring-white/20 outline-none transition placeholder-white/20" 
+                placeholder="jane@example.com" 
+              />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">LinkedIn Profile</label>
-              <input name="linkedinUrl" type="url" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="https://linkedin.com/in/..." />
+            <div className="space-y-2">
+              <label className="block text-xs font-mono font-medium text-white/70">LinkedIn Profile</label>
+              <input 
+                name="linkedinUrl" 
+                type="url" 
+                className="w-full p-3.5 bg-white/[0.03] border border-white/[0.1] rounded-xl text-white text-sm focus:border-white/40 focus:ring-1 focus:ring-white/20 outline-none transition placeholder-white/20 font-mono text-xs" 
+                placeholder="https://linkedin.com/in/..." 
+              />
             </div>
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">GitHub / Portfolio</label>
-              <input name="githubUrl" type="url" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="https://github.com/..." />
+            <div className="space-y-2">
+              <label className="block text-xs font-mono font-medium text-white/70">GitHub / Portfolio</label>
+              <input 
+                name="githubUrl" 
+                type="url" 
+                className="w-full p-3.5 bg-white/[0.03] border border-white/[0.1] rounded-xl text-white text-sm focus:border-white/40 focus:ring-1 focus:ring-white/20 outline-none transition placeholder-white/20 font-mono text-xs" 
+                placeholder="https://github.com/..." 
+              />
             </div>
           </div>
 
           {/* Resume Upload Options */}
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">Resume / CV *</label>
+          <div className="space-y-3">
+            <label className="block text-xs font-mono font-medium text-white/70">Resume / CV *</label>
             
             {/* Mode Switcher Tabs */}
-            <div className="flex border-b border-gray-200 mb-4">
+            <div className="flex border-b border-white/[0.08] mb-4 gap-2">
               <button
                 type="button"
                 onClick={() => { setResumeMode('drive'); setErrorMsg(""); }}
-                className={`py-2.5 px-4 font-semibold text-sm border-b-2 transition flex items-center gap-1.5 ${
+                className={`py-2 px-4 font-mono text-xs border-b-2 transition flex items-center gap-1.5 ${
                   resumeMode === 'drive'
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                    ? 'border-white text-white font-semibold'
+                    : 'border-transparent text-white/40 hover:text-white/70'
                 }`}
               >
                 <span>🔗</span> Google Drive Link
@@ -198,10 +237,10 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
               <button
                 type="button"
                 onClick={() => { setResumeMode('pdf'); setErrorMsg(""); }}
-                className={`py-2.5 px-4 font-semibold text-sm border-b-2 transition flex items-center gap-1.5 ${
+                className={`py-2 px-4 font-mono text-xs border-b-2 transition flex items-center gap-1.5 ${
                   resumeMode === 'pdf'
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                    ? 'border-white text-white font-semibold'
+                    : 'border-transparent text-white/40 hover:text-white/70'
                 }`}
               >
                 <span>📄</span> Upload PDF
@@ -209,10 +248,10 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
               <button
                 type="button"
                 onClick={() => { setResumeMode('text'); setErrorMsg(""); }}
-                className={`py-2.5 px-4 font-semibold text-sm border-b-2 transition flex items-center gap-1.5 ${
+                className={`py-2 px-4 font-mono text-xs border-b-2 transition flex items-center gap-1.5 ${
                   resumeMode === 'text'
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                    ? 'border-white text-white font-semibold'
+                    : 'border-transparent text-white/40 hover:text-white/70'
                 }`}
               >
                 <span>📝</span> Paste Text
@@ -227,10 +266,10 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
                   value={driveUrl}
                   onChange={(e) => setDriveUrl(e.target.value)}
                   placeholder="https://drive.google.com/file/d/1BxiMVs.../view?usp=sharing"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                  className="w-full p-3.5 bg-white/[0.03] border border-white/[0.1] rounded-xl text-white text-xs font-mono focus:border-white/40 focus:ring-1 focus:ring-white/20 outline-none transition placeholder-white/20"
                 />
-                <p className="text-xs text-gray-500 bg-blue-50 p-2.5 rounded border border-blue-100 flex items-start gap-1.5">
-                  <span className="text-blue-500 font-bold">💡</span>
+                <p className="text-xs text-white/50 bg-white/[0.02] p-3 rounded-xl border border-white/[0.06] flex items-start gap-2">
+                  <span className="text-amber-400 font-bold">💡</span>
                   <span>
                     Make sure link sharing in Google Drive is set to <strong>"Anyone with the link can view"</strong> so our hiring engine can retrieve your resume.
                   </span>
@@ -241,23 +280,23 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
             {/* PDF File Upload Input */}
             {resumeMode === 'pdf' && (
               <div className="space-y-2">
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition cursor-pointer relative bg-gray-50">
+                <div className="border border-dashed border-white/[0.15] rounded-2xl p-8 text-center hover:border-white/40 transition cursor-pointer relative bg-white/[0.02]">
                   <input
                     type="file"
                     accept=".pdf,application/pdf"
                     onChange={handleFileChange}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   />
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     <span className="text-3xl">📄</span>
-                    <div className="text-sm font-semibold text-gray-700">
+                    <div className="text-sm font-semibold text-white">
                       {pdfFile ? pdfFile.name : 'Click to select or drag and drop your PDF resume'}
                     </div>
-                    <p className="text-xs text-gray-500">Supports searchable text PDF files</p>
+                    <p className="text-xs text-white/40 font-mono">Supports searchable text PDF files</p>
                   </div>
                 </div>
                 {pdfFile && (
-                  <p className="text-xs text-green-700 font-medium flex items-center gap-1">
+                  <p className="text-xs text-emerald-400 font-mono flex items-center gap-1.5">
                     <span>✓</span> Selected: {pdfFile.name} ({(pdfFile.size / 1024).toFixed(1)} KB)
                   </p>
                 )}
@@ -271,22 +310,41 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
                   value={resumeText}
                   onChange={(e) => setResumeText(e.target.value)}
                   rows={8}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-sans text-sm leading-relaxed"
+                  className="w-full p-3.5 bg-white/[0.03] border border-white/[0.1] rounded-xl text-white text-xs font-mono leading-relaxed focus:border-white/40 focus:ring-1 focus:ring-white/20 outline-none transition placeholder-white/20"
                   placeholder="Paste your plain resume text here..."
                 />
               </div>
             )}
           </div>
 
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">Anything else you'd like to share with us? (Optional)</label>
-            <p className="text-xs text-gray-500 mb-2">Tell us about a side project you're proud of, a tough engineering challenge you solved, or anything special you want the hiring team to know.</p>
-            <textarea name="relevantExperience" rows={3} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm placeholder-gray-400" placeholder="e.g. In my spare time, I built an open-source real-time tool, won a hackathon, or led a performance revamp..."></textarea>
+          <div className="space-y-2">
+            <label className="block text-xs font-mono font-medium text-white/70">Anything else you'd like to share with us? (Optional)</label>
+            <p className="text-xs text-white/40">Tell us about a side project you're proud of, a tough engineering challenge you solved, or anything special you want the hiring team to know.</p>
+            <textarea 
+              name="relevantExperience" 
+              rows={3} 
+              className="w-full p-3.5 bg-white/[0.03] border border-white/[0.1] rounded-xl text-white text-sm focus:border-white/40 focus:ring-1 focus:ring-white/20 outline-none transition placeholder-white/20" 
+              placeholder="e.g. In my spare time, I built an open-source real-time tool, won a hackathon, or led a performance revamp..." 
+            />
           </div>
 
-          <div className="pt-6 border-t mt-8">
-            <button type="submit" disabled={loading || !jobId} className="w-full md:w-auto px-10 py-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 text-lg shadow-md transition disabled:opacity-50">
-              {loading ? 'Submitting Application...' : 'Submit Application'}
+          <div className="pt-6 border-t border-white/[0.08]">
+            <button 
+              type="submit" 
+              disabled={loading || !jobId} 
+              className="w-full md:w-auto px-10 py-4 bg-white text-black hover:bg-neutral-200 font-sans font-bold rounded-full text-base shadow-[0_0_30px_rgba(255,255,255,0.2)] transition disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></span>
+                  <span>submitting application...</span>
+                </>
+              ) : (
+                <>
+                  <span>submit application</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </button>
           </div>
         </form>
@@ -294,3 +352,4 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
     </div>
   );
 }
+

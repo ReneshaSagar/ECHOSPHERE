@@ -1,285 +1,290 @@
 'use client';
 
-import { ArrowDownRight, ArrowRight, Sparkles, Server, Cpu, Globe2, ShieldCheck, Zap, Users, Terminal, CheckCircle } from 'lucide-react';
+import React from 'react';
 import Link from 'next/link';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import HeroVisualSynergy from '@/components/hero/HeroVisualSynergy';
 import { NEXORA_LABS } from '@/lib/company';
-
-const AGORA_BLUE = '#00AEEF';
-const GRID_SIZE = 18;
+import { 
+  ArrowRight, 
+  Sparkles, 
+  Cpu, 
+  Server, 
+  Globe2, 
+  ShieldCheck, 
+  Zap, 
+  Terminal, 
+  Layers, 
+  Lock, 
+  Workflow, 
+  Code2, 
+  Radio, 
+  CheckCircle2, 
+  Users 
+} from 'lucide-react';
 
 export default function LandingPage() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isTopTextScratched, setIsTopTextScratched] = useState(false);
-  const [isTitleScratched, setIsTitleScratched] = useState(false);
-  const [isPrimaryBtnScratched, setIsPrimaryBtnScratched] = useState(false);
-  const [isSecondaryBtnScratched, setIsSecondaryBtnScratched] = useState(false);
-  const [isRightTextScratched, setIsRightTextScratched] = useState(false);
-
-  const sizeCanvas = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const bounds = canvas.getBoundingClientRect();
-    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.floor(bounds.width * pixelRatio);
-    canvas.height = Math.floor(bounds.height * pixelRatio);
-    const context = canvas.getContext('2d');
-    context?.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    setIsTopTextScratched(false);
-    setIsTitleScratched(false);
-    setIsPrimaryBtnScratched(false);
-    setIsSecondaryBtnScratched(false);
-    setIsRightTextScratched(false);
-  }, []);
-
-  useEffect(() => {
-    sizeCanvas();
-    window.addEventListener('resize', sizeCanvas);
-    return () => window.removeEventListener('resize', sizeCanvas);
-  }, [sizeCanvas]);
-
-  const scratch = useCallback((clientX: number, clientY: number) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const bounds = canvas.getBoundingClientRect();
-    const context = canvas.getContext('2d');
-    if (!context) return;
-
-    const x = clientX - bounds.left;
-    const y = clientY - bounds.top;
-    const originX = Math.floor(x / GRID_SIZE) * GRID_SIZE;
-    const originY = Math.floor(y / GRID_SIZE) * GRID_SIZE;
-
-    // Tactile pixel reveal
-    for (let i = 0; i < 18; i += 1) {
-      const offsetX = (Math.floor(Math.random() * 7) - 3) * GRID_SIZE;
-      const offsetY = (Math.floor(Math.random() * 7) - 3) * GRID_SIZE;
-      const cellSize = Math.random() > 0.72 ? GRID_SIZE * 2 : GRID_SIZE;
-      context.fillStyle = Math.random() > 0.18 ? AGORA_BLUE : '#009CDE';
-      context.fillRect(originX + offsetX + 1, originY + offsetY + 1, cellSize - 2, cellSize - 2);
-    }
-  }, []);
-
   return (
-    <div
-      className="relative min-h-screen overflow-hidden bg-[#fbfdff] dark:bg-[#0B121F] text-[#102a3a] dark:text-slate-100 transition-colors"
-      onClick={(event) => scratch(event.clientX, event.clientY)}
-      onPointerDown={(event) => scratch(event.clientX, event.clientY)}
-      onPointerMove={(event) => scratch(event.clientX, event.clientY)}
-    >
-      <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" />
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.03] [background-image:linear-gradient(#00AEEF_1px,transparent_1px),linear-gradient(90deg,#00AEEF_1px,transparent_1px)] [background-size:72px_72px]" />
+    <div className="relative min-h-screen bg-[#030304] text-[#f4f4f5] overflow-hidden selection:bg-purple-500/30 selection:text-white">
+      {/* Subtle Background Radial Atmosphere */}
+      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-purple-900/10 via-pink-900/5 to-transparent blur-[140px] opacity-60" />
+      <div className="pointer-events-none absolute inset-0 dot-grid-fine opacity-20" />
 
-      <main className="relative z-10 mx-auto flex min-h-screen max-w-[1440px] flex-col px-5 pb-8 pt-24 sm:px-10 lg:px-16">
-        {/* Hero Section */}
-        <section className="flex min-h-[calc(100vh-10rem)] flex-col justify-between py-8 sm:py-12">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
-            <div className="max-w-4xl">
-              <div 
-                className={`mb-8 flex w-fit items-center gap-3 text-[11px] font-bold uppercase tracking-[0.22em] transition-colors duration-500 ${isTopTextScratched ? 'text-white' : 'text-[#00AEEF]'}`}
-                onPointerEnter={() => setIsTopTextScratched(true)}
-              >
-                <span className={`grid h-6 w-6 place-items-center transition-colors duration-500 ${isTopTextScratched ? 'bg-white text-[#00AEEF]' : 'bg-[#00AEEF] text-white'}`}>+</span>
-                Nexora Labs • AI-Native Infrastructure
-              </div>
+      <main className="relative z-10 mx-auto flex flex-col max-w-7xl px-6 sm:px-10 lg:px-16 pt-32 pb-24">
+        
+        {/* ── 1. Hero Section (Matching Reference Image) ── */}
+        <section className="flex flex-col items-center text-center pt-8 sm:pt-12 pb-6">
+          {/* Main Headline */}
+          <h1 className="max-w-4xl text-4xl sm:text-6xl lg:text-[4.4rem] font-medium tracking-[-0.035em] text-white leading-[1.08] font-sans">
+            When intelligence reaches out to instinct, the future takes shape
+          </h1>
 
-              <h1 className="max-w-4xl text-5xl font-semibold leading-[0.94] tracking-[-0.075em] text-[#102a3a] dark:text-slate-100 sm:text-7xl lg:text-[6.2rem]">
-                Build what
-                <span 
-                  className={`block w-fit transition-colors duration-500 ${isTitleScratched ? 'text-white' : 'text-[#00AEEF]'}`}
-                  onPointerEnter={() => setIsTitleScratched(true)}
-                >
-                  intelligent software
-                </span>
-                runs on.
-              </h1>
+          {/* Subtitle */}
+          <p className="mt-6 max-w-2xl text-xs sm:text-sm font-mono text-zinc-400 tracking-wider lowercase">
+            an unlikely alliance — where human intuition and algorithmic precision move as one
+          </p>
 
-              <p className="mt-8 max-w-xl text-base leading-relaxed text-[#4b6574] dark:text-slate-300 sm:text-lg">
-                Nexora Labs builds the foundational distributed platforms, real-time media backbones, and developer primitives powering the next generation of AI-native software.
-              </p>
-
-              <div className="mt-10 flex flex-wrap items-center gap-3">
-                <Link 
-                  href="/jobs" 
-                  className={`group inline-flex items-center gap-3 px-6 py-3.5 text-sm font-bold transition-colors shadow-sm ${isPrimaryBtnScratched ? 'bg-white text-[#00AEEF] hover:bg-slate-100' : 'bg-[#00AEEF] text-white hover:bg-[#008fca]'}`}
-                  onPointerEnter={() => setIsPrimaryBtnScratched(true)}
-                >
-                  Explore Open Roles
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Link>
-
-                <a 
-                  href="#platform" 
-                  className={`inline-flex items-center gap-2 border border-[#00AEEF]/30 px-5 py-3.5 text-sm font-semibold backdrop-blur-sm transition-colors ${isSecondaryBtnScratched ? 'bg-white/20 text-white hover:bg-white/30 border-white/50' : 'bg-white/80 dark:bg-[#0B121F]/80 text-[#00AEEF] hover:border-[#00AEEF] hover:text-white dark:hover:text-white'}`}
-                  onPointerEnter={() => setIsSecondaryBtnScratched(true)}
-                >
-                  Platform Overview <ArrowDownRight className="h-4 w-4" />
-                </a>
-              </div>
-            </div>
-
-            <div 
-              className={`justify-self-end w-fit border-l pl-5 text-sm leading-relaxed lg:max-w-xs transition-colors duration-500 ${isRightTextScratched ? 'border-white/50 text-white' : 'border-[#00AEEF]/25 text-[#3b5869] dark:text-slate-400'}`}
-              onPointerEnter={() => setIsRightTextScratched(true)}
+          {/* See it in Action Capsule Button */}
+          <div className="mt-8 flex items-center justify-center">
+            <Link
+              href="/jobs"
+              className="group inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white text-black text-xs font-semibold hover:bg-zinc-200 transition-all shadow-[0_0_30px_rgba(255,255,255,0.25)] hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] transform hover:-translate-y-0.5"
             >
-              <p className={`font-mono text-[10px] font-bold uppercase tracking-[0.18em] transition-colors duration-500 ${isRightTextScratched ? 'text-white' : 'text-[#00AEEF]'}`}>Series B • Series of Signal</p>
-              <p className="mt-3">Move your cursor across the page to reveal the low-latency distributed telemetry layer.</p>
-            </div>
+              <span>See it in action</span>
+              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+            </Link>
           </div>
 
-          {/* Key Infrastructure Metrics Bar */}
-          <div className="mt-16 grid grid-cols-2 gap-px border border-[#00AEEF]/30 bg-[#00AEEF]/30 sm:grid-cols-4">
-            {[
-              ['180+', 'Team members across 20+ nationalities'],
-              ['3', 'Global Hubs: Bengaluru · Singapore · London'],
-              ['<50ms', 'Global edge inference & audio latency'],
-              ['99.99%', 'Enterprise infrastructure SLA'],
-            ].map(([stat, label]) => (
-              <div key={label} className="min-h-28 bg-white/90 dark:bg-[#0B121F]/90 p-4 backdrop-blur-sm sm:p-5">
-                <p className="text-2xl font-semibold tracking-[-0.06em] text-[#00AEEF]">{stat}</p>
-                <p className="mt-3 max-w-36 text-[11px] font-medium uppercase leading-relaxed tracking-[0.08em] text-[#587180] dark:text-slate-400">{label}</p>
-              </div>
-            ))}
+          {/* Centerpiece Visual Art: Halftone Hands + Iridescent Asterisk + Icon Ribbon */}
+          <div className="w-full mt-2 sm:mt-4">
+            <HeroVisualSynergy />
           </div>
         </section>
 
-        {/* Platform Architecture & Core Primitives Section */}
-        <section id="platform" className="border-t border-[#00AEEF]/30 py-16 sm:py-24">
-          <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+        {/* ── 2. Services / Platform Architecture Section ── */}
+        <section id="platform" className="py-20 border-t border-white/8 space-y-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#00AEEF]">Core Technology Architecture</p>
-              <h2 className="mt-3 text-4xl font-semibold tracking-[-0.06em] text-[#102a3a] dark:text-slate-100 sm:text-5xl">Engineered for Scale.</h2>
+              <span className="font-mono text-[11px] text-zinc-500 uppercase tracking-widest">[ SERVICES // ARCHITECTURE ]</span>
+              <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mt-2">
+                Infrastructure for intelligent software.
+              </h2>
             </div>
-            <div className="flex items-center gap-2 text-sm text-[#527080] dark:text-slate-400">
-              <Cpu className="h-4 w-4 text-[#00AEEF]" /> Composable Infrastructure Primitives
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-px border border-[#00AEEF]/35 bg-[#00AEEF]/35 md:grid-cols-3">
-            {[
-              {
-                number: '01',
-                title: 'Real-Time Audio & Inference Gateways',
-                role: 'Sub-50ms Global Streaming',
-                desc: 'WebRTC and WebSocket transport pipelines bridging multimodal AI models with high-concurrency event loops and zero-jitter audio packet delivery.'
-              },
-              {
-                number: '02',
-                title: 'Distributed Event & Data Backbone',
-                role: 'High-Throughput Partitioning',
-                desc: 'Fault-tolerant Kafka clusters, Redis state coordination, and PostgreSQL query optimizations designed for multi-region resilience and fast recovery.'
-              },
-              {
-                number: '03',
-                title: 'OmniPanel Evaluation Intelligence',
-                role: 'Autonomous Multi-Persona Engine',
-                desc: 'Stateful turn arbitration, calibrated rubric grading, and anti-hallucination groundings that transform candidate assessments into objective signal.'
-              }
-            ].map((pillar) => (
-              <article key={pillar.title} className="group relative min-h-64 overflow-hidden bg-white/95 dark:bg-[#0B121F]/95 p-6 backdrop-blur-sm transition-colors hover:bg-[#e9f8ff] dark:hover:bg-slate-900/90 sm:p-8">
-                <span className="absolute right-5 top-5 font-mono text-[10px] text-[#00AEEF]">{pillar.number}</span>
-                <div className="absolute bottom-0 left-0 h-1 w-0 bg-[#00AEEF] transition-all duration-300 group-hover:w-full" />
-                <Sparkles className="h-5 w-5 text-[#00AEEF]" strokeWidth={1.5} />
-                <h3 className="mt-12 text-2xl font-semibold tracking-[-0.06em] text-[#102a3a] dark:text-slate-100">{pillar.title}</h3>
-                <p className="mt-2 text-xs font-bold uppercase tracking-wider text-[#00AEEF]">{pillar.role}</p>
-                <p className="mt-6 text-sm leading-relaxed text-[#385463] dark:text-slate-400">
-                  {pillar.desc}
-                </p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        {/* Operating Principles Section */}
-        <section id="principles" className="border-t border-[#00AEEF]/30 py-16 sm:py-24">
-          <div className="mb-12">
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#00AEEF]">How We Build</p>
-            <h2 className="mt-3 text-4xl font-semibold tracking-[-0.06em] text-[#102a3a] dark:text-slate-100 sm:text-5xl">Our Operating Principles.</h2>
-            <p className="mt-4 max-w-2xl text-base text-[#4b6574] dark:text-slate-300">
-              The cultural standards and engineering tenets that guide every architectural RFC, code review, and product decision at Nexora Labs.
+            <p className="text-xs sm:text-sm text-zinc-400 max-w-md font-mono leading-relaxed">
+              Composable primitives engineered for low-latency voice AI, multi-region event streaming, and automated evaluation.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {NEXORA_LABS.principles.map((principle) => (
-              <div 
-                key={principle.number}
-                className="bg-white/80 dark:bg-[#0e1726]/80 p-6 rounded-xl border border-[#00AEEF]/20 hover:border-[#00AEEF]/50 transition shadow-xs"
-              >
-                <div className="font-mono text-xs font-bold text-[#00AEEF] mb-3">PRINCIPLE // {principle.number}</div>
-                <h3 className="text-xl font-bold text-[#102a3a] dark:text-slate-100 mb-2">{principle.title}</h3>
-                <p className="text-sm text-[#4b6574] dark:text-slate-400 leading-relaxed">{principle.description}</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="glass-card glass-card-hover p-8 space-y-5 relative overflow-hidden group">
+              <div className="font-mono text-xs text-zinc-500">01 / AUDIO & INFERENCE</div>
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                <Radio className="w-5 h-5" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">Sub-50ms Streaming Gateways</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                Full-duplex WebRTC media pipelines with neural acoustic synchronization, adaptive barge-in handling, and zero audio packet jitter.
+              </p>
+              <div className="pt-2 text-[11px] font-mono text-purple-400 flex items-center gap-1">
+                <span>WebRTC · vLLM · Gemini Live</span>
+              </div>
+            </div>
+
+            <div className="glass-card glass-card-hover p-8 space-y-5 relative overflow-hidden group">
+              <div className="font-mono text-xs text-zinc-500">02 / EVENT BACKBONE</div>
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                <Server className="w-5 h-5" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">Distributed Event Mesh</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                Fault-tolerant Apache Kafka and Redis Pub/Sub topologies designed for billions of monthly state events with multi-region active-active replication.
+              </p>
+              <div className="pt-2 text-[11px] font-mono text-cyan-400 flex items-center gap-1">
+                <span>Kafka · Redis · PostgreSQL</span>
+              </div>
+            </div>
+
+            <div className="glass-card glass-card-hover p-8 space-y-5 relative overflow-hidden group">
+              <div className="font-mono text-xs text-zinc-500">03 / EVALUATION INTELLIGENCE</div>
+              <div className="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">OmniPanel AI Evaluation</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                Stateful turn arbitration, calibrated multi-round rubric synthesis, and verified evidence grounding for technical talent assessment.
+              </p>
+              <div className="pt-2 text-[11px] font-mono text-pink-400 flex items-center gap-1">
+                <span>Multi-Persona Arbiter · RAG</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 3. How It Works Section ── */}
+        <section id="how-it-works" className="py-20 border-t border-white/8 space-y-12">
+          <div className="text-center max-w-2xl mx-auto space-y-3">
+            <span className="font-mono text-[11px] text-zinc-500 uppercase tracking-widest">[ HOW IT WORKS ]</span>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white">
+              From application to signal in minutes.
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-400 font-mono">
+              An objective, conversational hiring pipeline powered by OmniPanel.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="p-6 rounded-2xl border border-white/6 bg-[#08080b] space-y-4">
+              <div className="flex items-center justify-between font-mono text-xs text-zinc-500">
+                <span>PHASE // 01</span>
+                <span className="text-zinc-600">INGESTION</span>
+              </div>
+              <h4 className="text-lg font-semibold text-white">Multi-Source Enrichment</h4>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Extracts verified project repositories from candidate GitHub and LinkedIn, identifying high-signal codecraft to probe during the interview.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl border border-white/6 bg-[#08080b] space-y-4">
+              <div className="flex items-center justify-between font-mono text-xs text-zinc-500">
+                <span>PHASE // 02</span>
+                <span className="text-zinc-600">LIVE AUDIO</span>
+              </div>
+              <h4 className="text-lg font-semibold text-white">Multi-Agent Voice Panel</h4>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Candidate joins a live room with technical leads (Priya Nair, Arjun Malhotra) who coordinate turns, probe scalability, and assess depth.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl border border-white/6 bg-[#08080b] space-y-4">
+              <div className="flex items-center justify-between font-mono text-xs text-zinc-500">
+                <span>PHASE // 03</span>
+                <span className="text-zinc-600">DECISION</span>
+              </div>
+              <h4 className="text-lg font-semibold text-white">Grounded Synthesis Scorecard</h4>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Turn Arbiter synthesizes candidate explanations against objective rubrics, delivering comprehensive telemetry to engineering hiring committees.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 4. AI Security & Operating Principles ── */}
+        <section id="principles" className="py-20 border-t border-white/8 space-y-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <span className="font-mono text-[11px] text-zinc-500 uppercase tracking-widest">[ SECURITY & CULTURE // PRINCIPLES ]</span>
+              <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mt-2">
+                Our Operating Principles.
+              </h2>
+            </div>
+            <p className="text-xs sm:text-sm text-zinc-400 max-w-md font-mono">
+              The foundational tenets that govern our engineering standards and hiring criteria.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {NEXORA_LABS.principles.map((p) => (
+              <div key={p.number} className="p-6 rounded-2xl border border-white/6 bg-[#07070a] hover:border-white/15 transition-all space-y-3">
+                <div className="font-mono text-[11px] text-purple-400">PRINCIPLE // {p.number}</div>
+                <h4 className="text-lg font-semibold text-white">{p.title}</h4>
+                <p className="text-xs text-zinc-400 leading-relaxed font-sans">{p.description}</p>
               </div>
             ))}
-          </div>
-        </section>
 
-        {/* Global Hubs Section */}
-        <section className="border-t border-[#00AEEF]/30 py-16 sm:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-            <div className="lg:col-span-1">
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#00AEEF]">Global Presence</p>
-              <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#102a3a] dark:text-slate-100">Three Global Hubs.</h2>
-              <p className="mt-3 text-sm text-[#4b6574] dark:text-slate-400 leading-relaxed">
-                Headquartered in Bengaluru with engineering and product centers in Singapore and London, building infrastructure for developers worldwide.
+            <div className="p-6 rounded-2xl border border-dashed border-white/10 bg-transparent flex flex-col justify-between space-y-4">
+              <div className="font-mono text-[11px] text-zinc-500">GLOBAL NETWORK // 06</div>
+              <div className="text-sm font-semibold text-white">
+                Bengaluru HQ · Singapore · London
+              </div>
+              <p className="text-xs text-zinc-500">
+                180+ team members across 20+ nationalities building global developer infrastructure.
               </p>
-            </div>
-
-            <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {NEXORA_LABS.offices.map((office) => (
-                <div key={office.city} className="p-5 rounded-xl border border-[#00AEEF]/20 bg-white/60 dark:bg-[#0e1726]/60">
-                  <div className="flex items-center gap-2 text-[#00AEEF] mb-2 font-mono text-xs font-bold uppercase">
-                    <Globe2 className="w-3.5 h-3.5" />
-                    <span>{office.region}</span>
-                  </div>
-                  <h4 className="text-lg font-bold text-[#102a3a] dark:text-slate-100">{office.city}</h4>
-                  <p className="text-xs text-gray-500 mt-0.5">{office.country}</p>
-                  <div className="mt-3 text-xs text-[#4b6574] dark:text-slate-400 border-t border-gray-100 dark:border-gray-800 pt-2 font-medium">
-                    {office.type}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Careers Call to Action Banner */}
-        <section className="border-t border-[#00AEEF]/30 py-16">
-          <div className="bg-gradient-to-br from-blue-900 to-slate-900 text-white rounded-2xl p-8 sm:p-12 shadow-xl relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-            <div className="relative z-10 max-w-xl">
-              <span className="px-3 py-1 rounded-full bg-blue-500/20 text-[#38bdf8] text-xs font-mono font-bold uppercase border border-blue-400/30">
-                We're Hiring
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-black mt-4 tracking-tight">
-                Join our engineering & product team.
-              </h2>
-              <p className="mt-3 text-gray-300 text-sm sm:text-base leading-relaxed">
-                Explore our open positions across Backend, Full Stack, AI/ML, Cloud Platform, Product, and Design.
-              </p>
-            </div>
-
-            <div className="relative z-10">
-              <Link
-                href="/jobs"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-[#00AEEF] hover:bg-[#008fca] text-white font-bold text-base rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 whitespace-nowrap"
-              >
-                <span>View 7 Open Roles</span>
-                <ArrowRight className="w-4 h-4" />
+              <Link href="/jobs" className="text-xs text-white hover:underline flex items-center gap-1 font-mono">
+                <span>View team openings</span>
+                <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="flex flex-col gap-4 border-t border-[#00AEEF]/25 pt-6 text-[11px] font-semibold tracking-[0.08em] text-[#5c7482] dark:text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-          <span>© 2026 Nexora Labs, Inc. All rights reserved. • Bengaluru · Singapore · London</span>
-          <span className="text-[#00AEEF] flex items-center gap-1.5 font-bold uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5" />
-            Powered by OmniPanel
-          </span>
+        {/* ── 5. Open Roles / Careers Preview Section ── */}
+        <section className="py-20 border-t border-white/8 space-y-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="font-mono text-[11px] text-zinc-500 uppercase tracking-widest">[ CAREERS // 7 POSITIONS ]</span>
+              <h2 className="text-3xl font-semibold tracking-tight text-white mt-1">
+                Open roles at Nexora Labs.
+              </h2>
+            </div>
+
+            <Link
+              href="/jobs"
+              className="hidden sm:inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/15 hover:border-white/30 text-xs font-semibold text-white transition-all bg-white/5"
+            >
+              <span>View all openings</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid gap-3">
+            {[
+              { title: 'Senior Backend Engineer — Distributed Systems & Real-Time APIs', loc: 'Bengaluru (Hybrid)', exp: '3–6 yrs', dept: 'Core Infra', id: 'j1' },
+              { title: 'Staff Backend Engineer — Core Infrastructure & Architecture', loc: 'Bengaluru / Remote India', exp: '7+ yrs', dept: 'Architecture', id: 'j2' },
+              { title: 'Senior Full Stack Engineer — Next.js & Developer Platform', loc: 'Bengaluru', exp: '3–6 yrs', dept: 'Product Eng', id: 'j3' },
+              { title: 'AI / Machine Learning Engineer — Conversational Systems & LLM Infra', loc: 'Bengaluru', exp: '2–5 yrs', dept: 'AI Platform', id: 'j4' },
+              { title: 'Senior Platform Engineer — Cloud Infrastructure & Kubernetes', loc: 'Singapore', exp: '4–7 yrs', dept: 'Cloud Platform', id: 'j5' }
+            ].map((role) => (
+              <Link
+                key={role.id}
+                href={`/jobs/${role.id}`}
+                className="group p-5 rounded-2xl border border-white/6 bg-[#08080b] hover:border-white/20 hover:bg-[#0c0c10] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              >
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-mono text-[10px] px-2 py-0.5 rounded-md bg-white/5 text-zinc-400 border border-white/5">
+                      {role.dept}
+                    </span>
+                    <span className="font-mono text-[10px] text-zinc-500">
+                      {role.loc} · {role.exp}
+                    </span>
+                  </div>
+                  <h4 className="text-base font-semibold text-white group-hover:text-zinc-200 transition">
+                    {role.title}
+                  </h4>
+                </div>
+
+                <div className="flex items-center gap-2 text-xs font-semibold text-zinc-300 group-hover:text-white transition whitespace-nowrap">
+                  <span>Apply</span>
+                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center pt-4 sm:hidden">
+            <Link
+              href="/jobs"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-white/15 text-xs font-semibold text-white bg-white/5"
+            >
+              <span>Explore all 7 openings</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </section>
+
+        {/* ── 6. Minimalist Dark Footer ── */}
+        <footer className="pt-16 border-t border-white/8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 text-xs text-zinc-500 font-mono">
+          <div className="flex items-center gap-4">
+            <span className="text-white font-sans font-medium text-sm lowercase">nexora</span>
+            <span>© 2026 Nexora Labs, Inc.</span>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <Link href="/jobs" className="hover:text-zinc-300 transition">Careers</Link>
+            <Link href="/admin" className="hover:text-zinc-300 transition">ATS Portal</Link>
+            <span className="text-zinc-400">Powered by OmniPanel</span>
+          </div>
         </footer>
+
       </main>
     </div>
   );

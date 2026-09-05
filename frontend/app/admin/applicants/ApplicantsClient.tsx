@@ -154,14 +154,14 @@ export default function ApplicantsClient({
   });
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-6 font-sans">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
-          <Users className="w-8 h-8 text-blue-600" />
-          Candidate Pipeline & Evaluation
+        <h1 className="text-3xl font-sans font-bold text-white tracking-tight flex items-center gap-3">
+          <Users className="w-7 h-7 text-white/70" />
+          <span>candidate pipeline & evaluation</span>
         </h1>
-        <p className="text-gray-500 text-sm mt-1">
+        <p className="text-white/50 text-sm mt-1">
           Review all applicants, manage decision stages, inspect AI interview reports, and track alternative role allocations.
         </p>
       </div>
@@ -170,73 +170,85 @@ export default function ApplicantsClient({
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         <div 
           onClick={() => setSelectedStatus('ALL')}
-          className={`p-4 rounded-xl border cursor-pointer transition ${
-            selectedStatus === 'ALL' ? 'bg-blue-50 border-blue-300 ring-2 ring-blue-500' : 'bg-white border-gray-200 hover:bg-gray-50'
+          className={`p-4 rounded-2xl border cursor-pointer transition ${
+            selectedStatus === 'ALL' 
+              ? 'bg-white/[0.08] border-white/30 ring-1 ring-white/30' 
+              : 'bg-[#0a0a0d] border-white/[0.08] hover:border-white/20'
           }`}
         >
-          <div className="text-xs font-bold text-gray-500 uppercase">Total Candidates</div>
-          <div className="text-2xl font-black text-gray-900 mt-1">{metrics.total}</div>
+          <div className="text-xs font-mono text-white/40 uppercase">Total</div>
+          <div className="text-2xl font-mono font-bold text-white mt-1">{metrics.total}</div>
         </div>
 
         <div 
           onClick={() => setSelectedStatus('UNDER_REVIEW')}
-          className={`p-4 rounded-xl border cursor-pointer transition ${
-            selectedStatus === 'UNDER_REVIEW' ? 'bg-amber-50 border-amber-300 ring-2 ring-amber-500' : 'bg-white border-gray-200 hover:bg-gray-50'
+          className={`p-4 rounded-2xl border cursor-pointer transition ${
+            selectedStatus === 'UNDER_REVIEW' 
+              ? 'bg-amber-500/15 border-amber-500/40 ring-1 ring-amber-500/40' 
+              : 'bg-[#0a0a0d] border-white/[0.08] hover:border-white/20'
           }`}
         >
-          <div className="text-xs font-bold text-amber-600 uppercase">In Review</div>
-          <div className="text-2xl font-black text-amber-700 mt-1">{metrics.inReview}</div>
+          <div className="text-xs font-mono text-amber-400 uppercase">In Review</div>
+          <div className="text-2xl font-mono font-bold text-amber-300 mt-1">{metrics.inReview}</div>
         </div>
 
         <div 
           onClick={() => setSelectedStatus('INTERVIEW_SCHEDULED')}
-          className={`p-4 rounded-xl border cursor-pointer transition ${
-            selectedStatus === 'INTERVIEW_SCHEDULED' ? 'bg-purple-50 border-purple-300 ring-2 ring-purple-500' : 'bg-white border-gray-200 hover:bg-gray-50'
+          className={`p-4 rounded-2xl border cursor-pointer transition ${
+            selectedStatus === 'INTERVIEW_SCHEDULED' 
+              ? 'bg-purple-500/15 border-purple-500/40 ring-1 ring-purple-500/40' 
+              : 'bg-[#0a0a0d] border-white/[0.08] hover:border-white/20'
           }`}
         >
-          <div className="text-xs font-bold text-purple-600 uppercase">Interviewing</div>
-          <div className="text-2xl font-black text-purple-700 mt-1">{metrics.scheduled}</div>
+          <div className="text-xs font-mono text-purple-400 uppercase">Interviewing</div>
+          <div className="text-2xl font-mono font-bold text-purple-300 mt-1">{metrics.scheduled}</div>
         </div>
 
         <div 
           onClick={() => setSelectedStatus('SELECTED')}
-          className={`p-4 rounded-xl border cursor-pointer transition ${
-            selectedStatus === 'SELECTED' ? 'bg-emerald-50 border-emerald-300 ring-2 ring-emerald-500' : 'bg-white border-gray-200 hover:bg-gray-50'
+          className={`p-4 rounded-2xl border cursor-pointer transition ${
+            selectedStatus === 'SELECTED' 
+              ? 'bg-emerald-500/15 border-emerald-500/40 ring-1 ring-emerald-500/40' 
+              : 'bg-[#0a0a0d] border-white/[0.08] hover:border-white/20'
           }`}
         >
-          <div className="text-xs font-bold text-emerald-600 uppercase">Selected / Offer</div>
-          <div className="text-2xl font-black text-emerald-700 mt-1">{metrics.selected}</div>
+          <div className="text-xs font-mono text-emerald-400 uppercase">Selected</div>
+          <div className="text-2xl font-mono font-bold text-emerald-300 mt-1">{metrics.selected}</div>
         </div>
 
         <div 
           onClick={() => setSelectedStatus('CONSIDER_FOR_OTHER_ROLES')}
-          className={`p-4 rounded-xl border cursor-pointer transition ${
-            selectedStatus === 'CONSIDER_FOR_OTHER_ROLES' ? 'bg-indigo-50 border-indigo-300 ring-2 ring-indigo-500' : 'bg-white border-gray-200 hover:bg-gray-50'
+          className={`p-4 rounded-2xl border cursor-pointer transition ${
+            selectedStatus === 'CONSIDER_FOR_OTHER_ROLES' 
+              ? 'bg-cyan-500/15 border-cyan-500/40 ring-1 ring-cyan-500/40' 
+              : 'bg-[#0a0a0d] border-white/[0.08] hover:border-white/20'
           }`}
         >
-          <div className="text-xs font-bold text-indigo-600 uppercase">Talent Pool</div>
-          <div className="text-2xl font-black text-indigo-700 mt-1">{metrics.consider}</div>
+          <div className="text-xs font-mono text-cyan-400 uppercase">Talent Pool</div>
+          <div className="text-2xl font-mono font-bold text-cyan-300 mt-1">{metrics.consider}</div>
         </div>
 
         <div 
           onClick={() => setSelectedStatus('REJECTED')}
-          className={`p-4 rounded-xl border cursor-pointer transition ${
-            selectedStatus === 'REJECTED' ? 'bg-rose-50 border-rose-300 ring-2 ring-rose-500' : 'bg-white border-gray-200 hover:bg-gray-50'
+          className={`p-4 rounded-2xl border cursor-pointer transition ${
+            selectedStatus === 'REJECTED' 
+              ? 'bg-rose-500/15 border-rose-500/40 ring-1 ring-rose-500/40' 
+              : 'bg-[#0a0a0d] border-white/[0.08] hover:border-white/20'
           }`}
         >
-          <div className="text-xs font-bold text-rose-600 uppercase">Rejected</div>
-          <div className="text-2xl font-black text-rose-700 mt-1">{metrics.rejected}</div>
+          <div className="text-xs font-mono text-rose-400 uppercase">Rejected</div>
+          <div className="text-2xl font-mono font-bold text-rose-300 mt-1">{metrics.rejected}</div>
         </div>
       </div>
 
       {/* Control Filter Bar */}
-      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="bg-[#0a0a0d] p-4 rounded-2xl border border-white/[0.08] shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3 w-full md:w-auto flex-wrap">
           {/* Status Dropdown */}
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+            className="px-3.5 py-2 border border-white/[0.1] rounded-xl text-xs font-mono bg-[#030304] text-white focus:outline-none focus:border-white/30"
           >
             <option value="ALL">All Statuses</option>
             <option value="UNDER_REVIEW">In Review (Applied & Reviewing)</option>
@@ -251,7 +263,7 @@ export default function ApplicantsClient({
           <select
             value={selectedJob}
             onChange={(e) => setSelectedJob(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium max-w-xs truncate"
+            className="px-3.5 py-2 border border-white/[0.1] rounded-xl text-xs font-mono bg-[#030304] text-white focus:outline-none focus:border-white/30 max-w-xs truncate"
           >
             <option value="ALL">All Job Openings</option>
             {jobs.map(j => (
@@ -262,13 +274,13 @@ export default function ApplicantsClient({
 
         {/* Search */}
         <div className="relative w-full md:w-80">
-          <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search candidate name, email, role..."
+            placeholder="Search name, email, role..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-9 pr-3.5 py-2 bg-[#030304] border border-white/[0.1] rounded-xl text-xs font-mono text-white placeholder-white/30 focus:outline-none focus:border-white/30"
             suppressHydrationWarning
             autoComplete="off"
             spellCheck={false}
@@ -279,10 +291,10 @@ export default function ApplicantsClient({
       </div>
 
       {/* Applicants Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
+      <div className="bg-[#0a0a0d] rounded-2xl border border-white/[0.08] shadow-[0_0_40px_rgba(0,0,0,0.5)] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
-            <thead className="bg-gray-50 border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
+            <thead className="bg-white/[0.02] border-b border-white/[0.06] text-[11px] font-mono font-semibold text-white/50 uppercase tracking-wider">
               <tr>
                 <th className="p-4">Candidate & Links</th>
                 <th className="p-4">Applied Role</th>
@@ -291,24 +303,24 @@ export default function ApplicantsClient({
                 <th className="p-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 text-sm">
+            <tbody className="divide-y divide-white/[0.06] text-sm font-sans">
               {filtered.map(app => {
                 return (
-                  <tr key={app.id} className="hover:bg-gray-50/80 transition-colors">
+                  <tr key={app.id} className="hover:bg-white/[0.02] transition-colors">
                     {/* Candidate */}
                     <td className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white font-black text-sm flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-white/20 to-white/5 border border-white/20 text-white font-mono font-bold text-sm flex items-center justify-center shrink-0">
                           {app.name.charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0">
                           <Link 
                             href={`/admin/applications/${app.id}`}
-                            className="font-bold text-gray-900 hover:text-blue-600 truncate block text-base"
+                            className="font-bold text-white hover:text-white/80 truncate block text-base transition"
                           >
                             {app.name}
                           </Link>
-                          <div className="text-xs text-gray-400 truncate">{app.email}</div>
+                          <div className="text-xs font-mono text-white/40 truncate">{app.email}</div>
                           
                           {/* Links & Commit Badges */}
                           <div className="flex items-center gap-2 mt-1.5 flex-wrap">
@@ -317,7 +329,7 @@ export default function ApplicantsClient({
                                 href={app.linkedinUrl} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className="text-blue-600 hover:text-blue-800"
+                                className="text-white/60 hover:text-white transition"
                                 title="LinkedIn Profile"
                               >
                                 <Linkedin className="w-3.5 h-3.5" />
@@ -328,24 +340,24 @@ export default function ApplicantsClient({
                                 href={app.githubUrl} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
+                                className="text-white/60 hover:text-white flex items-center gap-1 transition"
                                 title="GitHub Profile"
                               >
                                 <Github className="w-3.5 h-3.5" />
                                 {app.recentCommits30Days !== undefined && app.recentCommits30Days > 0 && (
-                                  <span className="text-[10px] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded">
+                                  <span className="text-[10px] font-mono font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30 px-1.5 py-0.2 rounded">
                                     ⚡ {app.recentCommits30Days} commits/mo
                                   </span>
                                 )}
                               </a>
                             )}
                             {app.resumeDriveUrl && (
-                              <span className="text-[10px] font-semibold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
+                              <span className="text-[10px] font-mono text-cyan-300 bg-cyan-500/10 px-2 py-0.5 rounded-full border border-cyan-500/20">
                                 🔗 Drive Resume
                               </span>
                             )}
                             {app.resumeFileName && !app.resumeDriveUrl && (
-                              <span className="text-[10px] font-semibold text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded">
+                              <span className="text-[10px] font-mono text-white/60 bg-white/[0.04] px-2 py-0.5 rounded-full border border-white/[0.06]">
                                 📄 {app.resumeFileName}
                               </span>
                             )}
@@ -356,44 +368,44 @@ export default function ApplicantsClient({
 
                     {/* Applied Role */}
                     <td className="p-4">
-                      <div className="font-semibold text-gray-800">{app.role}</div>
-                      <div className="text-xs text-gray-400 mt-0.5">Application #{app.id.substring(4)}</div>
+                      <div className="font-semibold text-white">{app.role}</div>
+                      <div className="text-xs font-mono text-white/40 mt-0.5">Application #{app.id.substring(4)}</div>
                     </td>
 
                     {/* Status Badge */}
                     <td className="p-4">
                       {app.status === 'SELECTED' && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                           <CheckCircle className="w-3.5 h-3.5" />
                           Selected / Accepted
                         </span>
                       )}
                       {app.status === 'CONSIDER_FOR_OTHER_ROLES' && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800 border border-indigo-200">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
                           <TrendingUp className="w-3.5 h-3.5" />
                           Talent Pool / Alt Role
                         </span>
                       )}
                       {app.status === 'REJECTED' && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-rose-500/15 text-rose-300 border border-rose-500/30">
                           <XCircle className="w-3.5 h-3.5" />
                           Rejected
                         </span>
                       )}
                       {app.status === 'INTERVIEW_SCHEDULED' && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800 border border-purple-200">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-purple-500/15 text-purple-300 border border-purple-500/30">
                           <Calendar className="w-3.5 h-3.5" />
                           Interview Scheduled
                         </span>
                       )}
                       {app.status === 'UNDER_REVIEW' && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">
                           <Clock className="w-3.5 h-3.5" />
                           Under Review
                         </span>
                       )}
                       {app.status === 'APPLIED' && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-white/[0.05] text-white/80 border border-white/[0.1]">
                           <Sparkles className="w-3.5 h-3.5" />
                           Applied
                         </span>
@@ -401,17 +413,17 @@ export default function ApplicantsClient({
                     </td>
 
                     {/* Decision Stage & Breakdown Stats */}
-                    <td className="p-4 max-w-sm">
+                    <td className="p-4 max-w-sm font-sans">
                       {/* REJECTED BREAKDOWN */}
                       {app.status === 'REJECTED' && (
                         <div className="space-y-1">
-                          <div className="flex items-center gap-1.5 text-xs font-bold text-rose-700">
+                          <div className="flex items-center gap-1.5 text-xs font-mono text-rose-400">
                             <span>Stage:</span>
-                            <span className="bg-rose-50 px-2 py-0.5 rounded border border-rose-200 font-mono">
+                            <span className="bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20 font-mono">
                               {app.decisionStage || 'Resume Screening'}
                             </span>
                           </div>
-                          <p className="text-xs text-gray-600 line-clamp-2 italic">
+                          <p className="text-xs text-white/50 line-clamp-2 italic font-sans">
                             "{app.decisionReason || 'Candidate profile did not meet key architectural or concurrency qualifications for this role.'}"
                           </p>
                         </div>
@@ -421,12 +433,12 @@ export default function ApplicantsClient({
                       {app.status === 'SELECTED' && (
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                            <span className="text-xs font-mono font-bold text-emerald-300 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
                               Score: {app.evaluationScore ? `${app.evaluationScore}%` : '92% Strong Hire'}
                             </span>
-                            <span className="text-[11px] text-gray-500 font-medium">Completed 3 Rounds</span>
+                            <span className="text-[11px] font-mono text-white/40">Completed 3 Rounds</span>
                           </div>
-                          <p className="text-xs text-gray-600 line-clamp-2">
+                          <p className="text-xs text-white/60 line-clamp-2 font-sans">
                             {app.evaluationSummary || 'Exceptional problem-solving, structured technical communication, and validated codecraft.'}
                           </p>
                         </div>
@@ -435,19 +447,19 @@ export default function ApplicantsClient({
                       {/* CONSIDER FOR OTHER ROLES */}
                       {app.status === 'CONSIDER_FOR_OTHER_ROLES' && (
                         <div className="space-y-1">
-                          <div className="text-xs font-bold text-indigo-700">Recommended Next Roles:</div>
+                          <div className="text-xs font-mono font-bold text-cyan-300">Recommended Next Roles:</div>
                           <div className="flex items-center gap-1 flex-wrap">
                             {(app.recommendedAlternativeRoles && app.recommendedAlternativeRoles.length > 0
                               ? app.recommendedAlternativeRoles
                               : ['Senior Frontend Engineer', 'Fullstack Tech Lead']
                             ).map((r, i) => (
-                              <span key={i} className="text-[11px] font-semibold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-100">
+                              <span key={i} className="text-[11px] font-mono font-semibold bg-cyan-500/10 text-cyan-300 px-2 py-0.5 rounded-full border border-cyan-500/20">
                                 {r}
                               </span>
                             ))}
                           </div>
                           {app.decisionReason && (
-                            <p className="text-[11px] text-gray-500 italic mt-0.5 truncate">
+                            <p className="text-[11px] text-white/40 italic mt-0.5 truncate font-sans">
                               Note: {app.decisionReason}
                             </p>
                           )}
@@ -457,17 +469,17 @@ export default function ApplicantsClient({
                       {/* INTERVIEW SCHEDULED */}
                       {app.status === 'INTERVIEW_SCHEDULED' && (
                         <div className="space-y-1 text-xs">
-                          <div className="font-semibold text-purple-800 flex items-center gap-1">
+                          <div className="font-mono font-semibold text-purple-300 flex items-center gap-1">
                             <Calendar className="w-3.5 h-3.5" />
                             <span suppressHydrationWarning>{app.scheduledAt ? formatDateTimeShortIST(app.scheduledAt) : 'Date Pending'}</span>
                           </div>
-                          <p className="text-gray-500">Autonomous Agora voice interview room active.</p>
+                          <p className="text-white/40 font-sans">Autonomous Agora voice interview room active.</p>
                         </div>
                       )}
 
                       {/* APPLIED / UNDER REVIEW */}
                       {(app.status === 'APPLIED' || app.status === 'UNDER_REVIEW') && (
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-white/40 font-sans">
                           Pending AI ATS evaluation and recruiter review.
                         </div>
                       )}
@@ -500,7 +512,7 @@ export default function ApplicantsClient({
                                 });
                               }
                             }}
-                            className="text-xs font-semibold px-2.5 py-1.5 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+                            className="text-xs font-mono font-semibold px-3 py-1.5 border border-white/[0.1] rounded-xl bg-[#030304] hover:bg-white/[0.04] focus:outline-none focus:border-white/30 text-white"
                           >
                             <option value="APPLIED">Applied</option>
                             <option value="UNDER_REVIEW">Under Review</option>
@@ -515,11 +527,11 @@ export default function ApplicantsClient({
                         {(app.interviewStatus === 'COMPLETED' || app.hasScorecard || app.evaluationScore !== undefined) && (
                           <Link
                             href={`/admin/applications/${app.id}`}
-                            className="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs rounded-lg border border-blue-200 transition flex items-center gap-1 shadow-xs"
+                            className="px-3.5 py-1.5 bg-white/[0.08] text-white hover:bg-white/[0.15] font-mono text-xs rounded-xl border border-white/[0.1] transition flex items-center gap-1.5 shadow-xs"
                             title="View Full Application & Report"
                           >
-                            <FileText className="w-3.5 h-3.5" />
-                            <span>Report</span>
+                            <FileText className="w-3.5 h-3.5 text-purple-400" />
+                            <span>report</span>
                           </Link>
                         )}
                       </div>
@@ -530,9 +542,9 @@ export default function ApplicantsClient({
 
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="p-12 text-center text-gray-500">
-                    <Users className="w-10 h-10 text-gray-300 mx-auto mb-2" />
-                    <p className="font-semibold text-gray-700">No applicants match your filter criteria.</p>
+                  <td colSpan={5} className="p-12 text-center text-white/40 font-mono text-sm">
+                    <Users className="w-8 h-8 text-white/20 mx-auto mb-2" />
+                    <p>no applicants match your filter criteria.</p>
                   </td>
                 </tr>
               )}
@@ -543,32 +555,32 @@ export default function ApplicantsClient({
 
       {/* Decision Configuration Modal */}
       {activeModalApp && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl border border-gray-200 space-y-4 animate-in fade-in zoom-in-95">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#0a0a0d] rounded-3xl max-w-lg w-full p-8 shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/[0.1] space-y-6 animate-in fade-in zoom-in-95 font-sans">
             <div className="flex justify-between items-start">
-              <div>
-                <h3 className="text-lg font-bold text-gray-900">
-                  Update Candidate Decision
+              <div className="space-y-1">
+                <h3 className="text-xl font-sans font-bold text-white">
+                  update candidate decision
                 </h3>
-                <p className="text-xs text-gray-500">
-                  Candidate: <strong>{activeModalApp.name}</strong> • Role: <strong>{activeModalApp.role}</strong>
+                <p className="text-xs font-mono text-white/40">
+                  candidate: <strong className="text-white">{activeModalApp.name}</strong> · role: <strong className="text-white">{activeModalApp.role}</strong>
                 </p>
               </div>
               <button
                 onClick={() => setActiveModalApp(null)}
-                className="text-gray-400 hover:text-gray-600 font-bold"
+                className="text-white/40 hover:text-white font-mono text-base"
               >
                 ✕
               </button>
             </div>
 
             <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">Target Decision</label>
+              <div className="space-y-1.5">
+                <label className="block text-xs font-mono font-medium text-white/70">Target Decision</label>
                 <select
                   value={modalStatus}
                   onChange={(e) => setModalStatus(e.target.value)}
-                  className="w-full p-2.5 border border-gray-300 rounded-lg text-sm font-semibold"
+                  className="w-full p-3 bg-[#030304] border border-white/[0.1] rounded-xl text-xs font-mono text-white focus:outline-none focus:border-white/30"
                 >
                   <option value="SELECTED">✓ Selected / Extend Offer</option>
                   <option value="CONSIDER_FOR_OTHER_ROLES">💡 Consider for Other Roles (Talent Pool)</option>
@@ -576,12 +588,12 @@ export default function ApplicantsClient({
                 </select>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">Decision Stage</label>
+              <div className="space-y-1.5">
+                <label className="block text-xs font-mono font-medium text-white/70">Decision Stage</label>
                 <select
                   value={modalStage}
                   onChange={(e) => setModalStage(e.target.value)}
-                  className="w-full p-2.5 border border-gray-300 rounded-lg text-sm"
+                  className="w-full p-3 bg-[#030304] border border-white/[0.1] rounded-xl text-xs font-mono text-white focus:outline-none focus:border-white/30"
                 >
                   <option value="RESUME_SCREENING">Resume & Profile Screening</option>
                   <option value="ROUND_1_TECHNICAL">Technical Architecture (Round 1)</option>
@@ -592,8 +604,8 @@ export default function ApplicantsClient({
               </div>
 
               {modalStatus === 'CONSIDER_FOR_OTHER_ROLES' && (
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-mono font-medium text-white/70">
                     Alternative Roles (comma-separated)
                   </label>
                   <input
@@ -601,18 +613,18 @@ export default function ApplicantsClient({
                     value={modalAltRoles}
                     onChange={(e) => setModalAltRoles(e.target.value)}
                     placeholder="e.g. Senior Frontend Engineer, Staff DevOps, Fullstack Architect"
-                    className="w-full p-2.5 border border-gray-300 rounded-lg text-sm"
+                    className="w-full p-3 bg-[#030304] border border-white/[0.1] rounded-xl text-xs font-mono text-white placeholder-white/30 focus:outline-none focus:border-white/30"
                     suppressHydrationWarning
                     autoComplete="off"
                   />
-                  <p className="text-[11px] text-gray-400 mt-1">
+                  <p className="text-[11px] font-mono text-white/40">
                     Candidate will be flagged in the talent pool for these matching opportunities.
                   </p>
                 </div>
               )}
 
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-mono font-medium text-white/70">
                   {modalStatus === 'REJECTED' 
                     ? 'Rejection Reason / Skill Gaps' 
                     : modalStatus === 'SELECTED'
@@ -628,37 +640,37 @@ export default function ApplicantsClient({
                       ? 'e.g. Lacks required distributed concurrency experience; candidate answered vaguely on Redis caching...'
                       : 'e.g. Exceptional answers on system scalability, verified high commit velocity...'
                   }
-                  className="w-full p-2.5 border border-gray-300 rounded-lg text-sm"
+                  className="w-full p-3 bg-[#030304] border border-white/[0.1] rounded-xl text-xs font-sans text-white placeholder-white/30 focus:outline-none focus:border-white/30 leading-relaxed"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2">
+            <div className="flex justify-end gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => setActiveModalApp(null)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                className="px-5 py-2.5 border border-white/[0.1] rounded-full text-xs font-mono text-white/60 hover:text-white transition"
               >
-                Cancel
+                cancel
               </button>
               {modalStatus === 'SELECTED' && (
                 <button
                   type="button"
                   onClick={handleSaveAndSchedule}
                   disabled={isUpdating}
-                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold shadow-sm transition disabled:opacity-50 flex items-center gap-1.5"
+                  className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-full text-xs font-mono font-bold shadow-sm transition disabled:opacity-50 flex items-center gap-1.5"
                 >
                   <Calendar className="w-3.5 h-3.5" />
-                  {isUpdating ? 'Saving...' : 'Save & Pick Interview Slot →'}
+                  <span>{isUpdating ? 'Saving...' : 'Save & Pick Slot →'}</span>
                 </button>
               )}
               <button
                 type="button"
                 onClick={handleSaveDecision}
                 disabled={isUpdating}
-                className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-sm transition disabled:opacity-50"
+                className="px-6 py-2.5 bg-white text-black hover:bg-neutral-200 rounded-full text-xs font-sans font-bold shadow-sm transition disabled:opacity-50"
               >
-                {isUpdating ? 'Saving...' : 'Save Decision'}
+                {isUpdating ? 'saving...' : 'save decision'}
               </button>
             </div>
           </div>
@@ -667,3 +679,4 @@ export default function ApplicantsClient({
     </div>
   );
 }
+

@@ -44,21 +44,21 @@ function verdictConfig(verdict: HireVerdict) {
   switch (verdict) {
     case 'STRONG HIRE':
       return {
-        bg: 'bg-emerald-50',
-        border: 'border-emerald-400/40',
-        text: 'text-emerald-600',
+        bg: 'bg-emerald-500/10',
+        border: 'border-emerald-500/30',
+        text: 'text-emerald-300',
       };
     case 'LEAN HIRE':
       return {
-        bg: 'bg-amber-50',
-        border: 'border-amber-400/40',
-        text: 'text-amber-600',
+        bg: 'bg-amber-500/10',
+        border: 'border-amber-500/30',
+        text: 'text-amber-300',
       };
     case 'NO HIRE':
       return {
-        bg: 'bg-red-50',
-        border: 'border-red-400/40',
-        text: 'text-red-600',
+        bg: 'bg-rose-500/10',
+        border: 'border-rose-500/30',
+        text: 'text-rose-300',
       };
   }
 }
@@ -78,12 +78,12 @@ const PILLAR_LABELS: Record<string, string> = {
 };
 
 const PILLAR_COLORS_PALETTE = [
-  '#0ea5e9', // Blue
+  '#06b6d4', // Cyan
   '#f59e0b', // Amber
   '#10b981', // Emerald
-  '#8b5cf6', // Violet
-  '#ef4444', // Red
-  '#ec4899', // Pink
+  '#a855f7', // Purple
+  '#f43f5e', // Rose
+  '#3b82f6', // Blue
   '#14b8a6', // Teal
 ];
 
@@ -105,14 +105,16 @@ function StatCard({
 }) {
   return (
     <div
-      className={`p-5 bg-white border ${alertBg ? 'border-red-400/30 bg-red-50/40' : 'border-[#00AEEF]/20'}`}
+      className={`p-6 bg-[#0a0a0d] border rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.3)] ${
+        alertBg ? 'border-rose-500/30 bg-rose-950/20' : 'border-white/[0.08]'
+      }`}
     >
-      <h4 className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#527080] mb-2 flex items-center gap-1.5">
-        <Icon className="w-3.5 h-3.5" style={{ color: iconColor }} />
+      <h4 className="text-[10px] font-mono font-bold uppercase tracking-[0.18em] text-white/40 mb-2 flex items-center gap-2">
+        <Icon className="w-4 h-4" style={{ color: iconColor }} />
         {label}
       </h4>
-      <p className="text-2xl font-semibold tracking-[-0.04em] text-[#102a3a]">{value}</p>
-      <p className="text-xs text-[#8baab8] mt-1">{sub}</p>
+      <p className="text-2xl font-bold tracking-tight text-white">{value}</p>
+      <p className="text-xs text-white/50 mt-1 leading-relaxed">{sub}</p>
     </div>
   );
 }
@@ -127,7 +129,7 @@ export default function ReportPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        await new Promise((r) => setTimeout(r, 1500));
+        await new Promise((r) => setTimeout(r, 1200));
         const data = await getReport(sessionId);
         setReport(data as EnterpriseReport);
       } catch (e) {
@@ -197,23 +199,14 @@ export default function ReportPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fbfdff] flex items-center justify-center">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none fixed inset-0 opacity-[0.04]
-            [background-image:linear-gradient(#00AEEF_1px,transparent_1px),linear-gradient(90deg,#00AEEF_1px,transparent_1px)]
-            [background-size:72px_72px]"
-        />
-        <div className="relative z-10 text-center">
-          <div
-            className="w-14 h-14 border-4 border-t-transparent animate-spin mx-auto mb-6"
-            style={{ borderColor: '#00AEEF transparent transparent transparent' }}
-          />
-          <h2 className="text-xl font-semibold tracking-[-0.04em] text-[#102a3a] mb-2">
-            Generating Report
+      <div className="min-h-screen bg-[#030304] text-[#f5f5f7] flex items-center justify-center font-sans">
+        <div className="relative z-10 text-center max-w-sm px-6">
+          <div className="w-12 h-12 border-2 border-white/20 border-t-white rounded-full animate-spin mx-auto mb-6 shadow-[0_0_30px_rgba(255,255,255,0.2)]" />
+          <h2 className="text-xl font-bold tracking-tight text-white mb-2">
+            Generating Intelligence Report
           </h2>
-          <p className="text-sm text-[#527080]">
-            AI is compiling transcripts, proctoring feeds, and scoring metrics…
+          <p className="text-xs text-white/50 leading-relaxed font-mono">
+            Compiling audio transcripts, proctoring telemetry, and evaluator rubrics…
           </p>
         </div>
       </div>
@@ -229,26 +222,18 @@ export default function ReportPage() {
   }));
 
   return (
-    <div className="min-h-screen bg-[#fbfdff] pt-6 pb-20 px-4 md:px-8 text-[#102a3a]">
-      {/* Grid overlay */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-0 opacity-[0.04]
-          [background-image:linear-gradient(#00AEEF_1px,transparent_1px),linear-gradient(90deg,#00AEEF_1px,transparent_1px)]
-          [background-size:72px_72px]"
-      />
-
+    <div className="min-h-screen bg-[#030304] pt-8 pb-24 px-4 md:px-8 text-[#f5f5f7] font-sans">
       <div className="relative z-10 max-w-5xl mx-auto space-y-6">
 
         {/* ── Report nav breadcrumb */}
         <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.22em] text-[#087fb5]">
-            <span className="grid h-5 w-5 place-items-center bg-[#00AEEF] text-white text-[9px]">+</span>
-            OmniPanel AI — Interview Report
+          <div className="flex items-center gap-2 text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-cyan-400">
+            <span className="grid h-5 w-5 place-items-center bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-[10px] rounded-md">✦</span>
+            Nexora Labs — Voice AI Evaluation Report
           </div>
           {error && (
-            <span className="text-[10px] font-semibold text-amber-600 bg-amber-50 border border-amber-300/40 px-2 py-0.5">
-              Demo mode
+            <span className="text-[10px] font-mono font-semibold text-amber-300 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full">
+              Simulated Audit Mode
             </span>
           )}
         </div>
@@ -257,39 +242,42 @@ export default function ReportPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white border border-[#00AEEF]/25 p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
+          className="bg-[#0a0a0d] border border-white/[0.08] rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
         >
           <div>
-            <h1 className="text-3xl font-semibold tracking-[-0.06em] text-[#102a3a] mb-1">
-              Interview Report
+            <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.08] font-mono text-[10px] text-white/60 mb-2">
+              SESSION ID: {sessionId.slice(0, 12)}
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">
+              Executive Evaluation Report
             </h1>
-            <div className="flex flex-wrap gap-4 text-xs text-[#527080] mt-2">
-              <span className="flex items-center gap-1.5">
-                <Zap className="w-3.5 h-3.5 text-[#00AEEF]" /> {report.job_title}
+            <div className="flex flex-wrap gap-4 text-xs font-mono text-white/50 mt-2">
+              <span className="flex items-center gap-1.5 text-cyan-300">
+                <Zap className="w-3.5 h-3.5 text-cyan-400" /> {report.job_title}
               </span>
               <span className="flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-[#00AEEF]" />
+                <Clock className="w-3.5 h-3.5 text-white/40" />
                 {formatDuration(report.interview_duration_seconds)}
               </span>
               <span className="flex items-center gap-1.5">
-                <MessageSquare className="w-3.5 h-3.5 text-[#00AEEF]" />
-                {report.total_exchanges} exchanges
+                <MessageSquare className="w-3.5 h-3.5 text-white/40" />
+                {report.total_exchanges} dialogue exchanges
               </span>
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-[#527080] max-w-xl">
+            <p className="mt-4 text-xs sm:text-sm leading-relaxed text-white/70 max-w-xl">
               {report.recommendation_reasoning}
             </p>
           </div>
 
-          <div className="flex flex-col items-center md:items-end gap-3 flex-shrink-0">
+          <div className="flex flex-col items-start md:items-end gap-3 flex-shrink-0">
             <div
-              className={`px-6 py-4 border font-bold text-xl uppercase tracking-widest ${vc.bg} ${vc.border} ${vc.text}`}
+              className={`px-6 py-3.5 rounded-full border font-mono font-bold text-sm tracking-wider ${vc.bg} ${vc.border} ${vc.text} shadow-sm`}
             >
               {report.overall_recommendation}
             </div>
             {report.suspected_ai_answers && (
-              <span className="flex items-center gap-1.5 px-3 py-1 bg-red-50 border border-red-400/30 text-red-600 text-[10px] font-bold tracking-wider animate-pulse">
-                <AlertTriangle className="w-3 h-3" /> SUSPECTED AI RESPONSES
+              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-300 text-[10px] font-mono font-bold tracking-wider">
+                <AlertTriangle className="w-3 h-3 text-rose-400" /> SUSPECTED AI ASSISTANCE
               </span>
             )}
           </div>
@@ -305,7 +293,7 @@ export default function ReportPage() {
           >
             <StatCard
               icon={ShieldAlert}
-              iconColor="#EF4444"
+              iconColor="#f43f5e"
               label="Proctoring Status"
               value={`${report.proctoring.total_alerts} Flags`}
               sub={
@@ -317,7 +305,7 @@ export default function ReportPage() {
             />
             <StatCard
               icon={AlertTriangle}
-              iconColor="#F59E0B"
+              iconColor="#f59e0b"
               label="Candidate Hesitations"
               value={`${report.hesitation_metrics?.total_count ?? 0} Pauses`}
               sub={`Avg Pause Duration: ${
@@ -328,10 +316,10 @@ export default function ReportPage() {
             />
             <StatCard
               icon={UserCheck}
-              iconColor="#00AEEF"
+              iconColor="#06b6d4"
               label="Screen Recording"
-              value="Active & Secured"
-              sub="Segment chunk logs saved on recruiter portal."
+              value="Secured & Logged"
+              sub="Multi-stream telemetry chunks archived."
             />
           </motion.div>
         )}
@@ -344,33 +332,33 @@ export default function ReportPage() {
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           {report.recruiter_mom && (
-            <div className="bg-white border-l-4 border-l-[#00AEEF] border border-[#00AEEF]/20 p-6 flex flex-col gap-4">
-              <h3 className="font-semibold text-[#102a3a] flex items-center gap-2">
-                <FileText className="w-4 h-4 text-[#00AEEF]" />
-                Minutes of Meeting — Recruiter
+            <div className="bg-[#0a0a0d] border border-white/[0.08] rounded-3xl p-6 sm:p-8 flex flex-col gap-4 shadow-[0_0_30px_rgba(0,0,0,0.3)]">
+              <h3 className="font-bold text-white text-base flex items-center gap-2">
+                <FileText className="w-4 h-4 text-cyan-400" />
+                Minutes of Meeting — Recruiter Debrief
               </h3>
-              <p className="text-xs text-[#527080] leading-relaxed italic">
+              <p className="text-xs text-white/70 leading-relaxed bg-[#030304] p-4 rounded-2xl border border-white/[0.06] italic">
                 &ldquo;{report.recruiter_mom.summary}&rdquo;
               </p>
-              <div className="border-t border-[#00AEEF]/15 pt-3 space-y-2">
-                <h4 className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#102a3a]">
-                  Key Moments
+              <div className="border-t border-white/[0.06] pt-3 space-y-2">
+                <h4 className="text-[10px] font-mono font-bold uppercase tracking-[0.15em] text-white/40">
+                  Key Moments & Pivots
                 </h4>
-                <ul className="text-xs text-[#527080] list-disc pl-4 space-y-1">
+                <ul className="text-xs text-white/70 list-disc pl-4 space-y-1">
                   {report.recruiter_mom.key_moments.map((m, i) => (
                     <li key={i}>{m}</li>
                   ))}
                 </ul>
               </div>
-              <div className="border-t border-[#00AEEF]/15 pt-3 space-y-2">
-                <h4 className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#102a3a]">
+              <div className="border-t border-white/[0.06] pt-3 space-y-2">
+                <h4 className="text-[10px] font-mono font-bold uppercase tracking-[0.15em] text-white/40">
                   Decision Markers
                 </h4>
                 <div className="flex flex-wrap gap-1.5">
                   {report.recruiter_mom.decision_markers.map((dm, i) => (
                     <span
                       key={i}
-                      className="text-[10px] px-2 py-0.5 bg-[#f0faff] border border-[#00AEEF]/20 text-[#087fb5] font-medium"
+                      className="text-[10px] font-mono px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 rounded-full font-medium"
                     >
                       {dm}
                     </span>
@@ -381,19 +369,19 @@ export default function ReportPage() {
           )}
 
           {report.candidate_mom && (
-            <div className="bg-white border border-[#00AEEF]/20 p-6 flex flex-col gap-4">
-              <h3 className="font-semibold text-[#102a3a] flex items-center gap-2">
-                <ClipboardList className="w-4 h-4 text-[#00AEEF]" />
-                Constructive Feedback — Candidate
+            <div className="bg-[#0a0a0d] border border-white/[0.08] rounded-3xl p-6 sm:p-8 flex flex-col gap-4 shadow-[0_0_30px_rgba(0,0,0,0.3)]">
+              <h3 className="font-bold text-white text-base flex items-center gap-2">
+                <ClipboardList className="w-4 h-4 text-purple-400" />
+                Constructive Growth Feedback — Candidate
               </h3>
-              <p className="text-xs text-[#527080] leading-relaxed italic">
+              <p className="text-xs text-white/70 leading-relaxed bg-[#030304] p-4 rounded-2xl border border-white/[0.06] italic">
                 &ldquo;{report.candidate_mom.summary}&rdquo;
               </p>
-              <div className="border-t border-[#00AEEF]/15 pt-3 space-y-2 flex-1">
-                <h4 className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#102a3a]">
+              <div className="border-t border-white/[0.06] pt-3 space-y-2 flex-1">
+                <h4 className="text-[10px] font-mono font-bold uppercase tracking-[0.15em] text-white/40">
                   Recommended Action Items
                 </h4>
-                <ul className="text-xs text-[#527080] list-disc pl-4 space-y-1">
+                <ul className="text-xs text-white/70 list-disc pl-4 space-y-1">
                   {report.candidate_mom.action_items.map((item, i) => (
                     <li key={i}>{item}</li>
                   ))}
@@ -410,30 +398,30 @@ export default function ReportPage() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white border border-[#00AEEF]/20 p-6"
+            className="bg-[#0a0a0d] border border-white/[0.08] rounded-3xl p-6 sm:p-8 shadow-[0_0_30px_rgba(0,0,0,0.3)]"
           >
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#00AEEF] mb-1">
-              Evaluation
+            <h3 className="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-cyan-400 mb-1">
+              Holistic Evaluation
             </h3>
-            <h2 className="text-lg font-semibold tracking-[-0.04em] text-[#102a3a] mb-4 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-[#00AEEF]" />
-              Performance Radar
+            <h2 className="text-lg font-bold tracking-tight text-white mb-4 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-cyan-400" />
+              Technical Competency Radar
             </h2>
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart cx="50%" cy="50%" outerRadius="75%" data={radarData}>
-                  <PolarGrid stroke="rgba(0,174,239,0.12)" />
+                  <PolarGrid stroke="rgba(255,255,255,0.08)" />
                   <PolarAngleAxis
                     dataKey="subject"
-                    tick={{ fill: '#527080', fontSize: 10, fontWeight: 600 }}
+                    tick={{ fill: '#a1a1aa', fontSize: 10, fontWeight: 600 }}
                   />
                   <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                   <Radar
                     name="Candidate"
                     dataKey="score"
-                    stroke="#00AEEF"
-                    fill="#00AEEF"
-                    fillOpacity={0.15}
+                    stroke="#06b6d4"
+                    fill="#06b6d4"
+                    fillOpacity={0.2}
                     strokeWidth={2}
                   />
                 </RadarChart>
@@ -446,34 +434,34 @@ export default function ReportPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.35 }}
-            className="bg-white border border-[#00AEEF]/20 p-6 flex flex-col gap-4"
+            className="bg-[#0a0a0d] border border-white/[0.08] rounded-3xl p-6 sm:p-8 flex flex-col gap-4 shadow-[0_0_30px_rgba(0,0,0,0.3)]"
           >
             <div>
-              <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#00AEEF] mb-1">
-                Breakdown
+              <h3 className="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-cyan-400 mb-1">
+                Pillar Breakdown
               </h3>
-              <h2 className="text-lg font-semibold tracking-[-0.04em] text-[#102a3a]">
-                5-Pillar Score Details
+              <h2 className="text-lg font-bold tracking-tight text-white">
+                Detailed Competency Scores
               </h2>
             </div>
             {Object.entries(report.pillar_scores).map(([key, val], i) => (
               <div key={key} className="space-y-1.5">
                 <div className="flex justify-between items-center">
-                  <span className="text-xs font-semibold text-[#102a3a]">
+                  <span className="text-xs font-semibold text-white/90">
                     {PILLAR_LABELS[key] ?? key}
                   </span>
-                  <span className="text-xs font-bold" style={{ color: PILLAR_COLORS_PALETTE[i % PILLAR_COLORS_PALETTE.length] }}>
+                  <span className="text-xs font-mono font-bold" style={{ color: PILLAR_COLORS_PALETTE[i % PILLAR_COLORS_PALETTE.length] }}>
                     {val.score}/10
                   </span>
                 </div>
-                <div className="h-1.5 w-full bg-slate-100 overflow-hidden">
+                <div className="h-1.5 w-full bg-white/[0.05] rounded-full overflow-hidden">
                   <div
-                    className="h-full transition-all duration-1000"
+                    className="h-full rounded-full transition-all duration-1000"
                     style={{ backgroundColor: PILLAR_COLORS_PALETTE[i % PILLAR_COLORS_PALETTE.length], width: `${Math.max(2, (val.score / 10) * 100)}%` }}
                   />
                 </div>
                 {val.evidence && (
-                  <p className="text-[11px] text-[#8baab8] italic">&ldquo;{val.evidence}&rdquo;</p>
+                  <p className="text-[11px] text-white/50 italic font-mono">&ldquo;{val.evidence}&rdquo;</p>
                 )}
               </div>
             ))}
@@ -487,28 +475,28 @@ export default function ReportPage() {
           transition={{ delay: 0.38 }}
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
-          <div className="bg-white border border-emerald-400/25 p-6">
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-600 mb-3 flex items-center gap-1.5">
-              <CheckCircle className="w-3.5 h-3.5" /> Strengths
+          <div className="bg-[#0a0a0d] border border-emerald-500/20 rounded-3xl p-6 sm:p-8 shadow-[0_0_30px_rgba(0,0,0,0.3)]">
+            <h3 className="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-emerald-300 mb-4 flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-emerald-400" /> Key Strengths
             </h3>
             <ul className="space-y-2">
               {report.strengths.map((s, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-[#527080]">
-                  <span className="mt-1 w-1.5 h-1.5 flex-shrink-0 bg-emerald-400" />
-                  {s}
+                <li key={i} className="flex items-start gap-2.5 text-xs text-white/80 leading-relaxed">
+                  <span className="text-emerald-400 font-bold shrink-0">✦</span>
+                  <span>{s}</span>
                 </li>
               ))}
             </ul>
           </div>
-          <div className="bg-white border border-amber-400/25 p-6">
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-amber-600 mb-3 flex items-center gap-1.5">
-              <AlertTriangle className="w-3.5 h-3.5" /> Areas to Improve
+          <div className="bg-[#0a0a0d] border border-amber-500/20 rounded-3xl p-6 sm:p-8 shadow-[0_0_30px_rgba(0,0,0,0.3)]">
+            <h3 className="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-amber-300 mb-4 flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-400" /> Areas for Development
             </h3>
             <ul className="space-y-2">
               {report.improvement_areas.map((s, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-[#527080]">
-                  <span className="mt-1 w-1.5 h-1.5 flex-shrink-0 bg-amber-400" />
-                  {s}
+                <li key={i} className="flex items-start gap-2.5 text-xs text-white/80 leading-relaxed">
+                  <span className="text-amber-400 font-bold shrink-0">✦</span>
+                  <span>{s}</span>
                 </li>
               ))}
             </ul>
@@ -521,21 +509,21 @@ export default function ReportPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-white border border-red-400/25 p-6"
+            className="bg-[#0a0a0d] border border-rose-500/30 rounded-3xl p-6 sm:p-8 shadow-[0_0_30px_rgba(244,63,94,0.15)]"
           >
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-red-600 mb-4 flex items-center gap-1.5">
-              <ShieldAlert className="w-3.5 h-3.5" /> Proctoring Alert Log
+            <h3 className="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-rose-300 mb-4 flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 text-rose-400" /> Proctoring Telemetry Log
             </h3>
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {report.proctoring.alerts_log.map((log, idx) => (
-                <div key={idx} className="flex items-start gap-4 text-xs">
-                  <span className="flex-shrink-0 px-2 py-0.5 bg-red-50 border border-red-400/25 font-mono text-red-600">
+                <div key={idx} className="flex items-start gap-3 text-xs bg-rose-950/20 p-3 rounded-2xl border border-rose-500/20">
+                  <span className="flex-shrink-0 px-2 py-0.5 bg-rose-500/20 border border-rose-500/30 font-mono text-[10px] text-rose-300 rounded-full">
                     {Math.round(log.timestamp)}s
                   </span>
                   <div className="flex-1">
-                    <span className="font-bold text-[#102a3a]">{log.type}</span>
-                    {' — '}
-                    <span className="text-[#527080]">{log.detail}</span>
+                    <span className="font-bold text-white">{log.type}</span>
+                    <span className="text-white/40"> — </span>
+                    <span className="text-white/70">{log.detail}</span>
                   </div>
                 </div>
               ))}
@@ -548,32 +536,31 @@ export default function ReportPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="flex justify-center gap-3 pt-4"
+          className="flex flex-wrap justify-center gap-3 pt-6"
         >
           <button
             onClick={() => window.print()}
-            className="flex items-center gap-2 px-6 py-3 border border-[#00AEEF]/30 bg-white
-              text-[#527080] text-sm font-semibold hover:border-[#00AEEF] hover:text-[#102a3a] transition-colors"
+            className="px-6 py-3 rounded-full border border-white/[0.12] bg-white/[0.04] text-white/80 hover:bg-white/[0.08] hover:border-white/20 transition-all text-xs font-bold inline-flex items-center gap-2 cursor-pointer"
           >
-            <Download className="w-4 h-4" /> Download PDF Report
+            <Download className="w-3.5 h-3.5" /> Download PDF Report
           </button>
           <button
-            onClick={() => router.push('/setup')}
-            className="flex items-center gap-2 px-6 py-3 bg-[#00AEEF] hover:bg-[#008fca]
-              text-white font-bold text-sm transition-colors"
+            onClick={() => router.push('/admin/applicants')}
+            className="px-8 py-3 bg-white text-black hover:bg-neutral-200 font-sans font-bold text-xs rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all inline-flex items-center gap-2 cursor-pointer"
           >
-            <PlusCircle className="w-4 h-4" />
-            Start New Assessment
-            <ArrowRight className="w-4 h-4" />
+            <PlusCircle className="w-3.5 h-3.5" />
+            Back to ATS Applicants
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </motion.div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between border-t border-[#00AEEF]/20 pt-5 text-[10px] font-bold uppercase tracking-[0.15em] text-[#8baab8]">
+        <div className="flex items-center justify-between border-t border-white/[0.06] pt-6 text-[10px] font-mono font-bold uppercase tracking-[0.15em] text-white/40">
           <span>Nexora Labs</span>
-          <span className="text-[#00AEEF]">Powered by OmniPanel</span>
+          <span className="text-cyan-400">Powered by OmniPanel Voice AI</span>
         </div>
       </div>
     </div>
   );
 }
+

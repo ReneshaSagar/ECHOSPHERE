@@ -38,46 +38,107 @@ export default function NewJobPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
-        <Link href="/admin/jobs" className="text-gray-500 hover:text-gray-800">← Back</Link>
-        <h1 className="text-3xl font-bold">Create Job Posting</h1>
+    <div className="max-w-2xl mx-auto space-y-6 pb-16">
+      <div className="flex items-center gap-4">
+        <Link 
+          href="/admin/jobs" 
+          className="px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-white/60 hover:text-white hover:border-white/20 transition-all font-mono text-xs flex items-center gap-1.5"
+        >
+          <span>←</span> Back to Jobs
+        </Link>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">Create Job Requisition</h1>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow border border-gray-200">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
-            <input name="title" required className="w-full p-2 border rounded" placeholder="e.g. Senior Frontend Engineer" />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Job Description</label>
-            <textarea name="description" required rows={3} className="w-full p-2 border rounded" placeholder="Brief overview of the role..." />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Requirements / Skills</label>
-            <textarea name="requirements" required rows={4} className="w-full p-2 border rounded" placeholder="- React&#10;- TypeScript&#10;- System Design" />
-          </div>
+      <div className="bg-[#0a0a0d] p-8 sm:p-10 rounded-3xl border border-white/[0.08] shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+        <div className="inline-flex items-center gap-2 font-mono text-[11px] text-cyan-300 bg-cyan-500/10 px-3 py-0.5 rounded-full border border-cyan-500/20 mb-4">
+          <span>⚡</span> NEW REQUISITION CONFIG
+        </div>
+        <p className="text-xs text-white/50 mb-8 leading-relaxed">
+          Define role requirements, multi-stage evaluation criteria, and optional Model Context Protocol (MCP) integrations.
+        </p>
 
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Interview Stages (comma separated)</label>
-            <input name="stages" defaultValue="Technical, HR" className="w-full p-2 border rounded" />
-            <p className="text-xs text-gray-500 mt-1">These stages will be used to generate the multi-agent blueprint.</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
-              MCP Server URL <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-bold">Phase 11</span>
+            <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/60 mb-2">
+              Job Title
             </label>
-            <input name="mcpServerUrl" type="url" className="w-full p-2 border rounded border-purple-200 focus:border-purple-500 focus:ring-1 focus:ring-purple-500" placeholder="https://my-company-mcp.com/sse (Optional)" />
-            <p className="text-xs text-gray-500 mt-1">Provide a Model Context Protocol endpoint for the AI to query company docs, ATS data, or execute code.</p>
+            <input 
+              name="title" 
+              required 
+              className="w-full bg-[#030304] border border-white/[0.1] rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/20 transition-all placeholder:text-white/20" 
+              placeholder="e.g. Distributed Systems Engineer" 
+            />
+          </div>
+          
+          <div>
+            <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/60 mb-2">
+              Job Description
+            </label>
+            <textarea 
+              name="description" 
+              required 
+              rows={4} 
+              className="w-full bg-[#030304] border border-white/[0.1] rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/20 transition-all placeholder:text-white/20 leading-relaxed custom-scrollbar" 
+              placeholder="High-level mission and charter for this engineering role..." 
+            />
+          </div>
+          
+          <div>
+            <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/60 mb-2">
+              Requirements / Skills (One per line)
+            </label>
+            <textarea 
+              name="requirements" 
+              required 
+              rows={4} 
+              className="w-full bg-[#030304] border border-white/[0.1] rounded-2xl px-4 py-3 text-white text-sm font-mono focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/20 transition-all placeholder:text-white/20 leading-relaxed custom-scrollbar" 
+              placeholder="- Distributed consensus (Raft, Paxos)&#10;- Rust / Go systems development&#10;- High-throughput streaming" 
+            />
           </div>
 
-          <div className="pt-4 border-t">
-            <button type="submit" disabled={loading} className="px-4 py-2 bg-blue-600 text-white rounded font-medium disabled:opacity-50">
-              {loading ? 'Creating...' : 'Create Job'}
+          <div>
+            <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/60 mb-2">
+              Interview Stages (Comma separated)
+            </label>
+            <input 
+              name="stages" 
+              defaultValue="Technical Deep Dive, HR & Team Fit" 
+              className="w-full bg-[#030304] border border-white/[0.1] rounded-2xl px-4 py-3 text-white text-sm font-mono focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/20 transition-all" 
+            />
+            <p className="text-[11px] font-mono text-white/40 mt-1.5">Stages determine the multi-round prompt orchestrator structure.</p>
+          </div>
+
+          <div>
+            <label className="block text-xs font-mono font-bold uppercase tracking-wider text-purple-300 mb-2 flex items-center justify-between">
+              <span>MCP Server URL</span>
+              <span className="text-[10px] bg-purple-500/10 text-purple-300 px-2 py-0.5 rounded-full border border-purple-500/20">Optional Phase 11</span>
+            </label>
+            <input 
+              name="mcpServerUrl" 
+              type="url" 
+              className="w-full bg-[#030304] border border-purple-500/20 rounded-2xl px-4 py-3 text-white text-sm font-mono focus:outline-none focus:border-purple-500/40 focus:ring-1 focus:ring-purple-500/30 transition-all placeholder:text-white/20" 
+              placeholder="https://company-mcp.nexora.internal/sse" 
+            />
+            <p className="text-[11px] font-mono text-white/40 mt-1.5">Model Context Protocol endpoint for real-time internal architecture and ATS lookups.</p>
+          </div>
+
+          <div className="pt-6 border-t border-white/[0.06]">
+            <button 
+              type="submit" 
+              disabled={loading} 
+              className="w-full py-3.5 bg-white text-black font-sans font-bold text-xs rounded-full hover:bg-neutral-200 disabled:opacity-40 shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <span className="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin"></span>
+                  <span>Creating Requisition...</span>
+                </>
+              ) : (
+                <>
+                  <span>Create Job Posting</span>
+                  <span>→</span>
+                </>
+              )}
             </button>
           </div>
         </form>
@@ -85,3 +146,4 @@ export default function NewJobPage() {
     </div>
   );
 }
+

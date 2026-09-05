@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { getDb } from '@/lib/db';
 import AdminSidebar from './AdminSidebar';
 
@@ -9,15 +9,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const jobCount = db.jobs.length;
 
   return (
-    <div className="flex h-screen pt-16 bg-gray-100 text-gray-900 overflow-hidden">
+    <div className="flex h-screen pt-16 bg-[#030304] text-[#f5f5f7] font-sans overflow-hidden selection:bg-purple-500/30 selection:text-white">
       <AdminSidebar 
         applicantCount={applicantCount} 
         scheduledCount={scheduledCount} 
         jobCount={jobCount} 
       />
-      <div className="flex-1 overflow-auto p-8">
+      <div className="flex-1 overflow-auto p-8 bg-[#030304]">
         {children}
       </div>
     </div>
   );
 }
+

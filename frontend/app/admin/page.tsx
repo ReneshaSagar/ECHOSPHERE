@@ -12,7 +12,8 @@ import {
   ArrowRight,
   ExternalLink,
   Mic,
-  CalendarPlus
+  CalendarPlus,
+  Sparkles
 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -25,12 +26,12 @@ export default function AdminDashboard() {
   const considerCount = db.applications.filter(a => a.status === 'CONSIDER_FOR_OTHER_ROLES').length;
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <div className="max-w-6xl mx-auto space-y-8 font-sans">
       {/* Welcome & Overview */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Recruiting Overview</h1>
-          <p className="text-gray-500 text-sm mt-1">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-sans font-bold text-white tracking-tight">recruiting overview</h1>
+          <p className="text-white/50 text-sm font-sans">
             Real-time pipeline analytics, autonomous Agora voice interviews, and talent allocation.
           </p>
         </div>
@@ -38,106 +39,106 @@ export default function AdminDashboard() {
         <div className="flex items-center gap-3">
           <Link
             href="/admin/schedule"
-            className="px-4 py-2 bg-purple-50 text-purple-700 hover:bg-purple-100 font-semibold text-sm rounded-lg border border-purple-200 shadow-xs flex items-center gap-2 transition"
+            className="px-4 py-2 bg-white/[0.04] hover:bg-white/[0.08] text-white/80 hover:text-white font-mono text-xs rounded-full border border-white/[0.08] transition flex items-center gap-2"
           >
-            <Calendar className="w-4 h-4 text-purple-600" />
-            <span>View Schedule</span>
+            <Calendar className="w-3.5 h-3.5 text-purple-400" />
+            <span>view schedule</span>
           </Link>
           <Link
             href="/admin/applicants"
-            className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 font-bold text-sm rounded-lg shadow-sm flex items-center gap-2 transition"
+            className="px-5 py-2 bg-white text-black hover:bg-neutral-200 font-sans font-bold text-xs rounded-full shadow-[0_0_20px_rgba(255,255,255,0.15)] transition flex items-center gap-2"
           >
-            <Users className="w-4 h-4" />
-            <span>Manage Applicants</span>
+            <Users className="w-3.5 h-3.5" />
+            <span>manage applicants</span>
           </Link>
         </div>
       </div>
 
       {/* KPI Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Link 
           href="/admin/jobs" 
-          className="bg-white p-5 rounded-xl shadow-xs border border-gray-200 hover:border-blue-400 hover:shadow-sm transition-all group"
+          className="bg-[#0a0a0d] p-5 rounded-2xl border border-white/[0.08] hover:border-white/20 transition-all duration-300 group"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Active Openings</span>
-            <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Briefcase className="w-4 h-4" />
+            <span className="text-xs font-mono text-white/40 uppercase tracking-wider">Active Openings</span>
+            <div className="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/[0.08] text-white flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Briefcase className="w-4 h-4 text-white/70" />
             </div>
           </div>
-          <p className="text-3xl font-black text-gray-900 mt-2">{db.jobs.length}</p>
-          <p className="text-xs text-blue-600 font-medium mt-1 flex items-center gap-1">
-            Manage Roles <ArrowRight className="w-3 h-3" />
+          <p className="text-3xl font-mono font-bold text-white mt-3">{db.jobs.length}</p>
+          <p className="text-xs font-mono text-white/50 mt-2 flex items-center gap-1">
+            manage roles <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
           </p>
         </Link>
 
         <Link 
           href="/admin/applicants" 
-          className="bg-white p-5 rounded-xl shadow-xs border border-gray-200 hover:border-blue-400 hover:shadow-sm transition-all group"
+          className="bg-[#0a0a0d] p-5 rounded-2xl border border-white/[0.08] hover:border-white/20 transition-all duration-300 group"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Applicants</span>
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Users className="w-4 h-4" />
+            <span className="text-xs font-mono text-white/40 uppercase tracking-wider">Total Applicants</span>
+            <div className="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/[0.08] text-white flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Users className="w-4 h-4 text-white/70" />
             </div>
           </div>
-          <p className="text-3xl font-black text-gray-900 mt-2">{totalApps}</p>
-          <p className="text-xs text-gray-500 mt-1">
-            <strong className="text-amber-600 font-bold">{inReviewApps}</strong> awaiting review
+          <p className="text-3xl font-mono font-bold text-white mt-3">{totalApps}</p>
+          <p className="text-xs font-mono text-white/50 mt-2">
+            <strong className="text-amber-400 font-bold">{inReviewApps}</strong> awaiting review
           </p>
         </Link>
 
         <Link 
           href="/admin/schedule" 
-          className="bg-white p-5 rounded-xl shadow-xs border border-gray-200 hover:border-blue-400 hover:shadow-sm transition-all group"
+          className="bg-[#0a0a0d] p-5 rounded-2xl border border-white/[0.08] hover:border-white/20 transition-all duration-300 group"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">AI Interviews</span>
-            <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Calendar className="w-4 h-4" />
+            <span className="text-xs font-mono text-white/40 uppercase tracking-wider">AI Interviews</span>
+            <div className="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/[0.08] text-white flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Calendar className="w-4 h-4 text-purple-400" />
             </div>
           </div>
-          <p className="text-3xl font-black text-gray-900 mt-2">{scheduledInterviews.length}</p>
-          <p className="text-xs text-purple-600 font-medium mt-1 flex items-center gap-1">
-            Lined up in Calendar <ArrowRight className="w-3 h-3" />
+          <p className="text-3xl font-mono font-bold text-white mt-3">{scheduledInterviews.length}</p>
+          <p className="text-xs font-mono text-purple-300 mt-2 flex items-center gap-1">
+            lined up in calendar <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
           </p>
         </Link>
 
         <Link 
           href="/admin/applicants" 
-          className="bg-white p-5 rounded-xl shadow-xs border border-gray-200 hover:border-blue-400 hover:shadow-sm transition-all group"
+          className="bg-[#0a0a0d] p-5 rounded-2xl border border-white/[0.08] hover:border-white/20 transition-all duration-300 group"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Accepted & Talent Pool</span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <CheckCircle2 className="w-4 h-4" />
+            <span className="text-xs font-mono text-white/40 uppercase tracking-wider">Accepted & Talent Pool</span>
+            <div className="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/[0.08] text-white flex items-center justify-center group-hover:scale-110 transition-transform">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
             </div>
           </div>
-          <p className="text-3xl font-black text-gray-900 mt-2">{selectedCount + considerCount}</p>
-          <p className="text-xs text-emerald-700 font-semibold mt-1">
-            {selectedCount} Selected • {considerCount} Alt Pool
+          <p className="text-3xl font-mono font-bold text-white mt-3">{selectedCount + considerCount}</p>
+          <p className="text-xs font-mono text-emerald-400 mt-2">
+            {selectedCount} selected · {considerCount} alt pool
           </p>
         </Link>
       </div>
 
       {/* Grid: Lined Up Interviews & Recent Jobs */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Lined-up Interviews Widget */}
-        <div className="bg-white rounded-xl shadow-xs border border-gray-200 p-6 space-y-4">
+        <div className="bg-[#0a0a0d] rounded-2xl border border-white/[0.08] p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-purple-600" />
-              <h2 className="text-lg font-bold text-gray-900">Upcoming Interviews</h2>
+              <Calendar className="w-4 h-4 text-purple-400" />
+              <h2 className="text-base font-sans font-bold text-white">upcoming interviews</h2>
             </div>
             <Link 
               href="/admin/schedule" 
-              className="text-xs font-bold text-purple-600 hover:underline flex items-center gap-1"
+              className="text-xs font-mono text-purple-400 hover:text-purple-300 flex items-center gap-1"
             >
-              Full Calendar <ArrowRight className="w-3 h-3" />
+              full calendar →
             </Link>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {db.interviews.slice(0, 4).map(interview => {
               const app = db.applications.find(a => a.id === interview.applicationId);
               const candidate = db.candidates.find(c => c.id === app?.candidateId);
@@ -147,14 +148,14 @@ export default function AdminDashboard() {
               return (
                 <div 
                   key={interview.id} 
-                  className="p-3 rounded-lg border border-gray-100 hover:border-purple-200 bg-gray-50/50 flex items-center justify-between gap-3 transition"
+                  className="p-3.5 rounded-xl border border-white/[0.06] hover:border-white/15 bg-white/[0.02] flex items-center justify-between gap-3 transition"
                 >
                   <div className="min-w-0">
-                    <div className="font-bold text-sm text-gray-900 truncate">
+                    <div className="font-sans font-bold text-sm text-white truncate">
                       {candidate?.name || 'Candidate'}
                     </div>
-                    <div className="text-xs text-gray-500 truncate" suppressHydrationWarning>
-                      {job?.title} • {formatDateTimeShortIST(interview.scheduledAt)}
+                    <div className="text-xs font-mono text-white/40 truncate mt-0.5" suppressHydrationWarning>
+                      {job?.title} · {formatDateTimeShortIST(interview.scheduledAt)}
                     </div>
                   </div>
 
@@ -163,17 +164,17 @@ export default function AdminDashboard() {
                       <Link
                         href={`/interview/${blueprint.id}`}
                         target="_blank"
-                        className="px-2.5 py-1 bg-blue-600 text-white text-xs font-bold rounded shadow-2xs hover:bg-blue-700 flex items-center gap-1 transition"
+                        className="px-3 py-1 bg-white/[0.08] hover:bg-white/[0.15] text-white text-xs font-mono rounded-full border border-white/[0.1] flex items-center gap-1.5 transition"
                       >
-                        <Mic className="w-3 h-3 animate-pulse" />
-                        <span>Room</span>
+                        <Mic className="w-3 h-3 text-emerald-400 animate-pulse" />
+                        <span>room</span>
                       </Link>
                     ) : (
                       <Link
                         href={`/admin/interviews/${interview.id}/blueprint`}
-                        className="px-2.5 py-1 bg-amber-500 text-white text-xs font-bold rounded hover:bg-amber-600 transition"
+                        className="px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-mono rounded-full hover:bg-amber-500/30 transition"
                       >
-                        <span>Blueprint</span>
+                        <span>blueprint</span>
                       </Link>
                     )}
                   </div>
@@ -182,50 +183,50 @@ export default function AdminDashboard() {
             })}
 
             {db.interviews.length === 0 && (
-              <div className="p-8 text-center text-gray-400 text-xs">
-                No interviews scheduled yet.
+              <div className="p-8 text-center text-white/40 text-xs font-mono">
+                no interviews scheduled yet.
               </div>
             )}
           </div>
         </div>
 
         {/* Active Openings Widget */}
-        <div className="bg-white rounded-xl shadow-xs border border-gray-200 p-6 space-y-4">
+        <div className="bg-[#0a0a0d] rounded-2xl border border-white/[0.08] p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Briefcase className="w-5 h-5 text-blue-600" />
-              <h2 className="text-lg font-bold text-gray-900">Active Job Postings</h2>
+              <Briefcase className="w-4 h-4 text-white/70" />
+              <h2 className="text-base font-sans font-bold text-white">active job postings</h2>
             </div>
             <Link 
               href="/admin/jobs/new" 
-              className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1"
+              className="text-xs font-mono text-white/60 hover:text-white flex items-center gap-1"
             >
-              + Post New Job
+              + post new job
             </Link>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {db.jobs.slice(0, 4).map(job => {
               const appCount = db.applications.filter(a => a.jobId === job.id).length;
               return (
                 <div 
                   key={job.id} 
-                  className="p-3 rounded-lg border border-gray-100 hover:border-blue-200 bg-gray-50/50 flex items-center justify-between gap-3 transition"
+                  className="p-3.5 rounded-xl border border-white/[0.06] hover:border-white/15 bg-white/[0.02] flex items-center justify-between gap-3 transition"
                 >
                   <div className="min-w-0">
-                    <div className="font-bold text-sm text-gray-900 truncate">{job.title}</div>
-                    <div className="text-xs text-gray-500 truncate">{job.description}</div>
+                    <div className="font-sans font-bold text-sm text-white truncate">{job.title}</div>
+                    <div className="text-xs text-white/40 truncate mt-0.5">{job.description}</div>
                   </div>
 
                   <div className="flex items-center gap-3 shrink-0">
-                    <span className="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-800 rounded-full">
+                    <span className="px-2.5 py-0.5 text-[11px] font-mono font-medium bg-white/[0.05] text-white/70 rounded-full border border-white/[0.08]">
                       {appCount} {appCount === 1 ? 'applicant' : 'applicants'}
                     </span>
                     <Link 
                       href={`/admin/jobs/${job.id}`} 
-                      className="text-xs font-semibold text-blue-600 hover:underline"
+                      className="text-xs font-mono text-white/60 hover:text-white transition"
                     >
-                      Manage
+                      manage →
                     </Link>
                   </div>
                 </div>
@@ -237,3 +238,4 @@ export default function AdminDashboard() {
     </div>
   );
 }
+

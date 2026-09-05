@@ -1157,18 +1157,18 @@ CORE TURN RULES & CANDIDATE-FIRST PACING:
 
         {/* Pre-start Round Banner (only for initial IDLE state) */}
         {testState === 'IDLE' && (
-          <div className="bg-white p-6 rounded-2xl border border-gray-200 text-center shadow-sm">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-bold text-xs mb-3 border border-blue-200">
-              <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+          <div className="bg-[#0a0a0d] p-6 sm:p-8 rounded-3xl border border-white/[0.08] text-center shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 font-mono font-bold text-xs mb-3 border border-cyan-500/20">
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
               <span>Ready for Round {currentRound + 1} of {blueprint.interview_rounds.length}</span>
             </div>
-            <h3 className="text-xl font-black text-gray-900 mb-1">{blueprint.interview_rounds[currentRound]?.round_name}</h3>
-            <p className="text-gray-600 text-sm mb-6 max-w-lg mx-auto">{blueprint.interview_rounds[currentRound]?.purpose}</p>
+            <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 tracking-tight">{blueprint.interview_rounds[currentRound]?.round_name}</h3>
+            <p className="text-white/60 text-xs sm:text-sm mb-6 max-w-lg mx-auto leading-relaxed">{blueprint.interview_rounds[currentRound]?.purpose}</p>
             <button 
               onClick={startTest} 
-              className="px-10 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition transform hover:-translate-y-0.5 cursor-pointer"
+              className="px-8 py-3.5 bg-white text-black font-sans font-bold text-xs rounded-full shadow-[0_0_25px_rgba(255,255,255,0.25)] hover:bg-neutral-200 transition-all transform hover:scale-102 cursor-pointer"
             >
-              Start Interview
+              Start Interview Session →
             </button>
           </div>
         )}
@@ -1176,45 +1176,45 @@ CORE TURN RULES & CANDIDATE-FIRST PACING:
 
       {/* Right Column: Live Transcript & System Logs */}
       <div className="w-full md:w-1/3 flex flex-col gap-6">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 flex-1 flex flex-col overflow-hidden max-h-[58vh]">
-          <div className="p-4 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
-            <h3 className="font-bold text-gray-900 text-sm">Live Panel Transcript</h3>
-            <span className="flex h-2.5 w-2.5 relative">
-              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${testState === 'RUNNING' ? 'bg-red-400' : 'hidden'}`}></span>
-              <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${testState === 'RUNNING' ? 'bg-red-500' : 'bg-gray-300'}`}></span>
+        <div className="bg-[#0a0a0d] rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.3)] border border-white/[0.08] flex-1 flex flex-col overflow-hidden max-h-[58vh]">
+          <div className="p-4 bg-[#030304]/80 border-b border-white/[0.06] flex justify-between items-center">
+            <h3 className="font-bold text-white text-xs uppercase font-mono tracking-wider">Live Panel Transcript</h3>
+            <span className="flex h-2 w-2 relative">
+              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${testState === 'RUNNING' ? 'bg-cyan-400' : 'hidden'}`}></span>
+              <span className={`relative inline-flex rounded-full h-2 w-2 ${testState === 'RUNNING' ? 'bg-cyan-500' : 'bg-white/20'}`}></span>
             </span>
           </div>
-          <div className="flex-1 p-4 overflow-y-auto space-y-3">
+          <div className="flex-1 p-4 overflow-y-auto space-y-3 custom-scrollbar">
             {transcript.map((msg, idx) => (
               <div 
                 key={idx} 
-                className={`p-3 rounded-xl text-sm ${
+                className={`p-3 rounded-2xl text-xs leading-relaxed ${
                   msg.speaker === candidateName 
-                    ? 'bg-blue-50 ml-6 border border-blue-100 text-gray-900' 
-                    : 'bg-gray-50 mr-6 border border-gray-200 text-gray-800'
+                    ? 'bg-cyan-950/20 ml-4 border border-cyan-500/20 text-cyan-100' 
+                    : 'bg-[#030304] mr-4 border border-white/[0.08] text-white/80'
                 }`}
               >
-                <div className="text-3xs font-black text-gray-400 mb-1 uppercase tracking-wider">{msg.speaker}</div>
-                <div className="leading-relaxed">{msg.text}</div>
+                <div className="text-[10px] font-mono font-bold text-white/40 mb-1 uppercase tracking-wider">{msg.speaker}</div>
+                <div>{msg.text}</div>
               </div>
             ))}
             {transcript.length === 0 && (
-              <div className="text-gray-400 text-xs italic text-center mt-12">
-                Panel transcript will appear live as speakers interact...
+              <div className="text-white/30 text-xs italic text-center mt-12 font-mono">
+                Panel transcript will stream live as audio plays...
               </div>
             )}
           </div>
         </div>
 
-        <div className="bg-gray-950 rounded-2xl shadow-sm border border-gray-800 flex-1 flex flex-col overflow-hidden max-h-[32vh]">
-          <div className="p-3 bg-gray-900 border-b border-gray-800">
-            <h3 className="font-bold text-gray-300 text-xs font-mono">Turn Arbiter & System Logs</h3>
+        <div className="bg-[#0a0a0d] rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.3)] border border-white/[0.08] flex-1 flex flex-col overflow-hidden max-h-[32vh]">
+          <div className="p-3 bg-[#030304]/80 border-b border-white/[0.06]">
+            <h3 className="font-bold text-white/60 text-[11px] font-mono uppercase tracking-wider">Turn Arbiter & System Telemetry</h3>
           </div>
-          <div className="flex-1 p-3 overflow-y-auto space-y-1.5 font-mono text-3xs">
+          <div className="flex-1 p-3 overflow-y-auto space-y-1.5 font-mono text-[10px] custom-scrollbar">
             {logs.map((log, i) => (
-              <div key={i} className="text-gray-300 border-b border-gray-900 pb-1">
-                <span className="text-gray-500 mr-2">[{log.time}]</span>
-                <span className="text-blue-400 font-bold mr-1.5">{log.comp}:</span>
+              <div key={i} className="text-white/70 border-b border-white/[0.04] pb-1">
+                <span className="text-white/30 mr-2">[{log.time}]</span>
+                <span className="text-cyan-400 font-bold mr-1.5">{log.comp}:</span>
                 <span className="text-emerald-400/90">{log.msg}</span>
               </div>
             ))}

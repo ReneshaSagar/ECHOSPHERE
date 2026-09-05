@@ -21,10 +21,13 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
 
   if (!interview) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6 pt-20">
-        <div className="bg-white p-8 rounded-2xl border border-gray-200 text-center max-w-md shadow-sm">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Interview Session Not Found</h2>
-          <p className="text-gray-500 text-sm">Please check your invitation link or contact your recruiter.</p>
+      <div className="min-h-screen bg-[#030304] flex items-center justify-center p-6 pt-20">
+        <div className="bg-[#0a0a0d] p-8 rounded-3xl border border-white/[0.08] text-center max-w-md shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+          <div className="w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-300 flex items-center justify-center mx-auto mb-4 text-xl">
+            ⚠️
+          </div>
+          <h2 className="text-xl font-bold text-white mb-2 tracking-tight">Interview Session Not Found</h2>
+          <p className="text-white/50 text-xs leading-relaxed">Please check your invitation link or contact your talent recruiter.</p>
         </div>
       </div>
     );
@@ -36,10 +39,13 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
 
   if (!application || !candidate || !job) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6 pt-20">
-        <div className="bg-white p-8 rounded-2xl border border-gray-200 text-center max-w-md shadow-sm">
-          <h2 className="text-xl font-bold text-red-600 mb-2">Session Integrity Error</h2>
-          <p className="text-gray-500 text-sm">Candidate or position records could not be resolved.</p>
+      <div className="min-h-screen bg-[#030304] flex items-center justify-center p-6 pt-20">
+        <div className="bg-[#0a0a0d] p-8 rounded-3xl border border-rose-500/30 text-center max-w-md shadow-[0_0_50px_rgba(244,63,94,0.15)]">
+          <div className="w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-300 flex items-center justify-center mx-auto mb-4 text-xl">
+            ⚠️
+          </div>
+          <h2 className="text-xl font-bold text-rose-400 mb-2 tracking-tight">Session Integrity Error</h2>
+          <p className="text-white/50 text-xs leading-relaxed">Candidate or requisition records could not be resolved in the database.</p>
         </div>
       </div>
     );
@@ -144,37 +150,37 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
   try {
     parsedBlueprint = JSON.parse(blueprint.blueprintJson);
   } catch (e) {
-    return <div className="p-10 text-center text-red-500 font-bold">Failed to parse blueprint JSON.</div>;
+    return <div className="p-10 text-center text-rose-400 font-mono">Failed to parse blueprint JSON.</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col pt-16">
-      <header className="bg-white border-b border-gray-200 shadow-2xs py-4 px-6 flex justify-between items-center">
+    <div className="min-h-screen bg-[#030304] text-[#f5f5f7] flex flex-col pt-16 font-sans">
+      <header className="fixed top-0 left-0 right-0 z-40 bg-[#030304]/80 backdrop-blur-xl border-b border-white/[0.06] py-3.5 px-6 flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#00AEEF] text-white flex items-center justify-center font-black text-sm shadow-xs">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-white/20 to-white/5 border border-white/20 flex items-center justify-center text-xs font-bold text-white shadow-[0_0_15px_rgba(255,255,255,0.15)]">
             N
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-base font-bold text-gray-900 leading-tight">NEXORA LABS</h1>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 uppercase tracking-wider hidden sm:inline">
-                OmniPanel
+              <span className="text-sm font-sans font-bold text-white tracking-tight">nexora labs</span>
+              <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-white/[0.05] text-white/70 border border-white/[0.08] hidden sm:inline">
+                omnipanel
               </span>
             </div>
-            <p className="text-xs text-gray-500 font-medium">{job.title}</p>
+            <p className="text-xs font-mono text-white/40">{job.title}</p>
           </div>
         </div>
 
         <div className="text-right">
-          <div className="text-sm font-bold text-gray-900">{candidate.name}</div>
-          <div className="text-xs text-emerald-600 font-semibold flex items-center justify-end gap-1">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>Session Ready</span>
+          <div className="text-xs sm:text-sm font-sans font-bold text-white">{candidate.name}</div>
+          <div className="text-xs font-mono text-emerald-400 flex items-center justify-end gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>session ready</span>
           </div>
         </div>
       </header>
       
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col relative z-10">
         <InterviewLobbyWrapper 
           blueprint={parsedBlueprint} 
           interviewId={interview.id} 
