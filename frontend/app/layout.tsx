@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, JetBrains_Mono, Newsreader } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from 'next-themes';
 import Navbar from '@/components/Navbar';
@@ -18,15 +18,23 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
+const newsreader = Newsreader({
+  subsets: ['latin'],
+  variable: '--font-serif',
+  weight: ['300', '400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
-  title: 'nexora — When intelligence reaches out to instinct',
-  description: 'Nexora Labs builds the infrastructure behind modern intelligent products. Explore developer platforms, distributed real-time systems, and careers.',
+  title: 'nexora — Nature doesn’t guess. Neither should AI.',
+  description: 'Nexora Labs builds the infrastructure behind modern intelligent software. Real-time conversational AI screening and deep technical evaluation.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${plusJakarta.variable} ${jetbrainsMono.variable} font-sans bg-[#030304] text-[#f4f4f5] antialiased selection:bg-purple-500/30 selection:text-white`} suppressHydrationWarning>
+      <body className={`${plusJakarta.variable} ${jetbrainsMono.variable} ${newsreader.variable} font-sans bg-[#030304] text-[#f4f4f5] antialiased selection:bg-purple-500/30 selection:text-white`} suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} forcedTheme="dark">
           {Navbar ? <Navbar /> : null}
           <main className="min-h-screen">{children}</main>

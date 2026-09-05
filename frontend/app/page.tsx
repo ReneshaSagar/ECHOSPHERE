@@ -2,66 +2,84 @@
 
 import React from 'react';
 import Link from 'next/link';
-import HeroVisualSynergy from '@/components/hero/HeroVisualSynergy';
+import PixelMatrixFlower from '@/components/hero/PixelMatrixFlower';
 import { NEXORA_LABS } from '@/lib/company';
 import { 
   ArrowRight, 
   Sparkles, 
-  Cpu, 
   Server, 
-  Globe2, 
+  Radio, 
+  Layers,
   ShieldCheck, 
   Zap, 
   Terminal, 
-  Layers, 
-  Lock, 
   Workflow, 
   Code2, 
-  Radio, 
   CheckCircle2, 
-  Users 
+  Users,
+  Compass
 } from 'lucide-react';
 
 export default function LandingPage() {
   return (
-    <div className="relative min-h-screen bg-[#030304] text-[#f4f4f5] overflow-hidden selection:bg-purple-500/30 selection:text-white">
+    <div className="relative min-h-screen bg-[#030304] text-[#f4f4f5] overflow-hidden selection:bg-amber-500/30 selection:text-white">
       {/* Subtle Background Radial Atmosphere */}
-      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-purple-900/10 via-pink-900/5 to-transparent blur-[140px] opacity-60" />
-      <div className="pointer-events-none absolute inset-0 dot-grid-fine opacity-20" />
+      <div className="pointer-events-none absolute top-1/4 right-1/4 w-[700px] h-[700px] bg-gradient-to-b from-amber-600/10 via-orange-950/5 to-transparent blur-[160px] opacity-70" />
+      <div className="pointer-events-none absolute inset-0 dot-grid-fine opacity-15" />
 
-      <main className="relative z-10 mx-auto flex flex-col max-w-7xl px-6 sm:px-10 lg:px-16 pt-32 pb-24">
+      <main className="relative z-10 mx-auto flex flex-col max-w-7xl px-6 sm:px-10 lg:px-16 pt-24 sm:pt-32 pb-24">
         
-        {/* ── 1. Hero Section (Matching Reference Image) ── */}
-        <section className="flex flex-col items-center text-center pt-8 sm:pt-12 pb-6">
-          {/* Main Headline */}
-          <h1 className="max-w-4xl text-4xl sm:text-6xl lg:text-[4.4rem] font-medium tracking-[-0.035em] text-white leading-[1.08] font-sans">
-            When intelligence reaches out to instinct, the future takes shape
-          </h1>
+        {/* ── 1. Hero Section (Matching Reference Image Pixel-for-Pixel) ── */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 items-center gap-12 lg:gap-8 min-h-[72vh] py-8 sm:py-16">
+          
+          {/* Left Column: Editorial Headline & Actions */}
+          <div className="lg:col-span-6 flex flex-col items-start text-left space-y-6 sm:space-y-8 z-10">
+            {/* Minimalist Geometric Logo Glyph */}
+            <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.12] flex items-center justify-center text-white/90 shadow-[0_0_20px_rgba(255,255,255,0.05)]">
+              <div className="w-4 h-4 rounded-sm border-2 border-white rotate-45 flex items-center justify-center">
+                <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
+              </div>
+            </div>
 
-          {/* Subtitle */}
-          <p className="mt-6 max-w-2xl text-xs sm:text-sm font-mono text-zinc-400 tracking-wider lowercase">
-            an unlikely alliance — where human intuition and algorithmic precision move as one
-          </p>
+            {/* Editorial Headline */}
+            <h1 className="text-4xl sm:text-6xl lg:text-[4.2rem] font-serif font-normal tracking-[-0.03em] text-white leading-[1.08]">
+              Nature doesn’t guess<br />
+              <span className="text-white/90">Neither should AI.</span>
+            </h1>
 
-          {/* See it in Action Capsule Button */}
-          <div className="mt-8 flex items-center justify-center">
-            <Link
-              href="/jobs"
-              className="group inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white text-black text-xs font-semibold hover:bg-zinc-200 transition-all shadow-[0_0_30px_rgba(255,255,255,0.25)] hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] transform hover:-translate-y-0.5"
-            >
-              <span>See it in action</span>
-              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-            </Link>
+            {/* Subtitle */}
+            <p className="text-sm sm:text-base text-zinc-400 font-sans leading-relaxed max-w-md">
+              Our conversational voice AI analyzes real-time technical dialogue to uncover genuine engineering mastery—beyond resumes and guesswork.
+            </p>
+
+            {/* Capsule CTA Button (Matching Reference Image) */}
+            <div className="pt-2 flex items-center gap-4 flex-wrap">
+              <Link
+                href="/jobs"
+                className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-white/[0.08] hover:bg-white/[0.16] border border-white/[0.18] text-white text-xs font-semibold transition-all shadow-[0_0_25px_rgba(255,255,255,0.08)] transform hover:-translate-y-0.5"
+              >
+                <span>Get started</span>
+                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1 text-white/80" />
+              </Link>
+
+              <Link
+                href="/admin/schedule"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-xs font-mono text-zinc-400 hover:text-white transition-colors"
+              >
+                <span>ATS Schedule</span>
+                <span className="text-zinc-600">→</span>
+              </Link>
+            </div>
           </div>
 
-          {/* Centerpiece Visual Art: Halftone Hands + Iridescent Asterisk + Icon Ribbon */}
-          <div className="w-full mt-2 sm:mt-4">
-            <HeroVisualSynergy />
+          {/* Right Column: Topographic Pixel Matrix Flower Artwork */}
+          <div className="lg:col-span-6 flex items-center justify-center relative">
+            <PixelMatrixFlower />
           </div>
         </section>
 
         {/* ── 2. Services / Platform Architecture Section ── */}
-        <section id="platform" className="py-20 border-t border-white/8 space-y-12">
+        <section id="platform" className="py-24 border-t border-white/[0.08] space-y-12">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <span className="font-mono text-[11px] text-zinc-500 uppercase tracking-widest">[ SERVICES // ARCHITECTURE ]</span>
@@ -77,15 +95,15 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="glass-card glass-card-hover p-8 space-y-5 relative overflow-hidden group">
               <div className="font-mono text-xs text-zinc-500">01 / AUDIO & INFERENCE</div>
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
                 <Radio className="w-5 h-5" />
               </div>
               <h3 className="text-xl font-semibold text-white">Sub-50ms Streaming Gateways</h3>
               <p className="text-xs text-zinc-400 leading-relaxed font-sans">
                 Full-duplex WebRTC media pipelines with neural acoustic synchronization, adaptive barge-in handling, and zero audio packet jitter.
               </p>
-              <div className="pt-2 text-[11px] font-mono text-purple-400 flex items-center gap-1">
-                <span>WebRTC · vLLM · Gemini Live</span>
+              <div className="pt-2 text-[11px] font-mono text-amber-400 flex items-center gap-1">
+                <span>WebRTC · Agora RTC · Gemini Live</span>
               </div>
             </div>
 
@@ -105,14 +123,14 @@ export default function LandingPage() {
 
             <div className="glass-card glass-card-hover p-8 space-y-5 relative overflow-hidden group">
               <div className="font-mono text-xs text-zinc-500">03 / EVALUATION INTELLIGENCE</div>
-              <div className="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
                 <Sparkles className="w-5 h-5" />
               </div>
               <h3 className="text-xl font-semibold text-white">OmniPanel AI Evaluation</h3>
               <p className="text-xs text-zinc-400 leading-relaxed font-sans">
                 Stateful turn arbitration, calibrated multi-round rubric synthesis, and verified evidence grounding for technical talent assessment.
               </p>
-              <div className="pt-2 text-[11px] font-mono text-pink-400 flex items-center gap-1">
+              <div className="pt-2 text-[11px] font-mono text-purple-400 flex items-center gap-1">
                 <span>Multi-Persona Arbiter · RAG</span>
               </div>
             </div>
@@ -120,7 +138,7 @@ export default function LandingPage() {
         </section>
 
         {/* ── 3. How It Works Section ── */}
-        <section id="how-it-works" className="py-20 border-t border-white/8 space-y-12">
+        <section id="how-it-works" className="py-24 border-t border-white/[0.08] space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <span className="font-mono text-[11px] text-zinc-500 uppercase tracking-widest">[ HOW IT WORKS ]</span>
             <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white">
@@ -132,7 +150,7 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div className="p-6 rounded-2xl border border-white/6 bg-[#08080b] space-y-4">
+            <div className="p-6 rounded-2xl border border-white/[0.06] bg-[#08080b] space-y-4">
               <div className="flex items-center justify-between font-mono text-xs text-zinc-500">
                 <span>PHASE // 01</span>
                 <span className="text-zinc-600">INGESTION</span>
@@ -143,7 +161,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl border border-white/6 bg-[#08080b] space-y-4">
+            <div className="p-6 rounded-2xl border border-white/[0.06] bg-[#08080b] space-y-4">
               <div className="flex items-center justify-between font-mono text-xs text-zinc-500">
                 <span>PHASE // 02</span>
                 <span className="text-zinc-600">LIVE AUDIO</span>
@@ -154,7 +172,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl border border-white/6 bg-[#08080b] space-y-4">
+            <div className="p-6 rounded-2xl border border-white/[0.06] bg-[#08080b] space-y-4">
               <div className="flex items-center justify-between font-mono text-xs text-zinc-500">
                 <span>PHASE // 03</span>
                 <span className="text-zinc-600">DECISION</span>
@@ -168,7 +186,7 @@ export default function LandingPage() {
         </section>
 
         {/* ── 4. AI Security & Operating Principles ── */}
-        <section id="principles" className="py-20 border-t border-white/8 space-y-12">
+        <section id="principles" className="py-24 border-t border-white/[0.08] space-y-12">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <span className="font-mono text-[11px] text-zinc-500 uppercase tracking-widest">[ SECURITY & CULTURE // PRINCIPLES ]</span>
@@ -183,8 +201,8 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {NEXORA_LABS.principles.map((p) => (
-              <div key={p.number} className="p-6 rounded-2xl border border-white/6 bg-[#07070a] hover:border-white/15 transition-all space-y-3">
-                <div className="font-mono text-[11px] text-purple-400">PRINCIPLE // {p.number}</div>
+              <div key={p.number} className="p-6 rounded-2xl border border-white/[0.06] bg-[#07070a] hover:border-white/15 transition-all space-y-3">
+                <div className="font-mono text-[11px] text-amber-400">PRINCIPLE // {p.number}</div>
                 <h4 className="text-lg font-semibold text-white">{p.title}</h4>
                 <p className="text-xs text-zinc-400 leading-relaxed font-sans">{p.description}</p>
               </div>
@@ -207,7 +225,7 @@ export default function LandingPage() {
         </section>
 
         {/* ── 5. Open Roles / Careers Preview Section ── */}
-        <section className="py-20 border-t border-white/8 space-y-8">
+        <section className="py-24 border-t border-white/[0.08] space-y-8">
           <div className="flex items-center justify-between">
             <div>
               <span className="font-mono text-[11px] text-zinc-500 uppercase tracking-widest">[ CAREERS // 7 POSITIONS ]</span>
@@ -236,7 +254,7 @@ export default function LandingPage() {
               <Link
                 key={role.id}
                 href={`/jobs/${role.id}`}
-                className="group p-5 rounded-2xl border border-white/6 bg-[#08080b] hover:border-white/20 hover:bg-[#0c0c10] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="group p-5 rounded-2xl border border-white/[0.06] bg-[#08080b] hover:border-white/20 hover:bg-[#0c0c10] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -272,7 +290,7 @@ export default function LandingPage() {
         </section>
 
         {/* ── 6. Minimalist Dark Footer ── */}
-        <footer className="pt-16 border-t border-white/8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 text-xs text-zinc-500 font-mono">
+        <footer className="pt-16 border-t border-white/[0.08] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 text-xs text-zinc-500 font-mono">
           <div className="flex items-center gap-4">
             <span className="text-white font-sans font-medium text-sm lowercase">nexora</span>
             <span>© 2026 Nexora Labs, Inc.</span>
