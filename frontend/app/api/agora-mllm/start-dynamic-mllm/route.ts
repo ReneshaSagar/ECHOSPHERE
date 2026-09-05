@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
       greeting_message,
       voice,
       agent_uid,
+      remote_uids,
       channel_name: customChannel 
     } = await req.json();
     
@@ -38,7 +39,7 @@ export async function POST(req: NextRequest) {
     const targetVoice = voice || 'Charon';
     const channelName = customChannel || `interview_${session_id.replace(/[^a-zA-Z0-9]/g, '_')}`.substring(0, 60);
     
-    console.log(`[AGENT_START_REQUEST] session_id: ${session_id}, agent_uid: ${targetAgentUid}, voice: ${targetVoice}, channel: ${channelName}, timestamp: ${new Date().toISOString()}`);
+    console.log(`[AGENT_START_REQUEST] session_id: ${session_id}, agent_uid: ${targetAgentUid}, voice: ${targetVoice}, channel: ${channelName}, candidate_uid: ${candidate_uid}, timestamp: ${new Date().toISOString()}`);
 
     const candidateToken = buildRtcToken(channelName, candidate_uid);
     const agentToken = buildRtcToken(channelName, targetAgentUid);
@@ -73,17 +74,21 @@ export async function POST(req: NextRequest) {
       outputModalities: ['audio']
     }));
 
-    // Allow agents in a multi-agent panel to hear all participants (candidate + co-interviewer)
+    // Explicit audio subscription: agent ONLY listens to candidate to eliminate agent-to-agent feedback crosstalk
+    const subscribedRemoteUids = remote_uids && remote_uids.length > 0
+      ? remote_uids.map(String)
+      : (candidate_uid ? [String(candidate_uid)] : ["*"]);
+
     const sessionObj = await agent.createSession({
       channel: channelName,
       agentUid: String(targetAgentUid),
-      remoteUids: ["*"],
+      remoteUids: subscribedRemoteUids,
       token: agentToken
     });
 
     await sessionObj.start();
 
-    console.log(`[AGENT_STARTED] session_id: ${session_id}, agent_id: ${sessionObj.id}, agent_uid: ${targetAgentUid}, timestamp: ${new Date().toISOString()}`);
+    console.log(`[AGENT_STARTED] session_id: ${session_id}, agent_id: ${sessionObj.id}, agent_uid: ${targetAgentUid}, remoteUids: ${JSON.stringify(subscribedRemoteUids)}, timestamp: ${new Date().toISOString()}`);
     
     return NextResponse.json({
       status: "started",

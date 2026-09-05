@@ -141,12 +141,22 @@ export default function InterviewRoom({
   const isStartingRef = useRef<boolean>(false);
   const technicalSummaryRef = useRef<{ score: number; reason: string; evidence: string[] } | null>(null);
 
-  // Autonomous remote audio playback: both agents' audio tracks play at 100% volume
+  // Stateful remote audio playback with strict floor track gating
   const initializeRemoteTrack = (uid: number, track: any) => {
     remoteAudioTracksRef.current.set(uid, track);
     try {
       track.play();
-      track.setVolume(100);
+      if (uid === 9991 || uid === 9999) {
+        // Primary agent starts unmuted if floor is Primary
+        const vol = currentFloorRef.current === 'PRIMARY_AI' ? 100 : 0;
+        track.setVolume(vol);
+      } else if (uid === 9992) {
+        // Challenger starts muted in silent standby until floor is explicitly handed over
+        const vol = currentFloorRef.current === 'CHALLENGER_AI' ? 100 : 0;
+        track.setVolume(vol);
+      } else {
+        track.setVolume(100);
+      }
     } catch (e) {
       console.warn('[AutonomousFloor] Error playing remote track:', e);
     }
@@ -229,9 +239,11 @@ export default function InterviewRoom({
         const arbData = await arbRes.json();
         
         if (arbData.action === 'intervene') {
-          addLog('Turn Arbiter', `Autonomous Floor: ${arbData.nextSpeakerName} stepping in.`);
+          addLog('Turn Arbiter', `Floor granted to Specialist: ${arbData.nextSpeakerName} stepping in for probe.`);
           setFloorOwner('CHALLENGER_AI');
           currentFloorRef.current = 'CHALLENGER_AI';
+          remoteAudioTracksRef.current.get(9991)?.setVolume(0);
+          remoteAudioTracksRef.current.get(9992)?.setVolume(100);
           setActivePanelAgents(prev => prev.map(a => ({
             ...a,
             hasFloor: a.agentId === arbData.nextSpeakerId,
@@ -239,19 +251,21 @@ export default function InterviewRoom({
           })));
           setTimeout(() => setPendingFloorNotice(null), 6000);
 
-          // Return floor naturally to Primary Interviewer after 30 seconds
+          // Return floor naturally to Primary Interviewer after 25 seconds
           setTimeout(() => {
             if (currentFloorRef.current === 'CHALLENGER_AI') {
-              addLog('Turn Arbiter', `Autonomous Floor: Floor naturally returned to Lead Interviewer.`);
+              addLog('Turn Arbiter', `Floor returned naturally to Lead Interviewer.`);
               setFloorOwner('PRIMARY_AI');
               currentFloorRef.current = 'PRIMARY_AI';
+              remoteAudioTracksRef.current.get(9992)?.setVolume(0);
+              remoteAudioTracksRef.current.get(9991)?.setVolume(100);
               setActivePanelAgents(prev => prev.map(a => ({
                 ...a,
                 hasFloor: a.isPrimary,
                 intervening: false
               })));
             }
-          }, 30000);
+          }, 25000);
         }
       }
     } catch (err) {
@@ -315,25 +329,26 @@ export default function InterviewRoom({
         // Inject rich 3-person panel context dynamically into both agents
         const primaryStrictRule = `
 ================================================================================
-3-PERSON LIVE INTERVIEW ROOM PROTOCOL & CANDIDATE-FIRST PACING
+3-PERSON LIVE INTERVIEW ROOM PROTOCOL & FLOOR ARBITRATION
 ================================================================================
-You are participating in a live 3-person technical interview voice call with:
+You are "${primary.name}" (${primary.role}), the PRIMARY LEAD INTERVIEWER in a live 3-person technical interview with:
 1. CANDIDATE (Interviewee): "${candidateName}"
 2. CO-INTERVIEWER (Your Colleague): "${challenger.name}" (${challenger.role})
-3. YOU: "${primary.name}" (${primary.role}, Primary Lead)
+3. YOU: "${primary.name}" (Primary Lead)
 
 CORE TURN RULES & CANDIDATE-FIRST PACING:
-- The candidate (${candidateName}) is the center of this interview. You are here to evaluate ${candidateName}, NOT to chat with your colleague.
-- EVERY SINGLE TURN you take must conclude with a direct question asked to "${candidateName}".
-- Once you ask "${candidateName}" a question, GO COMPLETELY SILENT and patiently wait for ${candidateName} to finish speaking.
+- You LEAD the interview. Start by greeting "${candidateName}" warmly and asking Question 1.
+- The candidate (${candidateName}) is the center of this interview. You evaluate ${candidateName}, NOT chat casually with your colleague.
+- EVERY TURN you take MUST conclude with a direct question asked to "${candidateName}".
+- Once you ask "${candidateName}" a question, STOP SPEAKING IMMEDIATELY and WAIT IN SILENCE for ${candidateName} to finish speaking.
 - DO NOT speak again until "${candidateName}" has finished answering.
-- When you want your colleague ${challenger.name} to probe deeper on a topic, do a clean handoff:
-  Example: "Thanks ${candidateName}. ${challenger.name}, do you want to explore their concurrency model?"
-  Then immediately STOP speaking so ${challenger.name} can take over and question ${candidateName}.
-- When ${challenger.name} finishes probing and says "Back to you, ${primary.name}", acknowledge briefly and ask ${candidateName} your next question:
-  Example: "Thanks ${challenger.name}! ${candidateName}, let's move on to database architecture. Can you explain..."
+- When you want your colleague ${challenger.name} to probe deeper into system architecture, concurrency, or scale, do a clean handoff:
+  Example: "Thanks ${candidateName}. ${challenger.name}, do you want to explore their scaling strategy?"
+- HANDOFF RULE: When you hand off to ${challenger.name}, YOU MUST STOP TALKING IMMEDIATELY so ${challenger.name} has the floor.
+- When ${challenger.name} finishes probing and says "Back to you, ${primary.name}", thank ${challenger.name} briefly and ask ${candidateName} your next question:
+  Example: "Thanks ${challenger.name}! ${candidateName}, let's talk about database optimization..."
 - Address the candidate as "${candidateName}" and your colleague as "${challenger.name}".
-- Never talk over anyone. Yield immediately if someone else is speaking.
+- NEVER talk over anyone. Yield immediately if someone else is speaking.
 ================================================================================`;
 
         const primaryInstructions = injectKnowledgeBaseIntoAgentInstructions(
@@ -346,24 +361,28 @@ CORE TURN RULES & CANDIDATE-FIRST PACING:
 
         const challengerStrictRule = `
 ================================================================================
-3-PERSON LIVE INTERVIEW ROOM PROTOCOL & CANDIDATE-FIRST PACING
+3-PERSON LIVE INTERVIEW ROOM PROTOCOL & SILENT STANDBY MODE
 ================================================================================
-You are participating in a live 3-person technical interview voice call with:
+You are "${challenger.name}" (${challenger.role}), the TECHNICAL SPECIALIST in a live 3-person technical interview with:
 1. CANDIDATE (Interviewee): "${candidateName}"
-2. CO-INTERVIEWER (Your Colleague): "${primary.name}" (${primary.role}, Primary Lead)
-3. YOU: "${challenger.name}" (${challenger.role}, Technical Specialist)
+2. LEAD INTERVIEWER (Your Colleague): "${primary.name}" (${primary.role})
+3. YOU: "${challenger.name}" (Specialist)
 
-CORE TURN RULES & CANDIDATE-FIRST PACING:
-- ${primary.name} is the lead driver. You are the technical specialist who steps in for deep-dive probes.
-- Only speak when:
+STRICT FLOOR RULES & SILENT STANDBY:
+- SILENT STANDBY AT START: ${primary.name} is the lead driver and holds the floor first. When the call begins, DO NOT GREET THE CANDIDATE. REMAIN COMPLETELY SILENT until ${primary.name} explicitly calls on you.
+- WHEN TO SPEAK: You ONLY speak when:
   1. ${primary.name} explicitly passes you the turn (e.g. "${challenger.name}, do you want to ask about X?").
   2. ${candidateName} addresses you directly by name ("${challenger.name}").
-- When ${primary.name} hands you the floor, do NOT engage in back-and-forth chatter with ${primary.name}. Immediately turn to ${candidateName} and ask ONE sharp technical question:
-  Example: "Thanks ${primary.name}! ${candidateName}, building on that, how did you prevent race conditions under high traffic?"
-- Once you ask your question to ${candidateName}, GO COMPLETELY SILENT and wait for ${candidateName} to finish answering.
-- AFTER ${candidateName} finishes answering your probe, give a brief 1-sentence acknowledgment and smoothly hand the floor back to ${primary.name}:
-  Example: "That makes a lot of sense, thanks ${candidateName}. Back to you, ${primary.name}."
-- Never talk over anyone. Yield immediately if someone else is speaking.
+- WHEN YOU GET THE FLOOR:
+  - Say a brief 1-sentence transition: "Thanks ${primary.name}!"
+  - Turn directly to ${candidateName} and ask ONE targeted technical question:
+    Example: "${candidateName}, building on that, how did you handle data consistency and race conditions at that scale?"
+  - STOP SPEAKING IMMEDIATELY and wait in complete silence for ${candidateName} to answer.
+- RETURNING THE FLOOR:
+  - AFTER ${candidateName} finishes answering your probe, give a brief 1-sentence acknowledgment and smoothly hand the floor back to ${primary.name}:
+    Example: "That makes a lot of sense, thanks ${candidateName}. Back to you, ${primary.name}."
+  - IMMEDIATELY RETURN TO COMPLETELY SILENT STANDBY.
+- NEVER talk over anyone.
 ================================================================================`;
 
         const challengerInstructions = injectKnowledgeBaseIntoAgentInstructions(
@@ -524,7 +543,7 @@ CORE TURN RULES & CANDIDATE-FIRST PACING:
         }
       });
 
-      // Data Channel for Transcript & Speaker Attribution
+      // Data Channel for Transcript, Speaker Attribution, and Real-Time Turn Handoffs
       clientRef.current.on("stream-message", (uid: number, payload: Uint8Array) => {
         try {
           const decoder = new TextDecoder('utf8');
@@ -563,13 +582,42 @@ CORE TURN RULES & CANDIDATE-FIRST PACING:
             if (numUid === candidateUid && data.is_final) {
               handleCandidateUtterance(data.text);
             }
+
+            // Real-Time Vocal Floor Handoff Detection:
+            // 1. Primary -> Challenger handoff detection
+            if ((numUid === 9991 || numUid === 9999) && data.is_final) {
+              const txt = data.text.toLowerCase();
+              const challengerName = runningAgentsRef.current.find(a => !a.isPrimary)?.name?.toLowerCase() || 'challenger';
+              if (txt.includes(challengerName) || txt.includes('do you want to') || txt.includes('would you like to') || txt.includes('dive into')) {
+                addLog('Turn Arbiter', `Lead handoff detected in dialogue. Floor transferred to ${challengerName}.`);
+                currentFloorRef.current = 'CHALLENGER_AI';
+                setFloorOwner('CHALLENGER_AI');
+                remoteAudioTracksRef.current.get(9991)?.setVolume(0);
+                remoteAudioTracksRef.current.get(9992)?.setVolume(100);
+                setActivePanelAgents(prev => prev.map(a => ({ ...a, hasFloor: !a.isPrimary, intervening: true })));
+              }
+            }
+
+            // 2. Challenger -> Primary handoff detection
+            if (numUid === 9992 && data.is_final) {
+              const txt = data.text.toLowerCase();
+              const primaryName = runningAgentsRef.current.find(a => a.isPrimary)?.name?.toLowerCase() || 'primary';
+              if (txt.includes('back to you') || txt.includes(primaryName) || txt.includes('over to you')) {
+                addLog('Turn Arbiter', `Floor return detected in dialogue. Floor returned to ${primaryName}.`);
+                currentFloorRef.current = 'PRIMARY_AI';
+                setFloorOwner('PRIMARY_AI');
+                remoteAudioTracksRef.current.get(9992)?.setVolume(0);
+                remoteAudioTracksRef.current.get(9991)?.setVolume(100);
+                setActivePanelAgents(prev => prev.map(a => ({ ...a, hasFloor: a.isPrimary, intervening: false })));
+              }
+            }
           }
         } catch (e) {
           // Ignore non-JSON Agora metadata frames
         }
       });
 
-      // Turn Arbiter (Autonomous Floor Control & Multi-Agent Volume Tracking)
+      // Turn Arbiter (Autonomous Floor Control & Strict Track Gating)
       clientRef.current.enableAudioVolumeIndicator();
       clientRef.current.on("volume-indicator", (volumes: any[]) => {
         let primarySpeaking = false;
@@ -584,45 +632,24 @@ CORE TURN RULES & CANDIDATE-FIRST PACING:
           if (vol.uid === candidateUid && vol.level > 10) candidateSpeaking = true;
         });
 
-        // Heuristic Floor Arbitration & Crosstalk Squasher
-        if (candidateSpeaking && !primarySpeaking && !challengerSpeaking && !hrSpeaking) {
+        // Strict floor track gating: only the current floor owner's track is audible
+        if (candidateSpeaking) {
           setFloorOwner('CANDIDATE');
           setMicVolume(volumes.find(v => v.uid === candidateUid)?.level || 0);
-        } else if (primarySpeaking && !challengerSpeaking) {
-          setFloorOwner('PRIMARY_AI');
-          currentFloorRef.current = 'PRIMARY_AI';
+        } else if (currentFloorRef.current === 'PRIMARY_AI') {
+          setFloorOwner(primarySpeaking ? 'PRIMARY_AI' : 'NONE');
           setMicVolume(0);
           remoteAudioTracksRef.current.get(9991)?.setVolume(100);
-          setActivePanelAgents(prev => prev.map(a => ({ ...a, hasFloor: a.isPrimary, intervening: false })));
-        } else if (challengerSpeaking && !primarySpeaking) {
-          setFloorOwner('CHALLENGER_AI');
-          currentFloorRef.current = 'CHALLENGER_AI';
+          remoteAudioTracksRef.current.get(9992)?.setVolume(0);
+        } else if (currentFloorRef.current === 'CHALLENGER_AI') {
+          setFloorOwner(challengerSpeaking ? 'CHALLENGER_AI' : 'NONE');
           setMicVolume(0);
           remoteAudioTracksRef.current.get(9992)?.setVolume(100);
-          setActivePanelAgents(prev => prev.map(a => ({ ...a, hasFloor: !a.isPrimary, intervening: true })));
-        } else if (hrSpeaking) {
-          setFloorOwner('HR_AI');
-          currentFloorRef.current = 'HR_AI';
+          remoteAudioTracksRef.current.get(9991)?.setVolume(0);
+        } else if (currentFloorRef.current === 'HR_AI') {
+          setFloorOwner(hrSpeaking ? 'HR_AI' : 'NONE');
           setMicVolume(0);
-        } else if (primarySpeaking && challengerSpeaking) {
-          // Crosstalk detected! Instantly mute the agent that didn't have the floor
-          setFloorOwner('CROSSTALK');
-          setMicVolume(0);
-          if (currentFloorRef.current === 'CHALLENGER_AI') {
-             // Challenger had the floor, Primary is interrupting. Mute Primary.
-             remoteAudioTracksRef.current.get(9991)?.setVolume(0);
-             remoteAudioTracksRef.current.get(9992)?.setVolume(100);
-          } else {
-             // Primary had the floor, Challenger is interrupting. Mute Challenger.
-             remoteAudioTracksRef.current.get(9992)?.setVolume(0);
-             remoteAudioTracksRef.current.get(9991)?.setVolume(100);
-          }
-        } else {
-          setFloorOwner('NONE');
-          setMicVolume(0);
-          // Unmute both when silent so whoever speaks next is heard
-          remoteAudioTracksRef.current.get(9991)?.setVolume(100);
-          remoteAudioTracksRef.current.get(9992)?.setVolume(100);
+          remoteAudioTracksRef.current.get(9993)?.setVolume(100);
         }
       });
 
