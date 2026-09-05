@@ -40,7 +40,7 @@ function wrapHtmlEmail(title: string, bodyContent: string): string {
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td>
-                    <div style="font-size: 20px; font-weight: 800; letter-spacing: -0.02em; color: #ffffff;">EchoSphere</div>
+                    <div style="font-size: 20px; font-weight: 800; letter-spacing: -0.02em; color: #ffffff;">mr.technologies</div>
                     <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #93c5fd; margin-top: 2px;">Autonomous Voice Hiring Engine</div>
                   </td>
                 </tr>
@@ -56,7 +56,7 @@ function wrapHtmlEmail(title: string, bodyContent: string): string {
           <!-- Footer -->
           <tr>
             <td style="padding: 20px 32px 24px 32px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b; line-height: 1.5;">
-              <div>EchoSphere Talent Team • Autonomous Voice Evaluation Panel</div>
+              <div>mr.technologies Talent Team • Autonomous Voice Evaluation Panel</div>
               <div style="margin-top: 4px; font-size: 11px; color: #94a3b8;">This automated communication was generated on behalf of the engineering review board.</div>
             </td>
           </tr>
@@ -99,33 +99,32 @@ export async function sendEmail({
   // 1. Primary: Gmail SMTP (Universal delivery to any email without requiring a custom domain)
   if (gmailTransporter && gmailUser) {
     try {
-      const info = await gmailTransporter.sendMail({
-        from: `"EchoSphere Talent" <${gmailUser}>`,
+      const mailOptions = {
+        from: `"mr.technologies Talent" <${gmailUser}>`,
         to: recipientEmail,
-        subject,
+        subject: subject,
         text: bodyText,
-        html: renderedHtml
-      });
+        html: renderedHtml,
+      };
 
-      if (info.messageId) {
-        deliveryId = info.messageId;
-        deliveryProvider = 'gmail_smtp';
-        console.log(`[Gmail SMTP Success] Live email dispatched to: ${recipientEmail} | ID: ${deliveryId}`);
-      }
-    } catch (smtpErr: any) {
-      console.warn(`[Gmail SMTP Notice]: ${smtpErr.message}. Attempting Resend fallback...`);
+      const info = await gmailTransporter.sendMail(mailOptions);
+      deliveryId = info.messageId;
+      deliveryProvider = 'gmail_smtp';
+      console.log(`[Gmail SMTP Delivery Success] Live email dispatched to: ${recipientEmail} | MessageID: ${deliveryId}`);
+    } catch (err: any) {
+      console.warn(`[Gmail SMTP Delivery Warning]: ${err.message}. Falling back to Resend...`);
     }
   }
 
-  // 2. Secondary: Resend Delivery (if Gmail SMTP unavailable or fallback needed)
+  // 2. Fallback: Resend
   if (!deliveryId && resend) {
     try {
       const response = await resend.emails.send({
-        from: 'EchoSphere Talent <onboarding@resend.dev>',
+        from: 'mr.technologies Talent <onboarding@resend.dev>',
         to: recipientEmail,
-        subject,
+        subject: subject,
         text: bodyText,
-        html: renderedHtml
+        html: renderedHtml,
       });
 
       if (response.data) {
@@ -177,11 +176,11 @@ export async function sendApplicationReceivedEmail(
   candidate: { name: string; email: string },
   job: { title: string }
 ) {
-  const subject = `Application Received: ${job.title} at EchoSphere`;
+  const subject = `Application Received: ${job.title} at mr.technologies`;
 
   const bodyText = `Hi ${candidate.name},
 
-Thank you for applying for the ${job.title} position at EchoSphere!
+Thank you for applying for the ${job.title} position at mr.technologies!
 
 We have successfully received your application, resume, and technical links. Our autonomous evaluation engine and talent team are currently reviewing your qualifications and codecraft.
 
@@ -189,16 +188,16 @@ What to expect next:
 - If your experience aligns with the core requirements of the role, you will be invited to our autonomous AI Voice Technical Interview led by our specialized technical panel.
 - You will receive a separate invitation email with your scheduled date, time, and private room link.
 
-Thank you again for your enthusiasm about building with EchoSphere.
+Thank you again for your enthusiasm about building with mr.technologies.
 
 Best regards,
-The EchoSphere Talent & Recruiting Team`;
+The mr.technologies Talent & Recruiting Team`;
 
   const htmlContent = wrapHtmlEmail(
     subject,
     `<h2 style="font-size: 20px; font-weight: 700; color: #0f172a; margin-top: 0; margin-bottom: 16px;">Application Received</h2>
     <p>Hi <strong>${candidate.name}</strong>,</p>
-    <p>Thank you for applying for the <strong>${job.title}</strong> role at EchoSphere! We are excited to learn more about your experience and background.</p>
+    <p>Thank you for applying for the <strong>${job.title}</strong> role at mr.technologies! We are excited to learn more about your experience and background.</p>
     
     <div style="background-color: #f1f5f9; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 6px; margin: 20px 0;">
       <div style="font-weight: 700; color: #1e293b; font-size: 14px;">Next Steps in the Hiring Process:</div>
@@ -210,7 +209,7 @@ The EchoSphere Talent & Recruiting Team`;
     </div>
     
     <p>Thank you again for your time and interest in joining our engineering team.</p>
-    <p style="margin-top: 24px;">Warm regards,<br/><strong>The EchoSphere Talent & Engineering Team</strong></p>`
+    <p style="margin-top: 24px;">Warm regards,<br/><strong>The mr.technologies Talent & Engineering Team</strong></p>`
   );
 
   return sendEmail({
@@ -254,11 +253,11 @@ export async function sendInterviewInvitationEmail(
   const endTime = new Date(startTime.getTime() + 45 * 60 * 1000);
   const formatGCalDate = (d: Date) => d.toISOString().replace(/-|:|\.\d+/g, '');
   const dates = `${formatGCalDate(startTime)}/${formatGCalDate(endTime)}`;
-  const title = encodeURIComponent(`EchoSphere AI Interview: ${candidate.name} (${job.title})`);
+  const title = encodeURIComponent(`mr.technologies AI Interview: ${candidate.name} (${job.title})`);
   const details = encodeURIComponent(`Role: ${job.title}\nRoom: ${interviewLink}\nCandidate: ${candidate.name}\nTime: ${fullDateTime}`);
   const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}`;
 
-  const subject = `Congratulations! You're Selected for an Interview: ${job.title} at EchoSphere`;
+  const subject = `Congratulations! You're Selected for an Interview: ${job.title} at mr.technologies`;
 
   const bodyText = `Hi ${candidate.name},
 
@@ -282,7 +281,7 @@ When you open your room link before the scheduled time, a live countdown will di
 We look forward to meeting you!
 
 Warm regards,
-The EchoSphere Talent & Engineering Team`;
+The mr.technologies Talent & Engineering Team`;
 
   const htmlContent = wrapHtmlEmail(
     subject,
@@ -325,7 +324,7 @@ The EchoSphere Talent & Engineering Team`;
     </div>
 
     <p style="margin-top: 24px;">We look forward to speaking with you!</p>
-    <p>Warm regards,<br/><strong>The EchoSphere Talent & Engineering Team</strong></p>`
+    <p>Warm regards,<br/><strong>The mr.technologies Talent & Engineering Team</strong></p>`
   );
 
   return sendEmail({
@@ -353,11 +352,11 @@ export async function sendRejectionEmail(
     ? `\nSpecific Feedback from the Review Team:\n"${reason}"\n` 
     : '';
 
-  const subject = `Update regarding your application for ${job.title} at EchoSphere`;
+  const subject = `Update regarding your application for ${job.title} at mr.technologies`;
 
   const bodyText = `Hi ${candidate.name},
 
-Thank you for your interest in EchoSphere and for the time you took to apply for the ${job.title} position.
+Thank you for your interest in mr.technologies and for the time you took to apply for the ${job.title} position.
 
 Our team reviewed your background and qualifications thoroughly. We received many strong applications, and after careful consideration${stageFormatted}, we have decided not to move forward with your candidacy for this specific opening at this time.
 ${reasonText}
@@ -366,7 +365,7 @@ Please know that this was a difficult decision. We were very glad to learn about
 We wish you the very best of luck in your job search and your ongoing engineering journey.
 
 Sincerely,
-The EchoSphere Talent Team`;
+The mr.technologies Talent Team`;
 
   const htmlContent = wrapHtmlEmail(
     subject,
@@ -374,7 +373,7 @@ The EchoSphere Talent Team`;
       Application Status Update
     </h2>
     <p>Hi <strong>${candidate.name}</strong>,</p>
-    <p>Thank you for taking the time to apply for the <strong>${job.title}</strong> role at EchoSphere. We truly appreciate the opportunity to review your profile and codecraft.</p>
+    <p>Thank you for taking the time to apply for the <strong>${job.title}</strong> role at mr.technologies. We truly appreciate the opportunity to review your profile and codecraft.</p>
     
     <p>We evaluated your qualifications carefully alongside a competitive pool of candidates. After careful consideration${stageFormatted}, we have decided to move forward with other candidates whose experience more closely fits our immediate technical requirements for this specific role.</p>
 
@@ -387,7 +386,7 @@ The EchoSphere Talent Team`;
 
     <p>Please know that this was a difficult choice. We were impressed by aspects of your background, and we will keep your resume and portfolio in our talent pool for future openings that match your skill set.</p>
     <p>We wish you the very best of luck in your ongoing career endeavors.</p>
-    <p style="margin-top: 24px;">Sincerely,<br/><strong>The EchoSphere Talent Team</strong></p>`
+    <p style="margin-top: 24px;">Sincerely,<br/><strong>The mr.technologies Talent Team</strong></p>`
   );
 
   return sendEmail({

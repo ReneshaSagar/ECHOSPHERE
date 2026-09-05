@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { getDatePartsIST } from '@/lib/dateFormat';
 import { 
   Calendar as CalendarIcon, 
   Clock, 
@@ -56,15 +57,15 @@ export default function ScheduleClient({
     const formatGCalDate = (d: Date) => d.toISOString().replace(/-|:|\.\d+/g, '');
     const dates = `${formatGCalDate(startTime)}/${formatGCalDate(endTime)}`;
 
-    const title = encodeURIComponent(`EchoSphere AI Interview: ${item.candidate.name} (${item.job.title})`);
+    const title = encodeURIComponent(`mr.technologies AI Interview: ${item.candidate.name} (${item.job.title})`);
     const details = encodeURIComponent(
       `Candidate: ${item.candidate.name} (${item.candidate.email})\n` +
       `Role: ${item.job.title}\n` +
       `Interview Room: http://localhost:3000/interview/${item.blueprint?.id || ''}\n` +
       `ATS Profile: http://localhost:3000/admin/applications/${item.applicationId}\n\n` +
-      `Powered by EchoSphere Autonomous Voice AI Agent.`
+      `Powered by mr.technologies Autonomous Voice AI Agent.`
     );
-    const location = encodeURIComponent(`EchoSphere Virtual Voice Room (http://localhost:3000/interview/${item.blueprint?.id || ''})`);
+    const location = encodeURIComponent(`mr.technologies Virtual Voice Room (http://localhost:3000/interview/${item.blueprint?.id || ''})`);
 
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`;
   };
@@ -78,15 +79,15 @@ export default function ScheduleClient({
     const icsContent = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//EchoSphere//AI Interview Scheduler//EN',
+      'PRODID:-//mr.technologies//AI Interview Scheduler//EN',
       'BEGIN:VEVENT',
-      `UID:echosphere-interview-${item.id}@echosphere.ai`,
+      `UID:mrtechnologies-interview-${item.id}@mr.technologies`,
       `DTSTAMP:${formatIcsDate(new Date())}`,
       `DTSTART:${formatIcsDate(startTime)}`,
       `DTEND:${formatIcsDate(endTime)}`,
-      `SUMMARY:EchoSphere AI Interview: ${item.candidate.name} - ${item.job.title}`,
+      `SUMMARY:mr.technologies AI Interview: ${item.candidate.name} - ${item.job.title}`,
       `DESCRIPTION:Candidate: ${item.candidate.name}\\nRole: ${item.job.title}\\nRoom: http://localhost:3000/interview/${item.blueprint?.id || ''}`,
-      `LOCATION:EchoSphere Virtual Room`,
+      `LOCATION:mr.technologies Virtual Room`,
       'STATUS:CONFIRMED',
       'END:VEVENT',
       'END:VCALENDAR'
@@ -191,6 +192,7 @@ export default function ScheduleClient({
       <div className="space-y-4">
         {filteredInterviews.map((item) => {
           const dateObj = new Date(item.scheduledAt);
+          const parts = getDatePartsIST(item.scheduledAt);
           const isUpcoming = dateObj > now && item.status !== 'COMPLETED';
           const isToday = dateObj.toDateString() === now.toDateString();
 
@@ -206,22 +208,22 @@ export default function ScheduleClient({
                     ? 'bg-blue-50 border-blue-200 text-blue-700' 
                     : 'bg-gray-50 border-gray-200 text-gray-700'
                 }`}>
-                  <span className="text-[11px] font-bold uppercase tracking-wider">
-                    {dateObj.toLocaleDateString('en-US', { month: 'short', timeZone: 'Asia/Kolkata' })}
+                  <span className="text-[11px] font-bold uppercase tracking-wider" suppressHydrationWarning>
+                    {parts.month}
                   </span>
-                  <span className="text-xl font-black leading-none">
-                    {dateObj.toLocaleDateString('en-US', { day: 'numeric', timeZone: 'Asia/Kolkata' })}
+                  <span className="text-xl font-black leading-none" suppressHydrationWarning>
+                    {parts.day}
                   </span>
-                  <span className="text-[10px] font-semibold text-gray-500">
-                    {dateObj.toLocaleDateString('en-US', { weekday: 'short', timeZone: 'Asia/Kolkata' })}
+                  <span className="text-[10px] font-semibold text-gray-500" suppressHydrationWarning>
+                    {parts.weekday}
                   </span>
                 </div>
 
                 <div>
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm font-bold text-gray-800">
-                      {dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' })} IST
+                    <span className="text-sm font-bold text-gray-800" suppressHydrationWarning>
+                      {parts.time}
                     </span>
                     <span className="text-xs text-gray-400 font-medium">(45 mins)</span>
                     {isToday && (
@@ -298,6 +300,18 @@ export default function ScheduleClient({
                   <FileText className="w-3.5 h-3.5" />
                   <span>Blueprint</span>
                 </Link>
+
+                {/* View Completed Report */}
+                {item.status === 'COMPLETED' && (
+                  <Link
+                    href={`/admin/applications/${item.applicationId}`}
+                    className="px-3 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-semibold text-xs rounded-lg border border-emerald-200 flex items-center gap-1.5 transition shadow-xs"
+                    title="View Final Interview Report & Scorecard"
+                  >
+                    <FileText className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>View Report</span>
+                  </Link>
+                )}
 
                 {/* Live Interview Room */}
                 {item.blueprint?.id ? (

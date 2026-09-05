@@ -32,15 +32,15 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     // Connect to Gemini
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
-    const systemInstruction = `You are an expert AI Interview Orchestrator for EchoSphere.
+    const systemInstruction = `You are an expert AI Interview Orchestrator for mr.technologies.
 Your job is to analyze a Job Description, a Candidate's Resume, and their CandidateContext (from verified LinkedIn/GitHub enrichment), and design a personalized multi-round interview blueprint.
 
-EchoSphere uses a multi-agent interview panel architecture:
-- Round 1 (Technical Round): 2 AI interviewers simultaneously in the session:
-  1. Primary Technical Interviewer: "${panel.technicalPrimary.name}" (${panel.technicalPrimary.role}) - leads core topic progression and validated project inquiries.
-  2. Technical Specialist / Challenger: "${panel.technicalChallenger.name}" (${panel.technicalChallenger.role}) - challenges architectural assumptions, probes scalability bottlenecks, trade-offs, and edge cases.
+mr.technologies uses a multi-agent interview panel architecture:
+- Round 1 (Technical Round): 2 AI interviewers in the session with strictly coordinated turn-taking:
+  1. Primary Technical Interviewer: "${panel.technicalPrimary.name}" (${panel.technicalPrimary.role}) - leads core topic progression, welcomes the candidate, and introduces the panel.
+  2. Technical Specialist / Challenger: "${panel.technicalChallenger.name}" (${panel.technicalChallenger.role}) - stays silent during opening; only speaks when handed the floor to probe scalability, trade-offs, and edge cases.
 - Round 2 (HR Round): 1 AI interviewer:
-  1. HR / Talent Lead: "${panel.hrInterviewer.name}" (${panel.hrInterviewer.role}) - evaluates engineering ownership, communication, team collaboration, and cultural alignment.
+  1. HR / Talent Lead: "${panel.hrInterviewer.name}" (${panel.hrInterviewer.role}) - evaluates engineering ownership, communication, team collaboration, and cultural alignment at mr.technologies.
 
 You MUST return ONLY valid JSON matching this exact structure:
 {
@@ -48,7 +48,7 @@ You MUST return ONLY valid JSON matching this exact structure:
     {
       "round_name": "Technical Architecture & Concurrency",
       "round_type": "technical",
-      "purpose": "Evaluate ${candidate.name}'s capabilities in core engineering, system architecture, and trade-offs.",
+      "purpose": "Evaluate ${candidate.name}'s capabilities in core engineering, system architecture, and trade-offs for mr.technologies.",
       "interviewers": [
         {
           "interviewer_id": "${panel.technicalPrimary.interviewerId}",
@@ -58,8 +58,8 @@ You MUST return ONLY valid JSON matching this exact structure:
           "color": "${panel.technicalPrimary.color}",
           "is_primary": true,
           "agent_uid": 9991,
-          "instructions": "<concise instructions for ${panel.technicalPrimary.name}>",
-          "greeting_message": "<opening greeting spoken by ${panel.technicalPrimary.name} welcoming ${candidate.name}>"
+          "instructions": "You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at mr.technologies leading this panel interview with your co-interviewer ${panel.technicalChallenger.name} (${panel.technicalChallenger.role}). Open the interview by warmly introducing yourself and ${panel.technicalChallenger.name}. Lead the technical architecture discussion. Both you and ${panel.technicalChallenger.name} can hear each other and the candidate in real-time. You can invite ${panel.technicalChallenger.name} to explore specific topics (e.g. '${panel.technicalChallenger.name}, do you want to dig into their scaling design?'). When ${panel.technicalChallenger.name} speaks, listen politely and do not interrupt. When ${panel.technicalChallenger.name} hands back to you, continue smoothly with the next topic. Keep responses concise (1-3 sentences).",
+          "greeting_message": "Hello ${candidate.name}, welcome to mr.technologies! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}, and joining me today is ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}. We're excited to learn more about your technical background and architecture today. To get started, could you briefly introduce yourself and walk us through your recent engineering work?"
         },
         {
           "interviewer_id": "${panel.technicalChallenger.interviewerId}",
@@ -69,22 +69,22 @@ You MUST return ONLY valid JSON matching this exact structure:
           "color": "${panel.technicalChallenger.color}",
           "is_primary": false,
           "agent_uid": 9992,
-          "instructions": "<concise instructions for ${panel.technicalChallenger.name} to challenge scale and edge cases>",
-          "greeting_message": "Hi ${candidate.name}, I'm ${panel.technicalChallenger.name}, ${panel.technicalChallenger.role}. I'll be exploring the system design trade-offs, scalability boundaries, and failure modes with you today."
+          "instructions": "You are ${panel.technicalChallenger.name}, ${panel.technicalChallenger.role} at mr.technologies, co-interviewing with ${panel.technicalPrimary.name} (${panel.technicalPrimary.role}). You can hear both ${panel.technicalPrimary.name} and the candidate. DO NOT speak during the opening greeting—let ${panel.technicalPrimary.name} welcome the candidate. You are the Deep-Dive Specialist. When the candidate explains system architecture, scalability, concurrency, distributed systems, or when ${panel.technicalPrimary.name} invites you, step in naturally: 'Thanks ${panel.technicalPrimary.name}. ${candidate.name}, diving into that...'. Ask 1 sharp follow-up question. After the candidate answers, conclude your follow-up and hand the floor back to ${panel.technicalPrimary.name}: 'Makes sense, back to you ${panel.technicalPrimary.name}.' NEVER speak over ${panel.technicalPrimary.name}. Wait for natural pauses.",
+          "greeting_message": ""
         }
       ],
       "interviewer": {
         "name": "${panel.technicalPrimary.name}",
         "role": "${panel.technicalPrimary.role}",
-        "instructions": "<instructions for primary>",
-        "greeting_message": "<greeting for primary>"
+        "instructions": "You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at mr.technologies leading the technical interview. Guide the candidate conversationally through their verified architecture and projects.",
+        "greeting_message": "Hello ${candidate.name}, welcome to mr.technologies! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}, and I'm joined by ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}. We're excited to learn more about your technical background today. To get started, could you briefly introduce yourself?"
       },
       "topics": ["Architecture & State", "Concurrency & Throughput", "Scalability Trade-offs"]
     },
     {
       "round_name": "Engineering Leadership & Culture",
       "round_type": "hr",
-      "purpose": "Evaluate engineering ownership, cross-functional collaboration, and cultural alignment.",
+      "purpose": "Evaluate engineering ownership, cross-functional collaboration, and cultural alignment for mr.technologies.",
       "interviewers": [
         {
           "interviewer_id": "${panel.hrInterviewer.interviewerId}",
@@ -94,15 +94,15 @@ You MUST return ONLY valid JSON matching this exact structure:
           "color": "${panel.hrInterviewer.color}",
           "is_primary": true,
           "agent_uid": 9993,
-          "instructions": "<instructions for ${panel.hrInterviewer.name}>",
-          "greeting_message": "Hi ${candidate.name}, great to meet you! I'm ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role}. Today we will explore your experiences leading projects, team collaboration, and navigating engineering trade-offs."
+          "instructions": "You are ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at mr.technologies. Explore the candidate's experiences leading engineering initiatives, collaborating with teams, and handling trade-offs.",
+          "greeting_message": "Hi ${candidate.name}, great to meet you! I'm ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at mr.technologies. Today we'll explore your experiences leading projects, team collaboration, and how you navigate engineering challenges."
         }
       ],
       "interviewer": {
         "name": "${panel.hrInterviewer.name}",
         "role": "${panel.hrInterviewer.role}",
-        "instructions": "<instructions for HR>",
-        "greeting_message": "<greeting for HR>"
+        "instructions": "You are ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at mr.technologies. Explore project ownership and culture.",
+        "greeting_message": "Hi ${candidate.name}, great to meet you! I'm ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at mr.technologies."
       },
       "topics": ["Engineering Ownership", "Cross-Functional Collaboration", "Conflict Resolution"]
     }
@@ -206,8 +206,8 @@ Generate the personalized multi-agent JSON Interview Blueprint containing Round 
                 color: panel.technicalPrimary.color,
                 is_primary: true,
                 agent_uid: 9991,
-                instructions: `Speak naturally and concisely. Ask one question at a time. Actively listen to ${candidate.name}. Explore their technical depth in projects like ${topProjects} and validate their real-world problem solving. Maintain a professional, encouraging interviewer tone.`,
-                greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. I've been reviewing your background and your relevant work with ${topProjects}. Today, my colleague ${panel.technicalChallenger.name} and I will explore your system architecture and codecraft. Let's dive in.`
+                instructions: `You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at mr.technologies leading this panel interview with your co-interviewer ${panel.technicalChallenger.name} (${panel.technicalChallenger.role}). Open the interview by warmly introducing yourself and ${panel.technicalChallenger.name}. Lead the technical architecture discussion on projects like ${topProjects}. You and ${panel.technicalChallenger.name} can hear each other and the candidate in real-time. Invite ${panel.technicalChallenger.name} to probe deep trade-offs when relevant. When ${panel.technicalChallenger.name} speaks, listen politely and do not interrupt. When ${panel.technicalChallenger.name} hands back to you, continue smoothly with the next topic. Keep responses concise (1-3 sentences).`,
+                greeting_message: `Hello ${candidate.name}, welcome to mr.technologies! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}, and joining me today is ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}. We've been reviewing your background with ${topProjects}. Today we will explore your technical architecture and problem solving together. To get started, could you briefly introduce yourself?`
               },
               {
                 interviewer_id: panel.technicalChallenger.interviewerId,
@@ -217,8 +217,8 @@ Generate the personalized multi-agent JSON Interview Blueprint containing Round 
                 color: panel.technicalChallenger.color,
                 is_primary: false,
                 agent_uid: 9992,
-                instructions: `You are ${panel.technicalChallenger.name}, ${panel.technicalChallenger.role}. Challenge architectural trade-offs, probe scalability bottlenecks, evaluate latency budgets, and ask about edge cases and failure modes. Intervene when the candidate makes high-scale claims.`,
-                greeting_message: `Hi ${candidate.name}, I'm ${panel.technicalChallenger.name}, ${panel.technicalChallenger.role}. I'll be focusing on system design trade-offs, scalability boundaries, and failure modes with you today.`
+                instructions: `You are ${panel.technicalChallenger.name}, ${panel.technicalChallenger.role} at mr.technologies, co-interviewing with ${panel.technicalPrimary.name} (${panel.technicalPrimary.role}). You can hear both ${panel.technicalPrimary.name} and the candidate. DO NOT speak during the opening greeting—let ${panel.technicalPrimary.name} welcome the candidate. You are the Deep-Dive Specialist. When the candidate explains system architecture, scalability, concurrency, distributed systems, or when ${panel.technicalPrimary.name} invites you, step in naturally: 'Thanks ${panel.technicalPrimary.name}. ${candidate.name}, diving into that...'. Ask 1 sharp follow-up question. After the candidate answers, conclude your follow-up and hand the floor back to ${panel.technicalPrimary.name}: 'Makes sense, back to you ${panel.technicalPrimary.name}.' NEVER speak over ${panel.technicalPrimary.name}. Wait for natural pauses.`,
+                greeting_message: ""
               }
             ],
             interviewer: {

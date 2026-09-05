@@ -2,7 +2,7 @@
   "companies": [
     {
       "id": "c1",
-      "name": "EchoSphere Tech",
+      "name": "mr.technologies",
       "industry": "Artificial Intelligence"
     }
   ],
@@ -11,7 +11,7 @@
       "id": "j1",
       "companyId": "c1",
       "title": "Senior Backend Engineer — Distributed Systems & AI Infrastructure",
-      "description": "EchoSphere is pioneering autonomous multi-persona conversational AI agent systems for enterprise hiring and technical evaluation. We are looking for a Senior Backend Engineer to lead the architecture, scaling, and operational reliability of our core real-time inference and voice orchestration platform.\n\nIn this role, you will design ultra-low-latency backend microservices bridging WebRTC media pipelines, streaming LLM inference gateways, and transactional persistence layers. You will directly own the infrastructure handling thousands of concurrent real-time audio streams, WebSocket event loops, and distributed state coordination.\n\nKey Responsibilities:\n• Architect, deploy, and scale high-concurrency microservices in Python (FastAPI/asyncio) and Go to support thousands of simultaneous voice interview sessions.\n• Optimize database schemas, indexing strategies, and connection pooling across PostgreSQL clusters and Redis caching layers.\n• Build fault-tolerant event ingestion pipelines using Apache Kafka and Redis Pub/Sub with sub-50ms p99 latency targets.\n• Implement robust observability, distributed tracing (OpenTelemetry), and auto-healing infrastructure for mission-critical AI workloads.\n• Collaborate with our AI Research and WebRTC teams to streamline model deployment, GPU batching, and semantic context caching.",
+      "description": "mr.technologies is pioneering autonomous multi-persona conversational AI agent systems for enterprise hiring and technical evaluation. We are looking for a Senior Backend Engineer to lead the architecture, scaling, and operational reliability of our core real-time inference and voice orchestration platform.\n\nIn this role, you will design ultra-low-latency backend microservices bridging WebRTC media pipelines, streaming LLM inference gateways, and transactional persistence layers. You will directly own the infrastructure handling thousands of concurrent real-time audio streams, WebSocket event loops, and distributed state coordination.\n\nKey Responsibilities:\n• Architect, deploy, and scale high-concurrency microservices in Python (FastAPI/asyncio) and Go to support thousands of simultaneous voice interview sessions.\n• Optimize database schemas, indexing strategies, and connection pooling across PostgreSQL clusters and Redis caching layers.\n• Build fault-tolerant event ingestion pipelines using Apache Kafka and Redis Pub/Sub with sub-50ms p99 latency targets.\n• Implement robust observability, distributed tracing (OpenTelemetry), and auto-healing infrastructure for mission-critical AI workloads.\n• Collaborate with our AI Research and WebRTC teams to streamline model deployment, GPU batching, and semantic context caching.",
       "requirements": "Required Qualifications:\n• 5+ years of software engineering experience building and maintaining distributed backend systems in production.\n• Deep proficiency in Python (FastAPI, asyncio, Celery) or Go, with comprehensive knowledge of concurrent programming and asynchronous I/O.\n• Strong expertise in relational databases (PostgreSQL query optimization, partitioning, indexing, connection pooling) and key-value caches (Redis).\n• Proven track record designing and maintaining high-throughput, low-latency REST and WebSocket APIs under strict SLAs.\n• Solid understanding of distributed systems fundamentals: consensus, partition tolerance, eventual consistency, and idempotent design.\n\nPreferred Qualifications:\n• Experience with real-time media streaming, WebRTC, or voice AI pipelines (Agora, LiveKit, Deepgram, Twilio).\n• Familiarity with container orchestration (Docker, Kubernetes) and infrastructure-as-code (Terraform, AWS/GCP).\n• Prior experience deploying or scaling LLM inference engines (vLLM, TensorRT-LLM, Triton).",
       "stagesJson": "[\"Technical Architecture & Concurrency\",\"Distributed System Design\",\"Engineering Leadership & Cultural Alignment\"]"
     },
@@ -19,7 +19,7 @@
       "id": "j2",
       "companyId": "c1",
       "title": "Senior Full Stack Engineer — Next.js & Real-Time WebRTC",
-      "description": "Join EchoSphere's core product team to build the next generation of real-time AI interview rooms, collaborative proctoring systems, and enterprise ATS dashboards. We are seeking a Senior Full Stack Engineer to lead our frontend architecture and full-stack product interfaces.\n\nYou will bridge cutting-edge browser technologies (WebRTC, Web Audio API, Canvas, Web Workers) with Next.js 15+ App Router architectures to deliver responsive, zero-lag, mission-critical voice interview experiences used by global talent teams.\n\nKey Responsibilities:\n• Lead full-stack development across candidate-facing live interview rooms and recruiter administrative dashboards.\n• Implement high-performance WebRTC client audio/video handling, real-time waveform visualizers, and stateful turn arbiters.\n• Design scalable Next.js architectures utilizing React Server Components, server actions, and optimistic UI updates.\n• Optimize client-side compute performance to support simultaneous background audio processing and proctoring analytics without dropping frames.\n• Build accessible, beautiful UI components with Tailwind CSS, TypeScript, and modern component design systems.",
+      "description": "Join mr.technologies's core product team to build the next generation of real-time AI interview rooms, collaborative proctoring systems, and enterprise ATS dashboards. We are seeking a Senior Full Stack Engineer to lead our frontend architecture and full-stack product interfaces.\n\nYou will bridge cutting-edge browser technologies (WebRTC, Web Audio API, Canvas, Web Workers) with Next.js 15+ App Router architectures to deliver responsive, zero-lag, mission-critical voice interview experiences used by global talent teams.\n\nKey Responsibilities:\n• Lead full-stack development across candidate-facing live interview rooms and recruiter administrative dashboards.\n• Implement high-performance WebRTC client audio/video handling, real-time waveform visualizers, and stateful turn arbiters.\n• Design scalable Next.js architectures utilizing React Server Components, server actions, and optimistic UI updates.\n• Optimize client-side compute performance to support simultaneous background audio processing and proctoring analytics without dropping frames.\n• Build accessible, beautiful UI components with Tailwind CSS, TypeScript, and modern component design systems.",
       "requirements": "Required Qualifications:\n• 4+ years of professional full-stack development experience building responsive, high-scale web applications.\n• Mastery of modern TypeScript, React, and Next.js (App Router, Server Components, SSR/SSG).\n• Strong experience with real-time browser APIs: WebRTC, WebSockets, Web Audio API, and MediaStream processing.\n• Deep proficiency with modern state management, Tailwind CSS, and component design patterns.\n• Solid backend foundation in Node.js / Next.js API route handlers, REST APIs, and database integration.\n\nPreferred Qualifications:\n• Experience building real-time collaboration tools, video conferencing applications, or interactive audio platforms.\n• Familiarity with client-side ML / computer vision (MediaPipe, TensorFlow.js) in the browser.\n• Experience designing responsive, accessible, enterprise SaaS design systems.",
       "stagesJson": "[\"Full Stack Architecture & Live Coding\",\"Frontend Systems & WebRTC Deep Dive\",\"Culture & Product Execution\"]"
     },
@@ -27,7 +27,7 @@
       "id": "j3",
       "companyId": "c1",
       "title": "Staff AI / Machine Learning Engineer — Speech & Conversational LLMs",
-      "description": "EchoSphere is pushing the frontier of multimodal real-time conversational agents. As a Staff AI / Machine Learning Engineer, you will drive the core models behind our multi-persona voice interviewers, evaluation scoring rubrics, and automated profile synthesis engines.\n\nYou will lead research, fine-tuning, and production serving of multimodal speech-to-speech and large language models, optimizing for sub-500ms voice turnaround latency, natural conversational turn-taking, and rigorous, bias-free candidate evaluation.\n\nKey Responsibilities:\n• Train, fine-tune, and optimize state-of-the-art LLMs (Llama, Gemini Live, Mistral) for specialized interviewing personas and domain-specific technical probing.\n• Architect real-time voice intelligence pipelines integrating streaming ASR, low-latency LLM generation, and expressive neural TTS.\n• Design advanced multi-round evaluation rubrics with automated chain-of-thought grading, grounded retrieval (RAG), and calibrated confidence scoring.\n• Implement techniques to eliminate hallucinations, enforce floor-control turn arbitration, and ensure fair, objective candidate assessments.\n• Optimize model inference latency and throughput on GPU clusters using TensorRT-LLM, vLLM, and speculative decoding.",
+      "description": "mr.technologies is pushing the frontier of multimodal real-time conversational agents. As a Staff AI / Machine Learning Engineer, you will drive the core models behind our multi-persona voice interviewers, evaluation scoring rubrics, and automated profile synthesis engines.\n\nYou will lead research, fine-tuning, and production serving of multimodal speech-to-speech and large language models, optimizing for sub-500ms voice turnaround latency, natural conversational turn-taking, and rigorous, bias-free candidate evaluation.\n\nKey Responsibilities:\n• Train, fine-tune, and optimize state-of-the-art LLMs (Llama, Gemini Live, Mistral) for specialized interviewing personas and domain-specific technical probing.\n• Architect real-time voice intelligence pipelines integrating streaming ASR, low-latency LLM generation, and expressive neural TTS.\n• Design advanced multi-round evaluation rubrics with automated chain-of-thought grading, grounded retrieval (RAG), and calibrated confidence scoring.\n• Implement techniques to eliminate hallucinations, enforce floor-control turn arbitration, and ensure fair, objective candidate assessments.\n• Optimize model inference latency and throughput on GPU clusters using TensorRT-LLM, vLLM, and speculative decoding.",
       "requirements": "Required Qualifications:\n• 5+ years of experience developing and deploying production machine learning models and LLM applications.\n• Strong proficiency in Python, PyTorch, Hugging Face ecosystem, and modern deep learning frameworks.\n• Deep experience fine-tuning LLMs (LoRA, QLoRA, SFT, DPO/RLHF) and building retrieval-augmented generation (RAG) architectures.\n• Solid understanding of conversational AI architectures, acoustic models, streaming speech recognition, and neural audio synthesis.\n• Solid foundation in machine learning system design, latency optimization, and distributed GPU serving.\n\nPreferred Qualifications:\n• Published research or open-source contributions in NLP, Speech Recognition, or Conversational Agents.\n• Experience with Triton Inference Server, vLLM, DeepSpeed, or ONNX Runtime.\n• Prior work in automated bias mitigation, fairness metrics, or enterprise talent assessment models.",
       "stagesJson": "[\"ML Fundamentals & Deep Learning\",\"Conversational AI Architecture & RAG\",\"Research Impact & Cross-Functional Leadership\"]"
     },
@@ -35,14 +35,2059 @@
       "id": "j_m769m72",
       "companyId": "c1",
       "title": "Senior DevOps / Cloud Infrastructure Engineer — Kubernetes & GPU Platform",
-      "description": "We are looking for a Senior DevOps / Cloud Infrastructure Engineer to design, automate, and harden our cloud foundation. You will own the Kubernetes clusters, GPU compute nodes, CI/CD pipelines, and multi-region networking that power EchoSphere's live voice sessions globally.\n\nYou will ensure 99.99% uptime, automated zero-downtime deployments, zero-trust security compliance, and elastic auto-scaling under fluctuating real-time interview traffic.\n\nKey Responsibilities:\n• Architect and maintain enterprise cloud infrastructure across AWS / GCP using Terraform and GitOps (ArgoCD).\n• Manage and scale production Kubernetes (EKS/GKE) clusters with dynamic GPU node autoscaling for AI inference workloads.\n• Design resilient CI/CD pipelines with GitHub Actions, automated regression testing, and security vulnerability scanning.\n• Implement comprehensive observability stacks with Prometheus, Grafana, OpenTelemetry, and structured logging.\n• Establish enterprise security baselines: SOC 2 compliance, KMS secret management, network isolation (VPC peering, WAF, Cloudflare).",
+      "description": "We are looking for a Senior DevOps / Cloud Infrastructure Engineer to design, automate, and harden our cloud foundation. You will own the Kubernetes clusters, GPU compute nodes, CI/CD pipelines, and multi-region networking that power mr.technologies's live voice sessions globally.\n\nYou will ensure 99.99% uptime, automated zero-downtime deployments, zero-trust security compliance, and elastic auto-scaling under fluctuating real-time interview traffic.\n\nKey Responsibilities:\n• Architect and maintain enterprise cloud infrastructure across AWS / GCP using Terraform and GitOps (ArgoCD).\n• Manage and scale production Kubernetes (EKS/GKE) clusters with dynamic GPU node autoscaling for AI inference workloads.\n• Design resilient CI/CD pipelines with GitHub Actions, automated regression testing, and security vulnerability scanning.\n• Implement comprehensive observability stacks with Prometheus, Grafana, OpenTelemetry, and structured logging.\n• Establish enterprise security baselines: SOC 2 compliance, KMS secret management, network isolation (VPC peering, WAF, Cloudflare).",
       "requirements": "Required Qualifications:\n• 4+ years of dedicated DevOps, Site Reliability, or Cloud Infrastructure Engineering experience.\n• Deep hands-on expertise with Kubernetes container orchestration, Helm, and ingress controllers.\n• Proficiency with Infrastructure as Code (Terraform) and configuration management in AWS or GCP.\n• Strong scripting and automation skills in Python, Bash, or Go.\n• Experience maintaining production networking: DNS, load balancers, CDN routing, VPC architectures, and TLS termination.\n\nPreferred Qualifications:\n• Experience managing GPU workloads (NVIDIA GPU Operator, CUDA drivers, Triton deployment on Kubernetes).\n• Familiarity with SOC 2, GDPR, or ISO 27001 compliance standards in enterprise SaaS environments.\n• Experience optimizing cloud spend, spot instance orchestration, and reserved capacity planning.",
       "stagesJson": "[\"Infrastructure Architecture & Live Troubleshooting\",\"Kubernetes & Cloud System Design\",\"SRE Culture & Incident Leadership\"]"
     }
   ],
-  "candidates": [],
-  "applications": [],
-  "interviews": [],
-  "blueprints": [],
-  "emails": []
+  "candidates": [
+    {
+      "id": "cand_test1",
+      "name": "Test Candidate",
+      "email": "test@example.com"
+    },
+    {
+      "id": "cand_p8w3r0m",
+      "name": "Madhav Gairola",
+      "email": "madhavgairola05@gmail.com",
+      "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
+      "githubUrl": "https://github.com/madhavgairola",
+      "candidateContext": {
+        "resume": {
+          "textSnippet": "Madhav Gairola\n(+91) 7895936487| madhavgairola05@gmail.com| linkedin.com/in/madhavgairola|\ngithub.com/madhavgairola\nEducation\nJaypee Institute of Information TechnologyNoida, Uttar Pradesh\nBachelor of Technology, Information TechnologyJul. 2024 – May. 2028\nExperience\nRHA TechnologiesJun 2026 – Present\nSoftware Engineering Intern\n•\nLed end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA\nOne platform, uncovering critical edge cases across diverse enterprise use cases\n•\nEngineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL\nintegrations, analyzing retrieval accuracy, data ingestion behavior, and system reliability\n•\nBuilt and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug\nreports, validating feature releases, and accelerating issue resolution through close collaboration with engineering\nteams\nProjects\nExpensWise (Personal Financial Assistant)| Node.",
+          "fileName": "992401040094 Madhav Gairola.pdf",
+          "skills": [
+            "Python",
+            "FastAPI",
+            "Django",
+            "Node.js",
+            "JavaScript",
+            "React",
+            "PostgreSQL",
+            "RAG",
+            "SQL",
+            "Solidity"
+          ],
+          "experienceTitles": [
+            "Software Engineering Intern",
+            "Engineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL",
+            "reports, validating feature releases, and accelerating issue resolution through close collaboration with engineering",
+            "Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL",
+            "Engineered a blockchain-based voter registry eliminating duplicate identity fraud by anchoring electoral"
+          ],
+          "projects": [
+            "Built and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug",
+            "Projects",
+            "Designed an intelligent classification engine categorizing expenses into Needs vs Wants with budget threshold",
+            "Built a CLI interface for rapid expense logging secured via JWT authentication, allowing power users to log",
+            "Designed Firestore schema (Users, Reports, Requests, Audit) with security rules enforcing patient-controlled"
+          ],
+          "notableHighlights": [
+            "Eliminated manual expense entry by parsing natural language inputs (e.g., ”coffee 50”, ”rent 5k”) into",
+            "Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL"
+          ]
+        },
+        "github": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "bio": "I code sometimes",
+          "publicReposCount": 19,
+          "repositories": [
+            {
+              "name": "syn-2",
+              "language": "TypeScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/syn-2",
+              "isPinned": true
+            },
+            {
+              "name": "ExpensWise",
+              "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+              "language": "JavaScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/ExpensWise",
+              "isPinned": true
+            },
+            {
+              "name": "HealthLens",
+              "language": "JavaScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/HealthLens",
+              "isPinned": true
+            },
+            {
+              "name": "electora",
+              "language": "JavaScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/electora",
+              "isPinned": true
+            },
+            {
+              "name": "lal",
+              "description": "leetcode accountability league",
+              "language": "Python",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/lal",
+              "isPinned": false
+            },
+            {
+              "name": "ECHOSPHERE",
+              "language": "TypeScript",
+              "topics": [],
+              "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+              "isPinned": false
+            }
+          ],
+          "activeProjects": [
+            "syn-2",
+            "ExpensWise",
+            "HealthLens",
+            "electora",
+            "lal",
+            "ECHOSPHERE"
+          ]
+        },
+        "crossSourceContext": {
+          "corroboratedSkills": [
+            {
+              "skill": "Python",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "confidence": "HIGH",
+              "evidenceSnippet": "Confirmed across: resume, github"
+            },
+            {
+              "skill": "Fastapi",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Django",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Node.js",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Javascript",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "confidence": "HIGH",
+              "evidenceSnippet": "Confirmed across: resume, github"
+            },
+            {
+              "skill": "React",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Postgresql",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Rag",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Sql",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Solidity",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            }
+          ],
+          "corroboratedProjects": [
+            {
+              "projectName": "syn-2",
+              "description": "Repository in TypeScript",
+              "sources": [
+                "github"
+              ],
+              "details": "Active codebase exploring TypeScript.",
+              "evidenceSnippet": "GitHub repository: https://github.com/madhavgairola/syn-2"
+            },
+            {
+              "projectName": "ExpensWise",
+              "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+              "sources": [
+                "github",
+                "resume"
+              ],
+              "details": "Active codebase exploring JavaScript.",
+              "evidenceSnippet": "GitHub repository: https://github.com/madhavgairola/ExpensWise"
+            },
+            {
+              "projectName": "HealthLens",
+              "description": "Repository in JavaScript",
+              "sources": [
+                "github"
+              ],
+              "details": "Active codebase exploring JavaScript.",
+              "evidenceSnippet": "GitHub repository: https://github.com/madhavgairola/HealthLens"
+            },
+            {
+              "projectName": "electora",
+              "description": "Repository in JavaScript",
+              "sources": [
+                "github"
+              ],
+              "details": "Active codebase exploring JavaScript.",
+              "evidenceSnippet": "GitHub repository: https://github.com/madhavgairola/electora"
+            },
+            {
+              "projectName": "lal",
+              "description": "leetcode accountability league",
+              "sources": [
+                "github"
+              ],
+              "details": "Active codebase exploring Python.",
+              "evidenceSnippet": "GitHub repository: https://github.com/madhavgairola/lal"
+            },
+            {
+              "projectName": "ECHOSPHERE",
+              "description": "Repository in TypeScript",
+              "sources": [
+                "github"
+              ],
+              "details": "Active codebase exploring TypeScript.",
+              "evidenceSnippet": "GitHub repository: https://github.com/ReneshaSagar/ECHOSPHERE"
+            }
+          ],
+          "corroboratedExperience": [],
+          "careerProgressionSummary": "Madhav is an early-career software engineer and current B.Tech student (2024–2028) with internship experience at RHA Technologies focused on AI/RAG validation and testing frameworks. His technical output includes full-stack personal projects in React, Node.js, and TypeScript incorporating voice processing and AI capabilities.",
+          "notableClaims": [
+            {
+              "claim": "Built and maintained a quality assurance framework for 250+ AI skills and workflows at RHA Technologies.",
+              "source": "resume",
+              "verificationFocus": "Probing test automation design, isolation techniques, and issue tracking for complex non-deterministic AI skills."
+            },
+            {
+              "claim": "Developed ExpensWise with voice input processing and natural language parsing for expense categorization.",
+              "source": "resume",
+              "verificationFocus": "Client-side Web Audio/Media Recording APIs implementation, audio payload transmission, and stream processing latency."
+            }
+          ]
+        },
+        "interviewContext": {
+          "targetRole": "Senior Full Stack Engineer — Next.js & Real-Time WebRTC",
+          "highRelevanceEvidence": [
+            {
+              "topic": "Browser Audio & Natural Language Processing",
+              "relevance": "HIGH",
+              "reason": "ExpensWise demonstrates practical experience capturing audio input in the browser and processing natural language, which connects directly to real-time Web Audio handling.",
+              "evidenceSources": [
+                "resume",
+                "github"
+              ]
+            },
+            {
+              "topic": "TypeScript Development",
+              "relevance": "HIGH",
+              "reason": "Maintains TypeScript repositories (syn-2, ECHOSPHERE), demonstrating familiarity with type-safe patterns required for the Next.js enterprise stack.",
+              "evidenceSources": [
+                "github"
+              ]
+            },
+            {
+              "topic": "Full-Stack Node.js and React Architecture",
+              "relevance": "HIGH",
+              "reason": "Has built full-stack applications with React frontends, Express backends, and SQL/NoSQL databases, aligning with core Next.js/Node requirements.",
+              "evidenceSources": [
+                "resume",
+                "github"
+              ]
+            }
+          ],
+          "technicalInterviewHooks": [
+            "In ExpensWise, how did you handle capturing audio input from the browser, and what specific browser APIs or Web Media APIs did you use to pass data to Gemini AI?",
+            "How would you structure a WebRTC peer connection workflow using Next.js 15 App Router and React Server Components while keeping real-time UI state synced across clients without frame drops?",
+            "In your TypeScript repositories like ECHOSPHERE or syn-2, how did you manage complex state updates and client-side data streaming to ensure responsive rendering?"
+          ],
+          "behavioralInterviewHooks": [
+            "Describe a time during your internship at RHA Technologies when you discovered an edge case in an AI pipeline; how did you communicate and collaborate with the core engineering team to resolve it?",
+            "How do you prioritize frontend performance optimizations when managing simultaneous background network requests and real-time interactive rendering?"
+          ],
+          "projectsWorthProbing": [
+            {
+              "name": "ExpensWise",
+              "relevanceLevel": "HIGH",
+              "reasonToProbe": "Uses voice input and Gemini AI to parse expenses, touching directly on web audio handling and interactive frontend states.",
+              "suggestedQuestions": [
+                "How did you implement client-side audio recording and payload delivery?",
+                "How did you handle error states and voice parsing failures on the client side?"
+              ],
+              "sourceUrl": "https://github.com/madhavgairola/ExpensWise"
+            },
+            {
+              "name": "ECHOSPHERE",
+              "relevanceLevel": "HIGH",
+              "reasonToProbe": "TypeScript repository that likely exercises modern frontend component design and real-time state manipulation.",
+              "suggestedQuestions": [
+                "What architectural choices did you make regarding state management and component boundaries in this project?",
+                "How did you leverage TypeScript types to enforce safety across asynchronous workflows?"
+              ],
+              "sourceUrl": "https://github.com/madhavgairola/ECHOSPHERE"
+            }
+          ],
+          "ignoredOrLowRelevanceTopics": [
+            "Blockchain smart contracts and electoral registry implementation (electora / Solidity)",
+            "LeetCode automation and accountability scripts (lal / Python)",
+            "Manual database file format (CSV, PDF, DOCX) QA testing procedures",
+            "[IRRELEVANT TO ROLE] Blockchain / Web3 / Smart Contracts: Candidate mentioned blockchain/smart contract technology on profile, but it is outside the scope of this role. Omit from interview unless candidate introduces it."
+          ]
+        },
+        "experience": [],
+        "skills": [
+          "Python",
+          "Fastapi",
+          "Django",
+          "Node.js",
+          "Javascript",
+          "React",
+          "Postgresql",
+          "Rag",
+          "Sql",
+          "Solidity"
+        ],
+        "education": [],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "careerProgression": "Madhav is an early-career software engineer and current B.Tech student (2024–2028) with internship experience at RHA Technologies focused on AI/RAG validation and testing frameworks. His technical output includes full-stack personal projects in React, Node.js, and TypeScript incorporating voice processing and AI capabilities.",
+        "notableClaims": [
+          "Built and maintained a quality assurance framework for 250+ AI skills and workflows at RHA Technologies.",
+          "Developed ExpensWise with voice input processing and natural language parsing for expense categorization."
+        ],
+        "interviewHooks": [
+          "In ExpensWise, how did you handle capturing audio input from the browser, and what specific browser APIs or Web Media APIs did you use to pass data to Gemini AI?",
+          "How would you structure a WebRTC peer connection workflow using Next.js 15 App Router and React Server Components while keeping real-time UI state synced across clients without frame drops?",
+          "In your TypeScript repositories like ECHOSPHERE or syn-2, how did you manage complex state updates and client-side data streaming to ensure responsive rendering?",
+          "Describe a time during your internship at RHA Technologies when you discovered an edge case in an AI pipeline; how did you communicate and collaborate with the core engineering team to resolve it?",
+          "How do you prioritize frontend performance optimizations when managing simultaneous background network requests and real-time interactive rendering?"
+        ],
+        "enrichmentSource": "resume",
+        "enrichedAt": "2026-09-05T04:56:37.406Z",
+        "githubContext": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "name": "mdhv",
+          "bio": "I code sometimes",
+          "location": "Delhi",
+          "publicReposCount": 19,
+          "followers": 1,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
+          "totalCommits": 278,
+          "recentCommits30Days": 114,
+          "commitVelocityNarrative": "114 commits in the past 30 days • 278 total commits",
+          "technicalHighlights": [],
+          "githubProjects": [
+            {
+              "name": "syn-2",
+              "language": "TypeScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/syn-2",
+              "isPinned": true,
+              "candidateCommits": 0,
+              "isRecent": true
+            },
+            {
+              "name": "ExpensWise",
+              "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/ExpensWise",
+              "isPinned": true,
+              "candidateCommits": 40,
+              "isRecent": false
+            },
+            {
+              "name": "HealthLens",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/HealthLens",
+              "isPinned": true,
+              "candidateCommits": 1,
+              "isRecent": false
+            },
+            {
+              "name": "electora",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/electora",
+              "isPinned": true,
+              "candidateCommits": 9,
+              "isRecent": false
+            },
+            {
+              "name": "lal",
+              "description": "leetcode accountability league",
+              "language": "Python",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/lal",
+              "isPinned": false,
+              "candidateCommits": 3,
+              "isRecent": true
+            },
+            {
+              "name": "ECHOSPHERE",
+              "language": "TypeScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+              "isPinned": false,
+              "candidateCommits": 57,
+              "isRecent": true
+            }
+          ],
+          "githubInterviewHooks": [],
+          "enrichedAt": "2026-09-05T04:56:20.336Z",
+          "rawProviderJson": {
+            "username": "madhavgairola",
+            "name": "mdhv",
+            "bio": "I code sometimes",
+            "location": "Delhi",
+            "publicReposCount": 19,
+            "followers": 1,
+            "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
+            "profileUrl": "https://github.com/madhavgairola",
+            "totalCommits": 278,
+            "recentCommits30Days": 114,
+            "pinnedRepoNames": [
+              "ExpensWise",
+              "HealthLens",
+              "syn-2",
+              "electora"
+            ],
+            "repos": [
+              {
+                "name": "syn-2",
+                "fullName": "madhavgairola/syn-2",
+                "language": "TypeScript",
+                "stars": 0,
+                "forks": 1,
+                "topics": [],
+                "url": "https://github.com/madhavgairola/syn-2",
+                "languages": {
+                  "TypeScript": 341033,
+                  "CSS": 5683,
+                  "JavaScript": 2964,
+                  "Python": 1452,
+                  "HTML": 650
+                },
+                "updatedAt": "2026-08-27T17:22:27Z",
+                "pushedAt": "2026-08-27T16:54:01Z",
+                "isPinned": true,
+                "candidateCommits": 0,
+                "isRecent": true
+              },
+              {
+                "name": "ExpensWise",
+                "fullName": "madhavgairola/ExpensWise",
+                "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+                "language": "JavaScript",
+                "stars": 0,
+                "forks": 0,
+                "topics": [],
+                "url": "https://github.com/madhavgairola/ExpensWise",
+                "languages": {
+                  "JavaScript": 116527,
+                  "CSS": 12688,
+                  "TypeScript": 374,
+                  "HTML": 359
+                },
+                "readmeSnippet": "ExpensWise\n\nExpensWise is a smart personal finance tracker that doesn't feel like a second job. Instead of wrestling with complex forms or staring at boring spreadsheets, you just talk to it. Built with a focus on speed, AI-driven insights, and a sleek dark-mode aesthetic.\n\n[Live Demo](https://expens-wise.vercel.app)\n\n Why I Built This\nMost finance apps are a chore. You spend more time categorizing transactions than actually understanding where your money is going. I wanted something where I could just type `200 for pizza` or `paid 500 for rent need` and have it handled automatically. ExpensWise takes away the friction of manual data entry so you actually *want* to track your spend.\n\n Featur",
+                "updatedAt": "2026-05-09T05:18:33Z",
+                "pushedAt": "2026-05-09T05:18:29Z",
+                "isPinned": true,
+                "candidateCommits": 40,
+                "isRecent": false
+              },
+              {
+                "name": "HealthLens",
+                "fullName": "madhavgairola/HealthLens",
+                "language": "JavaScript",
+                "stars": 0,
+                "forks": 0,
+                "topics": [],
+                "url": "https://github.com/madhavgairola/HealthLens",
+                "languages": {
+                  "JavaScript": 61048,
+                  "HTML": 50110,
+                  "CSS": 22299
+                },
+                "readmeSnippet": "HealthLens 🏥\n\nHealthLens is a patient-first medical platform that translates complex clinical reports into clear, plain English. No jargon, no confusion—just clarity and advocacy for your own well-being.\n\n[Live Demo](https://healthlens-15bf6.web.app)\n\n Why I Built This\nMedical documents are traditionally written by doctors, for doctors. If you've ever held a blood test or an MRI report and felt like you were reading a foreign language, you're not alone. I built HealthLens to tear down that barrier. It’s like having a compassionate medical student sitting next to you, explaining every line of your report so you can actually understand what's happening with your body.\n\n Features\n- **AI Report",
+                "updatedAt": "2026-06-08T09:30:28Z",
+                "pushedAt": "2026-06-08T09:30:24Z",
+                "isPinned": true,
+                "candidateCommits": 1,
+                "isRecent": false
+              },
+              {
+                "name": "electora",
+                "fullName": "madhavgairola/electora",
+                "language": "JavaScript",
+                "stars": 0,
+                "forks": 0,
+                "topics": [],
+                "url": "https://github.com/madhavgairola/electora",
+                "languages": {
+                  "JavaScript": 38790,
+                  "HTML": 11370,
+                  "CSS": 10065,
+                  "Solidity": 4954,
+                  "TypeScript": 124
+                },
+                "readmeSnippet": "Electora: Trustless Voter Roll Management\n\nMost electoral systems worldwide suffer from a fundamental paradox: they must be publicly auditable to ensure trust, but they must keep voter data private to ensure safety. \n\nExisting solutions are either centralized \"black box\" databases that are vulnerable to manipulation, or misguided \"on-chain\" projects that leak sensitive Personal Identifiable Information (PII) to the public.\n\nElectora solves this by using a hybrid architecture. We keep the Human Details private and the System Truth immutable.\n\n The Problems Electora Solves\n\n1. Double Enrollment: In many regions, voters remain on the roll in their old constituency after moving, which makes doub",
+                "updatedAt": "2026-05-06T15:40:27Z",
+                "pushedAt": "2026-04-19T16:34:10Z",
+                "isPinned": true,
+                "candidateCommits": 9,
+                "isRecent": false
+              },
+              {
+                "name": "lal",
+                "fullName": "madhavgairola/lal",
+                "description": "leetcode accountability league",
+                "language": "Python",
+                "stars": 0,
+                "forks": 0,
+                "topics": [],
+                "url": "https://github.com/madhavgairola/lal",
+                "languages": {
+                  "Python": 17312,
+                  "CSS": 3279,
+                  "TypeScript": 3067,
+                  "HTML": 360
+                },
+                "readmeSnippet": "lal\nleetcode accountability league",
+                "updatedAt": "2026-08-15T08:05:53Z",
+                "pushedAt": "2026-08-15T08:05:23Z",
+                "isPinned": false,
+                "candidateCommits": 3,
+                "isRecent": true
+              },
+              {
+                "name": "ECHOSPHERE",
+                "fullName": "ReneshaSagar/ECHOSPHERE",
+                "language": "TypeScript",
+                "stars": 0,
+                "forks": 1,
+                "topics": [],
+                "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+                "languages": {
+                  "TypeScript": 187922,
+                  "Python": 98636,
+                  "JavaScript": 11123,
+                  "CSS": 3642,
+                  "PowerShell": 2214
+                },
+                "updatedAt": "2026-09-03T17:24:45Z",
+                "pushedAt": "2026-09-03T17:23:27Z",
+                "isPinned": false,
+                "candidateCommits": 57,
+                "isRecent": true
+              }
+            ],
+            "allRepoNames": [
+              "kana-dojo",
+              "echosphere",
+              "ECHOSPHERE",
+              "syn-2",
+              "Yatrikavach",
+              "Yatrikavach",
+              "lal",
+              "neoflo-ai-assignment",
+              "madhavgairola",
+              "backend-synthetic",
+              "backend-synthetic",
+              "HealthLens",
+              "autodev",
+              "expensWise-cli",
+              "pragd",
+              "ExpensWise",
+              "electora",
+              "java-project",
+              "re",
+              "FIMS",
+              "New-Grad-Jobs",
+              "gopractice"
+            ]
+          }
+        },
+        "totalCommits": 278,
+        "recentCommits30Days": 114,
+        "commitVelocityNarrative": "114 commits in the past 30 days • 278 total commits",
+        "githubProjects": [
+          {
+            "name": "syn-2",
+            "language": "TypeScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/syn-2",
+            "isPinned": true,
+            "candidateCommits": 0,
+            "isRecent": true
+          },
+          {
+            "name": "ExpensWise",
+            "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/ExpensWise",
+            "isPinned": true,
+            "candidateCommits": 40,
+            "isRecent": false
+          },
+          {
+            "name": "HealthLens",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/HealthLens",
+            "isPinned": true,
+            "candidateCommits": 1,
+            "isRecent": false
+          },
+          {
+            "name": "electora",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/electora",
+            "isPinned": true,
+            "candidateCommits": 9,
+            "isRecent": false
+          },
+          {
+            "name": "lal",
+            "description": "leetcode accountability league",
+            "language": "Python",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/lal",
+            "isPinned": false,
+            "candidateCommits": 3,
+            "isRecent": true
+          },
+          {
+            "name": "ECHOSPHERE",
+            "language": "TypeScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+            "isPinned": false,
+            "candidateCommits": 57,
+            "isRecent": true
+          }
+        ],
+        "githubInterviewHooks": [
+          "In ExpensWise, how did you handle capturing audio input from the browser, and what specific browser APIs or Web Media APIs did you use to pass data to Gemini AI?",
+          "How would you structure a WebRTC peer connection workflow using Next.js 15 App Router and React Server Components while keeping real-time UI state synced across clients without frame drops?",
+          "In your TypeScript repositories like ECHOSPHERE or syn-2, how did you manage complex state updates and client-side data streaming to ensure responsive rendering?"
+        ],
+        "sourceLogging": {
+          "rawProviderJson": {
+            "linkedin": null,
+            "github": {
+              "username": "madhavgairola",
+              "name": "mdhv",
+              "bio": "I code sometimes",
+              "location": "Delhi",
+              "publicReposCount": 19,
+              "followers": 1,
+              "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
+              "profileUrl": "https://github.com/madhavgairola",
+              "totalCommits": 278,
+              "recentCommits30Days": 114,
+              "pinnedRepoNames": [
+                "ExpensWise",
+                "HealthLens",
+                "syn-2",
+                "electora"
+              ],
+              "repos": [
+                {
+                  "name": "syn-2",
+                  "fullName": "madhavgairola/syn-2",
+                  "language": "TypeScript",
+                  "stars": 0,
+                  "forks": 1,
+                  "topics": [],
+                  "url": "https://github.com/madhavgairola/syn-2",
+                  "languages": {
+                    "TypeScript": 341033,
+                    "CSS": 5683,
+                    "JavaScript": 2964,
+                    "Python": 1452,
+                    "HTML": 650
+                  },
+                  "updatedAt": "2026-08-27T17:22:27Z",
+                  "pushedAt": "2026-08-27T16:54:01Z",
+                  "isPinned": true,
+                  "candidateCommits": 0,
+                  "isRecent": true
+                },
+                {
+                  "name": "ExpensWise",
+                  "fullName": "madhavgairola/ExpensWise",
+                  "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+                  "language": "JavaScript",
+                  "stars": 0,
+                  "forks": 0,
+                  "topics": [],
+                  "url": "https://github.com/madhavgairola/ExpensWise",
+                  "languages": {
+                    "JavaScript": 116527,
+                    "CSS": 12688,
+                    "TypeScript": 374,
+                    "HTML": 359
+                  },
+                  "readmeSnippet": "ExpensWise\n\nExpensWise is a smart personal finance tracker that doesn't feel like a second job. Instead of wrestling with complex forms or staring at boring spreadsheets, you just talk to it. Built with a focus on speed, AI-driven insights, and a sleek dark-mode aesthetic.\n\n[Live Demo](https://expens-wise.vercel.app)\n\n Why I Built This\nMost finance apps are a chore. You spend more time categorizing transactions than actually understanding where your money is going. I wanted something where I could just type `200 for pizza` or `paid 500 for rent need` and have it handled automatically. ExpensWise takes away the friction of manual data entry so you actually *want* to track your spend.\n\n Featur",
+                  "updatedAt": "2026-05-09T05:18:33Z",
+                  "pushedAt": "2026-05-09T05:18:29Z",
+                  "isPinned": true,
+                  "candidateCommits": 40,
+                  "isRecent": false
+                },
+                {
+                  "name": "HealthLens",
+                  "fullName": "madhavgairola/HealthLens",
+                  "language": "JavaScript",
+                  "stars": 0,
+                  "forks": 0,
+                  "topics": [],
+                  "url": "https://github.com/madhavgairola/HealthLens",
+                  "languages": {
+                    "JavaScript": 61048,
+                    "HTML": 50110,
+                    "CSS": 22299
+                  },
+                  "readmeSnippet": "HealthLens 🏥\n\nHealthLens is a patient-first medical platform that translates complex clinical reports into clear, plain English. No jargon, no confusion—just clarity and advocacy for your own well-being.\n\n[Live Demo](https://healthlens-15bf6.web.app)\n\n Why I Built This\nMedical documents are traditionally written by doctors, for doctors. If you've ever held a blood test or an MRI report and felt like you were reading a foreign language, you're not alone. I built HealthLens to tear down that barrier. It’s like having a compassionate medical student sitting next to you, explaining every line of your report so you can actually understand what's happening with your body.\n\n Features\n- **AI Report",
+                  "updatedAt": "2026-06-08T09:30:28Z",
+                  "pushedAt": "2026-06-08T09:30:24Z",
+                  "isPinned": true,
+                  "candidateCommits": 1,
+                  "isRecent": false
+                },
+                {
+                  "name": "electora",
+                  "fullName": "madhavgairola/electora",
+                  "language": "JavaScript",
+                  "stars": 0,
+                  "forks": 0,
+                  "topics": [],
+                  "url": "https://github.com/madhavgairola/electora",
+                  "languages": {
+                    "JavaScript": 38790,
+                    "HTML": 11370,
+                    "CSS": 10065,
+                    "Solidity": 4954,
+                    "TypeScript": 124
+                  },
+                  "readmeSnippet": "Electora: Trustless Voter Roll Management\n\nMost electoral systems worldwide suffer from a fundamental paradox: they must be publicly auditable to ensure trust, but they must keep voter data private to ensure safety. \n\nExisting solutions are either centralized \"black box\" databases that are vulnerable to manipulation, or misguided \"on-chain\" projects that leak sensitive Personal Identifiable Information (PII) to the public.\n\nElectora solves this by using a hybrid architecture. We keep the Human Details private and the System Truth immutable.\n\n The Problems Electora Solves\n\n1. Double Enrollment: In many regions, voters remain on the roll in their old constituency after moving, which makes doub",
+                  "updatedAt": "2026-05-06T15:40:27Z",
+                  "pushedAt": "2026-04-19T16:34:10Z",
+                  "isPinned": true,
+                  "candidateCommits": 9,
+                  "isRecent": false
+                },
+                {
+                  "name": "lal",
+                  "fullName": "madhavgairola/lal",
+                  "description": "leetcode accountability league",
+                  "language": "Python",
+                  "stars": 0,
+                  "forks": 0,
+                  "topics": [],
+                  "url": "https://github.com/madhavgairola/lal",
+                  "languages": {
+                    "Python": 17312,
+                    "CSS": 3279,
+                    "TypeScript": 3067,
+                    "HTML": 360
+                  },
+                  "readmeSnippet": "lal\nleetcode accountability league",
+                  "updatedAt": "2026-08-15T08:05:53Z",
+                  "pushedAt": "2026-08-15T08:05:23Z",
+                  "isPinned": false,
+                  "candidateCommits": 3,
+                  "isRecent": true
+                },
+                {
+                  "name": "ECHOSPHERE",
+                  "fullName": "ReneshaSagar/ECHOSPHERE",
+                  "language": "TypeScript",
+                  "stars": 0,
+                  "forks": 1,
+                  "topics": [],
+                  "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+                  "languages": {
+                    "TypeScript": 187922,
+                    "Python": 98636,
+                    "JavaScript": 11123,
+                    "CSS": 3642,
+                    "PowerShell": 2214
+                  },
+                  "updatedAt": "2026-09-03T17:24:45Z",
+                  "pushedAt": "2026-09-03T17:23:27Z",
+                  "isPinned": false,
+                  "candidateCommits": 57,
+                  "isRecent": true
+                }
+              ],
+              "allRepoNames": [
+                "kana-dojo",
+                "echosphere",
+                "ECHOSPHERE",
+                "syn-2",
+                "Yatrikavach",
+                "Yatrikavach",
+                "lal",
+                "neoflo-ai-assignment",
+                "madhavgairola",
+                "backend-synthetic",
+                "backend-synthetic",
+                "HealthLens",
+                "autodev",
+                "expensWise-cli",
+                "pragd",
+                "ExpensWise",
+                "electora",
+                "java-project",
+                "re",
+                "FIMS",
+                "New-Grad-Jobs",
+                "gopractice"
+              ]
+            }
+          },
+          "mappedCandidateContext": {
+            "headline": null,
+            "name": "mdhv",
+            "bio": "I code sometimes",
+            "experience": [],
+            "education": [],
+            "skills": [],
+            "projects": [],
+            "certifications": [],
+            "organizations": [],
+            "github": {
+              "username": "madhavgairola",
+              "repositoryNames": [
+                "syn-2",
+                "ExpensWise",
+                "HealthLens",
+                "electora",
+                "lal",
+                "ECHOSPHERE"
+              ],
+              "pinnedRepositories": [
+                "syn-2",
+                "ExpensWise",
+                "HealthLens",
+                "electora"
+              ],
+              "stars": 0,
+              "languages": [
+                "TypeScript",
+                "JavaScript",
+                "Python"
+              ],
+              "commitCounts": {
+                "total": 278,
+                "recent30Days": 114
+              }
+            }
+          },
+          "geminiSynthesis": {
+            "careerProgression": "Madhav is an early-career software engineer and current B.Tech student (2024–2028) with internship experience at RHA Technologies focused on AI/RAG validation and testing frameworks. His technical output includes full-stack personal projects in React, Node.js, and TypeScript incorporating voice processing and AI capabilities.",
+            "notableClaims": [
+              {
+                "claim": "Built and maintained a quality assurance framework for 250+ AI skills and workflows at RHA Technologies.",
+                "source": "resume",
+                "verificationFocus": "Probing test automation design, isolation techniques, and issue tracking for complex non-deterministic AI skills."
+              },
+              {
+                "claim": "Developed ExpensWise with voice input processing and natural language parsing for expense categorization.",
+                "source": "resume",
+                "verificationFocus": "Client-side Web Audio/Media Recording APIs implementation, audio payload transmission, and stream processing latency."
+              }
+            ],
+            "interviewHooks": [
+              "In ExpensWise, how did you handle capturing audio input from the browser, and what specific browser APIs or Web Media APIs did you use to pass data to Gemini AI?",
+              "How would you structure a WebRTC peer connection workflow using Next.js 15 App Router and React Server Components while keeping real-time UI state synced across clients without frame drops?",
+              "In your TypeScript repositories like ECHOSPHERE or syn-2, how did you manage complex state updates and client-side data streaming to ensure responsive rendering?",
+              "Describe a time during your internship at RHA Technologies when you discovered an edge case in an AI pipeline; how did you communicate and collaborate with the core engineering team to resolve it?",
+              "How do you prioritize frontend performance optimizations when managing simultaneous background network requests and real-time interactive rendering?"
+            ]
+          },
+          "timestamp": "2026-09-05T04:56:37.406Z"
+        }
+      }
+    }
+  ],
+  "applications": [
+    {
+      "id": "app_test1",
+      "candidateId": "cand_test1",
+      "jobId": "j1",
+      "status": "INTERVIEW_SCHEDULED",
+      "createdAt": "2026-09-04T17:21:54.616Z"
+    },
+    {
+      "id": "app_ruitqfn",
+      "jobId": "j2",
+      "candidateId": "cand_p8w3r0m",
+      "resumeText": "Madhav Gairola\n(+91) 7895936487| madhavgairola05@gmail.com| linkedin.com/in/madhavgairola|\ngithub.com/madhavgairola\nEducation\nJaypee Institute of Information TechnologyNoida, Uttar Pradesh\nBachelor of Technology, Information TechnologyJul. 2024 – May. 2028\nExperience\nRHA TechnologiesJun 2026 – Present\nSoftware Engineering Intern\n•\nLed end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA\nOne platform, uncovering critical edge cases across diverse enterprise use cases\n•\nEngineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL\nintegrations, analyzing retrieval accuracy, data ingestion behavior, and system reliability\n•\nBuilt and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug\nreports, validating feature releases, and accelerating issue resolution through close collaboration with engineering\nteams\nProjects\nExpensWise (Personal Financial Assistant)| Node.js , PostgreSQL, Prisma, React, Gemini API| GitHub| Live\n•\nEliminated manual expense entry by parsing natural language inputs (e.g., ”coffee 50”, ”rent 5k”) into\nstructured financial records using Gemini API\n•\nArchitected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL\ndatabase supporting real-time expense tracking and analytics\n•\nDesigned an intelligent classification engine categorizing expenses into Needs vs Wants with budget threshold\nalerts, enabling actionable spending insights\n•\nBuilt a CLI interface for rapid expense logging secured via JWT authentication, allowing power users to log\nand query expenses without leaving the terminal\nHealthLens| JavaScript, Firebase Auth, Cloud Firestore, Gemini API, PDF.js| GitHub| Live\n•\nEliminated the medical jargon barrier by extracting PDF text via PDF.js and generating role-specific summaries\nincluding a patient-friendly explanation and clinical brief from a single Gemini API call\n•\nDesigned Firestore schema (Users, Reports, Requests, Audit) with security rules enforcing patient-controlled\naccess, ensuring doctors cannot view records without explicit patient approval\n•\nImplemented a real-time consent system using Firestore listeners enabling instant approve/deny actions, with\nevery access request logged in a dedicated audit collection\n•\nDeveloped a context-aware medical chatbot retrieving patient data (medications, history) from Firestore and\ninjecting it into Gemini prompts for grounded, record-specific responses\nElectora| Solidity, Node.js, Express, Firebase, Ethers.js| GitHub\n•\nEngineered a blockchain-based voter registry eliminating duplicate identity fraud by anchoring electoral\nrecords to Ethereum smart contracts as a single immutable source of truth\n•\nBuilt a multi-stage identity verification pipeline validating voter credentials off-chain before on-chain\nregistration, preventing unauthorized entries at every stage\n•\nDesigned a hybrid storage architecture segregating sensitive PII in Firebase from on-chain identity mappings\nusing keccak256 hashing, balancing privacy with blockchain transparency\n•\nImplemented time-locked voting cycle logic in Solidity enforcing strict state transitions, making duplicate\nvoting cryptographically impossible across the entire election lifecycle\nTechnical Skills\nLanguages: C/C++, JavaScript, Python, SQL, Solidity, PHP\nFrameworks:Node.js, Express, FastAPI, Django, Tailwind CSS\nLibraries & Tools: Prisma, Pandas, NumPy, Matplotlib, Git\nDatabases & Platforms: MySQL, MongoDB, PostgreSQL, Firebase, Supabase\n\nAchievements\n• Co-inventor on a patent application filed through Jaypee Institute of Information Technology for an\nAutonomous Smart Waste Segregation System\n• Built and published a Chrome Extension implementing dynamic theme injection with 3000+ active\nusers; awarded the Chrome Web Store Featured Badge [Link]\n• Selected from 25,000+ applicants to present a project at Bharat Mandapam as part of a national\ninnovation showcase\n• Led multiple teams to become a 4-time hackathon finalist across competitive events.\n(Hackfest’25· GDG Delhi, Hack4Delhi, India Innovates’26, Innovate 3.0-JIIT)",
+      "resumeFileName": "992401040094 Madhav Gairola.pdf",
+      "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
+      "githubUrl": "https://github.com/madhavgairola",
+      "relevantExperience": "",
+      "status": "INTERVIEW_SCHEDULED",
+      "candidateContext": {
+        "resume": {
+          "textSnippet": "Madhav Gairola\n(+91) 7895936487| madhavgairola05@gmail.com| linkedin.com/in/madhavgairola|\ngithub.com/madhavgairola\nEducation\nJaypee Institute of Information TechnologyNoida, Uttar Pradesh\nBachelor of Technology, Information TechnologyJul. 2024 – May. 2028\nExperience\nRHA TechnologiesJun 2026 – Present\nSoftware Engineering Intern\n•\nLed end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA\nOne platform, uncovering critical edge cases across diverse enterprise use cases\n•\nEngineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL\nintegrations, analyzing retrieval accuracy, data ingestion behavior, and system reliability\n•\nBuilt and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug\nreports, validating feature releases, and accelerating issue resolution through close collaboration with engineering\nteams\nProjects\nExpensWise (Personal Financial Assistant)| Node.",
+          "fileName": "992401040094 Madhav Gairola.pdf",
+          "skills": [
+            "Python",
+            "FastAPI",
+            "Django",
+            "Node.js",
+            "JavaScript",
+            "React",
+            "PostgreSQL",
+            "RAG",
+            "SQL",
+            "Solidity"
+          ],
+          "experienceTitles": [
+            "Software Engineering Intern",
+            "Engineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL",
+            "reports, validating feature releases, and accelerating issue resolution through close collaboration with engineering",
+            "Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL",
+            "Engineered a blockchain-based voter registry eliminating duplicate identity fraud by anchoring electoral"
+          ],
+          "projects": [
+            "Built and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug",
+            "Projects",
+            "Designed an intelligent classification engine categorizing expenses into Needs vs Wants with budget threshold",
+            "Built a CLI interface for rapid expense logging secured via JWT authentication, allowing power users to log",
+            "Designed Firestore schema (Users, Reports, Requests, Audit) with security rules enforcing patient-controlled"
+          ],
+          "notableHighlights": [
+            "Eliminated manual expense entry by parsing natural language inputs (e.g., ”coffee 50”, ”rent 5k”) into",
+            "Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL"
+          ]
+        },
+        "github": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "bio": "I code sometimes",
+          "publicReposCount": 19,
+          "repositories": [
+            {
+              "name": "syn-2",
+              "language": "TypeScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/syn-2",
+              "isPinned": true
+            },
+            {
+              "name": "ExpensWise",
+              "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+              "language": "JavaScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/ExpensWise",
+              "isPinned": true
+            },
+            {
+              "name": "HealthLens",
+              "language": "JavaScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/HealthLens",
+              "isPinned": true
+            },
+            {
+              "name": "electora",
+              "language": "JavaScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/electora",
+              "isPinned": true
+            },
+            {
+              "name": "lal",
+              "description": "leetcode accountability league",
+              "language": "Python",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/lal",
+              "isPinned": false
+            },
+            {
+              "name": "ECHOSPHERE",
+              "language": "TypeScript",
+              "topics": [],
+              "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+              "isPinned": false
+            }
+          ],
+          "activeProjects": [
+            "syn-2",
+            "ExpensWise",
+            "HealthLens",
+            "electora",
+            "lal",
+            "ECHOSPHERE"
+          ]
+        },
+        "crossSourceContext": {
+          "corroboratedSkills": [
+            {
+              "skill": "Python",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "confidence": "HIGH",
+              "evidenceSnippet": "Confirmed across: resume, github"
+            },
+            {
+              "skill": "Fastapi",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Django",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Node.js",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Javascript",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "confidence": "HIGH",
+              "evidenceSnippet": "Confirmed across: resume, github"
+            },
+            {
+              "skill": "React",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Postgresql",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Rag",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Sql",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Solidity",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            }
+          ],
+          "corroboratedProjects": [
+            {
+              "projectName": "syn-2",
+              "description": "Repository in TypeScript",
+              "sources": [
+                "github"
+              ],
+              "details": "Active codebase exploring TypeScript.",
+              "evidenceSnippet": "GitHub repository: https://github.com/madhavgairola/syn-2"
+            },
+            {
+              "projectName": "ExpensWise",
+              "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+              "sources": [
+                "github",
+                "resume"
+              ],
+              "details": "Active codebase exploring JavaScript.",
+              "evidenceSnippet": "GitHub repository: https://github.com/madhavgairola/ExpensWise"
+            },
+            {
+              "projectName": "HealthLens",
+              "description": "Repository in JavaScript",
+              "sources": [
+                "github"
+              ],
+              "details": "Active codebase exploring JavaScript.",
+              "evidenceSnippet": "GitHub repository: https://github.com/madhavgairola/HealthLens"
+            },
+            {
+              "projectName": "electora",
+              "description": "Repository in JavaScript",
+              "sources": [
+                "github"
+              ],
+              "details": "Active codebase exploring JavaScript.",
+              "evidenceSnippet": "GitHub repository: https://github.com/madhavgairola/electora"
+            },
+            {
+              "projectName": "lal",
+              "description": "leetcode accountability league",
+              "sources": [
+                "github"
+              ],
+              "details": "Active codebase exploring Python.",
+              "evidenceSnippet": "GitHub repository: https://github.com/madhavgairola/lal"
+            },
+            {
+              "projectName": "ECHOSPHERE",
+              "description": "Repository in TypeScript",
+              "sources": [
+                "github"
+              ],
+              "details": "Active codebase exploring TypeScript.",
+              "evidenceSnippet": "GitHub repository: https://github.com/ReneshaSagar/ECHOSPHERE"
+            }
+          ],
+          "corroboratedExperience": [],
+          "careerProgressionSummary": "Madhav is an early-career software engineer and current B.Tech student (2024–2028) with internship experience at RHA Technologies focused on AI/RAG validation and testing frameworks. His technical output includes full-stack personal projects in React, Node.js, and TypeScript incorporating voice processing and AI capabilities.",
+          "notableClaims": [
+            {
+              "claim": "Built and maintained a quality assurance framework for 250+ AI skills and workflows at RHA Technologies.",
+              "source": "resume",
+              "verificationFocus": "Probing test automation design, isolation techniques, and issue tracking for complex non-deterministic AI skills."
+            },
+            {
+              "claim": "Developed ExpensWise with voice input processing and natural language parsing for expense categorization.",
+              "source": "resume",
+              "verificationFocus": "Client-side Web Audio/Media Recording APIs implementation, audio payload transmission, and stream processing latency."
+            }
+          ]
+        },
+        "interviewContext": {
+          "targetRole": "Senior Full Stack Engineer — Next.js & Real-Time WebRTC",
+          "highRelevanceEvidence": [
+            {
+              "topic": "Browser Audio & Natural Language Processing",
+              "relevance": "HIGH",
+              "reason": "ExpensWise demonstrates practical experience capturing audio input in the browser and processing natural language, which connects directly to real-time Web Audio handling.",
+              "evidenceSources": [
+                "resume",
+                "github"
+              ]
+            },
+            {
+              "topic": "TypeScript Development",
+              "relevance": "HIGH",
+              "reason": "Maintains TypeScript repositories (syn-2, ECHOSPHERE), demonstrating familiarity with type-safe patterns required for the Next.js enterprise stack.",
+              "evidenceSources": [
+                "github"
+              ]
+            },
+            {
+              "topic": "Full-Stack Node.js and React Architecture",
+              "relevance": "HIGH",
+              "reason": "Has built full-stack applications with React frontends, Express backends, and SQL/NoSQL databases, aligning with core Next.js/Node requirements.",
+              "evidenceSources": [
+                "resume",
+                "github"
+              ]
+            }
+          ],
+          "technicalInterviewHooks": [
+            "In ExpensWise, how did you handle capturing audio input from the browser, and what specific browser APIs or Web Media APIs did you use to pass data to Gemini AI?",
+            "How would you structure a WebRTC peer connection workflow using Next.js 15 App Router and React Server Components while keeping real-time UI state synced across clients without frame drops?",
+            "In your TypeScript repositories like ECHOSPHERE or syn-2, how did you manage complex state updates and client-side data streaming to ensure responsive rendering?"
+          ],
+          "behavioralInterviewHooks": [
+            "Describe a time during your internship at RHA Technologies when you discovered an edge case in an AI pipeline; how did you communicate and collaborate with the core engineering team to resolve it?",
+            "How do you prioritize frontend performance optimizations when managing simultaneous background network requests and real-time interactive rendering?"
+          ],
+          "projectsWorthProbing": [
+            {
+              "name": "ExpensWise",
+              "relevanceLevel": "HIGH",
+              "reasonToProbe": "Uses voice input and Gemini AI to parse expenses, touching directly on web audio handling and interactive frontend states.",
+              "suggestedQuestions": [
+                "How did you implement client-side audio recording and payload delivery?",
+                "How did you handle error states and voice parsing failures on the client side?"
+              ],
+              "sourceUrl": "https://github.com/madhavgairola/ExpensWise"
+            },
+            {
+              "name": "ECHOSPHERE",
+              "relevanceLevel": "HIGH",
+              "reasonToProbe": "TypeScript repository that likely exercises modern frontend component design and real-time state manipulation.",
+              "suggestedQuestions": [
+                "What architectural choices did you make regarding state management and component boundaries in this project?",
+                "How did you leverage TypeScript types to enforce safety across asynchronous workflows?"
+              ],
+              "sourceUrl": "https://github.com/madhavgairola/ECHOSPHERE"
+            }
+          ],
+          "ignoredOrLowRelevanceTopics": [
+            "Blockchain smart contracts and electoral registry implementation (electora / Solidity)",
+            "LeetCode automation and accountability scripts (lal / Python)",
+            "Manual database file format (CSV, PDF, DOCX) QA testing procedures",
+            "[IRRELEVANT TO ROLE] Blockchain / Web3 / Smart Contracts: Candidate mentioned blockchain/smart contract technology on profile, but it is outside the scope of this role. Omit from interview unless candidate introduces it."
+          ]
+        },
+        "experience": [],
+        "skills": [
+          "Python",
+          "Fastapi",
+          "Django",
+          "Node.js",
+          "Javascript",
+          "React",
+          "Postgresql",
+          "Rag",
+          "Sql",
+          "Solidity"
+        ],
+        "education": [],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "careerProgression": "Madhav is an early-career software engineer and current B.Tech student (2024–2028) with internship experience at RHA Technologies focused on AI/RAG validation and testing frameworks. His technical output includes full-stack personal projects in React, Node.js, and TypeScript incorporating voice processing and AI capabilities.",
+        "notableClaims": [
+          "Built and maintained a quality assurance framework for 250+ AI skills and workflows at RHA Technologies.",
+          "Developed ExpensWise with voice input processing and natural language parsing for expense categorization."
+        ],
+        "interviewHooks": [
+          "In ExpensWise, how did you handle capturing audio input from the browser, and what specific browser APIs or Web Media APIs did you use to pass data to Gemini AI?",
+          "How would you structure a WebRTC peer connection workflow using Next.js 15 App Router and React Server Components while keeping real-time UI state synced across clients without frame drops?",
+          "In your TypeScript repositories like ECHOSPHERE or syn-2, how did you manage complex state updates and client-side data streaming to ensure responsive rendering?",
+          "Describe a time during your internship at RHA Technologies when you discovered an edge case in an AI pipeline; how did you communicate and collaborate with the core engineering team to resolve it?",
+          "How do you prioritize frontend performance optimizations when managing simultaneous background network requests and real-time interactive rendering?"
+        ],
+        "enrichmentSource": "resume",
+        "enrichedAt": "2026-09-05T04:56:37.406Z",
+        "githubContext": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "name": "mdhv",
+          "bio": "I code sometimes",
+          "location": "Delhi",
+          "publicReposCount": 19,
+          "followers": 1,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
+          "totalCommits": 278,
+          "recentCommits30Days": 114,
+          "commitVelocityNarrative": "114 commits in the past 30 days • 278 total commits",
+          "technicalHighlights": [],
+          "githubProjects": [
+            {
+              "name": "syn-2",
+              "language": "TypeScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/syn-2",
+              "isPinned": true,
+              "candidateCommits": 0,
+              "isRecent": true
+            },
+            {
+              "name": "ExpensWise",
+              "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/ExpensWise",
+              "isPinned": true,
+              "candidateCommits": 40,
+              "isRecent": false
+            },
+            {
+              "name": "HealthLens",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/HealthLens",
+              "isPinned": true,
+              "candidateCommits": 1,
+              "isRecent": false
+            },
+            {
+              "name": "electora",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/electora",
+              "isPinned": true,
+              "candidateCommits": 9,
+              "isRecent": false
+            },
+            {
+              "name": "lal",
+              "description": "leetcode accountability league",
+              "language": "Python",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/lal",
+              "isPinned": false,
+              "candidateCommits": 3,
+              "isRecent": true
+            },
+            {
+              "name": "ECHOSPHERE",
+              "language": "TypeScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+              "isPinned": false,
+              "candidateCommits": 57,
+              "isRecent": true
+            }
+          ],
+          "githubInterviewHooks": [],
+          "enrichedAt": "2026-09-05T04:56:20.336Z",
+          "rawProviderJson": {
+            "username": "madhavgairola",
+            "name": "mdhv",
+            "bio": "I code sometimes",
+            "location": "Delhi",
+            "publicReposCount": 19,
+            "followers": 1,
+            "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
+            "profileUrl": "https://github.com/madhavgairola",
+            "totalCommits": 278,
+            "recentCommits30Days": 114,
+            "pinnedRepoNames": [
+              "ExpensWise",
+              "HealthLens",
+              "syn-2",
+              "electora"
+            ],
+            "repos": [
+              {
+                "name": "syn-2",
+                "fullName": "madhavgairola/syn-2",
+                "language": "TypeScript",
+                "stars": 0,
+                "forks": 1,
+                "topics": [],
+                "url": "https://github.com/madhavgairola/syn-2",
+                "languages": {
+                  "TypeScript": 341033,
+                  "CSS": 5683,
+                  "JavaScript": 2964,
+                  "Python": 1452,
+                  "HTML": 650
+                },
+                "updatedAt": "2026-08-27T17:22:27Z",
+                "pushedAt": "2026-08-27T16:54:01Z",
+                "isPinned": true,
+                "candidateCommits": 0,
+                "isRecent": true
+              },
+              {
+                "name": "ExpensWise",
+                "fullName": "madhavgairola/ExpensWise",
+                "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+                "language": "JavaScript",
+                "stars": 0,
+                "forks": 0,
+                "topics": [],
+                "url": "https://github.com/madhavgairola/ExpensWise",
+                "languages": {
+                  "JavaScript": 116527,
+                  "CSS": 12688,
+                  "TypeScript": 374,
+                  "HTML": 359
+                },
+                "readmeSnippet": "ExpensWise\n\nExpensWise is a smart personal finance tracker that doesn't feel like a second job. Instead of wrestling with complex forms or staring at boring spreadsheets, you just talk to it. Built with a focus on speed, AI-driven insights, and a sleek dark-mode aesthetic.\n\n[Live Demo](https://expens-wise.vercel.app)\n\n Why I Built This\nMost finance apps are a chore. You spend more time categorizing transactions than actually understanding where your money is going. I wanted something where I could just type `200 for pizza` or `paid 500 for rent need` and have it handled automatically. ExpensWise takes away the friction of manual data entry so you actually *want* to track your spend.\n\n Featur",
+                "updatedAt": "2026-05-09T05:18:33Z",
+                "pushedAt": "2026-05-09T05:18:29Z",
+                "isPinned": true,
+                "candidateCommits": 40,
+                "isRecent": false
+              },
+              {
+                "name": "HealthLens",
+                "fullName": "madhavgairola/HealthLens",
+                "language": "JavaScript",
+                "stars": 0,
+                "forks": 0,
+                "topics": [],
+                "url": "https://github.com/madhavgairola/HealthLens",
+                "languages": {
+                  "JavaScript": 61048,
+                  "HTML": 50110,
+                  "CSS": 22299
+                },
+                "readmeSnippet": "HealthLens 🏥\n\nHealthLens is a patient-first medical platform that translates complex clinical reports into clear, plain English. No jargon, no confusion—just clarity and advocacy for your own well-being.\n\n[Live Demo](https://healthlens-15bf6.web.app)\n\n Why I Built This\nMedical documents are traditionally written by doctors, for doctors. If you've ever held a blood test or an MRI report and felt like you were reading a foreign language, you're not alone. I built HealthLens to tear down that barrier. It’s like having a compassionate medical student sitting next to you, explaining every line of your report so you can actually understand what's happening with your body.\n\n Features\n- **AI Report",
+                "updatedAt": "2026-06-08T09:30:28Z",
+                "pushedAt": "2026-06-08T09:30:24Z",
+                "isPinned": true,
+                "candidateCommits": 1,
+                "isRecent": false
+              },
+              {
+                "name": "electora",
+                "fullName": "madhavgairola/electora",
+                "language": "JavaScript",
+                "stars": 0,
+                "forks": 0,
+                "topics": [],
+                "url": "https://github.com/madhavgairola/electora",
+                "languages": {
+                  "JavaScript": 38790,
+                  "HTML": 11370,
+                  "CSS": 10065,
+                  "Solidity": 4954,
+                  "TypeScript": 124
+                },
+                "readmeSnippet": "Electora: Trustless Voter Roll Management\n\nMost electoral systems worldwide suffer from a fundamental paradox: they must be publicly auditable to ensure trust, but they must keep voter data private to ensure safety. \n\nExisting solutions are either centralized \"black box\" databases that are vulnerable to manipulation, or misguided \"on-chain\" projects that leak sensitive Personal Identifiable Information (PII) to the public.\n\nElectora solves this by using a hybrid architecture. We keep the Human Details private and the System Truth immutable.\n\n The Problems Electora Solves\n\n1. Double Enrollment: In many regions, voters remain on the roll in their old constituency after moving, which makes doub",
+                "updatedAt": "2026-05-06T15:40:27Z",
+                "pushedAt": "2026-04-19T16:34:10Z",
+                "isPinned": true,
+                "candidateCommits": 9,
+                "isRecent": false
+              },
+              {
+                "name": "lal",
+                "fullName": "madhavgairola/lal",
+                "description": "leetcode accountability league",
+                "language": "Python",
+                "stars": 0,
+                "forks": 0,
+                "topics": [],
+                "url": "https://github.com/madhavgairola/lal",
+                "languages": {
+                  "Python": 17312,
+                  "CSS": 3279,
+                  "TypeScript": 3067,
+                  "HTML": 360
+                },
+                "readmeSnippet": "lal\nleetcode accountability league",
+                "updatedAt": "2026-08-15T08:05:53Z",
+                "pushedAt": "2026-08-15T08:05:23Z",
+                "isPinned": false,
+                "candidateCommits": 3,
+                "isRecent": true
+              },
+              {
+                "name": "ECHOSPHERE",
+                "fullName": "ReneshaSagar/ECHOSPHERE",
+                "language": "TypeScript",
+                "stars": 0,
+                "forks": 1,
+                "topics": [],
+                "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+                "languages": {
+                  "TypeScript": 187922,
+                  "Python": 98636,
+                  "JavaScript": 11123,
+                  "CSS": 3642,
+                  "PowerShell": 2214
+                },
+                "updatedAt": "2026-09-03T17:24:45Z",
+                "pushedAt": "2026-09-03T17:23:27Z",
+                "isPinned": false,
+                "candidateCommits": 57,
+                "isRecent": true
+              }
+            ],
+            "allRepoNames": [
+              "kana-dojo",
+              "echosphere",
+              "ECHOSPHERE",
+              "syn-2",
+              "Yatrikavach",
+              "Yatrikavach",
+              "lal",
+              "neoflo-ai-assignment",
+              "madhavgairola",
+              "backend-synthetic",
+              "backend-synthetic",
+              "HealthLens",
+              "autodev",
+              "expensWise-cli",
+              "pragd",
+              "ExpensWise",
+              "electora",
+              "java-project",
+              "re",
+              "FIMS",
+              "New-Grad-Jobs",
+              "gopractice"
+            ]
+          }
+        },
+        "totalCommits": 278,
+        "recentCommits30Days": 114,
+        "commitVelocityNarrative": "114 commits in the past 30 days • 278 total commits",
+        "githubProjects": [
+          {
+            "name": "syn-2",
+            "language": "TypeScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/syn-2",
+            "isPinned": true,
+            "candidateCommits": 0,
+            "isRecent": true
+          },
+          {
+            "name": "ExpensWise",
+            "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/ExpensWise",
+            "isPinned": true,
+            "candidateCommits": 40,
+            "isRecent": false
+          },
+          {
+            "name": "HealthLens",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/HealthLens",
+            "isPinned": true,
+            "candidateCommits": 1,
+            "isRecent": false
+          },
+          {
+            "name": "electora",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/electora",
+            "isPinned": true,
+            "candidateCommits": 9,
+            "isRecent": false
+          },
+          {
+            "name": "lal",
+            "description": "leetcode accountability league",
+            "language": "Python",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/lal",
+            "isPinned": false,
+            "candidateCommits": 3,
+            "isRecent": true
+          },
+          {
+            "name": "ECHOSPHERE",
+            "language": "TypeScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+            "isPinned": false,
+            "candidateCommits": 57,
+            "isRecent": true
+          }
+        ],
+        "githubInterviewHooks": [
+          "In ExpensWise, how did you handle capturing audio input from the browser, and what specific browser APIs or Web Media APIs did you use to pass data to Gemini AI?",
+          "How would you structure a WebRTC peer connection workflow using Next.js 15 App Router and React Server Components while keeping real-time UI state synced across clients without frame drops?",
+          "In your TypeScript repositories like ECHOSPHERE or syn-2, how did you manage complex state updates and client-side data streaming to ensure responsive rendering?"
+        ],
+        "sourceLogging": {
+          "rawProviderJson": {
+            "linkedin": null,
+            "github": {
+              "username": "madhavgairola",
+              "name": "mdhv",
+              "bio": "I code sometimes",
+              "location": "Delhi",
+              "publicReposCount": 19,
+              "followers": 1,
+              "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
+              "profileUrl": "https://github.com/madhavgairola",
+              "totalCommits": 278,
+              "recentCommits30Days": 114,
+              "pinnedRepoNames": [
+                "ExpensWise",
+                "HealthLens",
+                "syn-2",
+                "electora"
+              ],
+              "repos": [
+                {
+                  "name": "syn-2",
+                  "fullName": "madhavgairola/syn-2",
+                  "language": "TypeScript",
+                  "stars": 0,
+                  "forks": 1,
+                  "topics": [],
+                  "url": "https://github.com/madhavgairola/syn-2",
+                  "languages": {
+                    "TypeScript": 341033,
+                    "CSS": 5683,
+                    "JavaScript": 2964,
+                    "Python": 1452,
+                    "HTML": 650
+                  },
+                  "updatedAt": "2026-08-27T17:22:27Z",
+                  "pushedAt": "2026-08-27T16:54:01Z",
+                  "isPinned": true,
+                  "candidateCommits": 0,
+                  "isRecent": true
+                },
+                {
+                  "name": "ExpensWise",
+                  "fullName": "madhavgairola/ExpensWise",
+                  "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+                  "language": "JavaScript",
+                  "stars": 0,
+                  "forks": 0,
+                  "topics": [],
+                  "url": "https://github.com/madhavgairola/ExpensWise",
+                  "languages": {
+                    "JavaScript": 116527,
+                    "CSS": 12688,
+                    "TypeScript": 374,
+                    "HTML": 359
+                  },
+                  "readmeSnippet": "ExpensWise\n\nExpensWise is a smart personal finance tracker that doesn't feel like a second job. Instead of wrestling with complex forms or staring at boring spreadsheets, you just talk to it. Built with a focus on speed, AI-driven insights, and a sleek dark-mode aesthetic.\n\n[Live Demo](https://expens-wise.vercel.app)\n\n Why I Built This\nMost finance apps are a chore. You spend more time categorizing transactions than actually understanding where your money is going. I wanted something where I could just type `200 for pizza` or `paid 500 for rent need` and have it handled automatically. ExpensWise takes away the friction of manual data entry so you actually *want* to track your spend.\n\n Featur",
+                  "updatedAt": "2026-05-09T05:18:33Z",
+                  "pushedAt": "2026-05-09T05:18:29Z",
+                  "isPinned": true,
+                  "candidateCommits": 40,
+                  "isRecent": false
+                },
+                {
+                  "name": "HealthLens",
+                  "fullName": "madhavgairola/HealthLens",
+                  "language": "JavaScript",
+                  "stars": 0,
+                  "forks": 0,
+                  "topics": [],
+                  "url": "https://github.com/madhavgairola/HealthLens",
+                  "languages": {
+                    "JavaScript": 61048,
+                    "HTML": 50110,
+                    "CSS": 22299
+                  },
+                  "readmeSnippet": "HealthLens 🏥\n\nHealthLens is a patient-first medical platform that translates complex clinical reports into clear, plain English. No jargon, no confusion—just clarity and advocacy for your own well-being.\n\n[Live Demo](https://healthlens-15bf6.web.app)\n\n Why I Built This\nMedical documents are traditionally written by doctors, for doctors. If you've ever held a blood test or an MRI report and felt like you were reading a foreign language, you're not alone. I built HealthLens to tear down that barrier. It’s like having a compassionate medical student sitting next to you, explaining every line of your report so you can actually understand what's happening with your body.\n\n Features\n- **AI Report",
+                  "updatedAt": "2026-06-08T09:30:28Z",
+                  "pushedAt": "2026-06-08T09:30:24Z",
+                  "isPinned": true,
+                  "candidateCommits": 1,
+                  "isRecent": false
+                },
+                {
+                  "name": "electora",
+                  "fullName": "madhavgairola/electora",
+                  "language": "JavaScript",
+                  "stars": 0,
+                  "forks": 0,
+                  "topics": [],
+                  "url": "https://github.com/madhavgairola/electora",
+                  "languages": {
+                    "JavaScript": 38790,
+                    "HTML": 11370,
+                    "CSS": 10065,
+                    "Solidity": 4954,
+                    "TypeScript": 124
+                  },
+                  "readmeSnippet": "Electora: Trustless Voter Roll Management\n\nMost electoral systems worldwide suffer from a fundamental paradox: they must be publicly auditable to ensure trust, but they must keep voter data private to ensure safety. \n\nExisting solutions are either centralized \"black box\" databases that are vulnerable to manipulation, or misguided \"on-chain\" projects that leak sensitive Personal Identifiable Information (PII) to the public.\n\nElectora solves this by using a hybrid architecture. We keep the Human Details private and the System Truth immutable.\n\n The Problems Electora Solves\n\n1. Double Enrollment: In many regions, voters remain on the roll in their old constituency after moving, which makes doub",
+                  "updatedAt": "2026-05-06T15:40:27Z",
+                  "pushedAt": "2026-04-19T16:34:10Z",
+                  "isPinned": true,
+                  "candidateCommits": 9,
+                  "isRecent": false
+                },
+                {
+                  "name": "lal",
+                  "fullName": "madhavgairola/lal",
+                  "description": "leetcode accountability league",
+                  "language": "Python",
+                  "stars": 0,
+                  "forks": 0,
+                  "topics": [],
+                  "url": "https://github.com/madhavgairola/lal",
+                  "languages": {
+                    "Python": 17312,
+                    "CSS": 3279,
+                    "TypeScript": 3067,
+                    "HTML": 360
+                  },
+                  "readmeSnippet": "lal\nleetcode accountability league",
+                  "updatedAt": "2026-08-15T08:05:53Z",
+                  "pushedAt": "2026-08-15T08:05:23Z",
+                  "isPinned": false,
+                  "candidateCommits": 3,
+                  "isRecent": true
+                },
+                {
+                  "name": "ECHOSPHERE",
+                  "fullName": "ReneshaSagar/ECHOSPHERE",
+                  "language": "TypeScript",
+                  "stars": 0,
+                  "forks": 1,
+                  "topics": [],
+                  "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+                  "languages": {
+                    "TypeScript": 187922,
+                    "Python": 98636,
+                    "JavaScript": 11123,
+                    "CSS": 3642,
+                    "PowerShell": 2214
+                  },
+                  "updatedAt": "2026-09-03T17:24:45Z",
+                  "pushedAt": "2026-09-03T17:23:27Z",
+                  "isPinned": false,
+                  "candidateCommits": 57,
+                  "isRecent": true
+                }
+              ],
+              "allRepoNames": [
+                "kana-dojo",
+                "echosphere",
+                "ECHOSPHERE",
+                "syn-2",
+                "Yatrikavach",
+                "Yatrikavach",
+                "lal",
+                "neoflo-ai-assignment",
+                "madhavgairola",
+                "backend-synthetic",
+                "backend-synthetic",
+                "HealthLens",
+                "autodev",
+                "expensWise-cli",
+                "pragd",
+                "ExpensWise",
+                "electora",
+                "java-project",
+                "re",
+                "FIMS",
+                "New-Grad-Jobs",
+                "gopractice"
+              ]
+            }
+          },
+          "mappedCandidateContext": {
+            "headline": null,
+            "name": "mdhv",
+            "bio": "I code sometimes",
+            "experience": [],
+            "education": [],
+            "skills": [],
+            "projects": [],
+            "certifications": [],
+            "organizations": [],
+            "github": {
+              "username": "madhavgairola",
+              "repositoryNames": [
+                "syn-2",
+                "ExpensWise",
+                "HealthLens",
+                "electora",
+                "lal",
+                "ECHOSPHERE"
+              ],
+              "pinnedRepositories": [
+                "syn-2",
+                "ExpensWise",
+                "HealthLens",
+                "electora"
+              ],
+              "stars": 0,
+              "languages": [
+                "TypeScript",
+                "JavaScript",
+                "Python"
+              ],
+              "commitCounts": {
+                "total": 278,
+                "recent30Days": 114
+              }
+            }
+          },
+          "geminiSynthesis": {
+            "careerProgression": "Madhav is an early-career software engineer and current B.Tech student (2024–2028) with internship experience at RHA Technologies focused on AI/RAG validation and testing frameworks. His technical output includes full-stack personal projects in React, Node.js, and TypeScript incorporating voice processing and AI capabilities.",
+            "notableClaims": [
+              {
+                "claim": "Built and maintained a quality assurance framework for 250+ AI skills and workflows at RHA Technologies.",
+                "source": "resume",
+                "verificationFocus": "Probing test automation design, isolation techniques, and issue tracking for complex non-deterministic AI skills."
+              },
+              {
+                "claim": "Developed ExpensWise with voice input processing and natural language parsing for expense categorization.",
+                "source": "resume",
+                "verificationFocus": "Client-side Web Audio/Media Recording APIs implementation, audio payload transmission, and stream processing latency."
+              }
+            ],
+            "interviewHooks": [
+              "In ExpensWise, how did you handle capturing audio input from the browser, and what specific browser APIs or Web Media APIs did you use to pass data to Gemini AI?",
+              "How would you structure a WebRTC peer connection workflow using Next.js 15 App Router and React Server Components while keeping real-time UI state synced across clients without frame drops?",
+              "In your TypeScript repositories like ECHOSPHERE or syn-2, how did you manage complex state updates and client-side data streaming to ensure responsive rendering?",
+              "Describe a time during your internship at RHA Technologies when you discovered an edge case in an AI pipeline; how did you communicate and collaborate with the core engineering team to resolve it?",
+              "How do you prioritize frontend performance optimizations when managing simultaneous background network requests and real-time interactive rendering?"
+            ]
+          },
+          "timestamp": "2026-09-05T04:56:37.406Z"
+        }
+      }
+    }
+  ],
+  "interviews": [
+    {
+      "id": "int_w8axo4q",
+      "applicationId": "app_test1",
+      "scheduledAt": "2026-09-04T17:44:00.000Z",
+      "status": "FAILED",
+      "interviewState": {
+        "interviewId": "int_w8axo4q",
+        "currentRound": "technical",
+        "currentSpeaker": "eng_be_01",
+        "conversationSummary": "Technical panel interview initialized.",
+        "questionsAsked": [],
+        "topicsCovered": [],
+        "evidenceCollected": [],
+        "agentFloorRequests": [],
+        "roundProgress": 0,
+        "interviewStatus": "IN_PROGRESS",
+        "activeAgents": [
+          {
+            "agentId": "eng_be_01",
+            "name": "Aditya",
+            "role": "Senior Backend Engineer",
+            "voice": "Fenrir",
+            "color": "#10B981",
+            "isPrimary": true,
+            "isActive": true,
+            "hasFloor": true
+          },
+          {
+            "agentId": "eng_be_02",
+            "name": "Vikram",
+            "role": "Staff Backend Architect",
+            "voice": "Charon",
+            "color": "#7C3AED",
+            "isPrimary": false,
+            "isActive": true,
+            "hasFloor": false
+          }
+        ],
+        "updatedAt": "2026-09-04T17:43:38.166Z"
+      },
+      "evaluations": [
+        {
+          "round": "Technical Architecture & Concurrency",
+          "decision": "FAIL",
+          "score": 0,
+          "reason": "The candidate provided no responses as the interview transcript is empty. Without any evidence of technical competency, system design knowledge, or communication skills, the candidate cannot be evaluated and fails the round."
+        }
+      ],
+      "transcript": []
+    },
+    {
+      "id": "int_xb4b7cd",
+      "applicationId": "app_ruitqfn",
+      "scheduledAt": "2026-09-05T05:04:00.000Z",
+      "status": "PENDING",
+      "interviewState": {
+        "interviewId": "int_xb4b7cd",
+        "currentRound": "technical",
+        "currentSpeaker": "eng_fs_01",
+        "conversationSummary": "Technical panel interview initialized.",
+        "questionsAsked": [],
+        "topicsCovered": [],
+        "evidenceCollected": [],
+        "agentFloorRequests": [],
+        "roundProgress": 0,
+        "interviewStatus": "IN_PROGRESS",
+        "activeAgents": [
+          {
+            "agentId": "eng_fs_01",
+            "name": "Priya",
+            "role": "Senior Full Stack Engineer",
+            "voice": "Aoede",
+            "color": "#3B82F6",
+            "isPrimary": true,
+            "isActive": true,
+            "hasFloor": true
+          },
+          {
+            "agentId": "eng_fs_02",
+            "name": "Arjun",
+            "role": "Staff Full Stack Engineer",
+            "voice": "Charon",
+            "color": "#8B5CF6",
+            "isPrimary": false,
+            "isActive": true,
+            "hasFloor": false
+          }
+        ],
+        "updatedAt": "2026-09-05T05:04:45.353Z"
+      }
+    }
+  ],
+  "blueprints": [
+    {
+      "id": "bp_j51stta",
+      "interviewId": "int_pwk4qmn",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency\",\n      \"round_type\": \"technical\",\n      \"purpose\": \"Evaluate Madhav Gairola's capabilities in core engineering, concurrency, and real-world system architecture for Senior Full Stack Engineer — Next.js & Real-Time WebRTC.\",\n      \"interviewers\": [\n        {\n          \"interviewer_id\": \"eng_fs_01\",\n          \"name\": \"Priya\",\n          \"role\": \"Senior Full Stack Engineer\",\n          \"voice\": \"Aoede\",\n          \"color\": \"#3B82F6\",\n          \"is_primary\": true,\n          \"agent_uid\": 9991,\n          \"instructions\": \"Speak naturally and concisely with Madhav Gairola. Explore their codecraft and system design depth in 'syn-2' and 'ExpensWise' and 'HealthLens'.\",\n          \"greeting_message\": \"Hello Madhav Gairola, welcome! I'm Priya, Senior Full Stack Engineer. Today, my colleague Arjun and I will explore your system architecture and codecraft. Let's dive in.\"\n        },\n        {\n          \"interviewer_id\": \"eng_fs_02\",\n          \"name\": \"Arjun\",\n          \"role\": \"Staff Full Stack Engineer\",\n          \"voice\": \"Charon\",\n          \"color\": \"#8B5CF6\",\n          \"is_primary\": false,\n          \"agent_uid\": 9992,\n          \"instructions\": \"You are Arjun, Staff Full Stack Engineer. Challenge architectural trade-offs, probe scalability bottlenecks, evaluate latency budgets, and ask about edge cases and failure modes.\",\n          \"greeting_message\": \"Hi Madhav Gairola, I'm Arjun, Staff Full Stack Engineer. I'll be focusing on system design trade-offs, scalability boundaries, and failure modes with you today.\"\n        }\n      ],\n      \"interviewer\": {\n        \"name\": \"Priya\",\n        \"role\": \"Senior Full Stack Engineer\",\n        \"instructions\": \"Speak naturally and concisely with Madhav Gairola. Explore their codecraft and system design depth in 'syn-2' and 'ExpensWise' and 'HealthLens'.\",\n        \"greeting_message\": \"Hello Madhav Gairola, welcome! I'm Priya, Senior Full Stack Engineer. Let's dive into technical architecture.\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Culture\",\n      \"round_type\": \"hr\",\n      \"purpose\": \"Evaluate Madhav Gairola's collaboration, ownership, and technical communication\",\n      \"interviewers\": [\n        {\n          \"interviewer_id\": \"hr_01\",\n          \"name\": \"Tara\",\n          \"role\": \"Head of People & Culture\",\n          \"voice\": \"Aoede\",\n          \"color\": \"#EA580C\",\n          \"is_primary\": true,\n          \"agent_uid\": 9993,\n          \"instructions\": \"Evaluate communication, ownership, and engineering culture.\",\n          \"greeting_message\": \"Hi Madhav Gairola, great to meet you! I'm Tara, Head of People & Culture. Today we will discuss team collaboration, problem solving, and technical ownership.\"\n        }\n      ],\n      \"interviewer\": {\n        \"name\": \"Tara\",\n        \"role\": \"Head of People & Culture\",\n        \"instructions\": \"Evaluate communication, ownership, and engineering culture.\",\n        \"greeting_message\": \"Hi Madhav Gairola, great to meet you! I'm Tara, Head of People & Culture.\"\n      },\n      \"topics\": [\n        \"Ownership\",\n        \"Collaboration\",\n        \"Conflict Resolution\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Depth\": \"Evaluates codecraft and architecture\",\n    \"System Scale\": \"Evaluates distributed systems concepts\",\n    \"Communication\": \"Evaluates clarity and structured thought\"\n  }\n}"
+    },
+    {
+      "id": "bp_wbpz3zm",
+      "interviewId": "int_w8axo4q",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency\",\n      \"round_type\": \"technical\",\n      \"purpose\": \"Evaluate Test Candidate's capabilities in core engineering, concurrency, and real-world system architecture for Senior Backend Engineer — Distributed Systems & AI Infrastructure.\",\n      \"interviewers\": [\n        {\n          \"interviewer_id\": \"eng_be_01\",\n          \"name\": \"Aditya\",\n          \"role\": \"Senior Backend Engineer\",\n          \"voice\": \"Fenrir\",\n          \"color\": \"#10B981\",\n          \"is_primary\": true,\n          \"agent_uid\": 9991,\n          \"instructions\": \"Speak naturally and concisely with Test Candidate. Explore their codecraft and system design depth in your recent technical projects.\",\n          \"greeting_message\": \"Hello Test Candidate, welcome! I'm Aditya, Senior Backend Engineer. Today, my colleague Vikram and I will explore your system architecture and codecraft. Let's dive in.\"\n        },\n        {\n          \"interviewer_id\": \"eng_be_02\",\n          \"name\": \"Vikram\",\n          \"role\": \"Staff Backend Architect\",\n          \"voice\": \"Charon\",\n          \"color\": \"#7C3AED\",\n          \"is_primary\": false,\n          \"agent_uid\": 9992,\n          \"instructions\": \"You are Vikram, Staff Backend Architect. Challenge architectural trade-offs, probe scalability bottlenecks, evaluate latency budgets, and ask about edge cases and failure modes.\",\n          \"greeting_message\": \"Hi Test Candidate, I'm Vikram, Staff Backend Architect. I'll be focusing on system design trade-offs, scalability boundaries, and failure modes with you today.\"\n        }\n      ],\n      \"interviewer\": {\n        \"name\": \"Aditya\",\n        \"role\": \"Senior Backend Engineer\",\n        \"instructions\": \"Speak naturally and concisely with Test Candidate. Explore their codecraft and system design depth in your recent technical projects.\",\n        \"greeting_message\": \"Hello Test Candidate, welcome! I'm Aditya, Senior Backend Engineer. Let's dive into technical architecture.\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Culture\",\n      \"round_type\": \"hr\",\n      \"purpose\": \"Evaluate Test Candidate's collaboration, ownership, and technical communication\",\n      \"interviewers\": [\n        {\n          \"interviewer_id\": \"hr_01\",\n          \"name\": \"Tara\",\n          \"role\": \"Head of People & Culture\",\n          \"voice\": \"Aoede\",\n          \"color\": \"#EA580C\",\n          \"is_primary\": true,\n          \"agent_uid\": 9993,\n          \"instructions\": \"Evaluate communication, ownership, and engineering culture.\",\n          \"greeting_message\": \"Hi Test Candidate, great to meet you! I'm Tara, Head of People & Culture. Today we will discuss team collaboration, problem solving, and technical ownership.\"\n        }\n      ],\n      \"interviewer\": {\n        \"name\": \"Tara\",\n        \"role\": \"Head of People & Culture\",\n        \"instructions\": \"Evaluate communication, ownership, and engineering culture.\",\n        \"greeting_message\": \"Hi Test Candidate, great to meet you! I'm Tara, Head of People & Culture.\"\n      },\n      \"topics\": [\n        \"Ownership\",\n        \"Collaboration\",\n        \"Conflict Resolution\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Depth\": \"Evaluates codecraft and architecture\",\n    \"System Scale\": \"Evaluates distributed systems concepts\",\n    \"Communication\": \"Evaluates clarity and structured thought\"\n  }\n}"
+    },
+    {
+      "id": "bp_5zoeby2",
+      "interviewId": "int_xb4b7cd",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency\",\n      \"round_type\": \"technical\",\n      \"purpose\": \"Evaluate Madhav Gairola's capabilities in core engineering, concurrency, and real-world system architecture for Senior Full Stack Engineer — Next.js & Real-Time WebRTC.\",\n      \"interviewers\": [\n        {\n          \"interviewer_id\": \"eng_fs_01\",\n          \"name\": \"Priya\",\n          \"role\": \"Senior Full Stack Engineer\",\n          \"voice\": \"Aoede\",\n          \"color\": \"#3B82F6\",\n          \"is_primary\": true,\n          \"agent_uid\": 9991,\n          \"instructions\": \"Speak naturally and concisely with Madhav Gairola. Explore their codecraft and system design depth in 'ExpensWise' and 'ECHOSPHERE'.\",\n          \"greeting_message\": \"Hello Madhav Gairola, welcome! I'm Priya, Senior Full Stack Engineer. Today, my colleague Arjun and I will explore your system architecture and codecraft. Let's dive in.\"\n        },\n        {\n          \"interviewer_id\": \"eng_fs_02\",\n          \"name\": \"Arjun\",\n          \"role\": \"Staff Full Stack Engineer\",\n          \"voice\": \"Charon\",\n          \"color\": \"#8B5CF6\",\n          \"is_primary\": false,\n          \"agent_uid\": 9992,\n          \"instructions\": \"You are Arjun, Staff Full Stack Engineer. Challenge architectural trade-offs, probe scalability bottlenecks, evaluate latency budgets, and ask about edge cases and failure modes.\",\n          \"greeting_message\": \"Hi Madhav Gairola, I'm Arjun, Staff Full Stack Engineer. I'll be focusing on system design trade-offs, scalability boundaries, and failure modes with you today.\"\n        }\n      ],\n      \"interviewer\": {\n        \"name\": \"Priya\",\n        \"role\": \"Senior Full Stack Engineer\",\n        \"instructions\": \"Speak naturally and concisely with Madhav Gairola. Explore their codecraft and system design depth in 'ExpensWise' and 'ECHOSPHERE'.\",\n        \"greeting_message\": \"Hello Madhav Gairola, welcome! I'm Priya, Senior Full Stack Engineer. Let's dive into technical architecture.\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Culture\",\n      \"round_type\": \"hr\",\n      \"purpose\": \"Evaluate Madhav Gairola's collaboration, ownership, and technical communication\",\n      \"interviewers\": [\n        {\n          \"interviewer_id\": \"hr_01\",\n          \"name\": \"Tara\",\n          \"role\": \"Head of People & Culture\",\n          \"voice\": \"Aoede\",\n          \"color\": \"#EA580C\",\n          \"is_primary\": true,\n          \"agent_uid\": 9993,\n          \"instructions\": \"Evaluate communication, ownership, and engineering culture.\",\n          \"greeting_message\": \"Hi Madhav Gairola, great to meet you! I'm Tara, Head of People & Culture. Today we will discuss team collaboration, problem solving, and technical ownership.\"\n        }\n      ],\n      \"interviewer\": {\n        \"name\": \"Tara\",\n        \"role\": \"Head of People & Culture\",\n        \"instructions\": \"Evaluate communication, ownership, and engineering culture.\",\n        \"greeting_message\": \"Hi Madhav Gairola, great to meet you! I'm Tara, Head of People & Culture.\"\n      },\n      \"topics\": [\n        \"Ownership\",\n        \"Collaboration\",\n        \"Conflict Resolution\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Depth\": \"Evaluates codecraft and architecture\",\n    \"System Scale\": \"Evaluates distributed systems concepts\",\n    \"Communication\": \"Evaluates clarity and structured thought\"\n  }\n}"
+    }
+  ],
+  "emails": [
+    {
+      "id": "email_yud91bc",
+      "recipientEmail": "madhavgairola05@gmail.com",
+      "recipientName": "Madhav Gairola",
+      "type": "APPLICATION_RECEIVED",
+      "subject": "Application Received: Senior Full Stack Engineer — Next.js & Real-Time WebRTC at mr.technologies",
+      "bodyText": "Hi Madhav Gairola,\n\nThank you for applying for the Senior Full Stack Engineer — Next.js & Real-Time WebRTC position at mr.technologies!\n\nWe have successfully received your application, resume, and technical links. Our autonomous evaluation engine and talent team are currently reviewing your qualifications and codecraft.\n\nWhat to expect next:\n- If your experience aligns with the core requirements of the role, you will be invited to our autonomous AI Voice Technical Interview led by our specialized technical panel.\n- You will receive a separate invitation email with your scheduled date, time, and private room link.\n\nThank you again for your enthusiasm about building with mr.technologies.\n\nBest regards,\nThe mr.technologies Talent & Recruiting Team",
+      "sentAt": "2026-09-04T16:03:12.251Z",
+      "metadata": {
+        "jobTitle": "Senior Full Stack Engineer — Next.js & Real-Time WebRTC",
+        "deliveryId": "<b8b86d17-8ec9-f043-a147-e8f401632bec@gmail.com>",
+        "provider": "gmail_smtp"
+      }
+    },
+    {
+      "id": "email_jb9re4f",
+      "recipientEmail": "madhavgairola05@gmail.com",
+      "recipientName": "Madhav Gairola",
+      "type": "INTERVIEW_INVITATION",
+      "subject": "Congratulations! You're Selected for an Interview: Senior Full Stack Engineer — Next.js & Real-Time WebRTC at mr.technologies",
+      "bodyText": "Hi Madhav Gairola,\n\nCongratulations! We were impressed by your background, codecraft, and experience, and we are excited to invite you to the next stage of our evaluation process for the Senior Full Stack Engineer — Next.js & Real-Time WebRTC role.\n\n📅 Scheduled Interview Time:\nFriday, September 4, 2026 at 09:40 PM IST\n\n🔗 Your Personal Interview Room Link:\nhttp://localhost:3000/interview/int_pwk4qmn\n\n⏱️ How the Waiting Room & Interview Works:\nYour interview is scheduled to start promptly at 09:40 PM IST on Friday, September 4, 2026.\nWhen you open your room link before the scheduled time, a live countdown will display on your screen. The \"Join Interview\" button will unlock automatically as soon as your scheduled time arrives. All the best!\n\n💡 Quick Tips to Prepare:\n- Find a quiet space and use headphones with a clear microphone.\n- Be prepared to discuss your architectural trade-offs, recent projects, and hands-on technical problem solving.\n- Our AI technical interview panel will conduct the discussion conversationally.\n\nWe look forward to meeting you!\n\nWarm regards,\nThe mr.technologies Talent & Engineering Team",
+      "sentAt": "2026-09-04T16:08:33.702Z",
+      "metadata": {
+        "jobTitle": "Senior Full Stack Engineer — Next.js & Real-Time WebRTC",
+        "scheduledAt": "2026-09-04T16:10:00.000Z",
+        "interviewLink": "http://localhost:3000/interview/int_pwk4qmn",
+        "deliveryId": "<d2138066-34c5-818e-378c-dfc52548fafa@gmail.com>",
+        "provider": "gmail_smtp"
+      }
+    },
+    {
+      "id": "email_vv3x0zs",
+      "recipientEmail": "test@example.com",
+      "recipientName": "Test Candidate",
+      "type": "INTERVIEW_INVITATION",
+      "subject": "Congratulations! You're Selected for an Interview: Senior Backend Engineer — Distributed Systems & AI Infrastructure at mr.technologies",
+      "bodyText": "Hi Test Candidate,\n\nCongratulations! We were impressed by your background, codecraft, and experience, and we are excited to invite you to the next stage of our evaluation process for the Senior Backend Engineer — Distributed Systems & AI Infrastructure role.\n\n📅 Scheduled Interview Time:\nFriday, September 4, 2026 at 11:14 PM IST\n\n🔗 Your Personal Interview Room Link:\nhttp://localhost:3000/interview/int_w8axo4q\n\n⏱️ How the Waiting Room & Interview Works:\nYour interview is scheduled to start promptly at 11:14 PM IST on Friday, September 4, 2026.\nWhen you open your room link before the scheduled time, a live countdown will display on your screen. The \"Join Interview\" button will unlock automatically as soon as your scheduled time arrives. All the best!\n\n💡 Quick Tips to Prepare:\n- Find a quiet space and use headphones with a clear microphone.\n- Be prepared to discuss your architectural trade-offs, recent projects, and hands-on technical problem solving.\n- Our AI technical interview panel will conduct the discussion conversationally.\n\nWe look forward to meeting you!\n\nWarm regards,\nThe mr.technologies Talent & Engineering Team",
+      "sentAt": "2026-09-04T17:43:20.266Z",
+      "metadata": {
+        "jobTitle": "Senior Backend Engineer — Distributed Systems & AI Infrastructure",
+        "scheduledAt": "2026-09-04T17:44:00.000Z",
+        "interviewLink": "http://localhost:3000/interview/int_w8axo4q",
+        "deliveryId": "<4fd345d3-1568-d1c9-9ad6-dfc5f9d29ed8@gmail.com>",
+        "provider": "gmail_smtp"
+      }
+    },
+    {
+      "id": "email_5g35tl3",
+      "recipientEmail": "madhavgairola05@gmail.com",
+      "recipientName": "Madhav Gairola",
+      "type": "APPLICATION_RECEIVED",
+      "subject": "Application Received: Senior Full Stack Engineer — Next.js & Real-Time WebRTC at mr.technologies",
+      "bodyText": "Hi Madhav Gairola,\n\nThank you for applying for the Senior Full Stack Engineer — Next.js & Real-Time WebRTC position at mr.technologies!\n\nWe have successfully received your application, resume, and technical links. Our autonomous evaluation engine and talent team are currently reviewing your qualifications and codecraft.\n\nWhat to expect next:\n- If your experience aligns with the core requirements of the role, you will be invited to our autonomous AI Voice Technical Interview led by our specialized technical panel.\n- You will receive a separate invitation email with your scheduled date, time, and private room link.\n\nThank you again for your enthusiasm about building with mr.technologies.\n\nBest regards,\nThe mr.technologies Talent & Recruiting Team",
+      "sentAt": "2026-09-05T04:56:43.579Z",
+      "metadata": {
+        "jobTitle": "Senior Full Stack Engineer — Next.js & Real-Time WebRTC",
+        "deliveryId": "<f834e6c7-301b-111e-7535-00d5120aa75b@gmail.com>",
+        "provider": "gmail_smtp"
+      }
+    },
+    {
+      "id": "email_gmh3q6v",
+      "recipientEmail": "madhavgairola05@gmail.com",
+      "recipientName": "Madhav Gairola",
+      "type": "INTERVIEW_INVITATION",
+      "subject": "Congratulations! You're Selected for an Interview: Senior Full Stack Engineer — Next.js & Real-Time WebRTC at mr.technologies",
+      "bodyText": "Hi Madhav Gairola,\n\nCongratulations! We were impressed by your background, codecraft, and experience, and we are excited to invite you to the next stage of our evaluation process for the Senior Full Stack Engineer — Next.js & Real-Time WebRTC role.\n\n📅 Scheduled Interview Time:\nSaturday, September 5, 2026 at 10:34 AM IST\n\n🔗 Your Personal Interview Room Link:\nhttp://localhost:3000/interview/int_xb4b7cd\n\n⏱️ How the Waiting Room & Interview Works:\nYour interview is scheduled to start promptly at 10:34 AM IST on Saturday, September 5, 2026.\nWhen you open your room link before the scheduled time, a live countdown will display on your screen. The \"Join Interview\" button will unlock automatically as soon as your scheduled time arrives. All the best!\n\n💡 Quick Tips to Prepare:\n- Find a quiet space and use headphones with a clear microphone.\n- Be prepared to discuss your architectural trade-offs, recent projects, and hands-on technical problem solving.\n- Our AI technical interview panel will conduct the discussion conversationally.\n\nWe look forward to meeting you!\n\nWarm regards,\nThe mr.technologies Talent & Engineering Team",
+      "sentAt": "2026-09-05T05:04:32.807Z",
+      "metadata": {
+        "jobTitle": "Senior Full Stack Engineer — Next.js & Real-Time WebRTC",
+        "scheduledAt": "2026-09-05T05:04:00.000Z",
+        "interviewLink": "http://localhost:3000/interview/int_xb4b7cd",
+        "deliveryId": "<37379206-3eb6-f398-9421-7b1cd9c59630@gmail.com>",
+        "provider": "gmail_smtp"
+      }
+    }
+  ]
 }

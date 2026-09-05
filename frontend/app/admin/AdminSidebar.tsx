@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -50,10 +50,10 @@ export default function AdminSidebar({
       <div className="p-5 border-b border-gray-100">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-sm shadow-sm">
-            E
+            M
           </div>
           <div>
-            <h1 className="text-base font-bold text-gray-900 leading-tight">EchoSphere ATS</h1>
+            <h1 className="text-base font-bold text-gray-900 leading-tight">mr.technologies ATS</h1>
             <p className="text-[11px] text-gray-400 font-medium">Enterprise Recruiting AI</p>
           </div>
         </div>

@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { getDb } from '@/lib/db';
 import ApplicantsClient, { ApplicantRow } from './ApplicantsClient';
 
@@ -31,6 +31,8 @@ export default async function AdminApplicantsPage() {
       recentCommits30Days: app.candidateContext?.recentCommits30Days,
       pinnedProjectsCount: (app.candidateContext?.githubProjects || []).filter(p => p.isPinned).length,
       interviewId: interview?.id,
+      interviewStatus: interview?.status,
+      hasScorecard: !!interview?.scorecard,
       scheduledAt: interview?.scheduledAt
     };
   });

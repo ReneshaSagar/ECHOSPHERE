@@ -505,7 +505,7 @@ export async function correlateAndBuildCandidateContext({
         generationConfig: { responseMimeType: "application/json" }
       });
 
-      const prompt = `You are an AI synthesis strategist and principal interviewer for EchoSphere.
+      const prompt = `You are an AI synthesis strategist and principal interviewer for mr.technologies.
 You are given verified, immutable CandidateContext extracted deterministically from Resume, LinkedIn, and GitHub, alongside a target Job Description.
 
 STRICT DATA INTEGRITY DIRECTIVE:

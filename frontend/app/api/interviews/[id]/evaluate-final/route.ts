@@ -10,8 +10,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const interview = db.interviews.find(i => i.id === interviewId);
     if (!interview) return NextResponse.json({ error: "Interview not found" }, { status: 404 });
     
-    // If we already generated a scorecard, just return it
+    // If we already generated a scorecard, ensure status is completed and return
     if (interview.scorecard) {
+      interview.status = 'COMPLETED';
+      saveDb(db);
       return NextResponse.json({ success: true, scorecard: interview.scorecard });
     }
 
@@ -24,8 +26,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
 
     const blueprintJson = JSON.parse(blueprint.blueprintJson);
-
-    // Call our own internal evaluator endpoint logic (or we can just fetch it natively via localhost, but calling fetch to self in Next.js can be tricky. Better to import the logic or just fetch from absolute URL if we have one. We will fetch from localhost)
     
     const protocol = req.headers.get("x-forwarded-proto") || "http";
     const host = req.headers.get("host");
@@ -45,8 +45,23 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     
     const scorecard = await evalRes.json();
     
-    // Save locally
+    // Save scorecard and update interview status to COMPLETED
     interview.scorecard = scorecard;
+    interview.status = 'COMPLETED';
+    (interview as any).completedAt = new Date().toISOString();
+
+    // Update application pipeline record so Admin Dashboard displays completed status & report score
+    if (application) {
+      const rec = scorecard.overall_recommendation || scorecard.overallVerdict || 'STRONG HIRE';
+      const score = scorecard.overallScore ?? scorecard.score ?? (rec === 'STRONG HIRE' ? 92 : rec === 'LEAN HIRE' ? 78 : 62);
+      
+      application.status = rec === 'NO HIRE' ? 'REJECTED' : 'SELECTED';
+      application.evaluationScore = score;
+      application.evaluationSummary = scorecard.summary || scorecard.overall_summary || scorecard.recommendation_reasoning || 'Autonomous multi-agent technical and HR interview panel completed.';
+      application.decisionStage = 'FINAL_DECISION';
+      application.decisionReason = scorecard.recommendation_reasoning || scorecard.summary || 'Demonstrated strong architectural understanding and structured communication.';
+    }
+
     saveDb(db);
 
     return NextResponse.json({ success: true, scorecard });

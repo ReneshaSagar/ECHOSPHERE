@@ -7,21 +7,49 @@ export async function POST(req: NextRequest) {
     const { job_description, resume, candidate_context } = await req.json();
 
     const systemInstruction = `You are an expert AI Interview Orchestrator. 
-Your job is to analyze a Job Description, a Candidate Resume, and optional CandidateContext (from verified LinkedIn enrichment), and design a technical interview blueprint.
+Your job is to analyze a Job Description, a Candidate Resume, and optional CandidateContext (from verified LinkedIn enrichment), and design a multi-agent technical interview blueprint.
 You MUST return ONLY valid JSON matching this exact structure:
 
 {
   "interview_rounds": [
     {
-      "round_name": "Technical Interview",
+      "round_name": "Technical Panel Interview",
+      "round_type": "technical",
       "purpose": "Evaluate technical skills and experience match",
-      "interviewer": {
-        "name": "Alex",
-        "role": "Senior Software Engineer",
-        "instructions": "<highly specific instructions for the LLM voice agent>",
-        "greeting_message": "<the exact opening line Alex will speak>"
-      },
+      "interviewers": [
+        {
+          "name": "Alex (Primary)",
+          "role": "Senior Software Engineer",
+          "voice": "Aoede",
+          "agent_uid": 9991,
+          "instructions": "<highly specific instructions for the primary LLM voice agent>",
+          "greeting_message": "<the exact opening line Alex will speak>"
+        },
+        {
+          "name": "Jordan (Challenger)",
+          "role": "Staff Engineer - Technical Prober",
+          "voice": "Charon",
+          "agent_uid": 9992,
+          "instructions": "<highly specific instructions for the challenger LLM voice agent>"
+        }
+      ],
       "topics": ["topic 1", "topic 2"]
+    },
+    {
+      "round_name": "HR & Culture Round",
+      "round_type": "behavioral",
+      "purpose": "Evaluate behavioral skills and culture fit",
+      "interviewers": [
+        {
+          "name": "Taylor (HR)",
+          "role": "Talent Acquisition Manager",
+          "voice": "Puck",
+          "agent_uid": 9993,
+          "instructions": "<instructions for the HR LLM voice agent>",
+          "greeting_message": "<the exact opening line Taylor will speak>"
+        }
+      ],
+      "topics": ["teamwork", "leadership"]
     }
   ],
   "rubric": {
@@ -30,16 +58,20 @@ You MUST return ONLY valid JSON matching this exact structure:
   }
 }
 
-The instructions for Alex MUST explicitly tell him to:
+The instructions for the agents MUST explicitly tell them to:
 - speak naturally and concisely
 - ask one question at a time and listen carefully
-- ask relevant follow-up questions based on the candidate's answers
 - avoid unnecessarily repeating questions
 - stay within the scope of the provided JD and Resume
-- use the candidate's resume, JD context, and LinkedIn context naturally in conversation
-- never reveal the evaluation rubric
-- never give the candidate the answers
-- maintain a professional interviewer personality
+- never reveal the evaluation rubric or give the candidate the answers
+
+CRITICAL RULES FOR MULTI-AGENT PANEL COORDINATION (Technical Round):
+- Emphasize to BOTH agents that there are 3 PEOPLE on this live voice call: the Candidate, Alex (Primary Lead), and Jordan (Challenger Specialist).
+- The CANDIDATE is the center of the interview. Both interviewers are evaluating the candidate, NOT chatting with each other.
+- Every single question asked MUST be directed to the Candidate, followed by COMPLETE SILENCE to wait for the candidate's answer.
+- Alex leads the conversation and hands off to Jordan naturally (e.g., "Jordan, do you want to ask the candidate about their caching model?").
+- When handed the floor, Jordan immediately asks the Candidate one sharp technical question, waits in silence for the candidate's answer, and then yields back to Alex (e.g. "Thanks candidate, that makes sense. Back to you, Alex.").
+- Never talk over anyone. Yield the floor immediately if someone else is speaking.
 
 CRITICAL RULES FOR RELEVANCE & EVALUATION BOUNDARIES:
 - If CandidateContext (crossSourceContext or interviewContext) is present, use high-relevance evidence, technical interview hooks, and corroborated projects to personalize questions.

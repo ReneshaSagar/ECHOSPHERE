@@ -169,7 +169,7 @@ export default function LandingPage() {
         </section>
 
         <footer className="flex flex-col gap-3 border-t border-[#00AEEF]/25 pt-5 text-[11px] font-semibold uppercase tracking-[0.13em] text-[#5c7482] dark:text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-          <span>OmniPanel AI / EchoSphere</span>
+          <span>mr.technologies</span>
           <span className="text-[#00AEEF]">Voice is the interface</span>
         </footer>
       </main>

@@ -14,7 +14,7 @@ class StartDynamicMLLMRequest(BaseModel):
     session_id: str
     candidate_uid: int
     instructions: str
-    greeting_message: str
+    greeting_message: Optional[str] = None
     voice: Optional[str] = "Charon"
     agent_uid: Optional[int] = 9999
     channel_name: Optional[str] = None
@@ -180,7 +180,7 @@ async def start_dynamic_mllm(req: StartDynamicMLLMRequest):
                 model='gemini-3.1-flash-live-preview', 
                 voice=target_voice,
                 instructions=req.instructions,
-                greeting_message=req.greeting_message,
+                greeting_message=req.greeting_message.strip() if (req.greeting_message and req.greeting_message.strip()) else None,
                 transcribe_agent=True,
                 transcribe_user=True,
                 input_modalities=['audio'],
@@ -192,11 +192,16 @@ async def start_dynamic_mllm(req: StartDynamicMLLMRequest):
         agent_uid_str = str(target_agent_uid)
         candidate_uid_str = str(candidate_uid)
         
-        # Each agent only listens to the candidate's UID — eliminating agent-to-agent feedback loops
+        # Subscribe to both the candidate and peer interviewer for collaborative panel interaction
+        peer_uid = "9992" if target_agent_uid == 9991 else ("9991" if target_agent_uid == 9992 else None)
+        remote_uids = [candidate_uid_str]
+        if peer_uid:
+            remote_uids.append(peer_uid)
+        
         session_obj = agent.create_session(
             channel=channel_name,
             agent_uid=agent_uid_str,
-            remote_uids=[candidate_uid_str],
+            remote_uids=remote_uids,
             token=agent_token
         )
         

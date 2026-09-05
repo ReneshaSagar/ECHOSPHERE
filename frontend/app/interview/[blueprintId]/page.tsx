@@ -67,7 +67,7 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
               is_primary: true,
               agent_uid: 9991,
               instructions: `Speak naturally and concisely with ${candidate.name}. Explore their codecraft and system design depth in ${topProjects}.`,
-              greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. Today, my colleague ${panel.technicalChallenger.name} and I will explore your system architecture and codecraft. Let's dive in.`
+              greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}, and joining me is ${panel.technicalChallenger.name}. To kick things off, could you briefly introduce yourself and walk us through a recent project you built?`
             },
             {
               interviewer_id: panel.technicalChallenger.interviewerId,
@@ -85,7 +85,7 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
             name: panel.technicalPrimary.name,
             role: panel.technicalPrimary.role,
             instructions: `Speak naturally and concisely with ${candidate.name}. Explore their codecraft and system design depth in ${topProjects}.`,
-            greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. Let's dive into technical architecture.`
+            greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. To kick things off, could you introduce yourself and tell us about your recent work?`
           },
           topics: ["Core Architecture", "Data Structures", "System Scale", "Engineering Trade-offs"]
         },
@@ -152,10 +152,10 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
       <header className="bg-white border-b border-gray-200 shadow-2xs py-4 px-6 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm">
-            E
+            M
           </div>
           <div>
-            <h1 className="text-base font-bold text-gray-900 leading-tight">EchoSphere Interview</h1>
+            <h1 className="text-base font-bold text-gray-900 leading-tight">mr.technologies Interview</h1>
             <p className="text-xs text-gray-500">{job.title}</p>
           </div>
         </div>

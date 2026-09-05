@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import InterviewRoom from './InterviewRoom';
+import dynamic from 'next/dynamic';
+import { formatDateFullIST, formatTimeIST } from '@/lib/dateFormat';
 import { 
   Calendar, 
   Clock, 
@@ -14,6 +15,17 @@ import {
   Zap,
   CalendarPlus
 } from 'lucide-react';
+
+const InterviewRoom = dynamic(() => import('./InterviewRoom'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex-1 flex flex-col items-center justify-center p-12 min-h-[460px] bg-gray-900 rounded-2xl border border-gray-800 text-white animate-in fade-in">
+      <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+      <div className="text-base font-bold">Entering Interview Room...</div>
+      <div className="text-xs text-gray-400 mt-1">Connecting to Agora Voice Panel</div>
+    </div>
+  )
+});
 
 export default function InterviewLobbyWrapper({
   blueprint,
@@ -35,6 +47,7 @@ export default function InterviewLobbyWrapper({
   mcpServerUrl?: string;
 }) {
   const [hasStarted, setHasStarted] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [timeLeft, setTimeLeft] = useState<{
     days: number;
     hours: number;
@@ -49,22 +62,11 @@ export default function InterviewLobbyWrapper({
     isTimeArrived: false
   });
 
-  const scheduledDate = new Date(scheduledAt);
-  const formattedDate = scheduledDate.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    timeZone: 'Asia/Kolkata'
-  });
-  const formattedTime = scheduledDate.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
-    timeZone: 'Asia/Kolkata'
-  }) + ' IST';
+  const formattedDate = formatDateFullIST(scheduledAt);
+  const formattedTime = formatTimeIST(scheduledAt);
 
   useEffect(() => {
+    setMounted(true);
     const updateCountdown = () => {
       const now = new Date().getTime();
       const target = new Date(scheduledAt).getTime();
@@ -114,19 +116,61 @@ export default function InterviewLobbyWrapper({
     );
   }
 
-  // Google Calendar URL generator
-  const getGoogleCalendarUrl = () => {
+  // Google Calendar opener
+  const handleOpenGoogleCalendar = (e: React.MouseEvent) => {
+    e.preventDefault();
     const startTime = new Date(scheduledAt);
     const endTime = new Date(startTime.getTime() + 45 * 60 * 1000);
     const formatGCalDate = (d: Date) => d.toISOString().replace(/-|:|\.\d+/g, '');
     const dates = `${formatGCalDate(startTime)}/${formatGCalDate(endTime)}`;
 
-    const title = encodeURIComponent(`EchoSphere AI Interview: ${candidateName} (${jobTitle})`);
+    const title = encodeURIComponent(`mr.technologies AI Interview: ${candidateName} (${jobTitle})`);
+    const roomLink = typeof window !== 'undefined' ? window.location.href : '';
     const details = encodeURIComponent(
-      `Candidate: ${candidateName}\nRole: ${jobTitle}\nRoom Link: ${typeof window !== 'undefined' ? window.location.href : ''}\n\nPowered by EchoSphere Autonomous Voice AI.`
+      `Candidate: ${candidateName}\nRole: ${jobTitle}${roomLink ? `\nRoom Link: ${roomLink}` : ''}\n\nPowered by mr.technologies Autonomous Voice AI.`
     );
-    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}`;
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
+
+  if (!mounted) {
+    return (
+      <div className="max-w-3xl mx-auto py-10 px-4 space-y-8 animate-in fade-in duration-300">
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold border border-blue-200">
+            <Sparkles className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
+            <span>mr.technologies Autonomous Voice Panel</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+            Welcome, {candidateName}
+          </h1>
+          <p className="text-gray-600 text-base max-w-lg mx-auto">
+            You are confirmed for the <strong>{jobTitle}</strong> technical interview.
+          </p>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm text-center space-y-6">
+          <div className="space-y-1">
+            <div className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center justify-center gap-1.5">
+              <Calendar className="w-4 h-4 text-blue-600" />
+              <span>Scheduled Start Time</span>
+            </div>
+            <div className="text-xl sm:text-2xl font-black text-gray-900">
+              {formattedDate}
+            </div>
+            <div className="text-base font-semibold text-blue-600 flex items-center justify-center gap-1.5">
+              <Clock className="w-4 h-4" />
+              <span>{formattedTime} (45 mins)</span>
+            </div>
+          </div>
+          <div className="py-6 flex items-center justify-center gap-2 text-gray-500 text-sm font-semibold">
+            <div className="w-4 h-4 rounded-full border-2 border-blue-600 border-t-transparent animate-spin"></div>
+            <span>Synchronizing interview session countdown...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto py-10 px-4 space-y-8 animate-in fade-in duration-300">
@@ -134,7 +178,7 @@ export default function InterviewLobbyWrapper({
       <div className="text-center space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold border border-blue-200">
           <Sparkles className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
-          <span>EchoSphere Autonomous Voice Panel</span>
+          <span>mr.technologies Autonomous Voice Panel</span>
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
@@ -247,15 +291,14 @@ export default function InterviewLobbyWrapper({
 
           {/* Add to Google Calendar Option */}
           <div>
-            <a
-              href={getGoogleCalendarUrl()}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-800 font-medium transition"
+            <button
+              type="button"
+              onClick={handleOpenGoogleCalendar}
+              className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-800 font-medium transition cursor-pointer"
             >
               <CalendarPlus className="w-3.5 h-3.5 text-blue-600" />
               <span>Add to Google Calendar</span>
-            </a>
+            </button>
           </div>
         </div>
       </div>

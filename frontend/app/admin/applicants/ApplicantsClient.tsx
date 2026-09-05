@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { formatDateTimeShortIST } from '@/lib/dateFormat';
 import { 
   Users, 
   Search, 
@@ -45,6 +46,8 @@ export interface ApplicantRow {
   recentCommits30Days?: number;
   pinnedProjectsCount?: number;
   interviewId?: string;
+  interviewStatus?: string;
+  hasScorecard?: boolean;
   scheduledAt?: string;
 }
 
@@ -266,6 +269,11 @@ export default function ApplicantsClient({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            suppressHydrationWarning
+            autoComplete="off"
+            spellCheck={false}
+            data-lpignore="true"
+            data-1p-ignore="true"
           />
         </div>
       </div>
@@ -451,7 +459,7 @@ export default function ApplicantsClient({
                         <div className="space-y-1 text-xs">
                           <div className="font-semibold text-purple-800 flex items-center gap-1">
                             <Calendar className="w-3.5 h-3.5" />
-                            {app.scheduledAt ? `${new Date(app.scheduledAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' })} IST` : 'Date Pending'}
+                            <span suppressHydrationWarning>{app.scheduledAt ? formatDateTimeShortIST(app.scheduledAt) : 'Date Pending'}</span>
                           </div>
                           <p className="text-gray-500">Autonomous Agora voice interview room active.</p>
                         </div>
@@ -503,15 +511,17 @@ export default function ApplicantsClient({
                           </select>
                         </div>
 
-                        {/* View Full ATS Report */}
-                        <Link
-                          href={`/admin/applications/${app.id}`}
-                          className="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs rounded-lg border border-blue-200 transition flex items-center gap-1"
-                          title="View Full Application & Report"
-                        >
-                          <FileText className="w-3.5 h-3.5" />
-                          <span>Report</span>
-                        </Link>
+                        {/* View Full ATS Report — only shown when interview is completed! */}
+                        {(app.interviewStatus === 'COMPLETED' || app.hasScorecard || app.evaluationScore !== undefined) && (
+                          <Link
+                            href={`/admin/applications/${app.id}`}
+                            className="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs rounded-lg border border-blue-200 transition flex items-center gap-1 shadow-xs"
+                            title="View Full Application & Report"
+                          >
+                            <FileText className="w-3.5 h-3.5" />
+                            <span>Report</span>
+                          </Link>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -592,6 +602,8 @@ export default function ApplicantsClient({
                     onChange={(e) => setModalAltRoles(e.target.value)}
                     placeholder="e.g. Senior Frontend Engineer, Staff DevOps, Fullstack Architect"
                     className="w-full p-2.5 border border-gray-300 rounded-lg text-sm"
+                    suppressHydrationWarning
+                    autoComplete="off"
                   />
                   <p className="text-[11px] text-gray-400 mt-1">
                     Candidate will be flagged in the talent pool for these matching opportunities.

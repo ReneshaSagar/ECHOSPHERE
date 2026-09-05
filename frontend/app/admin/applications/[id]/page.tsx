@@ -1,6 +1,7 @@
 import React from 'react';
 import { getDb } from '@/lib/db';
 import Link from 'next/link';
+import { formatTimeIST, formatDateTimeShortIST } from '@/lib/dateFormat';
 import ApplicationActions from './ApplicationActions';
 import ScorecardViewer from './ScorecardViewer';
 
@@ -45,7 +46,7 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
           <ul className="space-y-1 text-sm text-red-700">
             {interview.suspiciousEvents!.map((ev, i) => (
               <li key={i}>
-                <strong>{new Date(ev.timestamp).toLocaleTimeString()}:</strong> {ev.type} - {ev.details}
+                <strong suppressHydrationWarning>{formatTimeIST(ev.timestamp)}:</strong> {ev.type} - {ev.details}
               </li>
             ))}
           </ul>
@@ -607,8 +608,8 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
             </div>
           ) : interview ? (
             <div className="text-center py-6">
-              <p className="text-gray-700 font-medium mb-3">
-                An interview is scheduled for {new Date(interview.scheduledAt).toLocaleString()}, but the AI Blueprint hasn't been generated yet.
+              <p className="text-gray-700 font-medium mb-3" suppressHydrationWarning>
+                An interview is scheduled for {formatDateTimeShortIST(interview.scheduledAt)}, but the AI Blueprint hasn't been generated yet.
               </p>
               <Link 
                 href={`/admin/interviews`} 

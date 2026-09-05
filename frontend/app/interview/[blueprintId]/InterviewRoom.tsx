@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import ProctorEngine from './ProctorEngine';
 import { injectKnowledgeBaseIntoAgentInstructions } from '@/lib/enrichment/knowledgeBase';
-import { Users, Shield, Zap, Sparkles, Mic, Volume2, UserCheck, AlertCircle } from 'lucide-react';
+import { Users, Shield, Zap, Sparkles, Mic, Volume2, UserCheck, AlertCircle, Clock } from 'lucide-react';
 
 type InterviewerInfo = {
   interviewer_id?: string;
@@ -60,7 +60,7 @@ export default function InterviewRoom({
   mcpServerUrl?: string;
 }) {
   const router = useRouter();
-  const [testState, setTestState] = useState<'IDLE' | 'STARTING' | 'RUNNING' | 'STOPPING' | 'EVALUATING' | 'ENDED' | 'ERROR'>('IDLE');
+  const [testState, setTestState] = useState<'IDLE' | 'STARTING' | 'RUNNING' | 'TECHNICAL_CLOSING' | 'HR_CLOSING' | 'STOPPING' | 'EVALUATING' | 'DECISION_GATE' | 'ROUND_TRANSITION' | 'INTERVIEW_COMPLETE' | 'ENDED' | 'ERROR'>('IDLE');
   const [logs, setLogs] = useState<{time: string, comp: string, msg: string}[]>([]);
   const [transcript, setTranscript] = useState<{round?: string, speaker: string, text: string}[]>([]);
   const [micVolume, setMicVolume] = useState(0);
@@ -68,6 +68,36 @@ export default function InterviewRoom({
   const [currentRound, setCurrentRound] = useState(0);
   const [activePanelAgents, setActivePanelAgents] = useState<RunningAgent[]>([]);
   const [pendingFloorNotice, setPendingFloorNotice] = useState<string | null>(null);
+  const [roundElapsedSeconds, setRoundElapsedSeconds] = useState(0);
+  const autoFinishTriggeredRef = useRef<boolean>(false);
+
+  // Round Timer & Criteria Progression (5 mins for tech, 3 mins for HR)
+  const ROUND_TARGET_SECONDS = currentRound === 0 ? 300 : 180;
+
+  useEffect(() => {
+    let timer: any = null;
+    if (testState === 'RUNNING') {
+      timer = setInterval(() => {
+        setRoundElapsedSeconds(prev => {
+          const next = prev + 1;
+          // Auto-trigger round wrap-up when criteria/time mark is reached
+          if (next >= ROUND_TARGET_SECONDS && !autoFinishTriggeredRef.current) {
+            autoFinishTriggeredRef.current = true;
+            addLog('Orchestrator', `Target round duration reached (${Math.floor(ROUND_TARGET_SECONDS / 60)}m). Transitioning round...`);
+            finishRound();
+          }
+          return next;
+        });
+      }, 1000);
+    } else {
+      setRoundElapsedSeconds(0);
+      autoFinishTriggeredRef.current = false;
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [testState, currentRound]);
 
   const runningAgentsRef = useRef<RunningAgent[]>([]);
   useEffect(() => {
@@ -84,6 +114,18 @@ export default function InterviewRoom({
     }
   }, [testState, interviewId, router]);
 
+  // Auto-start next round after ROUND_TRANSITION
+  useEffect(() => {
+    if (testState === 'ROUND_TRANSITION') {
+      const timer = setTimeout(() => {
+        addLog('System', 'Auto-starting HR round...');
+        startTest();
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [testState]);
+
   const [sessionInfo, setSessionInfo] = useState<{
     sessionId: string;
     channel: string;
@@ -93,24 +135,74 @@ export default function InterviewRoom({
 
   const clientRef = useRef<any>(null);
   const localAudioTrackRef = useRef<any>(null);
+  const remoteAudioTracksRef = useRef<Map<number, any>>(new Map());
+  const currentFloorRef = useRef<'PRIMARY_AI' | 'CHALLENGER_AI' | 'HR_AI'>('PRIMARY_AI');
+  const candidateUidRef = useRef<number>(Math.floor(100000 + Math.random() * 890000));
+  const isStartingRef = useRef<boolean>(false);
+  const technicalSummaryRef = useRef<{ score: number; reason: string; evidence: string[] } | null>(null);
+
+  // Autonomous remote audio playback: both agents' audio tracks play at 100% volume
+  const initializeRemoteTrack = (uid: number, track: any) => {
+    remoteAudioTracksRef.current.set(uid, track);
+    try {
+      track.play();
+      track.setVolume(100);
+    } catch (e) {
+      console.warn('[AutonomousFloor] Error playing remote track:', e);
+    }
+  };
 
   const addLog = (comp: string, msg: string) => {
     setLogs(prev => [...prev, { time: new Date().toLocaleTimeString(), comp, msg }]);
   };
 
-  // Cleanup on tab close/refresh: Stop all running agents (Anti-Zombie Guarantee)
+  // Keep track of latest session info for unmount cleanup without triggering re-runs
+  const sessionInfoRef = useRef(sessionInfo);
+  useEffect(() => {
+    sessionInfoRef.current = sessionInfo;
+  }, [sessionInfo]);
+
+  // Cleanup on tab close/refresh/unmount: Stop all running agents & leave Agora channel (Anti-Zombie Guarantee)
   useEffect(() => {
     const handleBeforeUnload = () => {
-      if (sessionInfo?.agentIds && sessionInfo.agentIds.length > 0) {
+      const info = sessionInfoRef.current;
+      if (info?.agentIds && info.agentIds.length > 0) {
         navigator.sendBeacon('/api/agora-mllm/stop-mllm', JSON.stringify({ 
-          session_id: sessionInfo.sessionId, 
-          agent_ids: sessionInfo.agentIds 
+          session_id: info.sessionId, 
+          agent_ids: info.agentIds 
         }));
       }
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [sessionInfo]);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      
+      // Stop agents if component unmounts unexpectedly
+      const info = sessionInfoRef.current;
+      if (info?.agentIds && info.agentIds.length > 0) {
+        // Use sendBeacon for reliable delivery during unmount
+        navigator.sendBeacon('/api/agora-mllm/stop-mllm', JSON.stringify({ 
+          session_id: info.sessionId, 
+          agent_ids: info.agentIds 
+        }));
+      }
+
+      if (localAudioTrackRef.current) {
+        try {
+          localAudioTrackRef.current.stop();
+          localAudioTrackRef.current.close();
+        } catch (e) {}
+        localAudioTrackRef.current = null;
+      }
+      if (clientRef.current) {
+        try {
+          clientRef.current.leave();
+        } catch (e) {}
+        clientRef.current = null;
+      }
+      remoteAudioTracksRef.current.clear();
+    };
+  }, []);
 
   // Handle Candidate Utterance & Deterministic Floor Arbitration
   const handleCandidateUtterance = async (utterance: string) => {
@@ -137,13 +229,29 @@ export default function InterviewRoom({
         const arbData = await arbRes.json();
         
         if (arbData.action === 'intervene') {
-          addLog('Turn Arbiter', `Floor granted to ${arbData.nextSpeakerName} to challenge candidate's claims.`);
+          addLog('Turn Arbiter', `Autonomous Floor: ${arbData.nextSpeakerName} stepping in.`);
+          setFloorOwner('CHALLENGER_AI');
+          currentFloorRef.current = 'CHALLENGER_AI';
           setActivePanelAgents(prev => prev.map(a => ({
             ...a,
             hasFloor: a.agentId === arbData.nextSpeakerId,
             intervening: a.agentId === arbData.nextSpeakerId
           })));
-          setTimeout(() => setPendingFloorNotice(null), 8000);
+          setTimeout(() => setPendingFloorNotice(null), 6000);
+
+          // Return floor naturally to Primary Interviewer after 30 seconds
+          setTimeout(() => {
+            if (currentFloorRef.current === 'CHALLENGER_AI') {
+              addLog('Turn Arbiter', `Autonomous Floor: Floor naturally returned to Lead Interviewer.`);
+              setFloorOwner('PRIMARY_AI');
+              currentFloorRef.current = 'PRIMARY_AI';
+              setActivePanelAgents(prev => prev.map(a => ({
+                ...a,
+                hasFloor: a.isPrimary,
+                intervening: false
+              })));
+            }
+          }, 30000);
         }
       }
     } catch (err) {
@@ -152,21 +260,38 @@ export default function InterviewRoom({
   };
 
   const startTest = async () => {
-    if (testState === 'RUNNING' || testState === 'STARTING') return;
+    if (isStartingRef.current || testState === 'RUNNING' || testState === 'STARTING') return;
+    isStartingRef.current = true;
     setTestState('STARTING');
     setLogs([]);
-    setTranscript([]);
+    // Preserve transcript across rounds for the final evaluator
+    if (currentRound === 0) {
+      setTranscript([]);
+    }
 
-    const sessionId = `int_${interviewId}_rd${currentRound}`;
-    const candidateUid = 1000;
+    // Unique attempt suffix guarantees an isolated Agora channel on every start/retry
+    const sessionAttempt = Math.random().toString(36).substring(2, 7);
+    const sessionId = `int_${interviewId}_rd${currentRound}_${sessionAttempt}`;
+    
+    // Dynamic candidate UID (100000-990000) avoids collisions with agents (9991-9993) or prior sessions
+    if (!candidateUidRef.current || candidateUidRef.current < 100000) {
+      candidateUidRef.current = Math.floor(100000 + Math.random() * 890000);
+    }
+    const candidateUid = candidateUidRef.current;
     
     try {
-      let AgoraRTC;
-      if (!clientRef.current) {
-        addLog('Frontend', 'Initializing Agora RTC...');
-        AgoraRTC = (await import('agora-rtc-sdk-ng')).default;
-        clientRef.current = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
+      const AgoraRTC = (await import('agora-rtc-sdk-ng')).default;
+      if (clientRef.current) {
+        try {
+          clientRef.current.removeAllListeners?.();
+          if (clientRef.current.connectionState !== 'DISCONNECTED') {
+            await clientRef.current.leave();
+          }
+        } catch (err) {}
+        clientRef.current = null;
       }
+      addLog('Frontend', `Initializing Agora RTC client (Candidate UID: ${candidateUid})...`);
+      clientRef.current = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
 
       const round = blueprint.interview_rounds[currentRound];
       const isTechnicalRound = currentRound === 0 || round.round_type === 'technical';
@@ -187,18 +312,62 @@ export default function InterviewRoom({
         
         addLog('Orchestrator', `Starting Multi-Agent Technical Panel: ${primary.name} (Primary) & ${challenger.name} (Challenger)`);
 
-        // Inject Candidate Knowledge Base into Primary
+        // Inject rich 3-person panel context dynamically into both agents
+        const primaryStrictRule = `
+================================================================================
+3-PERSON LIVE INTERVIEW ROOM PROTOCOL & CANDIDATE-FIRST PACING
+================================================================================
+You are participating in a live 3-person technical interview voice call with:
+1. CANDIDATE (Interviewee): "${candidateName}"
+2. CO-INTERVIEWER (Your Colleague): "${challenger.name}" (${challenger.role})
+3. YOU: "${primary.name}" (${primary.role}, Primary Lead)
+
+CORE TURN RULES & CANDIDATE-FIRST PACING:
+- The candidate (${candidateName}) is the center of this interview. You are here to evaluate ${candidateName}, NOT to chat with your colleague.
+- EVERY SINGLE TURN you take must conclude with a direct question asked to "${candidateName}".
+- Once you ask "${candidateName}" a question, GO COMPLETELY SILENT and patiently wait for ${candidateName} to finish speaking.
+- DO NOT speak again until "${candidateName}" has finished answering.
+- When you want your colleague ${challenger.name} to probe deeper on a topic, do a clean handoff:
+  Example: "Thanks ${candidateName}. ${challenger.name}, do you want to explore their concurrency model?"
+  Then immediately STOP speaking so ${challenger.name} can take over and question ${candidateName}.
+- When ${challenger.name} finishes probing and says "Back to you, ${primary.name}", acknowledge briefly and ask ${candidateName} your next question:
+  Example: "Thanks ${challenger.name}! ${candidateName}, let's move on to database architecture. Can you explain..."
+- Address the candidate as "${candidateName}" and your colleague as "${challenger.name}".
+- Never talk over anyone. Yield immediately if someone else is speaking.
+================================================================================`;
+
         const primaryInstructions = injectKnowledgeBaseIntoAgentInstructions(
-          primary.instructions || '',
+          (primary.instructions || '') + primaryStrictRule,
           candidateContext,
           candidateName,
           jobTitle || 'Engineering Role',
           resumeText
         );
 
-        // Inject Candidate Knowledge Base into Challenger
+        const challengerStrictRule = `
+================================================================================
+3-PERSON LIVE INTERVIEW ROOM PROTOCOL & CANDIDATE-FIRST PACING
+================================================================================
+You are participating in a live 3-person technical interview voice call with:
+1. CANDIDATE (Interviewee): "${candidateName}"
+2. CO-INTERVIEWER (Your Colleague): "${primary.name}" (${primary.role}, Primary Lead)
+3. YOU: "${challenger.name}" (${challenger.role}, Technical Specialist)
+
+CORE TURN RULES & CANDIDATE-FIRST PACING:
+- ${primary.name} is the lead driver. You are the technical specialist who steps in for deep-dive probes.
+- Only speak when:
+  1. ${primary.name} explicitly passes you the turn (e.g. "${challenger.name}, do you want to ask about X?").
+  2. ${candidateName} addresses you directly by name ("${challenger.name}").
+- When ${primary.name} hands you the floor, do NOT engage in back-and-forth chatter with ${primary.name}. Immediately turn to ${candidateName} and ask ONE sharp technical question:
+  Example: "Thanks ${primary.name}! ${candidateName}, building on that, how did you prevent race conditions under high traffic?"
+- Once you ask your question to ${candidateName}, GO COMPLETELY SILENT and wait for ${candidateName} to finish answering.
+- AFTER ${candidateName} finishes answering your probe, give a brief 1-sentence acknowledgment and smoothly hand the floor back to ${primary.name}:
+  Example: "That makes a lot of sense, thanks ${candidateName}. Back to you, ${primary.name}."
+- Never talk over anyone. Yield immediately if someone else is speaking.
+================================================================================`;
+
         const challengerInstructions = injectKnowledgeBaseIntoAgentInstructions(
-          challenger.instructions || '',
+          (challenger.instructions || '') + challengerStrictRule,
           candidateContext,
           candidateName,
           jobTitle || 'Engineering Role',
@@ -248,7 +417,7 @@ export default function InterviewRoom({
             agent_uid: challenger.agent_uid || 9992,
             voice: challenger.voice || 'Charon',
             instructions: challengerInstructions,
-            greeting_message: challenger.greeting_message,
+            greeting_message: "", // Suppress greeting on join so only Primary greets candidate
             channel_name: channelName
           })
         });
@@ -270,10 +439,17 @@ export default function InterviewRoom({
       } else {
         // Single Agent Round (e.g. Round 2 HR Round)
         const solo = roundInterviewers[0];
-        addLog('Orchestrator', `Starting Round Interviewer: ${solo.name} (${solo.role}, Voice: ${solo.voice || 'Aoede'})`);
+        addLog('Orchestrator', `Starting Single Agent Round: ${solo.name}`);
+
+        // Build HR context preamble with technical round summary
+        let hrContextPreamble = '';
+        if (currentRound > 0 && technicalSummaryRef.current) {
+          const ts = technicalSummaryRef.current;
+          hrContextPreamble = `\n\nIMPORTANT CONTEXT: The candidate (${candidateName}) has already completed the Technical Panel Interview. Technical Score: ${ts.score}/100. Panel assessment: "${ts.reason}". The technical round is COMPLETE — do NOT re-ask technical questions. You are now conducting the HR & Culture round. Begin with a warm, natural greeting and focus on behavioral fit, teamwork, and career goals.\n`;
+        }
 
         const soloInstructions = injectKnowledgeBaseIntoAgentInstructions(
-          solo.instructions || '',
+          (solo.instructions || '') + hrContextPreamble,
           candidateContext,
           candidateName,
           jobTitle || 'Engineering Role',
@@ -333,11 +509,8 @@ export default function InterviewRoom({
         if (mediaType === "audio") {
           try {
             await clientRef.current.subscribe(user, "audio");
-            addLog('RTC', `Remote audio subscribed for UID ${user.uid}`);
-            if (user.audioTrack) {
-              user.audioTrack.play();
-              addLog('RTC', `Remote audio playback started for UID ${user.uid}`);
-            }
+            initializeRemoteTrack(Number(user.uid), user.audioTrack);
+            addLog('RTC', `Remote audio subscribed & playing for UID ${user.uid}`);
           } catch (e: any) {
             addLog('RTC', `Failed to subscribe to UID ${user.uid}: ${e.message}`);
           }
@@ -346,6 +519,9 @@ export default function InterviewRoom({
 
       clientRef.current.on("user-unpublished", (user: any, mediaType: string) => {
         addLog('RTC', `[user-unpublished] Remote UID ${user.uid} unpublished ${mediaType}`);
+        if (mediaType === "audio") {
+          remoteAudioTracksRef.current.delete(Number(user.uid));
+        }
       });
 
       // Data Channel for Transcript & Speaker Attribution
@@ -356,14 +532,16 @@ export default function InterviewRoom({
           const data = JSON.parse(dataStr);
           
           if (data.text) {
+            const numUid = Number(data.uid);
+
             let speakerName = candidateName;
-            if (Number(data.uid) === 9991) {
+            if (numUid === 9991 || numUid === 9999) {
               speakerName = runningAgentsRef.current.find(a => a.agentUid === 9991)?.name || 'Primary Interviewer';
-            } else if (Number(data.uid) === 9992) {
+            } else if (numUid === 9992) {
               speakerName = runningAgentsRef.current.find(a => a.agentUid === 9992)?.name || 'Challenger';
-            } else if (Number(data.uid) === 9993) {
+            } else if (numUid === 9993) {
               speakerName = runningAgentsRef.current.find(a => a.agentUid === 9993)?.name || 'HR Interviewer';
-            } else if (Number(data.uid) !== candidateUid) {
+            } else if (numUid !== candidateUid) {
               speakerName = 'Interviewer';
             }
 
@@ -381,8 +559,8 @@ export default function InterviewRoom({
               return newArr;
             });
 
-            // If candidate spoke, check for deterministic scalability/concurrency triggers
-            if (Number(data.uid) === candidateUid && data.is_final) {
+            // If candidate spoke, check for deterministic scalability/concurrency triggers or explicit name drops
+            if (numUid === candidateUid && data.is_final) {
               handleCandidateUtterance(data.text);
             }
           }
@@ -391,7 +569,7 @@ export default function InterviewRoom({
         }
       });
 
-      // Turn Arbiter (Floor Control & Multi-Agent Volume Tracking)
+      // Turn Arbiter (Autonomous Floor Control & Multi-Agent Volume Tracking)
       clientRef.current.enableAudioVolumeIndicator();
       clientRef.current.on("volume-indicator", (volumes: any[]) => {
         let primarySpeaking = false;
@@ -406,55 +584,78 @@ export default function InterviewRoom({
           if (vol.uid === candidateUid && vol.level > 10) candidateSpeaking = true;
         });
 
-        const anyAiSpeaking = primarySpeaking || challengerSpeaking || hrSpeaking;
-
-        if (candidateSpeaking && !anyAiSpeaking) {
+        // Heuristic Floor Arbitration & Crosstalk Squasher
+        if (candidateSpeaking && !primarySpeaking && !challengerSpeaking && !hrSpeaking) {
           setFloorOwner('CANDIDATE');
           setMicVolume(volumes.find(v => v.uid === candidateUid)?.level || 0);
-        } else if (!candidateSpeaking && anyAiSpeaking) {
-          if (primarySpeaking) setFloorOwner('PRIMARY_AI');
-          else if (challengerSpeaking) setFloorOwner('CHALLENGER_AI');
-          else if (hrSpeaking) setFloorOwner('HR_AI');
+        } else if (primarySpeaking && !challengerSpeaking) {
+          setFloorOwner('PRIMARY_AI');
+          currentFloorRef.current = 'PRIMARY_AI';
           setMicVolume(0);
-        } else if (!candidateSpeaking && !anyAiSpeaking) {
+          remoteAudioTracksRef.current.get(9991)?.setVolume(100);
+          setActivePanelAgents(prev => prev.map(a => ({ ...a, hasFloor: a.isPrimary, intervening: false })));
+        } else if (challengerSpeaking && !primarySpeaking) {
+          setFloorOwner('CHALLENGER_AI');
+          currentFloorRef.current = 'CHALLENGER_AI';
+          setMicVolume(0);
+          remoteAudioTracksRef.current.get(9992)?.setVolume(100);
+          setActivePanelAgents(prev => prev.map(a => ({ ...a, hasFloor: !a.isPrimary, intervening: true })));
+        } else if (hrSpeaking) {
+          setFloorOwner('HR_AI');
+          currentFloorRef.current = 'HR_AI';
+          setMicVolume(0);
+        } else if (primarySpeaking && challengerSpeaking) {
+          // Crosstalk detected! Instantly mute the agent that didn't have the floor
+          setFloorOwner('CROSSTALK');
+          setMicVolume(0);
+          if (currentFloorRef.current === 'CHALLENGER_AI') {
+             // Challenger had the floor, Primary is interrupting. Mute Primary.
+             remoteAudioTracksRef.current.get(9991)?.setVolume(0);
+             remoteAudioTracksRef.current.get(9992)?.setVolume(100);
+          } else {
+             // Primary had the floor, Challenger is interrupting. Mute Challenger.
+             remoteAudioTracksRef.current.get(9992)?.setVolume(0);
+             remoteAudioTracksRef.current.get(9991)?.setVolume(100);
+          }
+        } else {
           setFloorOwner('NONE');
           setMicVolume(0);
-        } else {
-          setFloorOwner('CROSSTALK');
-          setMicVolume(volumes.find(v => v.uid === candidateUid)?.level || 0);
+          // Unmute both when silent so whoever speaks next is heard
+          remoteAudioTracksRef.current.get(9991)?.setVolume(100);
+          remoteAudioTracksRef.current.get(9992)?.setVolume(100);
         }
       });
 
       // Join RTC Channel
-      if (clientRef.current.connectionState === 'DISCONNECTED') {
-        addLog('RTC', 'Joining RTC Channel...');
-        await clientRef.current.join(
-          process.env.NEXT_PUBLIC_AGORA_APP_ID || '', 
-          channelName, 
-          candidateToken, 
-          candidateUid
-        );
+      addLog('RTC', `Joining RTC Channel: ${channelName} (Candidate UID: ${candidateUid})...`);
+      await clientRef.current.join(
+        process.env.NEXT_PUBLIC_AGORA_APP_ID || '', 
+        channelName, 
+        candidateToken, 
+        candidateUid
+      );
 
-        clientRef.current.remoteUsers.forEach(async (user: any) => {
-          if (user.hasAudio) {
-            try {
-              await clientRef.current.subscribe(user, "audio");
-              user.audioTrack?.play();
-              addLog('RTC', `Subscribed to existing remote UID ${user.uid}`);
-            } catch (e) {}
-          }
-        });
-
-        const AgoraRTCSDK = (await import('agora-rtc-sdk-ng')).default;
-        localAudioTrackRef.current = await AgoraRTCSDK.createMicrophoneAudioTrack();
-        await clientRef.current.publish([localAudioTrackRef.current]);
-        addLog('RTC', 'Local microphone published.');
-      } else {
-        addLog('RTC', 'Reusing existing RTC connection for new round.');
-        if (localAudioTrackRef.current) {
-          await clientRef.current.publish([localAudioTrackRef.current]).catch((e: any) => console.log('Already published', e));
+      clientRef.current.remoteUsers.forEach(async (user: any) => {
+        if (user.hasAudio) {
+          try {
+            await clientRef.current.subscribe(user, "audio");
+            initializeRemoteTrack(Number(user.uid), user.audioTrack);
+            addLog('RTC', `Subscribed to existing remote UID ${user.uid}`);
+          } catch (e) {}
         }
+      });
+
+      if (localAudioTrackRef.current) {
+        try {
+          localAudioTrackRef.current.stop();
+          localAudioTrackRef.current.close();
+        } catch (e) {}
+        localAudioTrackRef.current = null;
       }
+      const AgoraRTCSDK = (await import('agora-rtc-sdk-ng')).default;
+      localAudioTrackRef.current = await AgoraRTCSDK.createMicrophoneAudioTrack();
+      await clientRef.current.publish([localAudioTrackRef.current]);
+      addLog('RTC', 'Local microphone published.');
 
       setTestState('RUNNING');
       addLog('System', `Round ${currentRound + 1} is running with active panel.`);
@@ -462,64 +663,118 @@ export default function InterviewRoom({
     } catch (e: any) {
       setTestState('ERROR');
       addLog('Error', e.message);
+      // On error, randomize candidate UID so subsequent attempts never conflict
+      candidateUidRef.current = Math.floor(100000 + Math.random() * 890000);
+    } finally {
+      isStartingRef.current = false;
     }
   };
 
   const finishRound = async () => {
-    setTestState('STOPPING');
-    addLog('System', 'Stopping all active agents for this round...');
+    const round = blueprint.interview_rounds[currentRound];
+    const isTechnicalRound = currentRound === 0 || round.round_type === 'technical';
+    const isLastRound = currentRound + 1 >= blueprint.interview_rounds.length;
+
+    // ── Phase 1: Closing State ─────────────────────────────────────────────
+    if (isTechnicalRound) {
+      setTestState('TECHNICAL_CLOSING');
+      addLog('Orchestrator', 'Technical round concluding — primary interviewer wrapping up...');
+    } else {
+      setTestState('HR_CLOSING');
+      addLog('Orchestrator', 'HR round concluding — interviewer wrapping up...');
+    }
+
     try {
-      // 1. Anti-Zombie Guarantee: Stop ALL running agents from this round
-      if (sessionInfo?.agentIds && sessionInfo.agentIds.length > 0) {
-        await fetch('/api/agora-mllm/stop-mllm', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            session_id: sessionInfo.sessionId, 
-            agent_ids: sessionInfo.agentIds 
-          })
-        });
-        addLog('System', `Stopped ${sessionInfo.agentIds.length} agent(s).`);
+      // ── Phase 2: Graceful Agent Shutdown ────────────────────────────────
+      // For technical panel: stop Challenger first (silent during sign-off), then wait for Primary to finish speaking
+      if (isTechnicalRound && sessionInfo?.agentIds && sessionInfo.agentIds.length >= 2) {
+        // Stop the Challenger agent immediately so only Primary speaks
+        const challengerAgentId = activePanelAgents.find(a => !a.isPrimary)?.agentId;
+        if (challengerAgentId) {
+          addLog('System', 'Stopping Challenger agent for clean sign-off...');
+          await fetch('/api/agora-mllm/stop-mllm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ session_id: sessionInfo.sessionId, agent_id: challengerAgentId })
+          });
+          addLog('System', 'Challenger agent stopped.');
+        }
+
+        // Wait for Primary to finish speaking by polling volume levels
+        addLog('System', 'Waiting for primary interviewer to finish speaking...');
+        await waitForAgentSilence(9991, 6000);
+
+        // Now stop the Primary agent
+        const primaryAgentId = activePanelAgents.find(a => a.isPrimary)?.agentId;
+        if (primaryAgentId) {
+          await fetch('/api/agora-mllm/stop-mllm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ session_id: sessionInfo.sessionId, agent_id: primaryAgentId })
+          });
+          addLog('System', 'Primary agent stopped.');
+        }
+      } else {
+        // Single agent round (HR): wait for agent to finish speaking, then stop
+        addLog('System', 'Waiting for interviewer to finish speaking...');
+        const soloUid = activePanelAgents[0]?.agentUid || 9993;
+        await waitForAgentSilence(soloUid, 6000);
+
+        if (sessionInfo?.agentIds && sessionInfo.agentIds.length > 0) {
+          await fetch('/api/agora-mllm/stop-mllm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ session_id: sessionInfo.sessionId, agent_ids: sessionInfo.agentIds })
+          });
+          addLog('System', `Stopped ${sessionInfo.agentIds.length} agent(s).`);
+        }
       }
-      
-      // Temporarily unpublish local mic
+
+      // ── Phase 3: RTC Cleanup (preserve transcript) ─────────────────────
+      setTestState('STOPPING');
       if (localAudioTrackRef.current) {
-        await clientRef.current?.unpublish([localAudioTrackRef.current]);
+        try { localAudioTrackRef.current.stop(); localAudioTrackRef.current.close(); } catch (e) {}
+        localAudioTrackRef.current = null;
       }
+      if (clientRef.current) {
+        try { await clientRef.current.leave(); } catch (e) {}
+      }
+      remoteAudioTracksRef.current.clear();
       setSessionInfo(null);
       setActivePanelAgents([]);
-      
-      // 2. Decision Gate (Evaluate Round)
+
+      // ── Phase 4: Decision Gate (Evaluate Round) ────────────────────────
       setTestState('EVALUATING');
       addLog('Arbiter', 'Evaluating round evidence via Decision Gate...');
       
-      const roundName = blueprint.interview_rounds[currentRound].round_name;
+      const roundName = round.round_name;
       const roundTranscript = transcript.filter(t => (t as any).round === roundName);
       
       const evalRes = await fetch(`/api/interviews/${interviewId}/evaluate-round`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          roundName: roundName,
-          transcript: roundTranscript,
-          rubric: blueprint.rubric
-        })
+        body: JSON.stringify({ roundName, transcript: roundTranscript, rubric: blueprint.rubric })
       });
       
       const evalData = await evalRes.json();
       if (!evalRes.ok) throw new Error(evalData.error || 'Evaluation failed');
       
-      addLog('Arbiter', `Decision Gate Outcome: ${evalData.evaluation.decision} (Score: ${evalData.evaluation.score}/100)`);
+      addLog('Arbiter', `Decision Gate: ${evalData.evaluation.decision} (Score: ${evalData.evaluation.score}/100)`);
+      setTestState('DECISION_GATE');
 
-      // 3. Transition Logic
-      if (evalData.evaluation.decision === 'FAIL') {
-        localAudioTrackRef.current?.close();
-        await clientRef.current?.leave();
-        setTestState('ENDED');
-        addLog('System', 'Candidate did not meet criteria for technical round. Interview concluded.');
-      } else {
-        // PASS
-        if (currentRound + 1 < blueprint.interview_rounds.length) {
+      // ── Phase 5: Transition Logic ──────────────────────────────────────
+      if (isTechnicalRound) {
+        // Store technical summary for HR context injection
+        technicalSummaryRef.current = {
+          score: evalData.evaluation.score,
+          reason: evalData.evaluation.reason,
+          evidence: roundTranscript.slice(-10).map((t: any) => `[${t.speaker}]: ${t.text?.slice(0, 100)}`),
+        };
+
+        if (evalData.evaluation.decision === 'FAIL') {
+          addLog('System', 'Candidate did not meet criteria for technical round. Interview concluded.');
+          setTestState('ENDED');
+        } else if (!isLastRound) {
           addLog('System', `Decision Gate Passed! Transitioning to Round ${currentRound + 2} (HR Round)...`);
 
           // Transition shared interview state to HR
@@ -533,25 +788,76 @@ export default function InterviewRoom({
             })
           }).catch(err => console.error('State transition error:', err));
 
+          setTestState('ROUND_TRANSITION');
           setCurrentRound(prev => prev + 1);
-          setTestState('IDLE'); 
-          
-          setTimeout(() => {
-            const startBtn = document.getElementById('auto-start-btn');
-            if (startBtn) startBtn.click();
-          }, 2500);
+          // The useEffect watching for ROUND_TRANSITION will auto-start the next round
         } else {
-          localAudioTrackRef.current?.close();
-          await clientRef.current?.leave();
+          // Technical was the only round
+          setTestState('INTERVIEW_COMPLETE');
+          addLog('System', 'Generating final scorecard...');
+          await fetch(`/api/interviews/${interviewId}/evaluate-final`, { method: 'POST' }).catch(() => {});
           setTestState('ENDED');
+        }
+      } else {
+        // HR Round completed — this is the final round
+        if (evalData.evaluation.decision === 'FAIL') {
+          addLog('System', 'Candidate did not pass the HR round. Interview concluded.');
+        } else {
           addLog('System', 'All rounds completed successfully.');
         }
+
+        setTestState('INTERVIEW_COMPLETE');
+        addLog('System', 'Generating final scorecard across all rounds...');
+        await fetch(`/api/interviews/${interviewId}/evaluate-final`, { method: 'POST' }).catch(() => {});
+        setTestState('ENDED');
       }
 
     } catch (e: any) {
       setTestState('ERROR');
       addLog('Error', `Round completion failed: ${e.message}`);
     }
+  };
+
+  /**
+   * Polls the Agora volume-indicator to detect when a specific agent UID has stopped speaking.
+   * Resolves when the agent's audio level stays below threshold for 3 consecutive checks,
+   * or after maxWaitMs elapses (whichever comes first).
+   */
+  const waitForAgentSilence = (agentUid: number, maxWaitMs: number): Promise<void> => {
+    return new Promise((resolve) => {
+      let silentChecks = 0;
+      const requiredSilentChecks = 3;
+      const pollInterval = 500;
+      let elapsed = 0;
+
+      const timer = setInterval(() => {
+        elapsed += pollInterval;
+        
+        // Check if the agent's remote audio track has low volume
+        const track = remoteAudioTracksRef.current.get(agentUid);
+        if (!track) {
+          // Agent track already gone — treat as silent
+          clearInterval(timer);
+          resolve();
+          return;
+        }
+
+        // Use the volume indicator state — if floorOwner is not this agent, they're silent
+        const agentFloorMap: Record<number, string> = { 9991: 'PRIMARY_AI', 9992: 'CHALLENGER_AI', 9993: 'HR_AI', 9999: 'PRIMARY_AI' };
+        const agentFloor = agentFloorMap[agentUid];
+        
+        if (floorOwner !== agentFloor) {
+          silentChecks++;
+        } else {
+          silentChecks = 0; // Reset — agent is still speaking
+        }
+
+        if (silentChecks >= requiredSilentChecks || elapsed >= maxWaitMs) {
+          clearInterval(timer);
+          resolve();
+        }
+      }, pollInterval);
+    });
   };
 
   const primaryAgent = activePanelAgents.find(a => a.isPrimary) || activePanelAgents[0];
@@ -567,15 +873,28 @@ export default function InterviewRoom({
           
           {/* Top Panel Bar: Round Info & Active Panel Members */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gray-800/80 pb-4">
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2.5 flex-wrap">
               <div className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
                 <Users className="w-3.5 h-3.5 text-blue-400" />
                 <span>Round {currentRound + 1}: {blueprint.interview_rounds[currentRound]?.round_name}</span>
               </div>
+
+              {testState === 'RUNNING' && (
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/90 text-gray-300 font-mono text-xs border border-gray-700 shadow-xs">
+                  <Clock className="w-3.5 h-3.5 text-blue-400 animate-pulse" />
+                  <span className="font-bold text-white">
+                    {Math.floor(roundElapsedSeconds / 60)}:{String(roundElapsedSeconds % 60).padStart(2, '0')}
+                  </span>
+                  <span className="text-gray-500">/</span>
+                  <span className="text-gray-400">
+                    {Math.floor(ROUND_TARGET_SECONDS / 60)}:00
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-400 font-medium">Panel Architecture:</span>
+              <span className="text-xs text-gray-400 font-medium hidden sm:inline">Panel:</span>
               <span className="text-xs px-2 py-0.5 rounded bg-gray-800 text-gray-300 font-mono">
                 {currentRound === 0 ? '2 Technical Agents' : '1 HR Agent'}
               </span>
@@ -613,12 +932,12 @@ export default function InterviewRoom({
                     <span className="text-3xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 font-bold uppercase">
                       Primary Driver
                     </span>
-                    <span className={`text-3xs px-2 py-0.5 rounded-full font-bold uppercase ${
+                    <span className={`text-3xs px-2 py-0.5 rounded-full font-bold uppercase transition-all ${
                       floorOwner === 'PRIMARY_AI' 
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
+                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 ring-1 ring-emerald-500/40' 
                         : 'bg-gray-800 text-gray-400'
                     }`}>
-                      {floorOwner === 'PRIMARY_AI' ? '🎙️ Speaking' : '👂 Listening'}
+                      {floorOwner === 'PRIMARY_AI' ? '🎙️ Speaking (Lead)' : '👂 Listening'}
                     </span>
                   </div>
                 </div>
@@ -651,9 +970,9 @@ export default function InterviewRoom({
                     <span className="text-3xs px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold uppercase">
                       Specialist Lead
                     </span>
-                    <span className={`text-3xs px-2 py-0.5 rounded-full font-bold uppercase ${
+                    <span className={`text-3xs px-2 py-0.5 rounded-full font-bold uppercase transition-all ${
                       floorOwner === 'CHALLENGER_AI'
-                        ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                        ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30 ring-1 ring-purple-500/40'
                         : challengerAgent?.intervening
                           ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30 animate-pulse'
                           : 'bg-gray-800 text-gray-400'
@@ -731,23 +1050,87 @@ export default function InterviewRoom({
                     <div className="h-full bg-green-500 transition-all duration-75" style={{width: `${micVolume}%`}}></div>
                   </div>
                 </div>
-                <button 
-                  onClick={finishRound} 
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-xs transition shadow-md whitespace-nowrap cursor-pointer"
-                >
-                  Finish Round
-                </button>
+                {currentRound === 0 ? (
+                  <button 
+                    onClick={finishRound} 
+                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-bold text-xs transition shadow-md whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
+                    title="Advance to HR Round (Hackathon Fast-Forward)"
+                  >
+                    <span>Next Round (HR)</span>
+                    <span className="text-blue-200">→</span>
+                  </button>
+                ) : (
+                  <button 
+                    onClick={finishRound} 
+                    className="px-4 py-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white rounded-lg font-bold text-xs transition shadow-md whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
+                    title="End Interview"
+                  >
+                    <span>End Interview</span>
+                    <span className="text-red-200">✗</span>
+                  </button>
+                )}
               </div>
             </div>
           )}
 
-          {/* Evaluating State Overlay */}
-          {testState === 'EVALUATING' && (
+          {/* Technical Closing Overlay */}
+          {testState === 'TECHNICAL_CLOSING' && (
+            <div className="absolute inset-0 bg-gray-950/80 z-20 flex flex-col items-center justify-center text-white backdrop-blur-sm rounded-2xl p-6">
+              <Mic className="w-10 h-10 text-blue-400 mb-4 animate-pulse" />
+              <h3 className="text-xl font-bold">Technical Round Concluding</h3>
+              <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
+                The primary interviewer is wrapping up. Please wait...
+              </p>
+            </div>
+          )}
+
+          {/* HR Closing Overlay */}
+          {testState === 'HR_CLOSING' && (
+            <div className="absolute inset-0 bg-gray-950/80 z-20 flex flex-col items-center justify-center text-white backdrop-blur-sm rounded-2xl p-6">
+              <Mic className="w-10 h-10 text-orange-400 mb-4 animate-pulse" />
+              <h3 className="text-xl font-bold">HR Round Concluding</h3>
+              <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
+                The HR interviewer is wrapping up. Please wait...
+              </p>
+            </div>
+          )}
+
+          {/* Evaluating / Decision Gate Overlay */}
+          {(testState === 'EVALUATING' || testState === 'DECISION_GATE') && (
             <div className="absolute inset-0 bg-gray-950/90 z-20 flex flex-col items-center justify-center text-white backdrop-blur-md rounded-2xl p-6">
               <svg className="animate-spin h-10 w-10 text-blue-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-              <h3 className="text-xl font-bold">Decision Gate in Progress</h3>
+              <h3 className="text-xl font-bold">
+                {testState === 'DECISION_GATE' ? 'Decision Gate' : 'Evaluating Round Performance'}
+              </h3>
               <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
-                The Decision Gate is synthesizing evidence from the technical panel before transitioning to the HR round.
+                {testState === 'DECISION_GATE' 
+                  ? 'Determining whether the candidate proceeds to the next round...'
+                  : 'Synthesizing evidence from the interview panel...'}
+              </p>
+            </div>
+          )}
+
+          {/* Round Transition Overlay */}
+          {testState === 'ROUND_TRANSITION' && (
+            <div className="absolute inset-0 bg-gray-950/90 z-20 flex flex-col items-center justify-center text-white backdrop-blur-md rounded-2xl p-6">
+              <div className="w-14 h-14 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mb-4 border border-emerald-500/40">
+                <Sparkles className="w-7 h-7" />
+              </div>
+              <h3 className="text-xl font-bold text-emerald-400">Technical Round Passed!</h3>
+              <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
+                Transitioning to the HR & Culture round. Your HR interviewer will join shortly...
+              </p>
+              <svg className="animate-spin h-5 w-5 text-gray-500 mt-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            </div>
+          )}
+
+          {/* Interview Complete Overlay (generating scorecard) */}
+          {testState === 'INTERVIEW_COMPLETE' && (
+            <div className="absolute inset-0 bg-gray-950/90 z-20 flex flex-col items-center justify-center text-white backdrop-blur-md rounded-2xl p-6">
+              <svg className="animate-spin h-10 w-10 text-emerald-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+              <h3 className="text-xl font-bold">Generating Final Scorecard</h3>
+              <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
+                Synthesizing evidence across all rounds to produce your final evaluation...
               </p>
             </div>
           )}
@@ -772,8 +1155,8 @@ export default function InterviewRoom({
           )}
         </div>
 
-        {/* Pre-start Round Banner */}
-        {testState !== 'RUNNING' && testState !== 'STARTING' && testState !== 'EVALUATING' && testState !== 'ENDED' && (
+        {/* Pre-start Round Banner (only for initial IDLE state) */}
+        {testState === 'IDLE' && (
           <div className="bg-white p-6 rounded-2xl border border-gray-200 text-center shadow-sm">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-bold text-xs mb-3 border border-blue-200">
               <Sparkles className="w-3.5 h-3.5 text-blue-600" />
@@ -782,11 +1165,10 @@ export default function InterviewRoom({
             <h3 className="text-xl font-black text-gray-900 mb-1">{blueprint.interview_rounds[currentRound]?.round_name}</h3>
             <p className="text-gray-600 text-sm mb-6 max-w-lg mx-auto">{blueprint.interview_rounds[currentRound]?.purpose}</p>
             <button 
-              id="auto-start-btn" 
               onClick={startTest} 
               className="px-10 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition transform hover:-translate-y-0.5 cursor-pointer"
             >
-              Start Round {currentRound + 1}
+              Start Interview
             </button>
           </div>
         )}

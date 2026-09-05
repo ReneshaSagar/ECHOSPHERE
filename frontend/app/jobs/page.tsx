@@ -13,7 +13,7 @@ export default async function JobBoardPage() {
       <div className="mb-10 text-center py-10 bg-blue-50 rounded-xl border border-blue-100">
         <h1 className="text-4xl font-extrabold text-blue-900 mb-4">Open Positions</h1>
         <p className="text-lg text-blue-700 max-w-2xl mx-auto">
-          Join EchoSphere Tech and help us build the next generation of AI-driven platforms. 
+          Join mr.technologies and help us build the next generation of AI-driven platforms. 
           Browse our open roles below and apply today!
         </p>
       </div>

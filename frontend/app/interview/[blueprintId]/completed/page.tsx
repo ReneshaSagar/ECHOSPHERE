@@ -24,14 +24,14 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
 
   return (
     <div className="min-h-screen bg-linear-to-b from-slate-900 via-gray-900 to-slate-950 text-white flex flex-col pt-12 pb-16 px-4">
-      {/* EchoSphere Brand Nav */}
+      {/* mr.technologies Brand Nav */}
       <div className="max-w-3xl mx-auto w-full mb-8 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-base shadow-lg shadow-blue-500/30">
-            E
+            M
           </div>
           <div>
-            <div className="font-extrabold text-white text-base tracking-tight">EchoSphere AI</div>
+            <div className="font-extrabold text-white text-base tracking-tight">mr.technologies AI</div>
             <div className="text-xs text-gray-400">Autonomous Technical Interviews</div>
           </div>
         </div>

@@ -14,7 +14,7 @@ export default function Navbar() {
         <div className="grid h-8 w-8 place-items-center bg-[#00AEEF] text-lg font-bold leading-none text-white">
           +
         </div>
-        <span className="text-lg font-semibold tracking-[-0.04em] text-[#102a3a] dark:text-slate-100">OmniPanel AI</span>
+        <span className="text-lg font-semibold tracking-[-0.04em] text-[#102a3a] dark:text-slate-100">mr.technologies</span>
       </Link>
       
       <div className="flex items-center justify-center">

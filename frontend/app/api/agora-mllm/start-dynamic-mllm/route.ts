@@ -66,17 +66,18 @@ export async function POST(req: NextRequest) {
       model: 'gemini-3.1-flash-live-preview',
       voice: targetVoice,
       instructions: instructions,
-      greetingMessage: greeting_message,
+      greetingMessage: greeting_message && greeting_message.trim() ? greeting_message.trim() : undefined,
       transcribeAgent: true,
       transcribeUser: true,
       inputModalities: ['audio'],
       outputModalities: ['audio']
     }));
 
+    // Allow agents in a multi-agent panel to hear all participants (candidate + co-interviewer)
     const sessionObj = await agent.createSession({
       channel: channelName,
       agentUid: String(targetAgentUid),
-      remoteUids: [String(candidate_uid)],
+      remoteUids: ["*"],
       token: agentToken
     });
 

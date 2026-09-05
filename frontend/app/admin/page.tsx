@@ -1,6 +1,7 @@
-﻿import React from 'react';
+import React from 'react';
 import { getDb } from '@/lib/db';
 import Link from 'next/link';
+import { formatDateTimeShortIST } from '@/lib/dateFormat';
 import { 
   Briefcase, 
   Users, 
@@ -152,8 +153,8 @@ export default function AdminDashboard() {
                     <div className="font-bold text-sm text-gray-900 truncate">
                       {candidate?.name || 'Candidate'}
                     </div>
-                    <div className="text-xs text-gray-500 truncate">
-                      {job?.title} • {new Date(interview.scheduledAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    <div className="text-xs text-gray-500 truncate" suppressHydrationWarning>
+                      {job?.title} • {formatDateTimeShortIST(interview.scheduledAt)}
                     </div>
                   </div>
 
