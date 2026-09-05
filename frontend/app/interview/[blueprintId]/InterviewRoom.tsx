@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import ProctorEngine from './ProctorEngine';
 import { injectKnowledgeBaseIntoAgentInstructions } from '@/lib/enrichment/knowledgeBase';
 import { Users, Shield, Zap, Sparkles, Mic, Volume2, UserCheck, AlertCircle, Clock } from 'lucide-react';
+import ParticleTalkingOrb from '@/components/room/ParticleTalkingOrb';
 
 type InterviewerInfo = {
   interviewer_id?: string;
@@ -980,18 +981,13 @@ STRICT FLOOR RULES & SILENT STANDBY:
                     ? 'bg-blue-950/40 border-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.3)] scale-102' 
                     : 'bg-gray-850/60 border-gray-800 opacity-90'
                 }`}>
-                  <div className="relative mb-3">
-                    <div 
-                      className={`w-20 h-20 rounded-full flex items-center justify-center font-black text-2xl text-white transition-all shadow-md ${
-                        floorOwner === 'PRIMARY_AI' ? 'ring-4 ring-blue-500 ring-offset-4 ring-offset-gray-900 scale-105' : ''
-                      }`}
-                      style={{ backgroundColor: primaryAgent?.color || '#3B82F6' }}
-                    >
-                      {primaryAgent?.name?.[0] || 'P'}
-                    </div>
-                    {floorOwner === 'PRIMARY_AI' && (
-                      <div className="absolute -inset-2 border-2 border-blue-400 rounded-full animate-ping pointer-events-none"></div>
-                    )}
+                  <div className="relative mb-2 flex items-center justify-center">
+                    <ParticleTalkingOrb 
+                      isSpeaking={floorOwner === 'PRIMARY_AI'}
+                      isListening={floorOwner === 'CANDIDATE'}
+                      size={150}
+                      accentColor={primaryAgent?.color || '#3B82F6'}
+                    />
                   </div>
                   <h3 className="text-lg font-bold text-white">{primaryAgent?.name}</h3>
                   <p className="text-xs text-gray-400 mb-3">{primaryAgent?.role}</p>
@@ -1027,18 +1023,14 @@ STRICT FLOOR RULES & SILENT STANDBY:
                       ? 'bg-amber-950/30 border-amber-500/60'
                       : 'bg-gray-850/60 border-gray-800 opacity-90'
                 }`}>
-                  <div className="relative mb-3">
-                    <div 
-                      className={`w-20 h-20 rounded-full flex items-center justify-center font-black text-2xl text-white transition-all shadow-md ${
-                        floorOwner === 'CHALLENGER_AI' ? 'ring-4 ring-purple-500 ring-offset-4 ring-offset-gray-900 scale-105' : ''
-                      }`}
-                      style={{ backgroundColor: challengerAgent?.color || '#8B5CF6' }}
-                    >
-                      {challengerAgent?.name?.[0] || 'C'}
-                    </div>
-                    {floorOwner === 'CHALLENGER_AI' && (
-                      <div className="absolute -inset-2 border-2 border-purple-400 rounded-full animate-ping pointer-events-none"></div>
-                    )}
+                  <div className="relative mb-2 flex items-center justify-center">
+                    <ParticleTalkingOrb 
+                      isSpeaking={floorOwner === 'CHALLENGER_AI'}
+                      isListening={floorOwner === 'CANDIDATE'}
+                      isThinking={challengerAgent?.intervening}
+                      size={150}
+                      accentColor={challengerAgent?.color || '#8B5CF6'}
+                    />
                   </div>
                   <h3 className="text-lg font-bold text-white">{challengerAgent?.name}</h3>
                   <p className="text-xs text-gray-400 mb-3">{challengerAgent?.role}</p>
@@ -1075,25 +1067,16 @@ STRICT FLOOR RULES & SILENT STANDBY:
             ) : (
               // Single Interviewer Display (HR Round or Pre-start)
               <div className="flex flex-col items-center justify-center text-center">
-                <div className="relative mb-4">
-                  <div className={`w-28 h-28 rounded-full flex items-center justify-center transition-all duration-300 ${
-                    testState !== 'RUNNING' ? 'bg-gray-700' :
-                    floorOwner === 'HR_AI' || floorOwner === 'PRIMARY_AI' ? 'bg-orange-600 scale-105 shadow-[0_0_40px_rgba(234,88,12,0.5)]' : 
-                    floorOwner === 'CANDIDATE' ? 'bg-green-600' :
-                    floorOwner === 'CROSSTALK' ? 'bg-red-600' :
-                    'bg-gray-800'
-                  }`}>
-                    <Users className="w-14 h-14 text-white" />
-                  </div>
-                  {(floorOwner === 'HR_AI' || floorOwner === 'PRIMARY_AI') && (
-                    <div className="absolute -inset-3 border-4 border-orange-500/50 rounded-full animate-ping pointer-events-none"></div>
-                  )}
-                  {floorOwner === 'CANDIDATE' && (
-                    <div className="absolute -inset-3 border-4 border-green-500/50 rounded-full animate-pulse pointer-events-none"></div>
-                  )}
+                <div className="relative mb-2 flex items-center justify-center">
+                  <ParticleTalkingOrb 
+                    isSpeaking={testState === 'RUNNING' && (floorOwner === 'HR_AI' || floorOwner === 'PRIMARY_AI')}
+                    isListening={floorOwner === 'CANDIDATE'}
+                    isThinking={testState === 'STARTING' || testState === 'ROUND_TRANSITION'}
+                    size={200}
+                  />
                 </div>
                 
-                <h2 className="text-xl font-bold text-white">
+                <h2 className="text-xl font-bold text-white mt-2">
                   {blueprint.interview_rounds[currentRound]?.interviewers?.[0]?.name || blueprint.interview_rounds[currentRound]?.interviewer?.name || 'AI Interviewer'}
                 </h2>
                 <p className="text-gray-400 text-sm">
