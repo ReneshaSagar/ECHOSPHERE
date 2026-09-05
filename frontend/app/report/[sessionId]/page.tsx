@@ -570,8 +570,8 @@ export default function ReportPage() {
 
         {/* Footer */}
         <div className="flex items-center justify-between border-t border-[#00AEEF]/20 pt-5 text-[10px] font-bold uppercase tracking-[0.15em] text-[#8baab8]">
-          <span>mr.technologies</span>
-          <span className="text-[#00AEEF]">Voice is the interface</span>
+          <span>Nexora Labs</span>
+          <span className="text-[#00AEEF]">Powered by OmniPanel</span>
         </div>
       </div>
     </div>

@@ -151,12 +151,17 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
     <div className="min-h-screen bg-gray-50 flex flex-col pt-16">
       <header className="bg-white border-b border-gray-200 shadow-2xs py-4 px-6 flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm">
-            M
+          <div className="w-8 h-8 rounded-lg bg-[#00AEEF] text-white flex items-center justify-center font-black text-sm shadow-xs">
+            N
           </div>
           <div>
-            <h1 className="text-base font-bold text-gray-900 leading-tight">mr.technologies Interview</h1>
-            <p className="text-xs text-gray-500">{job.title}</p>
+            <div className="flex items-center gap-2">
+              <h1 className="text-base font-bold text-gray-900 leading-tight">NEXORA LABS</h1>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 uppercase tracking-wider hidden sm:inline">
+                OmniPanel
+              </span>
+            </div>
+            <p className="text-xs text-gray-500 font-medium">{job.title}</p>
           </div>
         </div>
 
@@ -164,7 +169,7 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
           <div className="text-sm font-bold text-gray-900">{candidate.name}</div>
           <div className="text-xs text-emerald-600 font-semibold flex items-center justify-end gap-1">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            Lobby Ready
+            <span>Session Ready</span>
           </div>
         </div>
       </header>

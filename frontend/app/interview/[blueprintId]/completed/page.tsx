@@ -23,16 +23,21 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
   const job = application ? db.jobs.find(j => j.id === application.jobId) : null;
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-slate-900 via-gray-900 to-slate-950 text-white flex flex-col pt-12 pb-16 px-4">
-      {/* mr.technologies Brand Nav */}
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-gray-900 to-slate-950 text-white flex flex-col pt-12 pb-16 px-4">
+      {/* Nexora Labs Brand Nav */}
       <div className="max-w-3xl mx-auto w-full mb-8 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-base shadow-lg shadow-blue-500/30">
-            M
+          <div className="w-9 h-9 rounded-xl bg-[#00AEEF] text-white flex items-center justify-center font-black text-base shadow-lg shadow-blue-500/30">
+            N
           </div>
           <div>
-            <div className="font-extrabold text-white text-base tracking-tight">mr.technologies AI</div>
-            <div className="text-xs text-gray-400">Autonomous Technical Interviews</div>
+            <div className="font-extrabold text-white text-base tracking-tight flex items-center gap-1.5">
+              <span>NEXORA LABS</span>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-[#38bdf8] border border-blue-400/30 uppercase">
+                OmniPanel
+              </span>
+            </div>
+            <div className="text-xs text-gray-400">Autonomous Technical Evaluation</div>
           </div>
         </div>
         <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
@@ -52,7 +57,7 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
             Interview Session Completed!
           </h1>
           <p className="text-gray-300 text-base max-w-xl mx-auto leading-relaxed">
-            Thank you, <strong className="text-white font-semibold">{candidate?.name || 'Candidate'}</strong>. Your multi-round conversational voice interview for <strong className="text-blue-400 font-semibold">{job?.title || 'the target role'}</strong> has concluded successfully.
+            Thank you, <strong className="text-white font-semibold">{candidate?.name || 'Candidate'}</strong>. Your multi-round conversational interview for <strong className="text-blue-400 font-semibold">{job?.title || 'the target position'}</strong> at <strong>Nexora Labs</strong> has concluded successfully.
           </p>
         </div>
 
@@ -88,9 +93,9 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
                 1
               </div>
               <div className="text-sm">
-                <div className="font-bold text-white">Automated Multi-Agent Synthesis</div>
+                <div className="font-bold text-white">OmniPanel Multi-Agent Synthesis</div>
                 <div className="text-gray-400 text-xs mt-0.5 leading-relaxed">
-                  Our evaluation arbiter synthesizes your responses, technical depth, system architecture trade-offs, and communication clarity against the standardized rubric.
+                  The evaluation arbiter synthesizes your responses, technical depth, system architecture trade-offs, and communication clarity against our standardized engineering rubric.
                 </div>
               </div>
             </div>
@@ -100,9 +105,9 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
                 2
               </div>
               <div className="text-sm">
-                <div className="font-bold text-white">Hiring Committee & Recruiter Review</div>
+                <div className="font-bold text-white">Nexora Labs Hiring Committee Review</div>
                 <div className="text-gray-400 text-xs mt-0.5 leading-relaxed">
-                  The engineering leads review the full session transcript and corroborated findings to make final stage determinations.
+                  Engineering and product leads review the complete session scorecard, verified telemetry, and corroborated background to make stage determinations.
                 </div>
               </div>
             </div>
@@ -112,9 +117,9 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
                 3
               </div>
               <div className="text-sm">
-                <div className="font-bold text-white">Email Notification with Next Steps</div>
+                <div className="font-bold text-white">Direct Email Notification with Next Steps</div>
                 <div className="text-gray-400 text-xs mt-0.5 leading-relaxed">
-                  You will receive an official email update at <strong className="text-gray-200">{candidate?.email || 'your registered email address'}</strong> regarding your application status and any follow-up steps.
+                  You will receive an official email update at <strong className="text-gray-200">{candidate?.email || 'your registered email address'}</strong> regarding your evaluation outcome and interview debrief.
                 </div>
               </div>
             </div>

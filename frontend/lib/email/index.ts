@@ -19,7 +19,7 @@ const gmailTransporter = (gmailUser && gmailPass)
   : null;
 
 /**
- * Base email layout wrapper with EchoSphere branding
+ * Base email layout wrapper with Nexora Labs branding
  */
 function wrapHtmlEmail(title: string, bodyContent: string): string {
   return `<!DOCTYPE html>
@@ -36,12 +36,12 @@ function wrapHtmlEmail(title: string, bodyContent: string): string {
         <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
           <!-- Header -->
           <tr>
-            <td style="padding: 28px 32px; background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%); color: #ffffff;">
+            <td style="padding: 28px 32px; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff;">
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td>
-                    <div style="font-size: 20px; font-weight: 800; letter-spacing: -0.02em; color: #ffffff;">mr.technologies</div>
-                    <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #93c5fd; margin-top: 2px;">Autonomous Voice Hiring Engine</div>
+                    <div style="font-size: 20px; font-weight: 800; letter-spacing: -0.02em; color: #ffffff;">Nexora Labs</div>
+                    <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #bae6fd; margin-top: 2px;">Talent & Recruiting • Powered by OmniPanel</div>
                   </td>
                 </tr>
               </table>
@@ -56,8 +56,8 @@ function wrapHtmlEmail(title: string, bodyContent: string): string {
           <!-- Footer -->
           <tr>
             <td style="padding: 20px 32px 24px 32px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b; line-height: 1.5;">
-              <div>mr.technologies Talent Team • Autonomous Voice Evaluation Panel</div>
-              <div style="margin-top: 4px; font-size: 11px; color: #94a3b8;">This automated communication was generated on behalf of the engineering review board.</div>
+              <div>Nexora Labs Talent Team • Autonomous Voice Evaluation by OmniPanel</div>
+              <div style="margin-top: 4px; font-size: 11px; color: #94a3b8;">Nexora Labs, Inc. • Bengaluru HQ · Singapore · London</div>
             </td>
           </tr>
         </table>
@@ -100,7 +100,7 @@ export async function sendEmail({
   if (gmailTransporter && gmailUser) {
     try {
       const mailOptions = {
-        from: `"mr.technologies Talent" <${gmailUser}>`,
+        from: `"Nexora Labs Talent" <${gmailUser}>`,
         to: recipientEmail,
         subject: subject,
         text: bodyText,
@@ -120,7 +120,7 @@ export async function sendEmail({
   if (!deliveryId && resend) {
     try {
       const response = await resend.emails.send({
-        from: 'mr.technologies Talent <onboarding@resend.dev>',
+        from: 'Nexora Labs Talent <onboarding@resend.dev>',
         to: recipientEmail,
         subject: subject,
         text: bodyText,
@@ -139,7 +139,7 @@ export async function sendEmail({
     }
   }
 
-  // 2. Persist to DB for ATS records
+  // 3. Persist to DB for ATS records
   const emailRecord: EmailNotification = {
     id: `email_${Math.random().toString(36).substring(2, 9)}`,
     recipientEmail,
@@ -176,11 +176,11 @@ export async function sendApplicationReceivedEmail(
   candidate: { name: string; email: string },
   job: { title: string }
 ) {
-  const subject = `Application Received: ${job.title} at mr.technologies`;
+  const subject = `Application Received: ${job.title} at Nexora Labs`;
 
   const bodyText = `Hi ${candidate.name},
 
-Thank you for applying for the ${job.title} position at mr.technologies!
+Thank you for applying for the ${job.title} position at Nexora Labs!
 
 We have successfully received your application, resume, and technical links. Our autonomous evaluation engine and talent team are currently reviewing your qualifications and codecraft.
 
@@ -188,28 +188,28 @@ What to expect next:
 - If your experience aligns with the core requirements of the role, you will be invited to our autonomous AI Voice Technical Interview led by our specialized technical panel.
 - You will receive a separate invitation email with your scheduled date, time, and private room link.
 
-Thank you again for your enthusiasm about building with mr.technologies.
+Thank you again for your enthusiasm about building with Nexora Labs.
 
 Best regards,
-The mr.technologies Talent & Recruiting Team`;
+The Nexora Labs Talent & Recruiting Team`;
 
   const htmlContent = wrapHtmlEmail(
     subject,
     `<h2 style="font-size: 20px; font-weight: 700; color: #0f172a; margin-top: 0; margin-bottom: 16px;">Application Received</h2>
     <p>Hi <strong>${candidate.name}</strong>,</p>
-    <p>Thank you for applying for the <strong>${job.title}</strong> role at mr.technologies! We are excited to learn more about your experience and background.</p>
+    <p>Thank you for applying for the <strong>${job.title}</strong> role at Nexora Labs! We are excited to learn more about your experience and background.</p>
     
-    <div style="background-color: #f1f5f9; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 6px; margin: 20px 0;">
+    <div style="background-color: #f1f5f9; border-left: 4px solid #0284c7; padding: 16px; border-radius: 6px; margin: 20px 0;">
       <div style="font-weight: 700; color: #1e293b; font-size: 14px;">Next Steps in the Hiring Process:</div>
       <ul style="margin: 8px 0 0 0; padding-left: 20px; font-size: 13px; color: #475569;">
         <li>Our autonomous evaluation engine and talent team are reviewing your resume and technical profiles.</li>
-        <li>Qualified candidates will receive a direct invitation to an autonomous AI Voice Technical Interview.</li>
+        <li>Qualified candidates will receive a direct invitation to an autonomous AI Voice Technical Interview powered by OmniPanel.</li>
         <li>Your invitation will include your exact scheduled time slot and live room link.</li>
       </ul>
     </div>
     
     <p>Thank you again for your time and interest in joining our engineering team.</p>
-    <p style="margin-top: 24px;">Warm regards,<br/><strong>The mr.technologies Talent & Engineering Team</strong></p>`
+    <p style="margin-top: 24px;">Warm regards,<br/><strong>The Nexora Labs Talent & Engineering Team</strong></p>`
   );
 
   return sendEmail({
@@ -253,15 +253,15 @@ export async function sendInterviewInvitationEmail(
   const endTime = new Date(startTime.getTime() + 45 * 60 * 1000);
   const formatGCalDate = (d: Date) => d.toISOString().replace(/-|:|\.\d+/g, '');
   const dates = `${formatGCalDate(startTime)}/${formatGCalDate(endTime)}`;
-  const title = encodeURIComponent(`mr.technologies AI Interview: ${candidate.name} (${job.title})`);
-  const details = encodeURIComponent(`Role: ${job.title}\nRoom: ${interviewLink}\nCandidate: ${candidate.name}\nTime: ${fullDateTime}`);
+  const title = encodeURIComponent(`Nexora Labs AI Interview: ${candidate.name} (${job.title})`);
+  const details = encodeURIComponent(`Role: ${job.title}\nRoom: ${interviewLink}\nCandidate: ${candidate.name}\nTime: ${fullDateTime}\n\nPowered by OmniPanel for Nexora Labs.`);
   const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}`;
 
-  const subject = `Congratulations! You're Selected for an Interview: ${job.title} at mr.technologies`;
+  const subject = `Congratulations! You're Selected for an Interview: ${job.title} at Nexora Labs`;
 
   const bodyText = `Hi ${candidate.name},
 
-Congratulations! We were impressed by your background, codecraft, and experience, and we are excited to invite you to the next stage of our evaluation process for the ${job.title} role.
+Congratulations! We were impressed by your background, codecraft, and experience, and we are excited to invite you to the next stage of our evaluation process for the ${job.title} role at Nexora Labs.
 
 📅 Scheduled Interview Time:
 ${fullDateTime}
@@ -276,12 +276,12 @@ When you open your room link before the scheduled time, a live countdown will di
 💡 Quick Tips to Prepare:
 - Find a quiet space and use headphones with a clear microphone.
 - Be prepared to discuss your architectural trade-offs, recent projects, and hands-on technical problem solving.
-- Our AI technical interview panel will conduct the discussion conversationally.
+- Our AI technical interview panel (powered by OmniPanel) will conduct the discussion conversationally.
 
 We look forward to meeting you!
 
 Warm regards,
-The mr.technologies Talent & Engineering Team`;
+The Nexora Labs Talent & Engineering Team`;
 
   const htmlContent = wrapHtmlEmail(
     subject,
@@ -292,7 +292,7 @@ The mr.technologies Talent & Engineering Team`;
       <h2 style="font-size: 22px; font-weight: 800; color: #0f172a; margin-top: 12px; margin-bottom: 6px;">
         You're Invited to an AI Voice Technical Interview
       </h2>
-      <p style="font-size: 14px; color: #64748b; margin: 0;">Role: <strong>${job.title}</strong></p>
+      <p style="font-size: 14px; color: #64748b; margin: 0;">Role: <strong>${job.title}</strong> at Nexora Labs</p>
     </div>
 
     <p>Hi <strong>${candidate.name}</strong>,</p>
@@ -300,18 +300,18 @@ The mr.technologies Talent & Engineering Team`;
     
     <!-- Interview Details Card -->
     <div style="background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 24px; text-align: center; margin: 24px 0;">
-      <div style="font-size: 12px; font-weight: 700; color: #1e40af; text-transform: uppercase; letter-spacing: 0.05em;">Confirmed Interview Slot</div>
-      <div style="font-size: 18px; font-weight: 800; color: #1e3a8a; margin-top: 4px;">${formattedDate}</div>
-      <div style="font-size: 15px; font-weight: 600; color: #2563eb; margin-top: 2px;">${formattedTime} (45 mins duration)</div>
+      <div style="font-size: 12px; font-weight: 700; color: #0369a1; text-transform: uppercase; letter-spacing: 0.05em;">Confirmed Interview Slot</div>
+      <div style="font-size: 18px; font-weight: 800; color: #0c4a6e; margin-top: 4px;">${formattedDate}</div>
+      <div style="font-size: 15px; font-weight: 600; color: #0284c7; margin-top: 2px;">${formattedTime} (45 mins duration)</div>
 
       <div style="margin-top: 20px;">
-        <a href="${interviewLink}" style="display: inline-block; background-color: #2563eb; color: #ffffff; font-weight: 700; font-size: 14px; text-decoration: none; padding: 12px 28px; border-radius: 8px; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);">
+        <a href="${interviewLink}" style="display: inline-block; background-color: #0284c7; color: #ffffff; font-weight: 700; font-size: 14px; text-decoration: none; padding: 12px 28px; border-radius: 8px; box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2);">
           Open Your Interview Room & Lobby
         </a>
       </div>
 
       <div style="margin-top: 14px;">
-        <a href="${gcalUrl}" target="_blank" style="font-size: 12px; color: #2563eb; text-decoration: underline; font-weight: 600;">
+        <a href="${gcalUrl}" target="_blank" style="font-size: 12px; color: #0284c7; text-decoration: underline; font-weight: 600;">
           + Add to Google Calendar
         </a>
       </div>
@@ -324,7 +324,7 @@ The mr.technologies Talent & Engineering Team`;
     </div>
 
     <p style="margin-top: 24px;">We look forward to speaking with you!</p>
-    <p>Warm regards,<br/><strong>The mr.technologies Talent & Engineering Team</strong></p>`
+    <p>Warm regards,<br/><strong>The Nexora Labs Talent & Engineering Team</strong></p>`
   );
 
   return sendEmail({
@@ -352,11 +352,11 @@ export async function sendRejectionEmail(
     ? `\nSpecific Feedback from the Review Team:\n"${reason}"\n` 
     : '';
 
-  const subject = `Update regarding your application for ${job.title} at mr.technologies`;
+  const subject = `Update regarding your application for ${job.title} at Nexora Labs`;
 
   const bodyText = `Hi ${candidate.name},
 
-Thank you for your interest in mr.technologies and for the time you took to apply for the ${job.title} position.
+Thank you for your interest in Nexora Labs and for the time you took to apply for the ${job.title} position.
 
 Our team reviewed your background and qualifications thoroughly. We received many strong applications, and after careful consideration${stageFormatted}, we have decided not to move forward with your candidacy for this specific opening at this time.
 ${reasonText}
@@ -365,7 +365,7 @@ Please know that this was a difficult decision. We were very glad to learn about
 We wish you the very best of luck in your job search and your ongoing engineering journey.
 
 Sincerely,
-The mr.technologies Talent Team`;
+The Nexora Labs Talent Team`;
 
   const htmlContent = wrapHtmlEmail(
     subject,
@@ -373,7 +373,7 @@ The mr.technologies Talent Team`;
       Application Status Update
     </h2>
     <p>Hi <strong>${candidate.name}</strong>,</p>
-    <p>Thank you for taking the time to apply for the <strong>${job.title}</strong> role at mr.technologies. We truly appreciate the opportunity to review your profile and codecraft.</p>
+    <p>Thank you for taking the time to apply for the <strong>${job.title}</strong> role at Nexora Labs. We truly appreciate the opportunity to review your profile and codecraft.</p>
     
     <p>We evaluated your qualifications carefully alongside a competitive pool of candidates. After careful consideration${stageFormatted}, we have decided to move forward with other candidates whose experience more closely fits our immediate technical requirements for this specific role.</p>
 
@@ -386,7 +386,7 @@ The mr.technologies Talent Team`;
 
     <p>Please know that this was a difficult choice. We were impressed by aspects of your background, and we will keep your resume and portfolio in our talent pool for future openings that match your skill set.</p>
     <p>We wish you the very best of luck in your ongoing career endeavors.</p>
-    <p style="margin-top: 24px;">Sincerely,<br/><strong>The mr.technologies Talent Team</strong></p>`
+    <p style="margin-top: 24px;">Sincerely,<br/><strong>The Nexora Labs Talent Team</strong></p>`
   );
 
   return sendEmail({

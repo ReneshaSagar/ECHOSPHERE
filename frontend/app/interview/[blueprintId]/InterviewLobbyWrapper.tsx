@@ -124,10 +124,10 @@ export default function InterviewLobbyWrapper({
     const formatGCalDate = (d: Date) => d.toISOString().replace(/-|:|\.\d+/g, '');
     const dates = `${formatGCalDate(startTime)}/${formatGCalDate(endTime)}`;
 
-    const title = encodeURIComponent(`mr.technologies AI Interview: ${candidateName} (${jobTitle})`);
+    const title = encodeURIComponent(`Nexora Labs AI Interview: ${candidateName} (${jobTitle})`);
     const roomLink = typeof window !== 'undefined' ? window.location.href : '';
     const details = encodeURIComponent(
-      `Candidate: ${candidateName}\nRole: ${jobTitle}${roomLink ? `\nRoom Link: ${roomLink}` : ''}\n\nPowered by mr.technologies Autonomous Voice AI.`
+      `Candidate: ${candidateName}\nRole: ${jobTitle}${roomLink ? `\nRoom Link: ${roomLink}` : ''}\n\nPowered by OmniPanel for Nexora Labs.`
     );
     const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}`;
     window.open(url, '_blank', 'noopener,noreferrer');
@@ -137,15 +137,15 @@ export default function InterviewLobbyWrapper({
     return (
       <div className="max-w-3xl mx-auto py-10 px-4 space-y-8 animate-in fade-in duration-300">
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold border border-blue-200">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold border border-blue-200">
             <Sparkles className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
-            <span>mr.technologies Autonomous Voice Panel</span>
+            <span>Nexora Labs • Powered by OmniPanel</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
             Welcome, {candidateName}
           </h1>
           <p className="text-gray-600 text-base max-w-lg mx-auto">
-            You are confirmed for the <strong>{jobTitle}</strong> technical interview.
+            You are confirmed for the <strong>{jobTitle}</strong> technical interview at <strong>Nexora Labs</strong>.
           </p>
         </div>
 
@@ -176,16 +176,16 @@ export default function InterviewLobbyWrapper({
     <div className="max-w-3xl mx-auto py-10 px-4 space-y-8 animate-in fade-in duration-300">
       {/* Welcome Banner */}
       <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold border border-blue-200">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold border border-blue-200">
           <Sparkles className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
-          <span>mr.technologies Autonomous Voice Panel</span>
+          <span>Nexora Labs • Powered by OmniPanel</span>
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
           Welcome, {candidateName}
         </h1>
         <p className="text-gray-600 text-base max-w-lg mx-auto">
-          You are confirmed for the <strong>{jobTitle}</strong> technical interview.
+          You are confirmed for the <strong>{jobTitle}</strong> technical interview at <strong>Nexora Labs</strong>.
         </p>
       </div>
 

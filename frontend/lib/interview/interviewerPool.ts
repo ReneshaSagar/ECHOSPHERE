@@ -1,22 +1,22 @@
 import { InterviewerProfile, CompanyInterviewerPool } from '@/lib/db';
 
 /**
- * Company-wide persistent interviewer pool.
- * No hardcoded Alex: dynamically selected based on the role requirements.
+ * Nexora Labs Company-Wide Persistent Interviewer Pool.
+ * Dynamically selected based on the role requirements and department context.
  */
 export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
   fullstack: [
     {
       interviewerId: 'eng_fs_01',
-      name: 'Priya',
+      name: 'Priya Nair',
       role: 'Senior Full Stack Engineer',
-      department: 'Engineering',
+      department: 'Product Engineering',
       voice: 'Aoede',
       color: '#3B82F6', // Blue
       persona: {
         style: 'technical, calm, conversational',
         seniority: 'senior',
-        focusAreas: ['React / Next.js', 'WebRTC & Audio APIs', 'Node.js Backend', 'API Design & State Management'],
+        focusAreas: ['React / Next.js 15', 'WebRTC & Web Audio APIs', 'Node.js Backend', 'API Contracts & State Architecture'],
         behavior: [
           'asks concise, clear technical questions',
           'probes frontend rendering, client-side caching, and API contract details',
@@ -27,9 +27,9 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
     },
     {
       interviewerId: 'eng_fs_02',
-      name: 'Arjun',
-      role: 'Staff Full Stack Engineer',
-      department: 'Engineering',
+      name: 'Arjun Malhotra',
+      role: 'Staff Software Engineer / Technical Lead',
+      department: 'Core Systems',
       voice: 'Charon',
       color: '#8B5CF6', // Purple
       persona: {
@@ -46,7 +46,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
     },
     {
       interviewerId: 'eng_fs_03',
-      name: 'Rohan',
+      name: 'Vikram Rao',
       role: 'Engineering Manager',
       department: 'Engineering',
       voice: 'Fenrir',
@@ -67,9 +67,9 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
   aiml: [
     {
       interviewerId: 'eng_ai_01',
-      name: 'Neha',
+      name: 'Neha Kapoor',
       role: 'Senior ML Engineer',
-      department: 'AI Research',
+      department: 'AI Platform',
       voice: 'Aoede',
       color: '#EC4899', // Pink
       persona: {
@@ -86,7 +86,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
     },
     {
       interviewerId: 'eng_ai_02',
-      name: 'Karan',
+      name: 'Karan Varma',
       role: 'Staff ML Engineer',
       department: 'AI Infrastructure',
       voice: 'Charon',
@@ -105,7 +105,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
     },
     {
       interviewerId: 'eng_ai_03',
-      name: 'Ananya',
+      name: 'Ananya Iyer',
       role: 'ML Lead — Speech & Audio',
       department: 'AI Research',
       voice: 'Kore',
@@ -126,7 +126,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
   backend: [
     {
       interviewerId: 'eng_be_01',
-      name: 'Aditya',
+      name: 'Aditya Sharma',
       role: 'Senior Backend Engineer',
       department: 'Core Infrastructure',
       voice: 'Fenrir',
@@ -134,17 +134,17 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
       persona: {
         style: 'hands-on, direct, articulate',
         seniority: 'senior',
-        focusAreas: ['Python (FastAPI/asyncio)', 'PostgreSQL Indexing & Optimization', 'Redis Caching', 'REST & WebSocket APIs'],
+        focusAreas: ['TypeScript / Node.js & Go', 'PostgreSQL Indexing & Optimization', 'Redis Caching', 'REST & WebSocket APIs'],
         behavior: [
           'probes database query execution plans, connection pooling, and connection thrashing',
-          'asks how candidate structures asynchronous event loops in Python or Go',
+          'asks how candidate structures asynchronous event loops and non-blocking I/O',
           'asks one question at a time and follows up directly on codecraft'
         ]
       }
     },
     {
       interviewerId: 'eng_be_02',
-      name: 'Vikram',
+      name: 'Arjun Malhotra',
       role: 'Staff Backend Architect',
       department: 'Distributed Systems',
       voice: 'Charon',
@@ -162,7 +162,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
     },
     {
       interviewerId: 'eng_be_03',
-      name: 'Meera',
+      name: 'Meera Krishnan',
       role: 'Engineering Lead — Data Platform',
       department: 'Core Infrastructure',
       voice: 'Kore',
@@ -182,8 +182,8 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
   devops: [
     {
       interviewerId: 'eng_ops_01',
-      name: 'Kabir',
-      role: 'Senior DevOps / SRE',
+      name: 'Kabir Sen',
+      role: 'Senior Platform / SRE',
       department: 'Cloud Platform',
       voice: 'Fenrir',
       color: '#F97316', // Orange
@@ -199,7 +199,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
     },
     {
       interviewerId: 'eng_ops_02',
-      name: 'Dev',
+      name: 'Dev Mukherjee',
       role: 'Staff Cloud Platform Architect',
       department: 'Cloud Platform',
       voice: 'Charon',
@@ -219,7 +219,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
   hr: [
     {
       interviewerId: 'hr_01',
-      name: 'Tara',
+      name: 'Tara Sharma',
       role: 'Head of People & Culture',
       department: 'People & Talent',
       voice: 'Aoede',
@@ -238,7 +238,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
     },
     {
       interviewerId: 'hr_02',
-      name: 'Ritu',
+      name: 'Ritu Deshmukh',
       role: 'Senior Talent Partner — Engineering',
       department: 'People & Talent',
       voice: 'Kore',
@@ -278,26 +278,26 @@ export function selectPanelForJob(jobTitle: string = ''): SelectedPanel {
   let primary: InterviewerProfile;
   let challenger: InterviewerProfile;
 
-  if (titleLower.includes('backend')) {
+  if (titleLower.includes('backend') || titleLower.includes('distributed') || titleLower.includes('infrastructure')) {
     category = 'backend';
-    primary = pool.backend[0]; // Aditya (Senior Backend)
-    challenger = pool.backend[1]; // Vikram (Staff Backend Architect)
-  } else if (titleLower.includes('devops') || titleLower.includes('sre') || titleLower.includes('kubernetes')) {
+    primary = pool.backend[0]; // Aditya Sharma (Senior Backend)
+    challenger = pool.backend[1]; // Arjun Malhotra (Staff Backend Architect)
+  } else if (titleLower.includes('devops') || titleLower.includes('platform') || titleLower.includes('sre') || titleLower.includes('kubernetes')) {
     category = 'devops';
-    primary = pool.devops[0]; // Kabir (Senior DevOps)
-    challenger = pool.devops[1]; // Dev (Staff Platform Architect)
+    primary = pool.devops[0]; // Kabir Sen (Senior Platform / SRE)
+    challenger = pool.devops[1]; // Dev Mukherjee (Staff Platform Architect)
   } else if (titleLower.includes('machine learning') || titleLower.includes('speech') || titleLower.includes('conversational') || /\b(ai|ml|nlp|llm|llms)\b/i.test(titleLower)) {
     category = 'aiml';
-    primary = pool.aiml[0]; // Neha (Senior ML Engineer)
-    challenger = pool.aiml[1]; // Karan (Staff ML Engineer)
+    primary = pool.aiml[0]; // Neha Kapoor (Senior ML Engineer)
+    challenger = pool.aiml[1]; // Karan Varma (Staff ML Engineer)
   } else {
     // Default to Full Stack panel
     category = 'fullstack';
-    primary = pool.fullstack[0]; // Priya (Senior Full Stack)
-    challenger = pool.fullstack[1]; // Arjun (Staff Full Stack)
+    primary = pool.fullstack[0]; // Priya Nair (Senior Full Stack)
+    challenger = pool.fullstack[1]; // Arjun Malhotra (Staff Software Engineer)
   }
 
-  const hr = pool.hr[0]; // Tara (Head of People & Culture)
+  const hr = pool.hr[0]; // Tara Sharma (Head of People & Culture)
 
   return {
     category,

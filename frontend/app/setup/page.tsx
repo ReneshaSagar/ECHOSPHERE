@@ -731,8 +731,8 @@ export default function SetupPage() {
 
         {/* ── Footer */}
         <div className="mt-6 flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.15em] text-[#8baab8]">
-          <span>mr.technologies</span>
-          <span className="text-[#00AEEF]">Voice is the interface</span>
+          <span>Nexora Labs</span>
+          <span className="text-[#00AEEF]">Powered by OmniPanel</span>
         </div>
       </div>
     </div>

@@ -97,12 +97,19 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
 
   if (success) {
     return (
-      <div className="max-w-2xl mx-auto mt-10 p-8 bg-green-50 border border-green-200 rounded-xl text-center shadow-sm">
-        <h2 className="text-3xl font-bold text-green-800 mb-4">Application Submitted!</h2>
-        <p className="text-green-700 mb-8 text-lg">Thank you for applying. We will review your application shortly.</p>
-        <Link href="/jobs" className="px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition">
-          Return to Job Board
-        </Link>
+      <div className="max-w-2xl mx-auto mt-10 p-8 sm:p-10 bg-emerald-50/80 border border-emerald-200 rounded-2xl text-center shadow-sm space-y-4">
+        <div className="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl font-bold">
+          ✓
+        </div>
+        <h2 className="text-3xl font-black text-emerald-900">Application Submitted!</h2>
+        <p className="text-emerald-800 text-base max-w-lg mx-auto leading-relaxed">
+          Thank you for applying to <strong>Nexora Labs</strong>. Our automated hiring engine is processing your credentials, and you will receive an email confirmation with your next steps shortly.
+        </p>
+        <div className="pt-4">
+          <Link href="/jobs" className="px-6 py-3 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition shadow-sm inline-block">
+            Return to Open Positions
+          </Link>
+        </div>
       </div>
     );
   }
@@ -112,8 +119,14 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
       <Link href={`/jobs/${jobId}`} className="text-blue-600 hover:underline mb-6 inline-block font-medium">← Back to Job Details</Link>
       
       <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+            Nexora Labs
+          </span>
+          <span className="text-xs text-gray-400">Powered by OmniPanel</span>
+        </div>
         <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Submit Your Application</h1>
-        <p className="text-gray-500 mb-8">Please fill out the form below. Your resume and links will be automatically enriched for your AI interview.</p>
+        <p className="text-gray-500 mb-8">Please fill out the form below. Your resume, GitHub, and portfolio links will be automatically analyzed and enriched by OmniPanel for your AI voice interview.</p>
 
         {alreadyApplied ? (
           <div className="mb-6 p-5 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl shadow-sm">

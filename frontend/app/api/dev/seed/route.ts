@@ -5,40 +5,64 @@ export async function POST() {
   try {
     const defaultDb: Database = {
       companies: [
-        { id: 'c1', name: 'mr.technologies', industry: 'Artificial Intelligence' }
+        { id: 'c1', name: 'Nexora Labs', industry: 'AI Infrastructure & Developer Platform' }
       ],
       jobs: [
         {
           id: 'j1',
           companyId: 'c1',
-          title: 'Senior Backend Engineer — Distributed Systems & AI Infrastructure',
-          description: 'mr.technologies is pioneering autonomous multi-persona conversational AI agent systems for enterprise hiring and technical evaluation. We are looking for a Senior Backend Engineer to lead the architecture, scaling, and operational reliability of our core real-time inference and voice orchestration platform.\n\nIn this role, you will design ultra-low-latency backend microservices bridging WebRTC media pipelines, streaming LLM inference gateways, and transactional persistence layers. You will directly own the infrastructure handling thousands of concurrent real-time audio streams, WebSocket event loops, and distributed state coordination.\n\nKey Responsibilities:\n• Architect, deploy, and scale high-concurrency microservices in Python (FastAPI/asyncio) and Go to support thousands of simultaneous voice interview sessions.\n• Optimize database schemas, indexing strategies, and connection pooling across PostgreSQL clusters and Redis caching layers.\n• Build fault-tolerant event ingestion pipelines using Apache Kafka and Redis Pub/Sub with sub-50ms p99 latency targets.\n• Implement robust observability, distributed tracing (OpenTelemetry), and auto-healing infrastructure for mission-critical AI workloads.\n• Collaborate with our AI Research and WebRTC teams to streamline model deployment, GPU batching, and semantic context caching.',
-          requirements: 'Required Qualifications:\n• 5+ years of software engineering experience building and maintaining distributed backend systems in production.\n• Deep proficiency in Python (FastAPI, asyncio, Celery) or Go, with comprehensive knowledge of concurrent programming and asynchronous I/O.\n• Strong expertise in relational databases (PostgreSQL query optimization, partitioning, indexing, connection pooling) and key-value caches (Redis).\n• Proven track record designing and maintaining high-throughput, low-latency REST and WebSocket APIs under strict SLAs.\n• Solid understanding of distributed systems fundamentals: consensus, partition tolerance, eventual consistency, and idempotent design.\n\nPreferred Qualifications:\n• Experience with real-time media streaming, WebRTC, or voice AI pipelines (Agora, LiveKit, Deepgram, Twilio).\n• Familiarity with container orchestration (Docker, Kubernetes) and infrastructure-as-code (Terraform, AWS/GCP).\n• Prior experience deploying or scaling LLM inference engines (vLLM, TensorRT-LLM, Triton).',
-          stagesJson: JSON.stringify(['Technical Architecture & Concurrency', 'Distributed System Design', 'Engineering Leadership & Cultural Alignment'])
+          title: 'Senior Backend Engineer — Distributed Systems & Real-Time APIs',
+          description: 'Nexora Labs builds the infrastructure behind intelligent products. We are seeking a Senior Backend Engineer to design and scale the distributed event pipelines, transactional services, and ultra-low-latency APIs that power our real-time AI platform.\n\nIn this role, you will lead the architecture of high-throughput backend microservices handling millions of concurrent WebSocket events, streaming audio frames, and distributed transactional state. You will work closely with our AI Systems and Core Platform teams to deliver resilient, sub-50ms p99 response times across our global edge network.',
+          requirements: 'Required Qualifications:\n• 3–6 years of professional backend engineering experience building and scaling distributed systems in production.\n• Strong proficiency in TypeScript, Node.js, and/or Go, with deep understanding of asynchronous event loops, non-blocking I/O, and concurrency patterns.\n• Deep hands-on experience with relational databases (PostgreSQL indexing, query optimization, connection pooling) and caching layers (Redis).\n• Proven experience designing high-throughput, low-latency REST and WebSocket APIs under strict SLAs.',
+          stagesJson: JSON.stringify(['Core Concurrency & API Architecture', 'Distributed Systems & Database Scaling', 'Engineering Leadership & Cultural Alignment'])
         },
         {
           id: 'j2',
           companyId: 'c1',
-          title: 'Senior Full Stack Engineer — Next.js & Real-Time WebRTC',
-          description: 'Join mr.technologies\'s core product team to build the next generation of real-time AI interview rooms, collaborative proctoring systems, and enterprise ATS dashboards. We are seeking a Senior Full Stack Engineer to lead our frontend architecture and full-stack product interfaces.\n\nYou will bridge cutting-edge browser technologies (WebRTC, Web Audio API, Canvas, Web Workers) with Next.js 15+ App Router architectures to deliver responsive, zero-lag, mission-critical voice interview experiences used by global talent teams.\n\nKey Responsibilities:\n• Lead full-stack development across candidate-facing live interview rooms and recruiter administrative dashboards.\n• Implement high-performance WebRTC client audio/video handling, real-time waveform visualizers, and stateful turn arbiters.\n• Design scalable Next.js architectures utilizing React Server Components, server actions, and optimistic UI updates.\n• Optimize client-side compute performance to support simultaneous background audio processing and proctoring analytics without dropping frames.\n• Build accessible, beautiful UI components with Tailwind CSS, TypeScript, and modern component design systems.',
-          requirements: 'Required Qualifications:\n• 4+ years of professional full-stack development experience building responsive, high-scale web applications.\n• Mastery of modern TypeScript, React, and Next.js (App Router, Server Components, SSR/SSG).\n• Strong experience with real-time browser APIs: WebRTC, WebSockets, Web Audio API, and MediaStream processing.\n• Deep proficiency with modern state management, Tailwind CSS, and component design patterns.\n• Solid backend foundation in Node.js / Next.js API route handlers, REST APIs, and database integration.\n\nPreferred Qualifications:\n• Experience building real-time collaboration tools, video conferencing applications, or interactive audio platforms.\n• Familiarity with client-side ML / computer vision (MediaPipe, TensorFlow.js) in the browser.\n• Experience designing responsive, accessible, enterprise SaaS design systems.',
-          stagesJson: JSON.stringify(['Full Stack Architecture & Live Coding', 'Frontend Systems & WebRTC Deep Dive', 'Culture & Product Execution'])
+          title: 'Staff Backend Engineer — Core Infrastructure & Architecture',
+          description: 'As a Staff Backend Engineer at Nexora Labs, you will serve as a principal technical leader shaping the next generation of our global AI infrastructure. You will own the technical roadmap for our high-concurrency orchestration platform, multi-region database replication, and real-time inference streaming pipelines.',
+          requirements: 'Required Qualifications:\n• 7+ years of software engineering experience with demonstrated technical leadership in large-scale distributed systems.\n• Deep expertise in distributed systems architecture, event-driven topologies, consensus mechanisms (Raft/Paxos), and high-throughput streaming.\n• Mastery of concurrency, memory management, and performance profiling in Go, TypeScript/Node.js, or Rust.',
+          stagesJson: JSON.stringify(['System Architecture & Distributed Consensus', 'Scalability, Resiliency & Failure Modes', 'Technical Leadership & Organization Impact'])
         },
         {
           id: 'j3',
           companyId: 'c1',
-          title: 'Staff AI / Machine Learning Engineer — Speech & Conversational LLMs',
-          description: 'mr.technologies is pushing the frontier of multimodal real-time conversational agents. As a Staff AI / Machine Learning Engineer, you will drive the core models behind our multi-persona voice interviewers, evaluation scoring rubrics, and automated profile synthesis engines.\n\nYou will lead research, fine-tuning, and production serving of multimodal speech-to-speech and large language models, optimizing for sub-500ms voice turnaround latency, natural conversational turn-taking, and rigorous, bias-free candidate evaluation.\n\nKey Responsibilities:\n• Train, fine-tune, and optimize state-of-the-art LLMs (Llama, Gemini Live, Mistral) for specialized interviewing personas and domain-specific technical probing.\n• Architect real-time voice intelligence pipelines integrating streaming ASR, low-latency LLM generation, and expressive neural TTS.\n• Design advanced multi-round evaluation rubrics with automated chain-of-thought grading, grounded retrieval (RAG), and calibrated confidence scoring.\n• Implement techniques to eliminate hallucinations, enforce floor-control turn arbitration, and ensure fair, objective candidate assessments.\n• Optimize model inference latency and throughput on GPU clusters using TensorRT-LLM, vLLM, and speculative decoding.',
-          requirements: 'Required Qualifications:\n• 5+ years of experience developing and deploying production machine learning models and LLM applications.\n• Strong proficiency in Python, PyTorch, Hugging Face ecosystem, and modern deep learning frameworks.\n• Deep experience fine-tuning LLMs (LoRA, QLoRA, SFT, DPO/RLHF) and building retrieval-augmented generation (RAG) architectures.\n• Solid understanding of conversational AI architectures, acoustic models, streaming speech recognition, and neural audio synthesis.\n• Solid foundation in machine learning system design, latency optimization, and distributed GPU serving.\n\nPreferred Qualifications:\n• Published research or open-source contributions in NLP, Speech Recognition, or Conversational Agents.\n• Experience with Triton Inference Server, vLLM, DeepSpeed, or ONNX Runtime.\n• Prior work in automated bias mitigation, fairness metrics, or enterprise talent assessment models.',
-          stagesJson: JSON.stringify(['ML Fundamentals & Deep Learning', 'Conversational AI Architecture & RAG', 'Research Impact & Cross-Functional Leadership'])
+          title: 'Senior Full Stack Engineer — Next.js & Developer Platform',
+          description: 'Nexora Labs is creating the developer interfaces that make intelligent infrastructure easy to orchestrate. We are looking for a Senior Full Stack Engineer to lead the architecture and implementation of our customer-facing web applications, real-time collaboration rooms, and developer analytics consoles.',
+          requirements: 'Required Qualifications:\n• 3–6 years of experience building modern full-stack web applications with React, Next.js, and TypeScript.\n• Deep proficiency with Next.js App Router, React Server Components, server actions, and modern state management patterns.\n• Strong foundation in browser APIs: WebRTC, WebSockets, Web Audio API, and DOM performance optimization.',
+          stagesJson: JSON.stringify(['Full Stack Architecture & Live Coding', 'WebRTC & Frontend Systems Deep Dive', 'Product Craft & Cultural Alignment'])
         },
         {
-          id: 'j_m769m72',
+          id: 'j4',
           companyId: 'c1',
-          title: 'Senior DevOps / Cloud Infrastructure Engineer — Kubernetes & GPU Platform',
-          description: 'We are looking for a Senior DevOps / Cloud Infrastructure Engineer to design, automate, and harden our cloud foundation. You will own the Kubernetes clusters, GPU compute nodes, CI/CD pipelines, and multi-region networking that power mr.technologies\'s live voice sessions globally.\n\nYou will ensure 99.99% uptime, automated zero-downtime deployments, zero-trust security compliance, and elastic auto-scaling under fluctuating real-time interview traffic.\n\nKey Responsibilities:\n• Architect and maintain enterprise cloud infrastructure across AWS / GCP using Terraform and GitOps (ArgoCD).\n• Manage and scale production Kubernetes (EKS/GKE) clusters with dynamic GPU node autoscaling for AI inference workloads.\n• Design resilient CI/CD pipelines with GitHub Actions, automated regression testing, and security vulnerability scanning.\n• Implement comprehensive observability stacks with Prometheus, Grafana, OpenTelemetry, and structured logging.\n• Establish enterprise security baselines: SOC 2 compliance, KMS secret management, network isolation (VPC peering, WAF, Cloudflare).',
-          requirements: 'Required Qualifications:\n• 4+ years of dedicated DevOps, Site Reliability, or Cloud Infrastructure Engineering experience.\n• Deep hands-on expertise with Kubernetes container orchestration, Helm, and ingress controllers.\n• Proficiency with Infrastructure as Code (Terraform) and configuration management in AWS or GCP.\n• Strong scripting and automation skills in Python, Bash, or Go.\n• Experience maintaining production networking: DNS, load balancers, CDN routing, VPC architectures, and TLS termination.\n\nPreferred Qualifications:\n• Experience managing GPU workloads (NVIDIA GPU Operator, CUDA drivers, Triton deployment on Kubernetes).\n• Familiarity with SOC 2, GDPR, or ISO 27001 compliance standards in enterprise SaaS environments.\n• Experience optimizing cloud spend, spot instance orchestration, and reserved capacity planning.',
-          stagesJson: JSON.stringify(['Infrastructure Architecture & Live Troubleshooting', 'Kubernetes & Cloud System Design', 'SRE Culture & Incident Leadership'])
+          title: 'AI / Machine Learning Engineer — Conversational Systems & LLM Infra',
+          description: 'At Nexora Labs, our AI Platform team researches, evaluates, and deploys the intelligence models that power our multi-persona conversational agents and autonomous evaluation engines. We are seeking an AI/ML Engineer to push the boundaries of real-time conversational agents, streaming speech-to-speech pipelines, and grounded LLM evaluation.',
+          requirements: 'Required Qualifications:\n• 2–5 years of hands-on experience building, fine-tuning, and evaluating production ML models and LLM systems.\n• Strong proficiency in Python, PyTorch, Hugging Face Transformers, and modern ML engineering tooling.\n• Deep understanding of LLM architectures, prompt engineering, few-shot grounding, and RAG retrieval pipelines.',
+          stagesJson: JSON.stringify(['Machine Learning Fundamentals & Model Tuning', 'Conversational AI Architecture & RAG Systems', 'Research Rigor & Cross-Functional Alignment'])
+        },
+        {
+          id: 'j5',
+          companyId: 'c1',
+          title: 'Senior Platform Engineer — Cloud Infrastructure & Kubernetes',
+          description: 'Nexora Labs runs a globally distributed cloud footprint across multi-region AWS and GCP environments. We are seeking a Senior Platform Engineer based in our Singapore hub to build, automate, and harden the core cloud infrastructure that powers our real-time voice and data workloads.',
+          requirements: 'Required Qualifications:\n• 4–7 years of experience in Platform Engineering, DevOps, or Site Reliability Engineering.\n• Deep hands-on expertise with Kubernetes container orchestration, Helm charts, ingress controllers, and cluster autoscaling.\n• Mastery of Terraform and cloud infrastructure architecture on AWS or GCP.',
+          stagesJson: JSON.stringify(['Cloud Infrastructure Architecture & Troubleshooting', 'Kubernetes & Platform Scaling Deep Dive', 'SRE Culture & Incident Leadership'])
+        },
+        {
+          id: 'j6',
+          companyId: 'c1',
+          title: 'Product Manager — AI Platform & Developer Infrastructure',
+          description: 'As a Product Manager for AI Platform at Nexora Labs, you will define the roadmap and developer experience for our core infrastructure products. You will work at the intersection of developer tooling, real-time voice intelligence, and high-scale distributed systems.',
+          requirements: 'Required Qualifications:\n• 4+ years of product management experience focused on developer platforms, API products, cloud infrastructure, or enterprise AI tools.\n• Strong technical literacy—ability to discuss distributed architecture, API design, and ML workflows with engineering leads.',
+          stagesJson: JSON.stringify(['Product Strategy & Technical Problem Solving', 'Developer Experience & API Design Deep Dive', 'Cross-Functional Execution & Leadership'])
+        },
+        {
+          id: 'j7',
+          companyId: 'c1',
+          title: 'Product Designer — Developer Systems & Experience',
+          description: 'Nexora Labs is looking for a thoughtful Product Designer to craft the user experience and interface systems across our developer consoles, real-time collaboration environments, and enterprise dashboards. We believe developer tools should be as beautiful, intuitive, and fast as the best consumer software.',
+          requirements: 'Required Qualifications:\n• 3–6 years of product design experience working on complex SaaS platforms, developer tools, or data-dense web applications.\n• Strong portfolio demonstrating structured design thinking, elegant typography, high visual polish, and clean component systems.',
+          stagesJson: JSON.stringify(['Design Portfolio & Systems Review', 'Interactive Problem Solving & Whiteboard Challenge', 'Collaboration & Craft Values'])
         }
       ],
       candidates: [
@@ -47,7 +71,7 @@ export async function POST() {
       ],
       applications: [
         { id: 'app1', jobId: 'j1', candidateId: 'cand1', resumeText: 'Alice Smith\n5 years of Python, FastAPI, and Postgres.', status: 'UNDER_REVIEW' },
-        { id: 'app2', jobId: 'j2', candidateId: 'cand2', resumeText: 'Bob Johnson\nFull Stack Dev with 3 years Next.js experience.', status: 'APPLIED' }
+        { id: 'app2', jobId: 'j3', candidateId: 'cand2', resumeText: 'Bob Johnson\nFull Stack Dev with 3 years Next.js experience.', status: 'APPLIED' }
       ],
       interviews: [],
       blueprints: [],
@@ -56,8 +80,8 @@ export async function POST() {
     
     saveDb(defaultDb);
 
-    return NextResponse.json({ success: true, message: 'JSON Database seeded successfully' });
+    return NextResponse.json({ success: true, message: 'JSON Database seeded successfully with Nexora Labs entity and 7 jobs' });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

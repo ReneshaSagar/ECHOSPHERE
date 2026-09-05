@@ -1,5 +1,5 @@
 /**
- * Deterministic Date & Time Formatting for mr.technologies
+ * Deterministic Date & Time Formatting for Nexora Labs (OmniPanel)
  * Avoids React hydration mismatches caused by locale / ICU variations across Node.js and browsers.
  */
 

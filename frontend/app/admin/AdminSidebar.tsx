@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, Calendar, Briefcase, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Users, Calendar, Briefcase, ChevronRight, Sparkles } from 'lucide-react';
 
 export default function AdminSidebar({ 
   applicantCount, 
@@ -48,20 +48,20 @@ export default function AdminSidebar({
   return (
     <div className="w-64 bg-white border-r border-gray-200 flex flex-col shrink-0">
       <div className="p-5 border-b border-gray-100">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-sm shadow-sm">
-            M
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-[#00AEEF] text-white flex items-center justify-center font-black text-sm shadow-xs">
+            N
           </div>
           <div>
-            <h1 className="text-base font-bold text-gray-900 leading-tight">mr.technologies ATS</h1>
-            <p className="text-[11px] text-gray-400 font-medium">Enterprise Recruiting AI</p>
+            <h1 className="text-base font-bold text-gray-900 leading-tight">Nexora Labs ATS</h1>
+            <p className="text-[10px] text-gray-400 font-bold tracking-wider uppercase">Powered by OmniPanel</p>
           </div>
         </div>
       </div>
 
       <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
         <div className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-          Management
+          Hiring Operations
         </div>
 
         {navItems.map((item) => {
@@ -99,10 +99,10 @@ export default function AdminSidebar({
         <div className="p-3 bg-white rounded-lg border border-gray-200/80 shadow-xs">
           <div className="flex items-center gap-2 text-xs font-bold text-gray-800 mb-1">
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            Agora Voice AI Active
+            OmniPanel Voice Active
           </div>
           <p className="text-[11px] text-gray-500 leading-relaxed">
-            Multi-stage autonomous interview agent enabled.
+            Multi-persona autonomous voice evaluation enabled.
           </p>
         </div>
       </div>

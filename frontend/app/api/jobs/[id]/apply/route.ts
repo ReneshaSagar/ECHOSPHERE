@@ -48,7 +48,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       if (alreadyAppliedThisJob) {
         console.log(`[Apply Route Pre-Flight] Blocked duplicate application: ${cleanEmail} already applied to ${job.title} (${jobId})`);
         return NextResponse.json({ 
-          error: `You have already applied for ${job.title}. You cannot apply to the same role twice, but you are welcome to apply to other open positions at mr.technologies!`,
+          error: `You have already applied for ${job.title}. You cannot apply to the same role twice, but you are welcome to apply to other open positions at Nexora Labs!`,
           alreadyApplied: true,
           jobTitle: job.title
         }, { status: 400 });
