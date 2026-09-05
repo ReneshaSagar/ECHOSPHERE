@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { formatTimeIST, formatDateTimeShortIST } from '@/lib/dateFormat';
 import ApplicationActions from './ApplicationActions';
 import ScorecardViewer from './ScorecardViewer';
+import ProctorScorecardViewer from './ProctorScorecardViewer';
 
 export default async function ApplicationReviewPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -790,6 +791,14 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
           </div>
         )}
       </div>
+
+      {/* VERITAS AI Proctoring & Behavioral Assessment Scorecard */}
+      {interview && (
+        <ProctorScorecardViewer 
+          proctoringReport={interview.proctoringReport} 
+          suspiciousEvents={interview.suspiciousEvents} 
+        />
+      )}
 
       {/* Action Controls */}
       <ApplicationActions applicationId={application.id} currentStatus={application.status} />

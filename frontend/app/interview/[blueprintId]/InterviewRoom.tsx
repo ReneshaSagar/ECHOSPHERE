@@ -865,7 +865,11 @@ CORE TURN RULES & CANDIDATE-FIRST PACING:
 
   return (
     <div className="flex-1 p-6 flex flex-col md:flex-row gap-6 relative">
-      <ProctorEngine interviewId={interviewId} isRunning={testState === 'RUNNING'} />
+      <ProctorEngine 
+        interviewId={interviewId} 
+        isRunning={testState === 'RUNNING'} 
+        candidateName={candidateName}
+      />
       
       {/* Left Column: Multi-Agent Video/Controls */}
       <div className="flex-1 flex flex-col gap-6">

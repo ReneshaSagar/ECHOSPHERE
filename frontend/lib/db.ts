@@ -362,7 +362,8 @@ export interface Interview {
   status: string; // PENDING, IN_PROGRESS, COMPLETED, FAILED
   transcript?: { round: string, speaker: string, text: string }[];
   evaluations?: { round: string, decision: string, score: number, reason: string }[];
-  suspiciousEvents?: { timestamp: string, type: string, details: string }[];
+  suspiciousEvents?: { timestamp: string, type: string, details: string, severity?: string, score_impact?: number }[];
+  proctoringReport?: any;
   scorecard?: any;
   interviewState?: InterviewState;
 }
