@@ -38,6 +38,10 @@ export default function Navbar() {
           <span>Careers</span>
           <span className="w-1 h-1 rounded-full bg-pink-400 animate-pulse"></span>
         </Link>
+        <Link href="/test-interview" className="hover:text-amber-300 transition-colors text-amber-400 font-mono text-[11px] flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+          <span>Test Studio</span>
+        </Link>
         <Link href="/admin" className="hover:text-white transition-colors text-zinc-400 text-[11px]">
           ATS
         </Link>

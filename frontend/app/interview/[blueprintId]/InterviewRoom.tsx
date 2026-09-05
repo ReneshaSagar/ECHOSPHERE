@@ -962,6 +962,52 @@ STRICT FLOOR RULES & SILENT STANDBY:
             </div>
           </div>
 
+          {/* Developer / Sandbox Testing Fast-Forward Toolbar */}
+          {(interviewId.includes('demo') || (typeof window !== 'undefined' && window.location.pathname.includes('demo'))) && (
+            <div className="mt-3 mb-2 p-3 rounded-xl bg-purple-950/40 border border-purple-500/40 flex flex-wrap items-center justify-between gap-3 text-xs font-mono animate-in fade-in">
+              <div className="flex items-center gap-2 text-purple-300">
+                <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+                <span className="font-bold">DEV TEST CONTROLS // ISOLATED SANDBOX</span>
+              </div>
+              
+              <div className="flex items-center gap-2 flex-wrap">
+                {testState === 'RUNNING' && (
+                  <>
+                    <button
+                      onClick={() => {
+                        setRoundElapsedSeconds(ROUND_TARGET_SECONDS - 10);
+                        setWrapUpWarning(true);
+                        addLog('DevControl', '⏱️ Fast-forwarded timer to 4:50 wrap-up alert mark');
+                      }}
+                      className="px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 transition cursor-pointer"
+                    >
+                      ⏱️ Jump to 4:50 (Wrap-Up Notice)
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        addLog('DevControl', '⏭️ Triggered immediate round conclusion & handoff');
+                        finishRound();
+                      }}
+                      className="px-2.5 py-1 rounded bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border border-blue-500/40 transition cursor-pointer"
+                    >
+                      ⏭️ Advance Round Handoff
+                    </button>
+                  </>
+                )}
+
+                <Link
+                  href="/admin/applications/demo-app-test"
+                  target="_blank"
+                  className="px-2.5 py-1 rounded bg-white/10 hover:bg-white/20 text-white border border-white/20 transition flex items-center gap-1"
+                >
+                  <span>📊 Admin Scorecard</span>
+                  <span className="text-[10px]">↗</span>
+                </Link>
+              </div>
+            </div>
+          )}
+
           {/* Center: Multi-Agent Visualizer & Interviewer Cards */}
           <div className="my-auto py-4">
             {/* Wrap-up alert banner at 4:50 mark */}
