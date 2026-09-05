@@ -325,85 +325,80 @@
             }
           ],
           "corroboratedExperience": [],
-          "careerProgressionSummary": "Currently pursuing a B.Tech in Information Technology (2024–2028), Madhav has gained early software engineering experience through an internship at RHA Technologies focusing on QA frameworks and AI integration testing. He has complemented this with self-directed full-stack projects using React, Node.js, PostgreSQL, and TypeScript.",
+          "careerProgressionSummary": "Madhav is an Information Technology undergraduate at Jaypee Institute of Information Technology with experience as a Software Engineering Intern at RHA Technologies working on AI skills and RAG pipelines. His background centers on full-stack web development using React and Node.js alongside developer tooling and automated workflow validation.",
           "notableClaims": [
             {
-              "claim": "Built and maintained a quality assurance framework for 250+ AI skills and workflows at RHA Technologies.",
+              "claim": "Built and maintained a quality assurance framework for 250+ AI skills and workflows to validate system reliability.",
               "source": "resume",
-              "verificationFocus": "Investigate the testing strategy, automation tooling, and metrics used to evaluate pipeline reliability."
+              "verificationFocus": "Understanding workflow orchestration, developer experience pain points, and system usability when managing complex AI agents."
             },
             {
-              "claim": "Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL for expense management.",
+              "claim": "Architected a production-ready full-stack system using a React frontend, Express backend, and PostgreSQL.",
               "source": "resume",
-              "verificationFocus": "Probe database schema design, API structure, authentication flows, and state management techniques."
+              "verificationFocus": "Evaluating component hierarchy, state management, and visual layout decisions within React applications."
+            },
+            {
+              "claim": "Developed ExpensWise featuring natural language parsing, CLI logging, and an interactive stats dashboard with charts.",
+              "source": "github",
+              "verificationFocus": "Probing interface usability across both command-line tools and web dashboards."
             }
           ]
         },
         "interviewContext": {
-          "targetRole": "Senior Full Stack Engineer — Next.js & Developer Platform",
+          "targetRole": "Product Designer — Developer Systems & Experience",
           "highRelevanceEvidence": [
             {
-              "topic": "Full-Stack React & Node.js Development",
+              "topic": "React Frontend Development & Component Structuring",
               "relevance": "HIGH",
-              "reason": "Demonstrates core proficiency in modern frontend React UI development coupled with backend Node.js integration.",
+              "reason": "Hands-on experience developing web applications with React provides a strong foundation for translating Figma components and design systems into code.",
               "evidenceSources": [
                 "resume",
                 "github"
               ]
             },
             {
-              "topic": "TypeScript Frontend & Application Tooling",
+              "topic": "Developer Tools & AI Workflow Systems",
               "relevance": "HIGH",
-              "reason": "Maintains dedicated TypeScript repositories (syn-2, ECHOSPHERE) aligning with the role's strong TypeScript requirement.",
+              "reason": "Direct exposure to testing enterprise RAG pipelines, data connectors, and AI agent workflows provides practical domain context for developer experience (DevEx) design.",
               "evidenceSources": [
-                "github"
-              ]
-            },
-            {
-              "topic": "Interactive Dashboards & Data Processing",
-              "relevance": "HIGH",
-              "reason": "Built interactive user dashboards with visual analytics and audio/voice input handling in ExpensWise.",
-              "evidenceSources": [
-                "github",
                 "resume"
               ]
             }
           ],
           "technicalInterviewHooks": [
-            "In ExpensWise, how did you handle asynchronous state updates and client-side rendering performance when processing voice inputs and real-time dashboard visualizations?",
-            "How would you approach migrating a React/Express application to Next.js 15 App Router with React Server Components, specifically handling server actions vs. client-side interactivity?",
-            "When designing state management for real-time telemetry or collaborative rooms, how do you prevent re-render cascades and optimize client-side bundle size?"
+            "How do you approach designing UI components in React to maintain consistent visual states, accessibility, and smooth user interactions?",
+            "When designing interfaces for complex data flows like AI workflows or dashboards, how do you handle asynchronous loading states and error visual feedback?",
+            "How do you bridge the gap between CLI interfaces for power users and visual dashboard consoles in terms of information architecture?"
           ],
           "behavioralInterviewHooks": [
-            "Describe a situation during your QA work at RHA Technologies where you uncovered a high-severity edge case and worked across teams to resolve it before release.",
-            "How do you balance rapid prototyping with long-term component modularity and accessibility when building user interfaces from scratch?"
+            "Can you share an instance where technical backend constraints required you to adapt or rethink the user experience of an application?",
+            "How do you collaborate with engineering partners to ensure pixel-perfect implementation of UI components and responsive layouts?"
           ],
           "projectsWorthProbing": [
             {
               "name": "ExpensWise",
               "relevanceLevel": "HIGH",
-              "reasonToProbe": "Full-stack application incorporating rich UI dashboards, charts, and natural language processing.",
+              "reasonToProbe": "Combines a dashboard analytics interface with a CLI tool, demonstrating dual interface paradigms for developer and consumer workflows.",
               "suggestedQuestions": [
-                "How did you structure the API routes between the React frontend and Express backend?",
-                "What performance optimizations were required to render dynamic charts without UI jank?"
+                "What considerations went into designing the layout and data visualization hierarchy for the stats dashboard?",
+                "How did you design the user experience for natural language input parsing to prevent user errors?"
               ],
               "sourceUrl": "https://github.com/madhavgairola/ExpensWise"
             },
             {
-              "name": "ECHOSPHERE",
-              "relevanceLevel": "HIGH",
-              "reasonToProbe": "TypeScript repository directly relevant to typed web application architecture.",
+              "name": "syn-2",
+              "relevanceLevel": "MEDIUM",
+              "reasonToProbe": "TypeScript repository demonstrating modern frontend application development.",
               "suggestedQuestions": [
-                "What was the core architecture of ECHOSPHERE and how did you enforce end-to-end type safety?",
-                "What state management pattern did you select and why?"
+                "What was the structural design and user interaction model built into this project?"
               ],
-              "sourceUrl": "https://github.com/madhavgairola/ECHOSPHERE"
+              "sourceUrl": "https://github.com/madhavgairola/syn-2"
             }
           ],
           "ignoredOrLowRelevanceTopics": [
-            "Solidity and blockchain-based voter registries (electora project)",
-            "LeetCode accountability script utilities (lal repository)",
-            "Manual and enterprise data ingestion testing for document formats (PDF/DOCX) outside web UI scope",
+            "Solidity smart contracts and blockchain identity voter registry (electora)",
+            "LeetCode accountability scripts (lal)",
+            "Firestore security rules and backend medical schema design (HealthLens)",
             "[IRRELEVANT TO ROLE] Blockchain / Web3 / Smart Contracts: Candidate mentioned blockchain/smart contract technology on profile, but it is outside the scope of this role. Omit from interview unless candidate introduces it."
           ]
         },
@@ -428,20 +423,21 @@
         "projects": [],
         "certifications": [],
         "organizations": [],
-        "careerProgression": "Currently pursuing a B.Tech in Information Technology (2024–2028), Madhav has gained early software engineering experience through an internship at RHA Technologies focusing on QA frameworks and AI integration testing. He has complemented this with self-directed full-stack projects using React, Node.js, PostgreSQL, and TypeScript.",
+        "careerProgression": "Madhav is an Information Technology undergraduate at Jaypee Institute of Information Technology with experience as a Software Engineering Intern at RHA Technologies working on AI skills and RAG pipelines. His background centers on full-stack web development using React and Node.js alongside developer tooling and automated workflow validation.",
         "notableClaims": [
-          "Built and maintained a quality assurance framework for 250+ AI skills and workflows at RHA Technologies.",
-          "Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL for expense management."
+          "Built and maintained a quality assurance framework for 250+ AI skills and workflows to validate system reliability.",
+          "Architected a production-ready full-stack system using a React frontend, Express backend, and PostgreSQL.",
+          "Developed ExpensWise featuring natural language parsing, CLI logging, and an interactive stats dashboard with charts."
         ],
         "interviewHooks": [
-          "In ExpensWise, how did you handle asynchronous state updates and client-side rendering performance when processing voice inputs and real-time dashboard visualizations?",
-          "How would you approach migrating a React/Express application to Next.js 15 App Router with React Server Components, specifically handling server actions vs. client-side interactivity?",
-          "When designing state management for real-time telemetry or collaborative rooms, how do you prevent re-render cascades and optimize client-side bundle size?",
-          "Describe a situation during your QA work at RHA Technologies where you uncovered a high-severity edge case and worked across teams to resolve it before release.",
-          "How do you balance rapid prototyping with long-term component modularity and accessibility when building user interfaces from scratch?"
+          "How do you approach designing UI components in React to maintain consistent visual states, accessibility, and smooth user interactions?",
+          "When designing interfaces for complex data flows like AI workflows or dashboards, how do you handle asynchronous loading states and error visual feedback?",
+          "How do you bridge the gap between CLI interfaces for power users and visual dashboard consoles in terms of information architecture?",
+          "Can you share an instance where technical backend constraints required you to adapt or rethink the user experience of an application?",
+          "How do you collaborate with engineering partners to ensure pixel-perfect implementation of UI components and responsive layouts?"
         ],
         "enrichmentSource": "brightdata+github+resume",
-        "enrichedAt": "2026-09-05T07:33:48.862Z",
+        "enrichedAt": "2026-09-05T09:38:25.985Z",
         "githubContext": {
           "username": "madhavgairola",
           "profileUrl": "https://github.com/madhavgairola",
@@ -451,9 +447,9 @@
           "publicReposCount": 19,
           "followers": 1,
           "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
-          "totalCommits": 314,
-          "recentCommits30Days": 150,
-          "commitVelocityNarrative": "150 commits in the past 30 days • 314 total commits",
+          "totalCommits": 315,
+          "recentCommits30Days": 151,
+          "commitVelocityNarrative": "151 commits in the past 30 days • 315 total commits",
           "technicalHighlights": [],
           "githubProjects": [
             {
@@ -515,12 +511,12 @@
               "topics": [],
               "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
               "isPinned": false,
-              "candidateCommits": 93,
+              "candidateCommits": 94,
               "isRecent": true
             }
           ],
           "githubInterviewHooks": [],
-          "enrichedAt": "2026-09-05T07:33:29.049Z",
+          "enrichedAt": "2026-09-05T09:37:52.243Z",
           "rawProviderJson": {
             "username": "madhavgairola",
             "name": "mdhv",
@@ -530,8 +526,8 @@
             "followers": 1,
             "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
             "profileUrl": "https://github.com/madhavgairola",
-            "totalCommits": 314,
-            "recentCommits30Days": 150,
+            "totalCommits": 315,
+            "recentCommits30Days": 151,
             "pinnedRepoNames": [
               "ExpensWise",
               "HealthLens",
@@ -655,16 +651,16 @@
                 "topics": [],
                 "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
                 "languages": {
-                  "TypeScript": 717678,
+                  "TypeScript": 719779,
                   "Python": 99093,
                   "JavaScript": 33193,
                   "CSS": 3561,
                   "PowerShell": 2214
                 },
-                "updatedAt": "2026-09-05T07:27:31Z",
-                "pushedAt": "2026-09-05T07:27:28Z",
+                "updatedAt": "2026-09-05T08:11:54Z",
+                "pushedAt": "2026-09-05T08:11:50Z",
                 "isPinned": false,
-                "candidateCommits": 93,
+                "candidateCommits": 94,
                 "isRecent": true
               }
             ],
@@ -694,9 +690,9 @@
             ]
           }
         },
-        "totalCommits": 314,
-        "recentCommits30Days": 150,
-        "commitVelocityNarrative": "150 commits in the past 30 days • 314 total commits",
+        "totalCommits": 315,
+        "recentCommits30Days": 151,
+        "commitVelocityNarrative": "151 commits in the past 30 days • 315 total commits",
         "githubProjects": [
           {
             "name": "syn-2",
@@ -757,14 +753,14 @@
             "topics": [],
             "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
             "isPinned": false,
-            "candidateCommits": 93,
+            "candidateCommits": 94,
             "isRecent": true
           }
         ],
         "githubInterviewHooks": [
-          "In ExpensWise, how did you handle asynchronous state updates and client-side rendering performance when processing voice inputs and real-time dashboard visualizations?",
-          "How would you approach migrating a React/Express application to Next.js 15 App Router with React Server Components, specifically handling server actions vs. client-side interactivity?",
-          "When designing state management for real-time telemetry or collaborative rooms, how do you prevent re-render cascades and optimize client-side bundle size?"
+          "How do you approach designing UI components in React to maintain consistent visual states, accessibility, and smooth user interactions?",
+          "When designing interfaces for complex data flows like AI workflows or dashboards, how do you handle asynchronous loading states and error visual feedback?",
+          "How do you bridge the gap between CLI interfaces for power users and visual dashboard consoles in terms of information architecture?"
         ],
         "sourceLogging": {
           "rawProviderJson": {
@@ -782,7 +778,7 @@
                 "location": null
               },
               "experience": null,
-              "url": "https://bd.linkedin.com/in/Madhavgairola",
+              "url": "https://pk.linkedin.com/in/madhavgairola",
               "people_also_viewed": [
                 {
                   "profile_link": "https://in.linkedin.com/in/amrishkumarsingh",
@@ -837,66 +833,6 @@
                   "name": "Dr D J Singh",
                   "about": "Vidya Jyoti Educational Society",
                   "location": "30K followers Chandigarh, India"
-                },
-                {
-                  "profile_link": "https://in.linkedin.com/in/illendula",
-                  "name": "Sai Krishna Gupta Illendula",
-                  "about": "www.refernearn.com",
-                  "location": "31K followers Hyderabad"
-                },
-                {
-                  "profile_link": "https://in.linkedin.com/in/edulearrngrow",
-                  "name": "Dr Amrita Rajpal",
-                  "about": "School Chameleons",
-                  "location": "13K followers Mumbai"
-                },
-                {
-                  "profile_link": "https://in.linkedin.com/in/noormohammed-s-000544108",
-                  "name": "NoorMohammed S",
-                  "about": "OnMobile Global Limited",
-                  "location": "29K followers Bengaluru"
-                },
-                {
-                  "profile_link": "https://in.linkedin.com/in/hemavijayan",
-                  "name": "Hema Kewalramani",
-                  "about": "Lloyds Technology Centre India",
-                  "location": "34K followers Hyderabad"
-                },
-                {
-                  "profile_link": "https://in.linkedin.com/in/anurag-sasikumar-2a465228",
-                  "name": "Anurag Sasikumar",
-                  "about": "Hypoel Technologies Pvt Ltd",
-                  "location": "30K followers Thiruvananthapuram"
-                },
-                {
-                  "profile_link": "https://in.linkedin.com/in/pavan-kumar-transformation-to-ai-hiring-033b8821",
-                  "name": "Pavan Kumar Transformation to AI Hiring",
-                  "about": "Evoke Technologies",
-                  "location": "31K followers Hyderabad"
-                },
-                {
-                  "profile_link": "https://in.linkedin.com/in/startuptalker",
-                  "name": "Shubham K.",
-                  "about": "StartupTalky",
-                  "location": "32K followers Greater Bengaluru Area"
-                },
-                {
-                  "profile_link": "https://au.linkedin.com/in/henali-bhavsar-8875b449",
-                  "name": "Henali Bhavsar",
-                  "about": "Navitas English",
-                  "location": "25K followers Perth, WA"
-                },
-                {
-                  "profile_link": "https://bh.linkedin.com/in/salmanmansoor01",
-                  "name": "Salman Mansoor",
-                  "about": "EY",
-                  "location": "30K followers Manama"
-                },
-                {
-                  "profile_link": "https://in.linkedin.com/in/anandcontracts",
-                  "name": "Anand Kumar",
-                  "about": "aasa",
-                  "location": "27K followers Bengaluru"
                 }
               ],
               "educations_details": "Jaypee Institute of Information Technology",
@@ -919,7 +855,7 @@
               "linkedin_id": "madhavgairola",
               "activity": [
                 {
-                  "interaction": "Madhav Gairola replied to a comment 1h",
+                  "interaction": "Madhav Gairola replied to a comment 3h",
                   "link": null,
                   "title": null,
                   "img": null,
@@ -999,7 +935,7 @@
               "first_name": "Madhav",
               "last_name": "Gairola",
               "influencer": false,
-              "timestamp": "2026-09-05T07:33:32.808Z",
+              "timestamp": "2026-09-05T09:37:55.370Z",
               "input": {
                 "url": "https://www.linkedin.com/in/madhavgairola/"
               }
@@ -1013,8 +949,8 @@
               "followers": 1,
               "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
               "profileUrl": "https://github.com/madhavgairola",
-              "totalCommits": 314,
-              "recentCommits30Days": 150,
+              "totalCommits": 315,
+              "recentCommits30Days": 151,
               "pinnedRepoNames": [
                 "ExpensWise",
                 "HealthLens",
@@ -1138,16 +1074,16 @@
                   "topics": [],
                   "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
                   "languages": {
-                    "TypeScript": 717678,
+                    "TypeScript": 719779,
                     "Python": 99093,
                     "JavaScript": 33193,
                     "CSS": 3561,
                     "PowerShell": 2214
                   },
-                  "updatedAt": "2026-09-05T07:27:31Z",
-                  "pushedAt": "2026-09-05T07:27:28Z",
+                  "updatedAt": "2026-09-05T08:11:54Z",
+                  "pushedAt": "2026-09-05T08:11:50Z",
                   "isPinned": false,
-                  "candidateCommits": 93,
+                  "candidateCommits": 94,
                   "isRecent": true
                 }
               ],
@@ -1214,34 +1150,39 @@
                 "Python"
               ],
               "commitCounts": {
-                "total": 314,
-                "recent30Days": 150
+                "total": 315,
+                "recent30Days": 151
               }
             }
           },
           "geminiSynthesis": {
-            "careerProgression": "Currently pursuing a B.Tech in Information Technology (2024–2028), Madhav has gained early software engineering experience through an internship at RHA Technologies focusing on QA frameworks and AI integration testing. He has complemented this with self-directed full-stack projects using React, Node.js, PostgreSQL, and TypeScript.",
+            "careerProgression": "Madhav is an Information Technology undergraduate at Jaypee Institute of Information Technology with experience as a Software Engineering Intern at RHA Technologies working on AI skills and RAG pipelines. His background centers on full-stack web development using React and Node.js alongside developer tooling and automated workflow validation.",
             "notableClaims": [
               {
-                "claim": "Built and maintained a quality assurance framework for 250+ AI skills and workflows at RHA Technologies.",
+                "claim": "Built and maintained a quality assurance framework for 250+ AI skills and workflows to validate system reliability.",
                 "source": "resume",
-                "verificationFocus": "Investigate the testing strategy, automation tooling, and metrics used to evaluate pipeline reliability."
+                "verificationFocus": "Understanding workflow orchestration, developer experience pain points, and system usability when managing complex AI agents."
               },
               {
-                "claim": "Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL for expense management.",
+                "claim": "Architected a production-ready full-stack system using a React frontend, Express backend, and PostgreSQL.",
                 "source": "resume",
-                "verificationFocus": "Probe database schema design, API structure, authentication flows, and state management techniques."
+                "verificationFocus": "Evaluating component hierarchy, state management, and visual layout decisions within React applications."
+              },
+              {
+                "claim": "Developed ExpensWise featuring natural language parsing, CLI logging, and an interactive stats dashboard with charts.",
+                "source": "github",
+                "verificationFocus": "Probing interface usability across both command-line tools and web dashboards."
               }
             ],
             "interviewHooks": [
-              "In ExpensWise, how did you handle asynchronous state updates and client-side rendering performance when processing voice inputs and real-time dashboard visualizations?",
-              "How would you approach migrating a React/Express application to Next.js 15 App Router with React Server Components, specifically handling server actions vs. client-side interactivity?",
-              "When designing state management for real-time telemetry or collaborative rooms, how do you prevent re-render cascades and optimize client-side bundle size?",
-              "Describe a situation during your QA work at RHA Technologies where you uncovered a high-severity edge case and worked across teams to resolve it before release.",
-              "How do you balance rapid prototyping with long-term component modularity and accessibility when building user interfaces from scratch?"
+              "How do you approach designing UI components in React to maintain consistent visual states, accessibility, and smooth user interactions?",
+              "When designing interfaces for complex data flows like AI workflows or dashboards, how do you handle asynchronous loading states and error visual feedback?",
+              "How do you bridge the gap between CLI interfaces for power users and visual dashboard consoles in terms of information architecture?",
+              "Can you share an instance where technical backend constraints required you to adapt or rethink the user experience of an application?",
+              "How do you collaborate with engineering partners to ensure pixel-perfect implementation of UI components and responsive layouts?"
             ]
           },
-          "timestamp": "2026-09-05T07:33:48.862Z"
+          "timestamp": "2026-09-05T09:38:25.985Z"
         }
       }
     }
@@ -2188,7 +2129,7 @@
       "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
       "githubUrl": "https://github.com/madhavgairola",
       "relevantExperience": "",
-      "status": "INTERVIEW_SCHEDULED",
+      "status": "SELECTED",
       "candidateContext": {
         "resume": {
           "textSnippet": "Madhav Gairola\n(+91) 7895936487| madhavgairola05@gmail.com| linkedin.com/in/madhavgairola|\ngithub.com/madhavgairola\nEducation\nJaypee Institute of Information TechnologyNoida, Uttar Pradesh\nBachelor of Technology, Information TechnologyJul. 2024 – May. 2028\nExperience\nRHA TechnologiesJun 2026 – Present\nSoftware Engineering Intern\n•\nLed end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA\nOne platform, uncovering critical edge cases across diverse enterprise use cases\n•\nEngineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL\nintegrations, analyzing retrieval accuracy, data ingestion behavior, and system reliability\n•\nBuilt and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug\nreports, validating feature releases, and accelerating issue resolution through close collaboration with engineering\nteams\nProjects\nExpensWise (Personal Financial Assistant)| Node.",
@@ -3357,6 +3298,1126 @@
           "timestamp": "2026-09-05T07:33:48.862Z"
         }
       }
+    },
+    {
+      "id": "app_268f8ga",
+      "jobId": "j7",
+      "candidateId": "cand_p8w3r0m",
+      "resumeText": "Madhav Gairola\n(+91) 7895936487| madhavgairola05@gmail.com| linkedin.com/in/madhavgairola|\ngithub.com/madhavgairola\nEducation\nJaypee Institute of Information TechnologyNoida, Uttar Pradesh\nBachelor of Technology, Information TechnologyJul. 2024 – May. 2028\nExperience\nRHA TechnologiesJun 2026 – Present\nSoftware Engineering Intern\n•\nLed end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA\nOne platform, uncovering critical edge cases across diverse enterprise use cases\n•\nEngineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL\nintegrations, analyzing retrieval accuracy, data ingestion behavior, and system reliability\n•\nBuilt and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug\nreports, validating feature releases, and accelerating issue resolution through close collaboration with engineering\nteams\nProjects\nExpensWise (Personal Financial Assistant)| Node.js , PostgreSQL, Prisma, React, Gemini API| GitHub| Live\n•\nEliminated manual expense entry by parsing natural language inputs (e.g., ”coffee 50”, ”rent 5k”) into\nstructured financial records using Gemini API\n•\nArchitected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL\ndatabase supporting real-time expense tracking and analytics\n•\nDesigned an intelligent classification engine categorizing expenses into Needs vs Wants with budget threshold\nalerts, enabling actionable spending insights\n•\nBuilt a CLI interface for rapid expense logging secured via JWT authentication, allowing power users to log\nand query expenses without leaving the terminal\nHealthLens| JavaScript, Firebase Auth, Cloud Firestore, Gemini API, PDF.js| GitHub| Live\n•\nEliminated the medical jargon barrier by extracting PDF text via PDF.js and generating role-specific summaries\nincluding a patient-friendly explanation and clinical brief from a single Gemini API call\n•\nDesigned Firestore schema (Users, Reports, Requests, Audit) with security rules enforcing patient-controlled\naccess, ensuring doctors cannot view records without explicit patient approval\n•\nImplemented a real-time consent system using Firestore listeners enabling instant approve/deny actions, with\nevery access request logged in a dedicated audit collection\n•\nDeveloped a context-aware medical chatbot retrieving patient data (medications, history) from Firestore and\ninjecting it into Gemini prompts for grounded, record-specific responses\nElectora| Solidity, Node.js, Express, Firebase, Ethers.js| GitHub\n•\nEngineered a blockchain-based voter registry eliminating duplicate identity fraud by anchoring electoral\nrecords to Ethereum smart contracts as a single immutable source of truth\n•\nBuilt a multi-stage identity verification pipeline validating voter credentials off-chain before on-chain\nregistration, preventing unauthorized entries at every stage\n•\nDesigned a hybrid storage architecture segregating sensitive PII in Firebase from on-chain identity mappings\nusing keccak256 hashing, balancing privacy with blockchain transparency\n•\nImplemented time-locked voting cycle logic in Solidity enforcing strict state transitions, making duplicate\nvoting cryptographically impossible across the entire election lifecycle\nTechnical Skills\nLanguages: C/C++, JavaScript, Python, SQL, Solidity, PHP\nFrameworks:Node.js, Express, FastAPI, Django, Tailwind CSS\nLibraries & Tools: Prisma, Pandas, NumPy, Matplotlib, Git\nDatabases & Platforms: MySQL, MongoDB, PostgreSQL, Firebase, Supabase\n\nAchievements\n• Co-inventor on a patent application filed through Jaypee Institute of Information Technology for an\nAutonomous Smart Waste Segregation System\n• Built and published a Chrome Extension implementing dynamic theme injection with 3000+ active\nusers; awarded the Chrome Web Store Featured Badge [Link]\n• Selected from 25,000+ applicants to present a project at Bharat Mandapam as part of a national\ninnovation showcase\n• Led multiple teams to become a 4-time hackathon finalist across competitive events.\n(Hackfest’25· GDG Delhi, Hack4Delhi, India Innovates’26, Innovate 3.0-JIIT)",
+      "resumeFileName": "992401040094 Madhav Gairola.pdf",
+      "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
+      "githubUrl": "https://github.com/madhavgairola",
+      "relevantExperience": "",
+      "status": "INTERVIEW_SCHEDULED",
+      "candidateContext": {
+        "resume": {
+          "textSnippet": "Madhav Gairola\n(+91) 7895936487| madhavgairola05@gmail.com| linkedin.com/in/madhavgairola|\ngithub.com/madhavgairola\nEducation\nJaypee Institute of Information TechnologyNoida, Uttar Pradesh\nBachelor of Technology, Information TechnologyJul. 2024 – May. 2028\nExperience\nRHA TechnologiesJun 2026 – Present\nSoftware Engineering Intern\n•\nLed end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA\nOne platform, uncovering critical edge cases across diverse enterprise use cases\n•\nEngineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL\nintegrations, analyzing retrieval accuracy, data ingestion behavior, and system reliability\n•\nBuilt and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug\nreports, validating feature releases, and accelerating issue resolution through close collaboration with engineering\nteams\nProjects\nExpensWise (Personal Financial Assistant)| Node.",
+          "fileName": "992401040094 Madhav Gairola.pdf",
+          "skills": [
+            "Python",
+            "FastAPI",
+            "Django",
+            "Node.js",
+            "JavaScript",
+            "React",
+            "PostgreSQL",
+            "RAG",
+            "SQL",
+            "Solidity"
+          ],
+          "experienceTitles": [
+            "Software Engineering Intern",
+            "Engineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL",
+            "reports, validating feature releases, and accelerating issue resolution through close collaboration with engineering",
+            "Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL",
+            "Engineered a blockchain-based voter registry eliminating duplicate identity fraud by anchoring electoral"
+          ],
+          "projects": [
+            "Built and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug",
+            "Projects",
+            "Designed an intelligent classification engine categorizing expenses into Needs vs Wants with budget threshold",
+            "Built a CLI interface for rapid expense logging secured via JWT authentication, allowing power users to log",
+            "Designed Firestore schema (Users, Reports, Requests, Audit) with security rules enforcing patient-controlled"
+          ],
+          "notableHighlights": [
+            "Eliminated manual expense entry by parsing natural language inputs (e.g., ”coffee 50”, ”rent 5k”) into",
+            "Architected a production-ready full-stack system with React frontend, Express backend, and PostgreSQL"
+          ]
+        },
+        "linkedin": {
+          "experience": [],
+          "skills": [],
+          "education": [
+            {
+              "school": "Jaypee Institute of Information Technology"
+            }
+          ],
+          "projects": [],
+          "certifications": []
+        },
+        "github": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "bio": "I code sometimes",
+          "publicReposCount": 19,
+          "repositories": [
+            {
+              "name": "syn-2",
+              "language": "TypeScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/syn-2",
+              "isPinned": true
+            },
+            {
+              "name": "ExpensWise",
+              "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+              "language": "JavaScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/ExpensWise",
+              "isPinned": true
+            },
+            {
+              "name": "HealthLens",
+              "language": "JavaScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/HealthLens",
+              "isPinned": true
+            },
+            {
+              "name": "electora",
+              "language": "JavaScript",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/electora",
+              "isPinned": true
+            },
+            {
+              "name": "lal",
+              "description": "leetcode accountability league",
+              "language": "Python",
+              "topics": [],
+              "url": "https://github.com/madhavgairola/lal",
+              "isPinned": false
+            },
+            {
+              "name": "ECHOSPHERE",
+              "language": "TypeScript",
+              "topics": [],
+              "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+              "isPinned": false
+            }
+          ],
+          "activeProjects": [
+            "syn-2",
+            "ExpensWise",
+            "HealthLens",
+            "electora",
+            "lal",
+            "ECHOSPHERE"
+          ]
+        },
+        "crossSourceContext": {
+          "corroboratedSkills": [
+            {
+              "skill": "Python",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "confidence": "HIGH",
+              "evidenceSnippet": "Confirmed across: resume, github"
+            },
+            {
+              "skill": "Fastapi",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Django",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Node.js",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Javascript",
+              "sources": [
+                "resume",
+                "github"
+              ],
+              "confidence": "HIGH",
+              "evidenceSnippet": "Confirmed across: resume, github"
+            },
+            {
+              "skill": "React",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Postgresql",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Rag",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Sql",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            },
+            {
+              "skill": "Solidity",
+              "sources": [
+                "resume"
+              ],
+              "confidence": "MEDIUM",
+              "evidenceSnippet": "Reported on resume"
+            }
+          ],
+          "corroboratedProjects": [
+            {
+              "projectName": "syn-2",
+              "description": "Repository in TypeScript",
+              "sources": [
+                "github"
+              ],
+              "details": "Active codebase exploring TypeScript.",
+              "evidenceSnippet": "GitHub repository: https://github.com/madhavgairola/syn-2"
+            },
+            {
+              "projectName": "ExpensWise",
+              "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+              "sources": [
+                "github",
+                "resume"
+              ],
+              "details": "Active codebase exploring JavaScript.",
+              "evidenceSnippet": "GitHub repository: https://github.com/madhavgairola/ExpensWise"
+            },
+            {
+              "projectName": "HealthLens",
+              "description": "Repository in JavaScript",
+              "sources": [
+                "github"
+              ],
+              "details": "Active codebase exploring JavaScript.",
+              "evidenceSnippet": "GitHub repository: https://github.com/madhavgairola/HealthLens"
+            },
+            {
+              "projectName": "electora",
+              "description": "Repository in JavaScript",
+              "sources": [
+                "github"
+              ],
+              "details": "Active codebase exploring JavaScript.",
+              "evidenceSnippet": "GitHub repository: https://github.com/madhavgairola/electora"
+            },
+            {
+              "projectName": "lal",
+              "description": "leetcode accountability league",
+              "sources": [
+                "github"
+              ],
+              "details": "Active codebase exploring Python.",
+              "evidenceSnippet": "GitHub repository: https://github.com/madhavgairola/lal"
+            },
+            {
+              "projectName": "ECHOSPHERE",
+              "description": "Repository in TypeScript",
+              "sources": [
+                "github"
+              ],
+              "details": "Active codebase exploring TypeScript.",
+              "evidenceSnippet": "GitHub repository: https://github.com/ReneshaSagar/ECHOSPHERE"
+            }
+          ],
+          "corroboratedExperience": [],
+          "careerProgressionSummary": "Madhav is an Information Technology undergraduate at Jaypee Institute of Information Technology with experience as a Software Engineering Intern at RHA Technologies working on AI skills and RAG pipelines. His background centers on full-stack web development using React and Node.js alongside developer tooling and automated workflow validation.",
+          "notableClaims": [
+            {
+              "claim": "Built and maintained a quality assurance framework for 250+ AI skills and workflows to validate system reliability.",
+              "source": "resume",
+              "verificationFocus": "Understanding workflow orchestration, developer experience pain points, and system usability when managing complex AI agents."
+            },
+            {
+              "claim": "Architected a production-ready full-stack system using a React frontend, Express backend, and PostgreSQL.",
+              "source": "resume",
+              "verificationFocus": "Evaluating component hierarchy, state management, and visual layout decisions within React applications."
+            },
+            {
+              "claim": "Developed ExpensWise featuring natural language parsing, CLI logging, and an interactive stats dashboard with charts.",
+              "source": "github",
+              "verificationFocus": "Probing interface usability across both command-line tools and web dashboards."
+            }
+          ]
+        },
+        "interviewContext": {
+          "targetRole": "Product Designer — Developer Systems & Experience",
+          "highRelevanceEvidence": [
+            {
+              "topic": "React Frontend Development & Component Structuring",
+              "relevance": "HIGH",
+              "reason": "Hands-on experience developing web applications with React provides a strong foundation for translating Figma components and design systems into code.",
+              "evidenceSources": [
+                "resume",
+                "github"
+              ]
+            },
+            {
+              "topic": "Developer Tools & AI Workflow Systems",
+              "relevance": "HIGH",
+              "reason": "Direct exposure to testing enterprise RAG pipelines, data connectors, and AI agent workflows provides practical domain context for developer experience (DevEx) design.",
+              "evidenceSources": [
+                "resume"
+              ]
+            }
+          ],
+          "technicalInterviewHooks": [
+            "How do you approach designing UI components in React to maintain consistent visual states, accessibility, and smooth user interactions?",
+            "When designing interfaces for complex data flows like AI workflows or dashboards, how do you handle asynchronous loading states and error visual feedback?",
+            "How do you bridge the gap between CLI interfaces for power users and visual dashboard consoles in terms of information architecture?"
+          ],
+          "behavioralInterviewHooks": [
+            "Can you share an instance where technical backend constraints required you to adapt or rethink the user experience of an application?",
+            "How do you collaborate with engineering partners to ensure pixel-perfect implementation of UI components and responsive layouts?"
+          ],
+          "projectsWorthProbing": [
+            {
+              "name": "ExpensWise",
+              "relevanceLevel": "HIGH",
+              "reasonToProbe": "Combines a dashboard analytics interface with a CLI tool, demonstrating dual interface paradigms for developer and consumer workflows.",
+              "suggestedQuestions": [
+                "What considerations went into designing the layout and data visualization hierarchy for the stats dashboard?",
+                "How did you design the user experience for natural language input parsing to prevent user errors?"
+              ],
+              "sourceUrl": "https://github.com/madhavgairola/ExpensWise"
+            },
+            {
+              "name": "syn-2",
+              "relevanceLevel": "MEDIUM",
+              "reasonToProbe": "TypeScript repository demonstrating modern frontend application development.",
+              "suggestedQuestions": [
+                "What was the structural design and user interaction model built into this project?"
+              ],
+              "sourceUrl": "https://github.com/madhavgairola/syn-2"
+            }
+          ],
+          "ignoredOrLowRelevanceTopics": [
+            "Solidity smart contracts and blockchain identity voter registry (electora)",
+            "LeetCode accountability scripts (lal)",
+            "Firestore security rules and backend medical schema design (HealthLens)",
+            "[IRRELEVANT TO ROLE] Blockchain / Web3 / Smart Contracts: Candidate mentioned blockchain/smart contract technology on profile, but it is outside the scope of this role. Omit from interview unless candidate introduces it."
+          ]
+        },
+        "experience": [],
+        "skills": [
+          "Python",
+          "Fastapi",
+          "Django",
+          "Node.js",
+          "Javascript",
+          "React",
+          "Postgresql",
+          "Rag",
+          "Sql",
+          "Solidity"
+        ],
+        "education": [
+          {
+            "school": "Jaypee Institute of Information Technology"
+          }
+        ],
+        "projects": [],
+        "certifications": [],
+        "organizations": [],
+        "careerProgression": "Madhav is an Information Technology undergraduate at Jaypee Institute of Information Technology with experience as a Software Engineering Intern at RHA Technologies working on AI skills and RAG pipelines. His background centers on full-stack web development using React and Node.js alongside developer tooling and automated workflow validation.",
+        "notableClaims": [
+          "Built and maintained a quality assurance framework for 250+ AI skills and workflows to validate system reliability.",
+          "Architected a production-ready full-stack system using a React frontend, Express backend, and PostgreSQL.",
+          "Developed ExpensWise featuring natural language parsing, CLI logging, and an interactive stats dashboard with charts."
+        ],
+        "interviewHooks": [
+          "How do you approach designing UI components in React to maintain consistent visual states, accessibility, and smooth user interactions?",
+          "When designing interfaces for complex data flows like AI workflows or dashboards, how do you handle asynchronous loading states and error visual feedback?",
+          "How do you bridge the gap between CLI interfaces for power users and visual dashboard consoles in terms of information architecture?",
+          "Can you share an instance where technical backend constraints required you to adapt or rethink the user experience of an application?",
+          "How do you collaborate with engineering partners to ensure pixel-perfect implementation of UI components and responsive layouts?"
+        ],
+        "enrichmentSource": "brightdata+github+resume",
+        "enrichedAt": "2026-09-05T09:38:25.985Z",
+        "githubContext": {
+          "username": "madhavgairola",
+          "profileUrl": "https://github.com/madhavgairola",
+          "name": "mdhv",
+          "bio": "I code sometimes",
+          "location": "Delhi",
+          "publicReposCount": 19,
+          "followers": 1,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
+          "totalCommits": 315,
+          "recentCommits30Days": 151,
+          "commitVelocityNarrative": "151 commits in the past 30 days • 315 total commits",
+          "technicalHighlights": [],
+          "githubProjects": [
+            {
+              "name": "syn-2",
+              "language": "TypeScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/syn-2",
+              "isPinned": true,
+              "candidateCommits": 0,
+              "isRecent": true
+            },
+            {
+              "name": "ExpensWise",
+              "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/ExpensWise",
+              "isPinned": true,
+              "candidateCommits": 40,
+              "isRecent": false
+            },
+            {
+              "name": "HealthLens",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/HealthLens",
+              "isPinned": true,
+              "candidateCommits": 1,
+              "isRecent": false
+            },
+            {
+              "name": "electora",
+              "language": "JavaScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/electora",
+              "isPinned": true,
+              "candidateCommits": 9,
+              "isRecent": false
+            },
+            {
+              "name": "lal",
+              "description": "leetcode accountability league",
+              "language": "Python",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/madhavgairola/lal",
+              "isPinned": false,
+              "candidateCommits": 3,
+              "isRecent": true
+            },
+            {
+              "name": "ECHOSPHERE",
+              "language": "TypeScript",
+              "stars": 0,
+              "topics": [],
+              "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+              "isPinned": false,
+              "candidateCommits": 94,
+              "isRecent": true
+            }
+          ],
+          "githubInterviewHooks": [],
+          "enrichedAt": "2026-09-05T09:37:52.243Z",
+          "rawProviderJson": {
+            "username": "madhavgairola",
+            "name": "mdhv",
+            "bio": "I code sometimes",
+            "location": "Delhi",
+            "publicReposCount": 19,
+            "followers": 1,
+            "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
+            "profileUrl": "https://github.com/madhavgairola",
+            "totalCommits": 315,
+            "recentCommits30Days": 151,
+            "pinnedRepoNames": [
+              "ExpensWise",
+              "HealthLens",
+              "syn-2",
+              "electora"
+            ],
+            "repos": [
+              {
+                "name": "syn-2",
+                "fullName": "madhavgairola/syn-2",
+                "language": "TypeScript",
+                "stars": 0,
+                "forks": 1,
+                "topics": [],
+                "url": "https://github.com/madhavgairola/syn-2",
+                "languages": {
+                  "TypeScript": 341033,
+                  "CSS": 5683,
+                  "JavaScript": 2964,
+                  "Python": 1452,
+                  "HTML": 650
+                },
+                "updatedAt": "2026-08-27T17:22:27Z",
+                "pushedAt": "2026-08-27T16:54:01Z",
+                "isPinned": true,
+                "candidateCommits": 0,
+                "isRecent": true
+              },
+              {
+                "name": "ExpensWise",
+                "fullName": "madhavgairola/ExpensWise",
+                "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+                "language": "JavaScript",
+                "stars": 0,
+                "forks": 0,
+                "topics": [],
+                "url": "https://github.com/madhavgairola/ExpensWise",
+                "languages": {
+                  "JavaScript": 116527,
+                  "CSS": 12688,
+                  "TypeScript": 374,
+                  "HTML": 359
+                },
+                "readmeSnippet": "ExpensWise\n\nExpensWise is a smart personal finance tracker that doesn't feel like a second job. Instead of wrestling with complex forms or staring at boring spreadsheets, you just talk to it. Built with a focus on speed, AI-driven insights, and a sleek dark-mode aesthetic.\n\n[Live Demo](https://expens-wise.vercel.app)\n\n Why I Built This\nMost finance apps are a chore. You spend more time categorizing transactions than actually understanding where your money is going. I wanted something where I could just type `200 for pizza` or `paid 500 for rent need` and have it handled automatically. ExpensWise takes away the friction of manual data entry so you actually *want* to track your spend.\n\n Featur",
+                "updatedAt": "2026-05-09T05:18:33Z",
+                "pushedAt": "2026-05-09T05:18:29Z",
+                "isPinned": true,
+                "candidateCommits": 40,
+                "isRecent": false
+              },
+              {
+                "name": "HealthLens",
+                "fullName": "madhavgairola/HealthLens",
+                "language": "JavaScript",
+                "stars": 0,
+                "forks": 0,
+                "topics": [],
+                "url": "https://github.com/madhavgairola/HealthLens",
+                "languages": {
+                  "JavaScript": 61048,
+                  "HTML": 50110,
+                  "CSS": 22299
+                },
+                "readmeSnippet": "HealthLens 🏥\n\nHealthLens is a patient-first medical platform that translates complex clinical reports into clear, plain English. No jargon, no confusion—just clarity and advocacy for your own well-being.\n\n[Live Demo](https://healthlens-15bf6.web.app)\n\n Why I Built This\nMedical documents are traditionally written by doctors, for doctors. If you've ever held a blood test or an MRI report and felt like you were reading a foreign language, you're not alone. I built HealthLens to tear down that barrier. It’s like having a compassionate medical student sitting next to you, explaining every line of your report so you can actually understand what's happening with your body.\n\n Features\n- **AI Report",
+                "updatedAt": "2026-06-08T09:30:28Z",
+                "pushedAt": "2026-06-08T09:30:24Z",
+                "isPinned": true,
+                "candidateCommits": 1,
+                "isRecent": false
+              },
+              {
+                "name": "electora",
+                "fullName": "madhavgairola/electora",
+                "language": "JavaScript",
+                "stars": 0,
+                "forks": 0,
+                "topics": [],
+                "url": "https://github.com/madhavgairola/electora",
+                "languages": {
+                  "JavaScript": 38790,
+                  "HTML": 11370,
+                  "CSS": 10065,
+                  "Solidity": 4954,
+                  "TypeScript": 124
+                },
+                "readmeSnippet": "Electora: Trustless Voter Roll Management\n\nMost electoral systems worldwide suffer from a fundamental paradox: they must be publicly auditable to ensure trust, but they must keep voter data private to ensure safety. \n\nExisting solutions are either centralized \"black box\" databases that are vulnerable to manipulation, or misguided \"on-chain\" projects that leak sensitive Personal Identifiable Information (PII) to the public.\n\nElectora solves this by using a hybrid architecture. We keep the Human Details private and the System Truth immutable.\n\n The Problems Electora Solves\n\n1. Double Enrollment: In many regions, voters remain on the roll in their old constituency after moving, which makes doub",
+                "updatedAt": "2026-05-06T15:40:27Z",
+                "pushedAt": "2026-04-19T16:34:10Z",
+                "isPinned": true,
+                "candidateCommits": 9,
+                "isRecent": false
+              },
+              {
+                "name": "lal",
+                "fullName": "madhavgairola/lal",
+                "description": "leetcode accountability league",
+                "language": "Python",
+                "stars": 0,
+                "forks": 0,
+                "topics": [],
+                "url": "https://github.com/madhavgairola/lal",
+                "languages": {
+                  "Python": 17312,
+                  "CSS": 3279,
+                  "TypeScript": 3067,
+                  "HTML": 360
+                },
+                "readmeSnippet": "lal\nleetcode accountability league",
+                "updatedAt": "2026-08-15T08:05:53Z",
+                "pushedAt": "2026-08-15T08:05:23Z",
+                "isPinned": false,
+                "candidateCommits": 3,
+                "isRecent": true
+              },
+              {
+                "name": "ECHOSPHERE",
+                "fullName": "ReneshaSagar/ECHOSPHERE",
+                "language": "TypeScript",
+                "stars": 0,
+                "forks": 1,
+                "topics": [],
+                "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+                "languages": {
+                  "TypeScript": 719779,
+                  "Python": 99093,
+                  "JavaScript": 33193,
+                  "CSS": 3561,
+                  "PowerShell": 2214
+                },
+                "updatedAt": "2026-09-05T08:11:54Z",
+                "pushedAt": "2026-09-05T08:11:50Z",
+                "isPinned": false,
+                "candidateCommits": 94,
+                "isRecent": true
+              }
+            ],
+            "allRepoNames": [
+              "ECHOSPHERE",
+              "echosphere",
+              "kana-dojo",
+              "syn-2",
+              "Yatrikavach",
+              "Yatrikavach",
+              "lal",
+              "neoflo-ai-assignment",
+              "madhavgairola",
+              "backend-synthetic",
+              "backend-synthetic",
+              "HealthLens",
+              "autodev",
+              "expensWise-cli",
+              "pragd",
+              "ExpensWise",
+              "electora",
+              "java-project",
+              "re",
+              "FIMS",
+              "New-Grad-Jobs",
+              "gopractice"
+            ]
+          }
+        },
+        "totalCommits": 315,
+        "recentCommits30Days": 151,
+        "commitVelocityNarrative": "151 commits in the past 30 days • 315 total commits",
+        "githubProjects": [
+          {
+            "name": "syn-2",
+            "language": "TypeScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/syn-2",
+            "isPinned": true,
+            "candidateCommits": 0,
+            "isRecent": true
+          },
+          {
+            "name": "ExpensWise",
+            "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/ExpensWise",
+            "isPinned": true,
+            "candidateCommits": 40,
+            "isRecent": false
+          },
+          {
+            "name": "HealthLens",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/HealthLens",
+            "isPinned": true,
+            "candidateCommits": 1,
+            "isRecent": false
+          },
+          {
+            "name": "electora",
+            "language": "JavaScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/electora",
+            "isPinned": true,
+            "candidateCommits": 9,
+            "isRecent": false
+          },
+          {
+            "name": "lal",
+            "description": "leetcode accountability league",
+            "language": "Python",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/madhavgairola/lal",
+            "isPinned": false,
+            "candidateCommits": 3,
+            "isRecent": true
+          },
+          {
+            "name": "ECHOSPHERE",
+            "language": "TypeScript",
+            "stars": 0,
+            "topics": [],
+            "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+            "isPinned": false,
+            "candidateCommits": 94,
+            "isRecent": true
+          }
+        ],
+        "githubInterviewHooks": [
+          "How do you approach designing UI components in React to maintain consistent visual states, accessibility, and smooth user interactions?",
+          "When designing interfaces for complex data flows like AI workflows or dashboards, how do you handle asynchronous loading states and error visual feedback?",
+          "How do you bridge the gap between CLI interfaces for power users and visual dashboard consoles in terms of information architecture?"
+        ],
+        "sourceLogging": {
+          "rawProviderJson": {
+            "linkedin": {
+              "id": "madhavgairola",
+              "name": "Madhav Gairola",
+              "city": "New Delhi, Delhi, India",
+              "country_code": "IN",
+              "position": null,
+              "about": null,
+              "current_company": {
+                "link": "https://in.linkedin.com/company/rha-technologies-pvt-ltd?trk=public_profile_topcard-current-company",
+                "name": "RHA Technologies",
+                "company_id": "rha-technologies-pvt-ltd",
+                "location": null
+              },
+              "experience": null,
+              "url": "https://pk.linkedin.com/in/madhavgairola",
+              "people_also_viewed": [
+                {
+                  "profile_link": "https://in.linkedin.com/in/amrishkumarsingh",
+                  "name": "Amrish Kumar Singh",
+                  "about": "HashStudioz Technologies Private Limited",
+                  "location": "30K followers Noida"
+                },
+                {
+                  "profile_link": "https://in.linkedin.com/in/saipriyas",
+                  "name": "Saipriya S",
+                  "about": "Freelance, self-employed",
+                  "location": "23K followers Chennai"
+                },
+                {
+                  "profile_link": "https://in.linkedin.com/in/sangeeta-gupta-8907269",
+                  "name": "Sangeeta Gupta",
+                  "about": "2COMS Consulting Pvt. Ltd.",
+                  "location": "28K followers Kolkata"
+                },
+                {
+                  "profile_link": "https://in.linkedin.com/in/preeti-pasricha-884451b2",
+                  "name": "Preeti Pasricha",
+                  "about": "CP Goenka International School - India",
+                  "location": "46K followers Thane"
+                },
+                {
+                  "profile_link": "https://tr.linkedin.com/in/robert-thorn-academyoflearnerdevelopment",
+                  "name": "Robert Thorn",
+                  "about": "Rushmere Tao Independent Teen Coaching Agency",
+                  "location": "32K followers İskenderun Bucağı"
+                },
+                {
+                  "profile_link": "https://in.linkedin.com/in/anu-kaul-a88a5a1b",
+                  "name": "Anu Kaul",
+                  "about": "BORA",
+                  "location": "28K followers Greater Bengaluru Area"
+                },
+                {
+                  "profile_link": "https://www.linkedin.com/in/naga-yadav-43a62b144",
+                  "name": "Naga Yadav",
+                  "about": "ABS Tech LLC",
+                  "location": "33K followers United States"
+                },
+                {
+                  "profile_link": "https://in.linkedin.com/in/dr-narayan-kumar%E2%80%8B-bhadra-6967b9ab",
+                  "name": "Dr. Narayan Kumar​ Bhadra",
+                  "about": "SCHOOL EDUCATION DEPARTMENT OF WEST BENGAL INDIA",
+                  "location": "29K followers Bangaon"
+                },
+                {
+                  "profile_link": "https://in.linkedin.com/in/dr-d-j-singh-46241017",
+                  "name": "Dr D J Singh",
+                  "about": "Vidya Jyoti Educational Society",
+                  "location": "30K followers Chandigarh, India"
+                }
+              ],
+              "educations_details": "Jaypee Institute of Information Technology",
+              "education": [
+                {
+                  "start_year": "2018",
+                  "end_year": "2023",
+                  "description": null,
+                  "description_html": null,
+                  "institute_logo_url": null
+                }
+              ],
+              "avatar": "https://media.licdn.com/dms/image/v2/D5603AQH-9lq65XJGFg/profile-displayphoto-scale_200_200/B56ZuzBT2IGsAc-/0/1768235024589?e=2147483647&v=beta&t=rAEINmYsEXetESo6UesIRb9P5flkYVW6qqWFFVEJ0oI",
+              "followers": 104,
+              "connections": 102,
+              "current_company_company_id": "rha-technologies-pvt-ltd",
+              "current_company_name": "RHA Technologies",
+              "location": "New Delhi",
+              "input_url": "https://www.linkedin.com/in/madhavgairola/",
+              "linkedin_id": "madhavgairola",
+              "activity": [
+                {
+                  "interaction": "Madhav Gairola replied to a comment 3h",
+                  "link": null,
+                  "title": null,
+                  "img": null,
+                  "id": null
+                },
+                {
+                  "interaction": "Madhav Gairola liked this",
+                  "link": "https://www.linkedin.com/posts/vatsalya-singh-3b4349329_hack4crown-nsutdelhi-hackathon-activity-7498492881377071105-0RFE",
+                  "title": "Finalists at Hack-4-Crown 2026! 👑 Glad to share that our team made it to the Final Round and secured a place among the Top 10 teams at Hack-4-Crown, a 24-hour hackathon hosted at NSUT Delhi. Competing alongside 1000+ teams and with 5000+ registrations, this journey was much more than just the final result. From brainstorming and building our solution from scratch to debugging under pressure and presenting it to the judges, the 24 hours were intense, challenging, and incredibly rewarding. Making it to the Top 10 is something we're truly proud of, but the learning, teamwork, and experience throughout the journey made it even more special. Grateful to have shared this journey with Atharv Vaidya Piyush Panwar Vanshika Garg , every idea, discussion, and late-night effort came together to make this experience what it was. #Hack4Crown #NSUTDelhi #Hackathon #Finalists #Top10 #Innovation #Teamwork #Tech",
+                  "img": "https://media.licdn.com/dms/image/v2/D4D22AQGBnPJaTNI4wQ/feedshare-shrink_800/B4DaA__hskJgAg-/0/1787780013103?e=2147483647&v=beta&t=-3ykSgNP0e78eHbPIU99pKq_LzhAHC3ROdPvEq9TfW8",
+                  "id": "7498492881377071105"
+                },
+                {
+                  "interaction": "Madhav Gairola liked this",
+                  "link": "https://www.linkedin.com/posts/utkarsh-sehrawat-26523431b_androiddev-kotlin-jetpackcompose-activity-7497348470232543232-SY6Z",
+                  "title": "🍳 Built RecipeApp — a native Android recipe discovery app. Here's a quick demo 👇 A few things I focused on while building it: 📱 Cuisine-based filtering with a responsive recipe grid 🔄 Async data fetching using Kotlin Coroutines + Ktor 🏗️ ViewModel/repository architecture that cleanly handles loading, error, retry, and empty states — not just the happy path 🎨 Fully built with Jetpack Compose + Material 3 The trickiest part wasn't the UI — it was getting the state management right so the app feels solid even when the network misbehaves. Tech stack: Kotlin • Jetpack Compose • Ktor • Kotlin Coroutines • Kotlinx Serialization • Navigation Compose Code: https://lnkd.in/dY5Tf8QB Would love feedback from fellow Android devs 🚀 #AndroidDev #Kotlin #JetpackCompose #MobileDevelopment",
+                  "img": "https://media.licdn.com/dms/image/v2/D4D05AQEtBd7Qn-pUQA/videocover-high/B4DaAvurIMJoBM-/0/1787507161099?e=2147483647&v=beta&t=TBmgb33Qqj8rD2kYQKTyZqwh1VLo9Ite6ryRmsakdkE",
+                  "id": "7497348470232543232"
+                },
+                {
+                  "interaction": "Madhav Gairola liked this",
+                  "link": "https://www.linkedin.com/posts/knotic_agora-paytm-googlefordevelopers-activity-7495448981339013120-LrE7",
+                  "title": "VENUE REVEALED! The wait is officially over! We are thrilled to announce that The Conversational AI Buildathon by Agora will be happening live at Paytm, Noida! Big shoutout to Paytm for supporting the developer ecosystem and making this buildathon possible. Venue: Paytm, Noida Powered by KNOTiC SEE YOU THERE! Haven't registered yet? Lock in your spot now: https://lnkd.in/gTxTuUqa #Agora #Paytm #GoogleForDevelopers #ConversationalAI #VoiceAI #Buildathon #HackathonNoida #TechEvents",
+                  "img": "https://media.licdn.com/dms/image/v2/D5622AQHCoooq63VVYQ/feedshare-image-high-res/B56aAUvIR1HoAU-/0/1787054294437?e=2147483647&v=beta&t=aHPLZOJBKvi2CJJo1LZVQp2tMIWtLMRvGK9_cNMXQcE",
+                  "id": "7495448981339013120"
+                },
+                {
+                  "interaction": "Madhav Gairola liked this",
+                  "link": "https://www.linkedin.com/posts/knotic_echosphere2026-agora-knotic-activity-7494350969405804544-qODW",
+                  "title": "The EchoSphere 2026 swag is here. 👀 You’re not just building with Agora - you’re building for the community. And what’s a hackathon without some exclusive swag? From T-shirts and caps to notebooks, tote bags, and more, we’ve got something special lined up for the builders who make EchoSphere 2026 happen. Build. Ship. Win. Wear it. Ready to get your hands on the EchoSphere swag? Powered by Knotic #EchoSphere2026 #Agora #KNOTiC #Hackathon #ConversationalAI #VoiceAI #AI",
+                  "img": "https://media.licdn.com/dms/image/v2/D4D22AQE_NeMR-SDu6A/feedshare-image-high-res/B4DaAFIflnHQAU-/0/1786792508184?e=2147483647&v=beta&t=G-AYnOw4rxjctgS5bcZ3ROXJ_xbpRsZ95gAKocCaBSw",
+                  "id": "7494350969405804544"
+                },
+                {
+                  "interaction": "Madhav Gairola liked this",
+                  "link": "https://www.linkedin.com/posts/knotic_build-with-swytchcode-activity-7493690856370155520-0sS-",
+                  "title": "Glimpses from Build with Swytchcode ! What a day! On 9th August, we brought together 150+ builders at the Paytm Noida office for an action-packed Buildathon powered by Swytchcode × KNOTiC. 150+ builders. 6 mentors. 2 judges. One crazy day at the Paytm Noida office! From brainstorming ideas to building working prototypes, participants spent the day experimenting with APIs, solving real-world problems, getting mentorship, and turning their ideas into something tangible. A huge shoutout to all the builders, mentors, judges, volunteers, and the entire organising team who made this event possible. The energy, creativity, last-minute debugging, mentor discussions, demos, and those final submissions made the day truly memorable. This wasn’t just a Buildathon it was a room full of people building, learning, sharing, and pushing each other to create something better. And yes… there were plenty of “bhai, mera code chal nahi raha” moments too. Thank you to everyone who showed up and made Build with Swytchcode a memorable one! More builds. More builders. More crazy ideas. 📸 : Renesha Sagar Swytchcode Knotic #BuildWithSwytchcode #Swytchcode #KNOTiC #Buildathon #Hackathon #AI",
+                  "img": "https://media.licdn.com/dms/image/v2/D5605AQH7pIdFK4ayEA/videocover-high/B56Z_7wEuxHABM-/0/1786635115709?e=2147483647&v=beta&t=AFI0uQEoGmEewWM9gU6HuPVYb9uIC5A0ACpR_A6on9c",
+                  "id": "7493690856370155520"
+                },
+                {
+                  "interaction": "Madhav Gairola liked this",
+                  "link": "https://www.linkedin.com/posts/knotic_buildwithagora-agora-conversationalai-activity-7493546569879728128-QjMg",
+                  "title": "Stop Typing. Start Talking. Introducing Build with Agora - a professional, one-day Conversational AI Buildathon for developers, AI engineers, and builders to explore and create real-time voice and conversational AI applications using Agora. Participants will work on practical use cases, experiment with conversational AI and voice technologies, and build functional prototypes in a focused, hands-on environment. Event: Build with Agora Date: 23 August 2026 Venue: Paytm Noida Format: One-Day Buildathon Powered by: KNOTiC A focused day of building, learning, and experimenting with the future of Conversational AI. Registration : https://lnkd.in/gTxTuUqa #BuildWithAgora #Agora #ConversationalAI #VoiceAI #Buildathon",
+                  "img": "https://media.licdn.com/dms/image/v2/D5622AQHppMUg6BiQEg/feedshare-shrink_800/B56Z_5s5WiK4Ac-/0/1786600724284?e=2147483647&v=beta&t=k9YII3b-3-zH-yTTef7axFDkeeU42jR4oH9XqVQFBjw",
+                  "id": "7493546569879728128"
+                },
+                {
+                  "interaction": "Madhav Gairola liked this",
+                  "link": "https://www.linkedin.com/posts/vatsalya-singh-3b4349329_cprogramming-sdf-leetcode-activity-7492639016337641473-XNDX",
+                  "title": "Had a great time conducting a session on Basics of C, SDF, and an introduction to LeetCode along with my friend Lakshya Mishra ! We started with the fundamentals of C programming and SDF, and then moved towards problem-solving and introduced everyone to LeetCode as a platform to practice and improve their coding skills. To make the session more interactive, we also included a few puzzle questions that got everyone thinking, discussing, and looking at problems from different perspectives. One of the best parts of conducting a session is seeing people actively participate, ask questions, and engage with what you're teaching. And honestly, teaching others is also a great way to learn and strengthen your own concepts. Really enjoyed the experience of sharing what we’ve learned and learning along with everyone else. Looking forward to more such opportunities! #CProgramming #SDF #LeetCode #DSA #ProblemSolving #Coding #LearningTogether #Tech",
+                  "img": "https://media.licdn.com/dms/image/v2/D5622AQG1CJotu2QPrQ/feedshare-image-high-res/B56Z_szd_lKYAU-/0/1786384343330?e=2147483647&v=beta&t=zVni4oCjmM5TIGSyARHILBIEYKJ9fa37u1b9OrbbgB8",
+                  "id": "7492639016337641473"
+                },
+                {
+                  "interaction": "Madhav Gairola liked this",
+                  "link": "https://www.linkedin.com/posts/kafeel001khan_what-an-incredible-day-at-the-build-with-activity-7492611311546281984-19n1",
+                  "title": "What an incredible day at the Build with Swytchcode Buildathon! It was amazing to witness 120+ passionate developers come together to learn, build, and innovate. The energy, creativity, and enthusiasm throughout the day truly made this event special. A huge thank you to the entire Swytchcode team for partnering with us and making this initiative a success. We look forward to building many more impactful developer programs together. A special thanks to our amazing mentors: Tushar Srushti Raybhoge Yatin Batra Ishan Katoch Nidhi Kumari Aman Garg Your guidance and support helped participants throughout their journey. A heartfelt thank you to our judge, Shalabh Aggarwal (CTO, Spice Money)and Chilarai Mushahary (Co-Founder,@ Swytchcode , for taking the time to evaluate projects and provide valuable feedback to the teams. Congratulations to all the winners( Syna Agarwala , Prashant Arya , Himani Hassija , Ryosuke Kawashima for their outstanding projects and to every participant who took up the challenge and built something meaningful in just a few hours. Your passion for learning and building is what drives our community forward. Lastly, a huge thank you to all our volunteers and everyone who worked tirelessly behind the scenes to make this event a memorable one. And to the KNOTIC team you guys are absolutely crazy (in the best way possible)! None of this would have been possible without your passion, dedication, and countless hours of hard work. This is just the beginning. We have many more workshops, buildathons, hackathons, and community initiatives coming your way. And if you're planning a developer event, workshop, or hackathon, KNOTIC is just a DM away. Let's build something amazing together!",
+                  "img": "https://media.licdn.com/dms/image/v2/D5622AQEj9p9lEqR2QQ/feedshare-shrink_800/B56Z_saRrHG4Ac-/0/1786377740747?e=2147483647&v=beta&t=Zvi5i5JkJfL-XzBnp9Vq99oS_gVxvr6v0UC5dQUYY4Y",
+                  "id": "7492611311546281984"
+                },
+                {
+                  "interaction": "Madhav Gairola liked this",
+                  "link": "https://www.linkedin.com/posts/ryosuke-kawashima-58878b360_third-place-in-an-ai-hackathon-organized-activity-7492601562314420225-3Tzy",
+                  "title": "Third Place in an AI Hackathon Organized by Google for Developers 優勝を目指して挑んだインドのAIハッカソン、3位入賞から得た学び I’m thrilled to share that I recently placed third out of 160 participants in an AI hackathon! Although I was aiming for first place, the event was a valuable experience. The hackathon was organized by Google for Developers , Paytm , Knotic , and Swytchcode , a software company that provides API integrations for AI. Our challenge was to use Swytchcode’s technology to build a solution for specific needs. I created an AI assistant for international meetings, designed to address communication barriers and time-zone conflicts. I owe much of this result to advice from someone I deeply respect, Nishant Bhalla - PMP, CSM, ITIL, MCTS, Six Sigma : always start with the “why”, the problem you want to solve and the value you want to create. What impressed me most was the speed of development. In hackathons I previously attended in Japan, developing a solution often took much longer. At this event, however, we had only five hours, and almost everyone used AI agents to accelerate the development process. This experience showed me how dramatically AI is increasing expectations for rapid development. It also helped me identify an area for improvement: clearly explaining why a particular AI technology is essential to the proposed solution. At my next hackathon, I will focus more on leveraging the sponsor’s technology and demonstrating how its unique strengths contribute to the solution. I was also able to reach the final round with the support of Google Antigravity , which I discovered through Google events. This achievement reflects the support and connections I have gained through the Google community. I’m deeply grateful to everyone who helped me, and I look forward to attending more Google events and connecting with people from diverse backgrounds. Stay tuned! Special thanks to Chilarai Mushahary , Yatin Batra , Nidhi Kumari , Shalabh Aggarwal , Ishan Katoch , AMAN GARG , Srushti Raybhoge , and Tushar saini for organizing this event. Congratulations to Prashant Arya on winning first place and to Himani Hassija on taking second place! 先日の日曜日にインドのデリー近郊で開催されたGoogleのハッカソンに参加し、160人以上中3位に入賞しました。正直なところ、優勝を目指していたので、それが唯一の後悔です。このイベントは、SwytchcodeというインドのAIの技術を活用して、人々を支援するサービスを作ることがテーマでした。 私は国際会議を開く上での意思疎通の文化的な壁(日本の察しなど)や時差の問題を解決するための国際会議AIアシスタントを作ることにしました。最終的に3位に入賞できたのは、私が尊敬している方の「WHYから始める」というアドバイスのおかげです。つまり、いきなりコーディングから始めるのではなく、課題を最初に考えることに重点を置きました。 一方で反省点として、なぜその道具を課題解決に選んだのかを正当化することが弱点だと感じました。つまり、他のサービスでも別に良くない?ということを説明できるようにする必要があると感じました。 次回のハッカソンでは、スポンサーのサービスの独自性や強みを活かして、より良い成果物を作ることに注力します。 一般的にインドのAIの技術はAPIを利用した既存サービスとの連携が得意で、今回のSwytchcodeもそのようなサービスでした。そして、数年前に比べてLLMの性能が飛躍的に向上しており試作品完成の時間が短くなっていると感じました。日本のハッカソンに参加した時は、開発に時間がかかる印象がありましたが、今回のハッカソンでは5時間で開発する必要があり、ほとんどの人がAIエージェントを使って開発速度を上げていました。AIの登場により、開発速度の要求は高まっています。 私は、インドAIの技術は今後ますます発展していくと考えており、今後もこのようなイベントに参加していきたいと思います。とくに今回はGoogleのAntigravityに本当に助けられたので、特にGoogleのイベントにさらに参加する所存です。 これからも応援をよろしくお願いします！",
+                  "img": "https://media.licdn.com/dms/image/v2/D5622AQEJAVMoGVgMlg/feedshare-shrink_800/B56Z_sRaXNKYAk-/0/1786375415957?e=2147483647&v=beta&t=_7UPYQRJgkf8o7uZIg5nUYytH20jYtT6a7ipRCCZWQA",
+                  "id": "7492601562314420225"
+                }
+              ],
+              "linkedin_num_id": "842434963",
+              "banner_image": "https://media.licdn.com/dms/image/v2/C4D16AQFGt-PCFL_3xA/profile-displaybackgroundimage-shrink_200_800/profile-displaybackgroundimage-shrink_200_800/0/1668693016156?e=2147483647&v=beta&t=vNTkjHyCH9YLtf143_z_u-EUqK7JMjtDd2SEA1rq-v4",
+              "honors_and_awards": null,
+              "similar_profiles": [],
+              "default_avatar": false,
+              "memorialized_account": false,
+              "bio_links": [],
+              "first_name": "Madhav",
+              "last_name": "Gairola",
+              "influencer": false,
+              "timestamp": "2026-09-05T09:37:55.370Z",
+              "input": {
+                "url": "https://www.linkedin.com/in/madhavgairola/"
+              }
+            },
+            "github": {
+              "username": "madhavgairola",
+              "name": "mdhv",
+              "bio": "I code sometimes",
+              "location": "Delhi",
+              "publicReposCount": 19,
+              "followers": 1,
+              "avatarUrl": "https://avatars.githubusercontent.com/u/214257149?v=4",
+              "profileUrl": "https://github.com/madhavgairola",
+              "totalCommits": 315,
+              "recentCommits30Days": 151,
+              "pinnedRepoNames": [
+                "ExpensWise",
+                "HealthLens",
+                "syn-2",
+                "electora"
+              ],
+              "repos": [
+                {
+                  "name": "syn-2",
+                  "fullName": "madhavgairola/syn-2",
+                  "language": "TypeScript",
+                  "stars": 0,
+                  "forks": 1,
+                  "topics": [],
+                  "url": "https://github.com/madhavgairola/syn-2",
+                  "languages": {
+                    "TypeScript": 341033,
+                    "CSS": 5683,
+                    "JavaScript": 2964,
+                    "Python": 1452,
+                    "HTML": 650
+                  },
+                  "updatedAt": "2026-08-27T17:22:27Z",
+                  "pushedAt": "2026-08-27T16:54:01Z",
+                  "isPinned": true,
+                  "candidateCommits": 0,
+                  "isRecent": true
+                },
+                {
+                  "name": "ExpensWise",
+                  "fullName": "madhavgairola/ExpensWise",
+                  "description": "AI-powered expense manager with voice input, Gemini AI, charts, and stats dashboard.",
+                  "language": "JavaScript",
+                  "stars": 0,
+                  "forks": 0,
+                  "topics": [],
+                  "url": "https://github.com/madhavgairola/ExpensWise",
+                  "languages": {
+                    "JavaScript": 116527,
+                    "CSS": 12688,
+                    "TypeScript": 374,
+                    "HTML": 359
+                  },
+                  "readmeSnippet": "ExpensWise\n\nExpensWise is a smart personal finance tracker that doesn't feel like a second job. Instead of wrestling with complex forms or staring at boring spreadsheets, you just talk to it. Built with a focus on speed, AI-driven insights, and a sleek dark-mode aesthetic.\n\n[Live Demo](https://expens-wise.vercel.app)\n\n Why I Built This\nMost finance apps are a chore. You spend more time categorizing transactions than actually understanding where your money is going. I wanted something where I could just type `200 for pizza` or `paid 500 for rent need` and have it handled automatically. ExpensWise takes away the friction of manual data entry so you actually *want* to track your spend.\n\n Featur",
+                  "updatedAt": "2026-05-09T05:18:33Z",
+                  "pushedAt": "2026-05-09T05:18:29Z",
+                  "isPinned": true,
+                  "candidateCommits": 40,
+                  "isRecent": false
+                },
+                {
+                  "name": "HealthLens",
+                  "fullName": "madhavgairola/HealthLens",
+                  "language": "JavaScript",
+                  "stars": 0,
+                  "forks": 0,
+                  "topics": [],
+                  "url": "https://github.com/madhavgairola/HealthLens",
+                  "languages": {
+                    "JavaScript": 61048,
+                    "HTML": 50110,
+                    "CSS": 22299
+                  },
+                  "readmeSnippet": "HealthLens 🏥\n\nHealthLens is a patient-first medical platform that translates complex clinical reports into clear, plain English. No jargon, no confusion—just clarity and advocacy for your own well-being.\n\n[Live Demo](https://healthlens-15bf6.web.app)\n\n Why I Built This\nMedical documents are traditionally written by doctors, for doctors. If you've ever held a blood test or an MRI report and felt like you were reading a foreign language, you're not alone. I built HealthLens to tear down that barrier. It’s like having a compassionate medical student sitting next to you, explaining every line of your report so you can actually understand what's happening with your body.\n\n Features\n- **AI Report",
+                  "updatedAt": "2026-06-08T09:30:28Z",
+                  "pushedAt": "2026-06-08T09:30:24Z",
+                  "isPinned": true,
+                  "candidateCommits": 1,
+                  "isRecent": false
+                },
+                {
+                  "name": "electora",
+                  "fullName": "madhavgairola/electora",
+                  "language": "JavaScript",
+                  "stars": 0,
+                  "forks": 0,
+                  "topics": [],
+                  "url": "https://github.com/madhavgairola/electora",
+                  "languages": {
+                    "JavaScript": 38790,
+                    "HTML": 11370,
+                    "CSS": 10065,
+                    "Solidity": 4954,
+                    "TypeScript": 124
+                  },
+                  "readmeSnippet": "Electora: Trustless Voter Roll Management\n\nMost electoral systems worldwide suffer from a fundamental paradox: they must be publicly auditable to ensure trust, but they must keep voter data private to ensure safety. \n\nExisting solutions are either centralized \"black box\" databases that are vulnerable to manipulation, or misguided \"on-chain\" projects that leak sensitive Personal Identifiable Information (PII) to the public.\n\nElectora solves this by using a hybrid architecture. We keep the Human Details private and the System Truth immutable.\n\n The Problems Electora Solves\n\n1. Double Enrollment: In many regions, voters remain on the roll in their old constituency after moving, which makes doub",
+                  "updatedAt": "2026-05-06T15:40:27Z",
+                  "pushedAt": "2026-04-19T16:34:10Z",
+                  "isPinned": true,
+                  "candidateCommits": 9,
+                  "isRecent": false
+                },
+                {
+                  "name": "lal",
+                  "fullName": "madhavgairola/lal",
+                  "description": "leetcode accountability league",
+                  "language": "Python",
+                  "stars": 0,
+                  "forks": 0,
+                  "topics": [],
+                  "url": "https://github.com/madhavgairola/lal",
+                  "languages": {
+                    "Python": 17312,
+                    "CSS": 3279,
+                    "TypeScript": 3067,
+                    "HTML": 360
+                  },
+                  "readmeSnippet": "lal\nleetcode accountability league",
+                  "updatedAt": "2026-08-15T08:05:53Z",
+                  "pushedAt": "2026-08-15T08:05:23Z",
+                  "isPinned": false,
+                  "candidateCommits": 3,
+                  "isRecent": true
+                },
+                {
+                  "name": "ECHOSPHERE",
+                  "fullName": "ReneshaSagar/ECHOSPHERE",
+                  "language": "TypeScript",
+                  "stars": 0,
+                  "forks": 1,
+                  "topics": [],
+                  "url": "https://github.com/ReneshaSagar/ECHOSPHERE",
+                  "languages": {
+                    "TypeScript": 719779,
+                    "Python": 99093,
+                    "JavaScript": 33193,
+                    "CSS": 3561,
+                    "PowerShell": 2214
+                  },
+                  "updatedAt": "2026-09-05T08:11:54Z",
+                  "pushedAt": "2026-09-05T08:11:50Z",
+                  "isPinned": false,
+                  "candidateCommits": 94,
+                  "isRecent": true
+                }
+              ],
+              "allRepoNames": [
+                "ECHOSPHERE",
+                "echosphere",
+                "kana-dojo",
+                "syn-2",
+                "Yatrikavach",
+                "Yatrikavach",
+                "lal",
+                "neoflo-ai-assignment",
+                "madhavgairola",
+                "backend-synthetic",
+                "backend-synthetic",
+                "HealthLens",
+                "autodev",
+                "expensWise-cli",
+                "pragd",
+                "ExpensWise",
+                "electora",
+                "java-project",
+                "re",
+                "FIMS",
+                "New-Grad-Jobs",
+                "gopractice"
+              ]
+            }
+          },
+          "mappedCandidateContext": {
+            "headline": null,
+            "name": "Madhav Gairola",
+            "bio": "I code sometimes",
+            "experience": [],
+            "education": [
+              {
+                "school": "Jaypee Institute of Information Technology"
+              }
+            ],
+            "skills": [],
+            "projects": [],
+            "certifications": [],
+            "organizations": [],
+            "github": {
+              "username": "madhavgairola",
+              "repositoryNames": [
+                "syn-2",
+                "ExpensWise",
+                "HealthLens",
+                "electora",
+                "lal",
+                "ECHOSPHERE"
+              ],
+              "pinnedRepositories": [
+                "syn-2",
+                "ExpensWise",
+                "HealthLens",
+                "electora"
+              ],
+              "stars": 0,
+              "languages": [
+                "TypeScript",
+                "JavaScript",
+                "Python"
+              ],
+              "commitCounts": {
+                "total": 315,
+                "recent30Days": 151
+              }
+            }
+          },
+          "geminiSynthesis": {
+            "careerProgression": "Madhav is an Information Technology undergraduate at Jaypee Institute of Information Technology with experience as a Software Engineering Intern at RHA Technologies working on AI skills and RAG pipelines. His background centers on full-stack web development using React and Node.js alongside developer tooling and automated workflow validation.",
+            "notableClaims": [
+              {
+                "claim": "Built and maintained a quality assurance framework for 250+ AI skills and workflows to validate system reliability.",
+                "source": "resume",
+                "verificationFocus": "Understanding workflow orchestration, developer experience pain points, and system usability when managing complex AI agents."
+              },
+              {
+                "claim": "Architected a production-ready full-stack system using a React frontend, Express backend, and PostgreSQL.",
+                "source": "resume",
+                "verificationFocus": "Evaluating component hierarchy, state management, and visual layout decisions within React applications."
+              },
+              {
+                "claim": "Developed ExpensWise featuring natural language parsing, CLI logging, and an interactive stats dashboard with charts.",
+                "source": "github",
+                "verificationFocus": "Probing interface usability across both command-line tools and web dashboards."
+              }
+            ],
+            "interviewHooks": [
+              "How do you approach designing UI components in React to maintain consistent visual states, accessibility, and smooth user interactions?",
+              "When designing interfaces for complex data flows like AI workflows or dashboards, how do you handle asynchronous loading states and error visual feedback?",
+              "How do you bridge the gap between CLI interfaces for power users and visual dashboard consoles in terms of information architecture?",
+              "Can you share an instance where technical backend constraints required you to adapt or rethink the user experience of an application?",
+              "How do you collaborate with engineering partners to ensure pixel-perfect implementation of UI components and responsive layouts?"
+            ]
+          },
+          "timestamp": "2026-09-05T09:38:25.985Z"
+        }
+      }
     }
   ],
   "interviews": [
@@ -3500,6 +4561,56 @@
         }
       ],
       "transcript": []
+    },
+    {
+      "id": "int_c3i592h",
+      "applicationId": "app_268f8ga",
+      "scheduledAt": "2026-09-05T09:39:00.000Z",
+      "status": "FAILED",
+      "interviewState": {
+        "interviewId": "int_c3i592h",
+        "currentRound": "technical",
+        "currentSpeaker": "eng_fs_01",
+        "conversationSummary": "Technical panel interview initialized.",
+        "questionsAsked": [],
+        "topicsCovered": [],
+        "evidenceCollected": [],
+        "agentFloorRequests": [],
+        "roundProgress": 0,
+        "interviewStatus": "IN_PROGRESS",
+        "activeAgents": [
+          {
+            "agentId": "eng_fs_01",
+            "name": "Priya Nair",
+            "role": "Senior Full Stack Engineer",
+            "voice": "Aoede",
+            "color": "#3B82F6",
+            "isPrimary": true,
+            "isActive": true,
+            "hasFloor": true
+          },
+          {
+            "agentId": "eng_fs_02",
+            "name": "Arjun Malhotra",
+            "role": "Staff Software Engineer / Technical Lead",
+            "voice": "Charon",
+            "color": "#8B5CF6",
+            "isPrimary": false,
+            "isActive": true,
+            "hasFloor": false
+          }
+        ],
+        "updatedAt": "2026-09-05T09:40:02.658Z"
+      },
+      "evaluations": [
+        {
+          "round": "Technical Architecture & Concurrency",
+          "decision": "FAIL",
+          "score": 0,
+          "reason": "The candidate provided no responses as the interview transcript was completely empty. Consequently, they failed to demonstrate any technical depth, system scale knowledge, or communication skills."
+        }
+      ],
+      "transcript": []
     }
   ],
   "blueprints": [
@@ -3522,6 +4633,11 @@
       "id": "bp_t64zb1k",
       "interviewId": "int_bdz2cxf",
       "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency\",\n      \"round_type\": \"technical\",\n      \"purpose\": \"Evaluate Madhav Gairola's capabilities in core engineering, concurrency, and real-world system architecture for Senior Full Stack Engineer — Next.js & Developer Platform.\",\n      \"interviewers\": [\n        {\n          \"interviewer_id\": \"eng_ops_01\",\n          \"name\": \"Kabir Sen\",\n          \"role\": \"Senior Platform / SRE\",\n          \"voice\": \"Fenrir\",\n          \"color\": \"#F97316\",\n          \"is_primary\": true,\n          \"agent_uid\": 9991,\n          \"instructions\": \"Speak naturally and concisely with Madhav Gairola. Explore their codecraft and system design depth in 'ExpensWise' and 'ECHOSPHERE'.\",\n          \"greeting_message\": \"Hello Madhav Gairola, welcome! I'm Kabir Sen, Senior Platform / SRE, and joining me is Dev Mukherjee. To kick things off, could you briefly introduce yourself and walk us through a recent project you built?\"\n        },\n        {\n          \"interviewer_id\": \"eng_ops_02\",\n          \"name\": \"Dev Mukherjee\",\n          \"role\": \"Staff Cloud Platform Architect\",\n          \"voice\": \"Charon\",\n          \"color\": \"#475569\",\n          \"is_primary\": false,\n          \"agent_uid\": 9992,\n          \"instructions\": \"You are Dev Mukherjee, Staff Cloud Platform Architect. Challenge architectural trade-offs, probe scalability bottlenecks, evaluate latency budgets, and ask about edge cases and failure modes.\",\n          \"greeting_message\": \"Hi Madhav Gairola, I'm Dev Mukherjee, Staff Cloud Platform Architect. I'll be focusing on system design trade-offs, scalability boundaries, and failure modes with you today.\"\n        }\n      ],\n      \"interviewer\": {\n        \"name\": \"Kabir Sen\",\n        \"role\": \"Senior Platform / SRE\",\n        \"instructions\": \"Speak naturally and concisely with Madhav Gairola. Explore their codecraft and system design depth in 'ExpensWise' and 'ECHOSPHERE'.\",\n        \"greeting_message\": \"Hello Madhav Gairola, welcome! I'm Kabir Sen, Senior Platform / SRE. To kick things off, could you introduce yourself and tell us about your recent work?\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Culture\",\n      \"round_type\": \"hr\",\n      \"purpose\": \"Evaluate Madhav Gairola's collaboration, ownership, and technical communication\",\n      \"interviewers\": [\n        {\n          \"interviewer_id\": \"hr_01\",\n          \"name\": \"Tara Sharma\",\n          \"role\": \"Head of People & Culture\",\n          \"voice\": \"Aoede\",\n          \"color\": \"#EA580C\",\n          \"is_primary\": true,\n          \"agent_uid\": 9993,\n          \"instructions\": \"Evaluate communication, ownership, and engineering culture.\",\n          \"greeting_message\": \"Hi Madhav Gairola, great to meet you! I'm Tara Sharma, Head of People & Culture. Today we will discuss team collaboration, problem solving, and technical ownership.\"\n        }\n      ],\n      \"interviewer\": {\n        \"name\": \"Tara Sharma\",\n        \"role\": \"Head of People & Culture\",\n        \"instructions\": \"Evaluate communication, ownership, and engineering culture.\",\n        \"greeting_message\": \"Hi Madhav Gairola, great to meet you! I'm Tara Sharma, Head of People & Culture.\"\n      },\n      \"topics\": [\n        \"Ownership\",\n        \"Collaboration\",\n        \"Conflict Resolution\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Depth\": \"Evaluates codecraft and architecture\",\n    \"System Scale\": \"Evaluates distributed systems concepts\",\n    \"Communication\": \"Evaluates clarity and structured thought\"\n  }\n}"
+    },
+    {
+      "id": "bp_yvp631s",
+      "interviewId": "int_c3i592h",
+      "blueprintJson": "{\n  \"interview_rounds\": [\n    {\n      \"round_name\": \"Technical Architecture & Concurrency\",\n      \"round_type\": \"technical\",\n      \"purpose\": \"Evaluate Madhav Gairola's capabilities in core engineering, concurrency, and real-world system architecture for Product Designer — Developer Systems & Experience.\",\n      \"interviewers\": [\n        {\n          \"interviewer_id\": \"eng_fs_01\",\n          \"name\": \"Priya Nair\",\n          \"role\": \"Senior Full Stack Engineer\",\n          \"voice\": \"Aoede\",\n          \"color\": \"#3B82F6\",\n          \"is_primary\": true,\n          \"agent_uid\": 9991,\n          \"instructions\": \"Speak naturally and concisely with Madhav Gairola. Explore their codecraft and system design depth in 'ExpensWise' and 'syn-2'.\",\n          \"greeting_message\": \"Hello Madhav Gairola, welcome! I'm Priya Nair, Senior Full Stack Engineer, and joining me is Arjun Malhotra. To kick things off, could you briefly introduce yourself and walk us through a recent project you built?\"\n        },\n        {\n          \"interviewer_id\": \"eng_fs_02\",\n          \"name\": \"Arjun Malhotra\",\n          \"role\": \"Staff Software Engineer / Technical Lead\",\n          \"voice\": \"Charon\",\n          \"color\": \"#8B5CF6\",\n          \"is_primary\": false,\n          \"agent_uid\": 9992,\n          \"instructions\": \"You are Arjun Malhotra, Staff Software Engineer / Technical Lead. Challenge architectural trade-offs, probe scalability bottlenecks, evaluate latency budgets, and ask about edge cases and failure modes.\",\n          \"greeting_message\": \"Hi Madhav Gairola, I'm Arjun Malhotra, Staff Software Engineer / Technical Lead. I'll be focusing on system design trade-offs, scalability boundaries, and failure modes with you today.\"\n        }\n      ],\n      \"interviewer\": {\n        \"name\": \"Priya Nair\",\n        \"role\": \"Senior Full Stack Engineer\",\n        \"instructions\": \"Speak naturally and concisely with Madhav Gairola. Explore their codecraft and system design depth in 'ExpensWise' and 'syn-2'.\",\n        \"greeting_message\": \"Hello Madhav Gairola, welcome! I'm Priya Nair, Senior Full Stack Engineer. To kick things off, could you introduce yourself and tell us about your recent work?\"\n      },\n      \"topics\": [\n        \"Core Architecture\",\n        \"Data Structures\",\n        \"System Scale\",\n        \"Engineering Trade-offs\"\n      ]\n    },\n    {\n      \"round_name\": \"Engineering Leadership & Culture\",\n      \"round_type\": \"hr\",\n      \"purpose\": \"Evaluate Madhav Gairola's collaboration, ownership, and technical communication\",\n      \"interviewers\": [\n        {\n          \"interviewer_id\": \"hr_01\",\n          \"name\": \"Tara Sharma\",\n          \"role\": \"Head of People & Culture\",\n          \"voice\": \"Aoede\",\n          \"color\": \"#EA580C\",\n          \"is_primary\": true,\n          \"agent_uid\": 9993,\n          \"instructions\": \"Evaluate communication, ownership, and engineering culture.\",\n          \"greeting_message\": \"Hi Madhav Gairola, great to meet you! I'm Tara Sharma, Head of People & Culture. Today we will discuss team collaboration, problem solving, and technical ownership.\"\n        }\n      ],\n      \"interviewer\": {\n        \"name\": \"Tara Sharma\",\n        \"role\": \"Head of People & Culture\",\n        \"instructions\": \"Evaluate communication, ownership, and engineering culture.\",\n        \"greeting_message\": \"Hi Madhav Gairola, great to meet you! I'm Tara Sharma, Head of People & Culture.\"\n      },\n      \"topics\": [\n        \"Ownership\",\n        \"Collaboration\",\n        \"Conflict Resolution\"\n      ]\n    }\n  ],\n  \"rubric\": {\n    \"Technical Depth\": \"Evaluates codecraft and architecture\",\n    \"System Scale\": \"Evaluates distributed systems concepts\",\n    \"Communication\": \"Evaluates clarity and structured thought\"\n  }\n}"
     }
   ],
   "emails": [
@@ -3628,6 +4744,36 @@
         "scheduledAt": "2026-09-05T07:34:00.000Z",
         "interviewLink": "http://localhost:3000/interview/int_bdz2cxf",
         "deliveryId": "<96a01c16-0efd-676f-c8ee-1b0289fa923a@gmail.com>",
+        "provider": "gmail_smtp"
+      }
+    },
+    {
+      "id": "email_x0lbojb",
+      "recipientEmail": "madhavgairola05@gmail.com",
+      "recipientName": "Madhav Gairola",
+      "type": "APPLICATION_RECEIVED",
+      "subject": "Application Received: Product Designer — Developer Systems & Experience at Nexora Labs",
+      "bodyText": "Hi Madhav Gairola,\n\nThank you for applying for the Product Designer — Developer Systems & Experience position at Nexora Labs!\n\nWe have successfully received your application, resume, and technical links. Our autonomous evaluation engine and talent team are currently reviewing your qualifications and codecraft.\n\nWhat to expect next:\n- If your experience aligns with the core requirements of the role, you will be invited to our autonomous AI Voice Technical Interview led by our specialized technical panel.\n- You will receive a separate invitation email with your scheduled date, time, and private room link.\n\nThank you again for your enthusiasm about building with Nexora Labs.\n\nBest regards,\nThe Nexora Labs Talent & Recruiting Team",
+      "sentAt": "2026-09-05T09:38:28.949Z",
+      "metadata": {
+        "jobTitle": "Product Designer — Developer Systems & Experience",
+        "deliveryId": "<d47f0ab9-f89e-133c-8238-3751b0ca2300@gmail.com>",
+        "provider": "gmail_smtp"
+      }
+    },
+    {
+      "id": "email_gxqwr70",
+      "recipientEmail": "madhavgairola05@gmail.com",
+      "recipientName": "Madhav Gairola",
+      "type": "INTERVIEW_INVITATION",
+      "subject": "Congratulations! You're Selected for an Interview: Product Designer — Developer Systems & Experience at Nexora Labs",
+      "bodyText": "Hi Madhav Gairola,\n\nCongratulations! We were impressed by your background, codecraft, and experience, and we are excited to invite you to the next stage of our evaluation process for the Product Designer — Developer Systems & Experience role at Nexora Labs.\n\n📅 Scheduled Interview Time:\nSaturday, September 5, 2026 at 03:09 PM IST\n\n🔗 Your Personal Interview Room Link:\nhttp://localhost:3000/interview/int_c3i592h\n\n⏱️ How the Waiting Room & Interview Works:\nYour interview is scheduled to start promptly at 03:09 PM IST on Saturday, September 5, 2026.\nWhen you open your room link before the scheduled time, a live countdown will display on your screen. The \"Join Interview\" button will unlock automatically as soon as your scheduled time arrives. All the best!\n\n💡 Quick Tips to Prepare:\n- Find a quiet space and use headphones with a clear microphone.\n- Be prepared to discuss your architectural trade-offs, recent projects, and hands-on technical problem solving.\n- Our AI technical interview panel (powered by OmniPanel) will conduct the discussion conversationally.\n\nWe look forward to meeting you!\n\nWarm regards,\nThe Nexora Labs Talent & Engineering Team",
+      "sentAt": "2026-09-05T09:39:52.886Z",
+      "metadata": {
+        "jobTitle": "Product Designer — Developer Systems & Experience",
+        "scheduledAt": "2026-09-05T09:39:00.000Z",
+        "interviewLink": "http://localhost:3000/interview/int_c3i592h",
+        "deliveryId": "<ed4cb926-e88e-7324-5fab-e881db4bb4f7@gmail.com>",
         "provider": "gmail_smtp"
       }
     }

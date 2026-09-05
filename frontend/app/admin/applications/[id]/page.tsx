@@ -804,7 +804,7 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
       <ApplicationActions applicationId={application.id} currentStatus={application.status} />
 
       {/* AI Scorecard Result */}
-      {interview && interview.status === 'COMPLETED' && (
+      {interview && (interview.status === 'COMPLETED' || !!interview.scorecard || application.evaluationScore !== undefined) && (
         <ScorecardViewer interviewId={interview.id} initialScorecard={interview.scorecard} />
       )}
     </div>

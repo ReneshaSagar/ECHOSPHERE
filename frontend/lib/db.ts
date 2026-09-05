@@ -378,7 +378,7 @@ export interface EmailNotification {
   id: string;
   recipientEmail: string;
   recipientName: string;
-  type: 'APPLICATION_RECEIVED' | 'INTERVIEW_INVITATION' | 'APPLICATION_REJECTED';
+  type: 'APPLICATION_RECEIVED' | 'INTERVIEW_INVITATION' | 'APPLICATION_REJECTED' | 'APPLICATION_OFFER' | 'APPLICATION_WAITLIST' | string;
   subject: string;
   bodyText: string;
   sentAt: string;

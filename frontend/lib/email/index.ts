@@ -83,7 +83,7 @@ export async function sendEmail({
 }: {
   recipientEmail: string;
   recipientName: string;
-  type: 'APPLICATION_RECEIVED' | 'INTERVIEW_INVITATION' | 'APPLICATION_REJECTED';
+  type: 'APPLICATION_RECEIVED' | 'INTERVIEW_INVITATION' | 'APPLICATION_REJECTED' | 'APPLICATION_OFFER' | 'APPLICATION_WAITLIST' | string;
   subject: string;
   bodyText: string;
   htmlContent?: string;
@@ -399,3 +399,147 @@ The Nexora Labs Talent Team`;
     metadata: { jobTitle: job.title, stage, reason }
   });
 }
+
+/**
+ * 4. Selection / Offer Notification Email Template
+ */
+export async function sendSelectionOfferEmail(
+  candidate: { name: string; email: string },
+  job: { title: string },
+  score?: number,
+  summary?: string
+) {
+  const subject = `Congratulations! Offer & Selection Update for ${job.title} at Nexora Labs`;
+  const scoreText = score ? `\nEvaluation Score: ${score}/100\n` : '';
+
+  const bodyText = `Hi ${candidate.name},
+
+Congratulations! We are delighted to inform you that you have been SELECTED for the ${job.title} position at Nexora Labs!
+
+Our evaluation panel and technical leadership were thoroughly impressed by your performance across all interview rounds, your technical codecraft, and your cultural alignment with Nexora Labs.
+${scoreText}
+${summary ? `Panel Feedback:\n"${summary}"\n` : ''}
+What happens next:
+1. Our talent operations team will contact you within 24-48 hours to discuss offer compensation, equity packages, and start dates.
+2. In the meantime, feel free to reply directly to this email if you have any questions about the role or team.
+
+Welcome to Nexora Labs! We are thrilled about the prospect of building groundbreaking infrastructure together.
+
+Warmest congratulations,
+The Nexora Labs Leadership & Talent Team`;
+
+  const htmlContent = wrapHtmlEmail(
+    subject,
+    `<div style="text-align: center; margin-bottom: 24px;">
+      <span style="background-color: #dcfce7; color: #15803d; font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; padding: 6px 14px; border-radius: 9999px; border: 1px solid #bbf7d0;">
+        🎉 Application Selected / Offer Stage
+      </span>
+      <h2 style="font-size: 22px; font-weight: 800; color: #0f172a; margin-top: 12px; margin-bottom: 6px;">
+        Congratulations! You Have Been Selected
+      </h2>
+      <p style="font-size: 14px; color: #64748b; margin: 0;">Role: <strong>${job.title}</strong> at Nexora Labs</p>
+    </div>
+
+    <p>Hi <strong>${candidate.name}</strong>,</p>
+    <p>We are delighted to inform you that following your interview panel and autonomous assessment, you have been <strong>selected</strong> for the <strong>${job.title}</strong> position at Nexora Labs!</p>
+
+    <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px; margin: 24px 0;">
+      <div style="font-size: 12px; font-weight: 700; color: #166534; text-transform: uppercase; letter-spacing: 0.05em;">Panel Evaluation Summary</div>
+      ${score ? `<div style="font-size: 24px; font-weight: 800; color: #15803d; margin-top: 4px;">Score: ${score}/100</div>` : ''}
+      <div style="font-size: 13px; color: #334155; margin-top: 6px; line-height: 1.6;">
+        ${summary || 'Candidate demonstrated exceptional technical mastery, structured problem-solving, and outstanding team culture alignment.'}
+      </div>
+    </div>
+
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 20px 0; font-size: 13px; color: #475569;">
+      <div style="font-weight: 700; color: #0f172a; margin-bottom: 6px;">📋 Next Steps in Your Offer Process:</div>
+      <ul style="margin: 0; padding-left: 20px; line-height: 1.6;">
+        <li>Our Talent Operations team will reach out within 24–48 hours with formal compensation and onboarding details.</li>
+        <li>We will schedule a brief call to walk through benefits, equipment provisioning, and your ideal start date.</li>
+      </ul>
+    </div>
+
+    <p style="margin-top: 24px;">Welcome to the Nexora Labs team!</p>
+    <p>Warm regards,<br/><strong>The Nexora Labs Talent & Executive Team</strong></p>`
+  );
+
+  return sendEmail({
+    recipientEmail: candidate.email,
+    recipientName: candidate.name,
+    type: 'APPLICATION_OFFER',
+    subject,
+    bodyText,
+    htmlContent,
+    metadata: { jobTitle: job.title, score, summary }
+  });
+}
+
+/**
+ * 5. Waitlist / Talent Pool & Alternative Roles Email Template
+ */
+export async function sendWaitlistAltRoleEmail(
+  candidate: { name: string; email: string },
+  job: { title: string },
+  altRoles?: string[],
+  reason?: string
+) {
+  const rolesList = (altRoles && altRoles.length > 0) ? altRoles.join(', ') : 'related engineering and technical roles';
+  const subject = `Talent Pool & Alternative Role Allocation: ${job.title} at Nexora Labs`;
+
+  const bodyText = `Hi ${candidate.name},
+
+Thank you for completing the interview process for the ${job.title} position at Nexora Labs.
+
+Our evaluation panel found many strong strengths in your profile and interview performance. While we have selected a candidate whose immediate experience was an exact match for this specific opening, our team has recommended you for our Priority Talent Pool and the following alternative positions:
+${rolesList}
+
+${reason ? `Panel Feedback:\n"${reason}"\n` : ''}
+What this means:
+- You are placed on our fast-track priority list for upcoming openings matching your strengths.
+- As soon as requisitions open for these matching roles, our recruiting leads will contact you directly.
+
+Thank you again for your time and energy. We look forward to staying connected.
+
+Best regards,
+The Nexora Labs Talent & Recruiting Team`;
+
+  const htmlContent = wrapHtmlEmail(
+    subject,
+    `<div style="text-align: center; margin-bottom: 24px;">
+      <span style="background-color: #e0f2fe; color: #0369a1; font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; padding: 6px 14px; border-radius: 9999px; border: 1px solid #bae6fd;">
+        💡 Priority Talent Pool
+      </span>
+      <h2 style="font-size: 20px; font-weight: 800; color: #0f172a; margin-top: 12px; margin-bottom: 6px;">
+        Recommended for Priority Talent Pool
+      </h2>
+      <p style="font-size: 14px; color: #64748b; margin: 0;">Target Role: <strong>${job.title}</strong></p>
+    </div>
+
+    <p>Hi <strong>${candidate.name}</strong>,</p>
+    <p>Thank you for taking the time to interview with us for the <strong>${job.title}</strong> role at Nexora Labs. We were impressed by your communication and technical problem-solving capabilities.</p>
+
+    <div style="background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 12px; padding: 20px; margin: 24px 0;">
+      <div style="font-size: 12px; font-weight: 700; color: #0369a1; text-transform: uppercase; letter-spacing: 0.05em;">Alternative Role Allocations:</div>
+      <div style="font-size: 15px; font-weight: 700; color: #0c4a6e; margin-top: 6px;">
+        ${rolesList}
+      </div>
+      ${reason ? `<div style="font-size: 13px; color: #334155; margin-top: 10px; font-style: italic;">"${reason}"</div>` : ''}
+    </div>
+
+    <p>Our team has added your verified interview results to our priority talent roster. As new positions open up in these areas, our recruiting leads will reach out directly to discuss these opportunities with you.</p>
+
+    <p style="margin-top: 24px;">Thank you again for your enthusiasm for building with Nexora Labs.</p>
+    <p>Warm regards,<br/><strong>The Nexora Labs Talent Team</strong></p>`
+  );
+
+  return sendEmail({
+    recipientEmail: candidate.email,
+    recipientName: candidate.name,
+    type: 'APPLICATION_WAITLIST',
+    subject,
+    bodyText,
+    htmlContent,
+    metadata: { jobTitle: job.title, altRoles, reason }
+  });
+}
+

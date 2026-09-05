@@ -216,6 +216,267 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
     }
   ],
 
+  product: [
+    {
+      interviewerId: 'prod_01',
+      name: 'Rohan Sen',
+      role: 'Senior Product Manager',
+      department: 'Product Management',
+      voice: 'Aoede',
+      color: '#3B82F6',
+      persona: {
+        style: 'user-centric, strategic, metrics-driven',
+        seniority: 'senior',
+        focusAreas: ['Product Discovery', 'User Journey Mapping', 'North Star Metrics', 'Feature Prioritization'],
+        behavior: [
+          'probes product requirements definition and customer discovery loops',
+          'evaluates how candidate defines metrics, success criteria, and trade-offs',
+          'asks how candidate prioritizes competing stakeholder requests'
+        ]
+      }
+    },
+    {
+      interviewerId: 'prod_02',
+      name: 'Nisha Mehra',
+      role: 'Group Product Manager / Strategy Lead',
+      department: 'Product Leadership',
+      voice: 'Charon',
+      color: '#8B5CF6',
+      persona: {
+        style: 'rigorous, business-focused, challenger',
+        seniority: 'staff',
+        focusAreas: ['Unit Economics & Pricing', 'Competitive Moats', 'Go-To-Market Execution', 'Cross-Functional Roadmaps'],
+        behavior: [
+          'challenges business assumptions, retention drivers, and monetization logic',
+          'probes handling product failures, pivot strategies, and executive alignment',
+          'asks deep questions about technical feasibility vs product ambition'
+        ]
+      }
+    }
+  ],
+
+  design: [
+    {
+      interviewerId: 'des_01',
+      name: 'Maya Patel',
+      role: 'Senior Product Designer',
+      department: 'Design & UX',
+      voice: 'Aoede',
+      color: '#EC4899',
+      persona: {
+        style: 'empathetic, craft-focused, articulate',
+        seniority: 'senior',
+        focusAreas: ['Design Systems', 'Usability Testing', 'Interaction Architecture', 'Accessibility Standards'],
+        behavior: [
+          'probes user research workflows, prototype iterations, and design token architectures',
+          'asks about design-to-engineering handoff workflows and component reusability'
+        ]
+      }
+    },
+    {
+      interviewerId: 'des_02',
+      name: 'Aarav Joshi',
+      role: 'Principal Design Lead',
+      department: 'Design Systems',
+      voice: 'Charon',
+      color: '#7C3AED',
+      persona: {
+        style: 'conceptual, architectural, critique-driven',
+        seniority: 'staff',
+        focusAreas: ['Information Architecture', 'Product Brand Alignment', 'High-Density Workflows', 'Micro-Interactions'],
+        behavior: [
+          'critiques spatial density, typography scale, and cognitive load in complex UIs',
+          'challenges assumptions regarding user friction and onboarding flows'
+        ]
+      }
+    }
+  ],
+
+  data: [
+    {
+      interviewerId: 'data_01',
+      name: 'Dr. Sameer Khan',
+      role: 'Senior Data Scientist',
+      department: 'Data & Analytics',
+      voice: 'Fenrir',
+      color: '#10B981',
+      persona: {
+        style: 'empirical, rigorous, inquisitive',
+        seniority: 'senior',
+        focusAreas: ['A/B Testing & Causal Inference', 'Predictive Modeling', 'SQL & Data Warehousing', 'Feature Engineering'],
+        behavior: [
+          'probes statistical significance, sample ratio mismatches, and hypothesis formulation',
+          'asks concrete questions about query optimization, dimensional modeling, and ETL pipelines'
+        ]
+      }
+    },
+    {
+      interviewerId: 'data_02',
+      name: 'Sunita Shenoy',
+      role: 'Principal Analytics Architect',
+      department: 'Data Platform',
+      voice: 'Charon',
+      color: '#6366F1',
+      persona: {
+        style: 'systems-scale, critical, data-driven',
+        seniority: 'staff',
+        focusAreas: ['Real-Time Stream Processing', 'Lakehouse Architectures (Iceberg/Delta)', 'Data Governance & Lineage'],
+        behavior: [
+          'challenges assumptions on data freshness, partition skew, and backpressure in streaming DAGs',
+          'probes handling data quality anomalies and metric degradation in production'
+        ]
+      }
+    }
+  ],
+
+  marketing: [
+    {
+      interviewerId: 'mkt_01',
+      name: 'Pooja Bhatt',
+      role: 'Senior Growth Marketing Lead',
+      department: 'Growth & Marketing',
+      voice: 'Aoede',
+      color: '#F59E0B',
+      persona: {
+        style: 'analytical, energetic, growth-minded',
+        seniority: 'senior',
+        focusAreas: ['Performance Marketing', 'CAC / LTV Unit Economics', 'Conversion Rate Optimization', 'Lifecycle Funnels'],
+        behavior: [
+          'probes multi-touch attribution, channel experimentation velocity, and campaign ROI',
+          'evaluates storytelling ability, product messaging clarity, and audience segmentation'
+        ]
+      }
+    },
+    {
+      interviewerId: 'mkt_02',
+      name: 'Zayn Malik',
+      role: 'VP Marketing & Brand Strategy',
+      department: 'Marketing Leadership',
+      voice: 'Charon',
+      color: '#EA580C',
+      persona: {
+        style: 'strategic, high-level, brand-focused',
+        seniority: 'manager',
+        focusAreas: ['Category Creation', 'Brand Narrative', 'Developer Ecosystems', 'Global PR & Launch Campaigns'],
+        behavior: [
+          'challenges brand positioning against market incumbents',
+          'evaluates cross-functional alignment between product releases and marketing campaigns'
+        ]
+      }
+    }
+  ],
+
+  sales: [
+    {
+      interviewerId: 'sales_01',
+      name: 'Varun Oberoi',
+      role: 'Enterprise Account Executive',
+      department: 'Revenue & Sales',
+      voice: 'Fenrir',
+      color: '#0284C7',
+      persona: {
+        style: 'charismatic, consultative, goal-driven',
+        seniority: 'senior',
+        focusAreas: ['MEDDPICC Qualification', 'Value Selling', 'Executive Stakeholder Mapping', 'Objection Handling'],
+        behavior: [
+          'probes discovery call frameworks, contract negotiation tactics, and sales cycle velocity',
+          'asks how candidate navigates technical buying champions and procurement committees'
+        ]
+      }
+    },
+    {
+      interviewerId: 'sales_02',
+      name: 'Natasha Roy',
+      role: 'Head of Solutions Engineering',
+      department: 'Sales Engineering',
+      voice: 'Charon',
+      color: '#7C3AED',
+      persona: {
+        style: 'technical, consultative, rigorous',
+        seniority: 'lead',
+        focusAreas: ['Technical Architecture Proofs-of-Concept', 'RFP Responses', 'Enterprise Security Reviews', 'Solution Framing'],
+        behavior: [
+          'challenges how candidate bridges technical complexity with business ROI',
+          'probes handling tough technical objections during customer live demos'
+        ]
+      }
+    }
+  ],
+
+  operations: [
+    {
+      interviewerId: 'ops_01',
+      name: 'Alok Singhal',
+      role: 'Director of Business Operations',
+      department: 'Operations',
+      voice: 'Fenrir',
+      color: '#0D9488',
+      persona: {
+        style: 'methodical, process-oriented, execution-focused',
+        seniority: 'lead',
+        focusAreas: ['Operational Cadence (OKRs)', 'Resource Allocation', 'Workflow Automation', 'Vendor Management'],
+        behavior: [
+          'probes operational bottlenecks, cost optimization levers, and scalable process design',
+          'evaluates cross-department communication frameworks and change management'
+        ]
+      }
+    },
+    {
+      interviewerId: 'ops_02',
+      name: 'Swati Gupta',
+      role: 'VP Finance & Operations',
+      department: 'Finance & Strategy',
+      voice: 'Charon',
+      color: '#475569',
+      persona: {
+        style: 'analytical, strategic, governance-first',
+        seniority: 'manager',
+        focusAreas: ['P&L Management', 'Budget Modeling', 'Risk Management & Compliance', 'Strategic M&A'],
+        behavior: [
+          'challenges financial forecasting assumptions and capital efficiency',
+          'probes governance, audit compliance, and risk mitigation strategies'
+        ]
+      }
+    }
+  ],
+
+  general: [
+    {
+      interviewerId: 'gen_01',
+      name: 'Siddharth Roy',
+      role: 'Senior Domain Lead',
+      department: 'Leadership Panel',
+      voice: 'Aoede',
+      color: '#3B82F6',
+      persona: {
+        style: 'conversational, structured, supportive',
+        seniority: 'senior',
+        focusAreas: ['Core Problem Solving', 'Domain Fundamentals', 'Strategic Trade-offs', 'Execution Quality'],
+        behavior: [
+          'asks structured domain questions tailored to the candidate resume',
+          'probes concrete previous project decisions and impact'
+        ]
+      }
+    },
+    {
+      interviewerId: 'gen_02',
+      name: 'Tanvi Sethi',
+      role: 'Staff Domain Specialist',
+      department: 'Strategy & Execution',
+      voice: 'Charon',
+      color: '#8B5CF6',
+      persona: {
+        style: 'probing, analytical, challenger',
+        seniority: 'staff',
+        focusAreas: ['Complex Edge Cases', 'Scale & Reliability', 'Failure Recovery', 'Strategic Decisions'],
+        behavior: [
+          'probes edge cases, high-stress scenarios, and failure modes',
+          'challenges surface-level assertions and asks for concrete evidence'
+        ]
+      }
+    }
+  ],
+
   hr: [
     {
       interviewerId: 'hr_01',
@@ -230,7 +491,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
         focusAreas: ['Engineering Ownership', 'Cross-Functional Collaboration', 'Handling Conflict', 'Growth Mindset & Motivation'],
         behavior: [
           'references specific candidate achievements discovered in the technical round',
-          'probes how the candidate handles disagreements between engineers and product managers',
+          'probes how the candidate handles disagreements between team members',
           'evaluates communication clarity, empathy, and team alignment',
           'creates an encouraging, transparent conversation'
         ]
@@ -239,7 +500,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
     {
       interviewerId: 'hr_02',
       name: 'Ritu Deshmukh',
-      role: 'Senior Talent Partner — Engineering',
+      role: 'Senior Talent Partner',
       department: 'People & Talent',
       voice: 'Kore',
       color: '#D97706', // Amber
@@ -249,7 +510,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
         focusAreas: ['Leadership in Teams', 'Navigating Ambiguity', 'Mentorship & Knowledge Sharing', 'Work Values'],
         behavior: [
           'probes how candidate navigated high-pressure deadlines or project pivots',
-          'evaluates what motivates the candidate in their daily engineering work'
+          'evaluates what motivates the candidate in their daily work'
         ]
       }
     }
@@ -257,44 +518,72 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
 };
 
 export interface SelectedPanel {
-  category: 'fullstack' | 'aiml' | 'backend' | 'devops';
+  category: string;
   technicalPrimary: InterviewerProfile;
   technicalChallenger: InterviewerProfile;
   hrInterviewer: InterviewerProfile;
 }
 
 /**
- * Dynamically selects complementary panel members based on the Job Title.
+ * Dynamically selects complementary panel members based on the Job Title across any domain.
  * Guarantees NO hardcoded single interviewer:
- * - Technical Agent 1: Primary Interviewer (drives topics & core engineering)
- * - Technical Agent 2: Technical Lead / Specialist (challenges scale & architecture)
+ * - Domain Agent 1: Primary Interviewer (drives topics & core domain skills)
+ * - Domain Agent 2: Specialist / Technical Lead (challenges scale, edge cases & strategy)
  * - HR Agent: Culture & Ownership Partner
  */
 export function selectPanelForJob(jobTitle: string = ''): SelectedPanel {
   const titleLower = jobTitle.toLowerCase();
   const pool = DEFAULT_COMPANY_INTERVIEWER_POOL;
 
-  let category: 'fullstack' | 'aiml' | 'backend' | 'devops' = 'fullstack';
+  let category = 'fullstack';
   let primary: InterviewerProfile;
   let challenger: InterviewerProfile;
 
-  if (titleLower.includes('backend') || titleLower.includes('distributed') || titleLower.includes('infrastructure')) {
+  if (titleLower.includes('product') || titleLower.includes('pm') || titleLower.includes('program manager')) {
+    category = 'product';
+    primary = pool.product?.[0] || pool.general[0];
+    challenger = pool.product?.[1] || pool.general[1];
+  } else if (titleLower.includes('design') || titleLower.includes('ux') || titleLower.includes('ui') || titleLower.includes('creative')) {
+    category = 'design';
+    primary = pool.design?.[0] || pool.general[0];
+    challenger = pool.design?.[1] || pool.general[1];
+  } else if (titleLower.includes('data') || titleLower.includes('analytics') || titleLower.includes('bi ') || titleLower.includes('scientist')) {
+    category = 'data';
+    primary = pool.data?.[0] || pool.general[0];
+    challenger = pool.data?.[1] || pool.general[1];
+  } else if (titleLower.includes('market') || titleLower.includes('growth') || titleLower.includes('content') || titleLower.includes('brand')) {
+    category = 'marketing';
+    primary = pool.marketing?.[0] || pool.general[0];
+    challenger = pool.marketing?.[1] || pool.general[1];
+  } else if (titleLower.includes('sales') || titleLower.includes('account executive') || titleLower.includes('business development') || titleLower.includes('solutions engineer')) {
+    category = 'sales';
+    primary = pool.sales?.[0] || pool.general[0];
+    challenger = pool.sales?.[1] || pool.general[1];
+  } else if (titleLower.includes('operation') || titleLower.includes('finance') || titleLower.includes('bizops') || titleLower.includes('controller')) {
+    category = 'operations';
+    primary = pool.operations?.[0] || pool.general[0];
+    challenger = pool.operations?.[1] || pool.general[1];
+  } else if (titleLower.includes('backend') || titleLower.includes('distributed') || titleLower.includes('infrastructure') || titleLower.includes('database')) {
     category = 'backend';
-    primary = pool.backend[0]; // Aditya Sharma (Senior Backend)
-    challenger = pool.backend[1]; // Arjun Malhotra (Staff Backend Architect)
-  } else if (titleLower.includes('devops') || titleLower.includes('platform') || titleLower.includes('sre') || titleLower.includes('kubernetes')) {
+    primary = pool.backend[0];
+    challenger = pool.backend[1];
+  } else if (titleLower.includes('devops') || titleLower.includes('platform') || titleLower.includes('sre') || titleLower.includes('kubernetes') || titleLower.includes('cloud')) {
     category = 'devops';
-    primary = pool.devops[0]; // Kabir Sen (Senior Platform / SRE)
-    challenger = pool.devops[1]; // Dev Mukherjee (Staff Platform Architect)
+    primary = pool.devops[0];
+    challenger = pool.devops[1];
   } else if (titleLower.includes('machine learning') || titleLower.includes('speech') || titleLower.includes('conversational') || /\b(ai|ml|nlp|llm|llms)\b/i.test(titleLower)) {
     category = 'aiml';
-    primary = pool.aiml[0]; // Neha Kapoor (Senior ML Engineer)
-    challenger = pool.aiml[1]; // Karan Varma (Staff ML Engineer)
-  } else {
-    // Default to Full Stack panel
+    primary = pool.aiml[0];
+    challenger = pool.aiml[1];
+  } else if (titleLower.includes('engineer') || titleLower.includes('developer') || titleLower.includes('fullstack') || titleLower.includes('software')) {
     category = 'fullstack';
-    primary = pool.fullstack[0]; // Priya Nair (Senior Full Stack)
-    challenger = pool.fullstack[1]; // Arjun Malhotra (Staff Software Engineer)
+    primary = pool.fullstack[0];
+    challenger = pool.fullstack[1];
+  } else {
+    // Universal General Panel
+    category = 'general';
+    primary = pool.general[0];
+    challenger = pool.general[1];
   }
 
   const hr = pool.hr[0]; // Tara Sharma (Head of People & Culture)

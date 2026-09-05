@@ -69,6 +69,7 @@ export default function InterviewRoom({
   const [activePanelAgents, setActivePanelAgents] = useState<RunningAgent[]>([]);
   const [pendingFloorNotice, setPendingFloorNotice] = useState<string | null>(null);
   const [roundElapsedSeconds, setRoundElapsedSeconds] = useState(0);
+  const [wrapUpWarning, setWrapUpWarning] = useState(false);
   const autoFinishTriggeredRef = useRef<boolean>(false);
 
   // Round Timer & Criteria Progression (5 mins for tech, 3 mins for HR)
@@ -80,10 +81,14 @@ export default function InterviewRoom({
       timer = setInterval(() => {
         setRoundElapsedSeconds(prev => {
           const next = prev + 1;
+          // Smooth wrap-up notice 10s before round target (at 4:50 mark for 5-min round)
+          if (next >= ROUND_TARGET_SECONDS - 10 && !autoFinishTriggeredRef.current) {
+            setWrapUpWarning(true);
+          }
           // Auto-trigger round wrap-up when criteria/time mark is reached
           if (next >= ROUND_TARGET_SECONDS && !autoFinishTriggeredRef.current) {
             autoFinishTriggeredRef.current = true;
-            addLog('Orchestrator', `Target round duration reached (${Math.floor(ROUND_TARGET_SECONDS / 60)}m). Transitioning round...`);
+            addLog('Orchestrator', `Target round duration reached (${Math.floor(ROUND_TARGET_SECONDS / 60)}m). Concluding round smoothly...`);
             finishRound();
           }
           return next;
@@ -91,6 +96,7 @@ export default function InterviewRoom({
       }, 1000);
     } else {
       setRoundElapsedSeconds(0);
+      setWrapUpWarning(false);
       autoFinishTriggeredRef.current = false;
     }
     return () => {
@@ -117,14 +123,15 @@ export default function InterviewRoom({
   // Auto-start next round after ROUND_TRANSITION
   useEffect(() => {
     if (testState === 'ROUND_TRANSITION') {
+      const nextRoundIdx = currentRound;
       const timer = setTimeout(() => {
-        addLog('System', 'Auto-starting HR round...');
-        startTest();
-      }, 3000);
+        addLog('System', `Auto-starting Round ${nextRoundIdx + 1} (${blueprint.interview_rounds[nextRoundIdx]?.round_name || 'HR & Culture Round'})...`);
+        startTest(nextRoundIdx);
+      }, 3500);
       return () => clearTimeout(timer);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [testState]);
+  }, [testState, currentRound]);
 
   const [sessionInfo, setSessionInfo] = useState<{
     sessionId: string;
@@ -272,20 +279,49 @@ export default function InterviewRoom({
       console.error('Turn arbitration sync error:', err);
     }
   };
+  const transferFloorToChallenger = (reason: string = 'Deep-dive technical probe') => {
+    addLog('Turn Arbiter', `Floor manually transferred to Specialist (${challengerAgent?.name || 'Specialist'}): ${reason}`);
+    setFloorOwner('CHALLENGER_AI');
+    currentFloorRef.current = 'CHALLENGER_AI';
+    remoteAudioTracksRef.current.get(9991)?.setVolume(0);
+    remoteAudioTracksRef.current.get(9992)?.setVolume(100);
+    setActivePanelAgents(prev => prev.map(a => ({
+      ...a,
+      hasFloor: !a.isPrimary,
+      intervening: true
+    })));
+  };
 
-  const startTest = async () => {
+  // Explicit Floor Handoff to Lead (Primary)
+  const transferFloorToPrimary = () => {
+    addLog('Turn Arbiter', `Floor returned to Lead Interviewer (${primaryAgent?.name || 'Primary Lead'}).`);
+    setFloorOwner('PRIMARY_AI');
+    currentFloorRef.current = 'PRIMARY_AI';
+    remoteAudioTracksRef.current.get(9992)?.setVolume(0);
+    remoteAudioTracksRef.current.get(9991)?.setVolume(100);
+    setActivePanelAgents(prev => prev.map(a => ({
+      ...a,
+      hasFloor: a.isPrimary,
+      intervening: false
+    })));
+  };
+
+  const startTest = async (roundIdx?: number) => {
     if (isStartingRef.current || testState === 'RUNNING' || testState === 'STARTING') return;
     isStartingRef.current = true;
     setTestState('STARTING');
     setLogs([]);
+    
+    const targetRound = roundIdx !== undefined ? roundIdx : currentRound;
+
     // Preserve transcript across rounds for the final evaluator
-    if (currentRound === 0) {
+    if (targetRound === 0) {
       setTranscript([]);
     }
 
     // Unique attempt suffix guarantees an isolated Agora channel on every start/retry
     const sessionAttempt = Math.random().toString(36).substring(2, 7);
-    const sessionId = `int_${interviewId}_rd${currentRound}_${sessionAttempt}`;
+    const sessionId = `int_${interviewId}_rd${targetRound}_${sessionAttempt}`;
     
     // Dynamic candidate UID (100000-990000) avoids collisions with agents (9991-9993) or prior sessions
     if (!candidateUidRef.current || candidateUidRef.current < 100000) {
@@ -307,9 +343,9 @@ export default function InterviewRoom({
       addLog('Frontend', `Initializing Agora RTC client (Candidate UID: ${candidateUid})...`);
       clientRef.current = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
 
-      const round = blueprint.interview_rounds[currentRound];
-      const isTechnicalRound = currentRound === 0 || round.round_type === 'technical';
-      addLog('Orchestrator', `Loaded Round ${currentRound + 1}: ${round.round_name}`);
+      const round = blueprint.interview_rounds[targetRound] || blueprint.interview_rounds[0];
+      const isTechnicalRound = targetRound === 0 || round.round_type === 'technical';
+      addLog('Orchestrator', `Loaded Round ${targetRound + 1}: ${round.round_name}`);
 
       const roundInterviewers: InterviewerInfo[] = round.interviewers && round.interviewers.length > 0
         ? round.interviewers
@@ -790,7 +826,7 @@ STRICT FLOOR RULES & SILENT STANDBY:
       setTestState('DECISION_GATE');
 
       // ── Phase 5: Transition Logic ──────────────────────────────────────
-      if (isTechnicalRound) {
+      if (isTechnicalRound && !isLastRound) {
         // Store technical summary for HR context injection
         technicalSummaryRef.current = {
           score: evalData.evaluation.score,
@@ -798,44 +834,37 @@ STRICT FLOOR RULES & SILENT STANDBY:
           evidence: roundTranscript.slice(-10).map((t: any) => `[${t.speaker}]: ${t.text?.slice(0, 100)}`),
         };
 
-        if (evalData.evaluation.decision === 'FAIL') {
-          addLog('System', 'Candidate did not meet criteria for technical round. Interview concluded.');
-          setTestState('ENDED');
-        } else if (!isLastRound) {
-          addLog('System', `Decision Gate Passed! Transitioning to Round ${currentRound + 2} (HR Round)...`);
+        addLog('System', `Technical Round Complete (Score: ${evalData.evaluation.score}/100). Transitioning to Round 2 (HR & Culture Round)...`);
 
-          // Transition shared interview state to HR
-          await fetch(`/api/interviews/${interviewId}/state`, {
+        // Transition shared interview state to HR
+        await fetch(`/api/interviews/${interviewId}/state`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'TRANSITION_HR',
+            technicalScore: evalData.evaluation.score,
+            technicalDecisionReason: evalData.evaluation.reason
+          })
+        }).catch(err => console.error('State transition error:', err));
+
+        setTestState('ROUND_TRANSITION');
+        setCurrentRound(prev => prev + 1);
+        // The useEffect watching for ROUND_TRANSITION will auto-start the next round
+      } else {
+        // Final round (HR or sole round) completed — synthesize final composite scorecard
+        setTestState('INTERVIEW_COMPLETE');
+        addLog('System', 'Interview panel concluded. Synthesizing final composite scorecard across all rounds...');
+        
+        try {
+          await fetch(`/api/interviews/${interviewId}/evaluate-final`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              action: 'TRANSITION_HR',
-              technicalScore: evalData.evaluation.score,
-              technicalDecisionReason: evalData.evaluation.reason
-            })
-          }).catch(err => console.error('State transition error:', err));
-
-          setTestState('ROUND_TRANSITION');
-          setCurrentRound(prev => prev + 1);
-          // The useEffect watching for ROUND_TRANSITION will auto-start the next round
-        } else {
-          // Technical was the only round
-          setTestState('INTERVIEW_COMPLETE');
-          addLog('System', 'Generating final scorecard...');
-          await fetch(`/api/interviews/${interviewId}/evaluate-final`, { method: 'POST' }).catch(() => {});
-          setTestState('ENDED');
+            body: JSON.stringify({ transcript })
+          });
+        } catch (e) {
+          console.error('Final evaluation post error:', e);
         }
-      } else {
-        // HR Round completed — this is the final round
-        if (evalData.evaluation.decision === 'FAIL') {
-          addLog('System', 'Candidate did not pass the HR round. Interview concluded.');
-        } else {
-          addLog('System', 'All rounds completed successfully.');
-        }
-
-        setTestState('INTERVIEW_COMPLETE');
-        addLog('System', 'Generating final scorecard across all rounds...');
-        await fetch(`/api/interviews/${interviewId}/evaluate-final`, { method: 'POST' }).catch(() => {});
+        
         setTestState('ENDED');
       }
 
@@ -933,7 +962,15 @@ STRICT FLOOR RULES & SILENT STANDBY:
           </div>
 
           {/* Center: Multi-Agent Visualizer & Interviewer Cards */}
-          <div className="my-auto py-6">
+          <div className="my-auto py-4">
+            {/* Wrap-up alert banner at 4:50 mark */}
+            {wrapUpWarning && (
+              <div className="mb-4 max-w-xl mx-auto bg-amber-500/20 border border-amber-500/50 rounded-2xl p-3 text-center text-amber-200 text-xs font-mono flex items-center justify-center gap-2 animate-bounce shadow-lg shadow-amber-500/10">
+                <Clock className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>⏱️ <strong>Target Round Time Reached (4:50)</strong> — Wrapping up this section smoothly...</span>
+              </div>
+            )}
+
             {testState === 'RUNNING' && activePanelAgents.length >= 2 ? (
               // 2-Agent Technical Panel (Primary + Challenger)
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
@@ -959,7 +996,7 @@ STRICT FLOOR RULES & SILENT STANDBY:
                   <h3 className="text-lg font-bold text-white">{primaryAgent?.name}</h3>
                   <p className="text-xs text-gray-400 mb-3">{primaryAgent?.role}</p>
                   
-                  <div className="flex flex-wrap gap-1.5 justify-center">
+                  <div className="flex flex-wrap gap-1.5 justify-center mb-3">
                     <span className="text-3xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 font-bold uppercase">
                       Primary Driver
                     </span>
@@ -971,6 +1008,15 @@ STRICT FLOOR RULES & SILENT STANDBY:
                       {floorOwner === 'PRIMARY_AI' ? '🎙️ Speaking (Lead)' : '👂 Listening'}
                     </span>
                   </div>
+
+                  {floorOwner === 'CHALLENGER_AI' && (
+                    <button
+                      onClick={() => transferFloorToPrimary()}
+                      className="px-3 py-1 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/40 text-blue-300 text-[11px] font-mono font-bold rounded-lg transition-all"
+                    >
+                      ⚡ Return Floor to Lead
+                    </button>
+                  )}
                 </div>
 
                 {/* Challenger Interviewer Card */}
@@ -997,7 +1043,7 @@ STRICT FLOOR RULES & SILENT STANDBY:
                   <h3 className="text-lg font-bold text-white">{challengerAgent?.name}</h3>
                   <p className="text-xs text-gray-400 mb-3">{challengerAgent?.role}</p>
 
-                  <div className="flex flex-wrap gap-1.5 justify-center">
+                  <div className="flex flex-wrap gap-1.5 justify-center mb-3">
                     <span className="text-3xs px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold uppercase">
                       Specialist Lead
                     </span>
@@ -1015,6 +1061,15 @@ STRICT FLOOR RULES & SILENT STANDBY:
                           : '👂 Listening'}
                     </span>
                   </div>
+
+                  {floorOwner !== 'CHALLENGER_AI' && (
+                    <button
+                      onClick={() => transferFloorToChallenger('Manual Floor Request')}
+                      className="px-3 py-1 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-300 text-[11px] font-mono font-bold rounded-lg transition-all"
+                    >
+                      ⚡ Hand Floor to Specialist
+                    </button>
+                  )}
                 </div>
               </div>
             ) : (
@@ -1196,7 +1251,7 @@ STRICT FLOOR RULES & SILENT STANDBY:
             <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 tracking-tight">{blueprint.interview_rounds[currentRound]?.round_name}</h3>
             <p className="text-white/60 text-xs sm:text-sm mb-6 max-w-lg mx-auto leading-relaxed">{blueprint.interview_rounds[currentRound]?.purpose}</p>
             <button 
-              onClick={startTest} 
+              onClick={() => startTest()} 
               className="px-8 py-3.5 bg-white text-black font-sans font-bold text-xs rounded-full shadow-[0_0_25px_rgba(255,255,255,0.25)] hover:bg-neutral-200 transition-all transform hover:scale-102 cursor-pointer"
             >
               Start Interview Session →

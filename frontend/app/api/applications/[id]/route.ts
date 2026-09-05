@@ -38,12 +38,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       const job = db.jobs.find(j => j.id === app.jobId);
 
       if (candidate && job) {
-        const { sendRejectionEmail, sendInterviewInvitationEmail } = await import('@/lib/email');
+        const { sendRejectionEmail, sendSelectionOfferEmail, sendWaitlistAltRoleEmail } = await import('@/lib/email');
         if (status === 'REJECTED') {
           await sendRejectionEmail(candidate, job, decisionStage, decisionReason);
+        } else if (status === 'SELECTED') {
+          await sendSelectionOfferEmail(candidate, job, evaluationScore, evaluationSummary || decisionReason);
+        } else if (status === 'CONSIDER_FOR_OTHER_ROLES') {
+          await sendWaitlistAltRoleEmail(candidate, job, recommendedAlternativeRoles, decisionReason);
         }
-        // NOTE: Interview invitation email is NOT sent here.
-        // It is strictly dispatched when recruiter selects date & time via POST /api/interviews.
       }
     } catch (mailErr: any) {
       console.warn('[Application PATCH] Failed to dispatch status email:', mailErr.message);
