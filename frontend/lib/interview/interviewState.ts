@@ -43,13 +43,103 @@ export const ARCHITECTURAL_TRIGGERS = [
   { pattern: /\b(\d+\s*(?:million|billion|m|k))\s*(?:req|request|query|event|user|tps|qps|rps)/i, reason: 'candidate_claimed_high_scale', competency: 'Scalability & Throughput', probeType: 'traffic_spike' },
   { pattern: /\b(distributed|sharding|partition|replica|replication|cluster|postgres|sql|nosql|mongo|database)\b/i, reason: 'candidate_claimed_distributed_storage', competency: 'Distributed Systems & Partitioning', probeType: 'partition_tolerance' },
   { pattern: /\b(kafka|pubsub|event-driven|message\s*queue|rabbitmq|stream|queue|pipeline)\b/i, reason: 'candidate_claimed_event_streaming', competency: 'Event Streaming & Backpressure', probeType: 'backpressure_and_ordering' },
-  { pattern: /\b(microservice|micro-service|service\s*mesh|api|gateway|grpc|http|rest)\b/i, reason: 'candidate_claimed_microservices', competency: 'Service Architecture & Latency', probeType: 'service_failure_and_latency' },
+  { pattern: /\b(microservice|micro-service|service\s*mesh|api\s*gateway|grpc)\b/i, reason: 'candidate_claimed_microservices', competency: 'Service Architecture & Latency', probeType: 'service_failure_and_latency' },
   { pattern: /\b(cache|redis|memcached|invalidation|ttl)\b/i, reason: 'candidate_claimed_caching_layer', competency: 'Caching & Data Consistency', probeType: 'cache_stampede_and_invalidation' },
   { pattern: /\b(concurrency|multithread|asyncio|race\s*condition|deadlock|mutex|lock|goroutine|channel|thread)\b/i, reason: 'candidate_claimed_concurrency_model', competency: 'Concurrency & Thread Safety', probeType: 'race_condition_prevention' },
   { pattern: /\b(rag|vector|embedding|cosine|faiss|chroma|pinecone|llm|model)\b/i, reason: 'candidate_claimed_rag_pipeline', competency: 'AI/Vector Infrastructure', probeType: 'vector_index_latency_and_drift' },
   { pattern: /\b(webrtc|turn|stun|sdp|ice|audio\s*track|real-time\s*voice|socket|websocket)\b/i, reason: 'candidate_claimed_webrtc_audio', competency: 'Real-Time Media Transport', probeType: 'packet_loss_and_jitter' },
   { pattern: /\b(raft|paxos|consensus|quorum|leader\s*election|split-brain|chronos)\b/i, reason: 'candidate_claimed_distributed_consensus', competency: 'Consensus & Failure Recovery', probeType: 'split_brain_and_network_partitions' }
 ];
+
+export interface CandidateDirectedResult {
+  directedTo: 'challenger' | 'primary' | 'none';
+  matchedName?: string;
+  reason?: string;
+}
+
+export interface PrimaryDecision {
+  action: 'CONTINUE' | 'FOLLOW_UP' | 'ADVANCE' | 'NO_INTERVENTION';
+  reason: string;
+  proposedQuestion?: string;
+  targetCompetency?: string;
+}
+
+export interface ChallengerDecision {
+  action: 'NO_INTERVENTION' | 'REQUEST_FLOOR';
+  reason: string;
+  priority?: 'low' | 'medium' | 'high';
+  proposedProbe?: string;
+  targetCompetency?: string;
+  request?: {
+    agentId: string;
+    agentName: string;
+    reason: string;
+    targetCompetency: string;
+    priority: 'low' | 'medium' | 'high';
+    proposedProbe: string;
+  };
+}
+
+export interface ArbiterDecision {
+  winningAgent: 'primary' | 'challenger' | 'hr';
+  winningAgentName: string;
+  action: string;
+  reason: string;
+}
+
+/**
+ * Detects whether candidate explicitly addressed an interviewer by name or role.
+ * In a peer panel, if candidate says "Arjun, what do you think?", Arjun is given the floor.
+ */
+export function detectCandidateDirectedInterviewer(
+  utterance: string,
+  activeAgents: ActivePanelAgent[] = []
+): CandidateDirectedResult {
+  const clean = utterance.trim();
+  if (!clean || clean.length < 3) return { directedTo: 'none' };
+
+  const challengerAgent = activeAgents.find(a => !a.isPrimary && a.isActive);
+  const primaryAgent = activeAgents.find(a => a.isPrimary && a.isActive);
+
+  // Common Challenger names & designations
+  const challengerNames = [
+    challengerAgent?.name?.toLowerCase(),
+    challengerAgent?.name?.split(' ')?.[0]?.toLowerCase(),
+    'arjun', 'malhotra', 'karan', 'tanvi', 'dev', 'natasha', 'specialist', 'challenger'
+  ].filter(Boolean) as string[];
+
+  // Common Primary names & designations
+  const primaryNames = [
+    primaryAgent?.name?.toLowerCase(),
+    primaryAgent?.name?.split(' ')?.[0]?.toLowerCase(),
+    'priya', 'nair', 'aditya', 'neha', 'kabir', 'alok', 'siddharth', 'lead'
+  ].filter(Boolean) as string[];
+
+  for (const name of challengerNames) {
+    // Matches "Arjun,", "Arjun?", "Hey Arjun", "to Arjun", "ask Arjun", "Arjun what do you think", "what do you think Arjun"
+    const regex = new RegExp(`(^|\\b|hey\\s+|hi\\s+|to\\s+|for\\s+|ask\\s+|with\\s+)${name}(\\b|,|\\?|!|\\s+)`, 'i');
+    if (regex.test(clean)) {
+      return { 
+        directedTo: 'challenger', 
+        matchedName: challengerAgent?.name || 'Arjun Malhotra',
+        reason: `Candidate directly addressed ${challengerAgent?.name || 'Challenger'}`
+      };
+    }
+  }
+
+  for (const name of primaryNames) {
+    const regex = new RegExp(`(^|\\b|hey\\s+|hi\\s+|to\\s+|for\\s+|ask\\s+|with\\s+)${name}(\\b|,|\\?|!|\\s+)`, 'i');
+    if (regex.test(clean)) {
+      return { 
+        directedTo: 'primary', 
+        matchedName: primaryAgent?.name || 'Priya Nair',
+        reason: `Candidate directly addressed ${primaryAgent?.name || 'Primary'}`
+      };
+    }
+  }
+
+  return { directedTo: 'none' };
+}
 
 /**
  * Sets the authoritative floor state and derives active agent floor ownership strictly.
@@ -286,9 +376,11 @@ export function evaluateChallengerFloorRequest(
   }
 
   // Check Rule 4: Challenger turn cooldown (at least 2 questions asked since last turn, and at least 25s elapsed)
+  // Direct candidate address bypasses routine cooldown
+  const isDirectAddress = request.reason === 'candidate_directly_addressed_challenger' || request.priority === 'high';
   const questionsSinceLastTurn = updated.questionsAsked.length - (updated.lastChallengerTurnIndex || 0);
   const timeSinceLastTurnMs = now - (updated.lastChallengerTurnTime || 0);
-  if (updated.lastChallengerTurnTime && (questionsSinceLastTurn < 2 || timeSinceLastTurnMs < 25000)) {
+  if (!isDirectAddress && updated.lastChallengerTurnTime && (questionsSinceLastTurn < 2 || timeSinceLastTurnMs < 25000)) {
     floorReq.status = 'denied';
     updated.structuredFloorRequests.push(floorReq);
     return { granted: false, updatedState: updated, decisionReason: `Denied: Challenger on cooldown (${questionsSinceLastTurn} questions / ${Math.round(timeSinceLastTurnMs/1000)}s elapsed).` };
@@ -333,7 +425,12 @@ export function checkRoundCompletionCriteria(state: InterviewState): {
   const sufficientCompetencies = trackers.filter(t => t.sufficientEvidence || (t.evidence && t.evidence.length >= 2)).length;
   const questionsCount = state.questionsAsked?.length || 0;
 
-  // Check for consecutive non-answers / failures (last 3 candidate utterances)
+  // Never conclude a round prematurely before at least 3 genuine questions have been asked
+  if (questionsCount < 3) {
+    return { isComplete: false, completionReason: 'NONE', summary: 'Round in progress: awaiting core questions.' };
+  }
+
+  // Check for consecutive non-answers / failures (last 3 candidate utterances after core questions have begun)
   const recentEvidence = state.structuredEvidence?.slice(-3) || [];
   if (recentEvidence.length >= 3 && recentEvidence.every(e => e.classification !== 'VALID_STRONG' && e.classification !== 'VALID_PARTIAL')) {
     return {
@@ -382,9 +479,78 @@ export function checkRoundCompletionCriteria(state: InterviewState): {
  * Challenger Active Observation Engine.
  * Observes the shared candidate context and determines whether an intervention adds meaningful value.
  */
+/**
+ * Evaluates Primary interviewer's structured decision on the candidate turn.
+ * Primary drives core blueprint questions and implementation depth.
+ */
+export function evaluatePrimaryDecision(
+  state: InterviewState,
+  candidateUtterance: string,
+  candidateDirectedTo: 'challenger' | 'primary' | 'none' = 'none'
+): PrimaryDecision {
+  // If candidate addressed Challenger directly, Primary yields and remains completely silent
+  if (candidateDirectedTo === 'challenger') {
+    return {
+      action: 'NO_INTERVENTION',
+      reason: 'candidate_directed_to_colleague_challenger'
+    };
+  }
+
+  const clean = candidateUtterance.trim();
+  const quality = classifyCandidateAnswer(clean);
+
+  // If candidate gave gibberish or no answer, ask for clarification/repeat
+  if (quality.classification === 'GIBBERISH' || quality.classification === 'NO_ANSWER') {
+    return {
+      action: 'FOLLOW_UP',
+      reason: `candidate_provided_${quality.classification.toLowerCase()}`,
+      proposedQuestion: `I didn't quite catch your technical explanation there. Could you explain your approach again clearly?`
+    };
+  }
+
+  // If candidate gave a vague or hand-wavey answer, demand concrete mechanisms
+  if (quality.classification === 'VAGUE' || quality.classification === 'INCORRECT') {
+    return {
+      action: 'FOLLOW_UP',
+      reason: `candidate_answer_${quality.classification.toLowerCase()}`,
+      proposedQuestion: `Could you walk me through the specific technical mechanisms and numbers in your design?`
+    };
+  }
+
+  // If candidate directed speech directly to Primary
+  if (candidateDirectedTo === 'primary') {
+    return {
+      action: 'CONTINUE',
+      reason: 'candidate_directly_addressed_primary',
+      proposedQuestion: `Looking at that component, how would you benchmark and verify it under peak production load?`
+    };
+  }
+
+  // If answer was strong and enough evidence collected on current topic, advance
+  const questionsCount = state.questionsAsked?.length || 0;
+  if (quality.classification === 'VALID_STRONG' && questionsCount >= 2) {
+    return {
+      action: 'ADVANCE',
+      reason: 'sufficient_evidence_collected_advancing_topic',
+      proposedQuestion: `Understood. Moving forward to our next architectural topic, how do you approach distributed caching and invalidation?`
+    };
+  }
+
+  return {
+    action: 'CONTINUE',
+    reason: 'standard_blueprint_progression'
+  };
+}
+
+/**
+ * Challenger actively observes the conversation state, candidate claims, and peer interactions.
+ * In a peer panel, Arjun remains silent when no intervention is needed, but actively probes
+ * architectural trade-offs, failure modes, contradictions, or when directly addressed by the candidate.
+ */
 export function evaluateChallengerObservation(
   state: InterviewState,
-  candidateUtterance: string
+  candidateUtterance: string,
+  candidateDirectedTo: 'challenger' | 'primary' | 'none' = 'none'
 ): {
   action: 'NO_INTERVENTION' | 'STRUCTURED_FLOOR_REQUEST';
   reason: string;
@@ -404,16 +570,58 @@ export function evaluateChallengerObservation(
     return { action: 'NO_INTERVENTION', reason: 'No active Challenger in current round.' };
   }
 
-  // Check if candidate response was trivial / non-substantive
+  // Case 1: Candidate explicitly addressed Challenger directly ("Arjun, what do you think?")
+  if (candidateDirectedTo === 'challenger') {
+    return {
+      action: 'STRUCTURED_FLOOR_REQUEST',
+      reason: 'candidate_directly_addressed_challenger',
+      request: {
+        agentId: challenger.agentId,
+        agentName: challenger.name,
+        reason: 'candidate_directly_addressed_challenger',
+        targetCompetency: state.currentTopic || 'Distributed Architecture & Scaling Limits',
+        priority: 'high',
+        proposedProbe: `From an architectural perspective, I'd evaluate how that scales under sudden network partitions. In your design, how do you handle partition recovery?`
+      }
+    };
+  }
+
+  // Case 2: Candidate explicitly addressed Primary directly -> Challenger intentionally yields
+  if (candidateDirectedTo === 'primary') {
+    return { action: 'NO_INTERVENTION', reason: 'candidate_directed_to_colleague_primary' };
+  }
+
+  // Case 3: Check if candidate response was trivial / non-substantive / gibberish
   if (clean.length < 25) {
     return { action: 'NO_INTERVENTION', reason: 'Candidate response lacks substantive technical claims to challenge.' };
   }
 
-  // Contextually evaluate architectural triggers against the candidate's claims
+  const cleanLower = clean.toLowerCase();
+
+  // Case 4: Contradiction detection against candidate's prior evidence
+  const priorEvidenceText = (state.structuredEvidence || [])
+    .map(e => e.candidateUtterance.toLowerCase())
+    .join(' ');
+
+  if (priorEvidenceText.includes('raft') && (cleanLower.includes('eventual consistency') || cleanLower.includes('dynamo') || cleanLower.includes('masterless'))) {
+    return {
+      action: 'STRUCTURED_FLOOR_REQUEST',
+      reason: 'contradiction_detected_consensus_vs_eventual_consistency',
+      request: {
+        agentId: challenger.agentId,
+        agentName: challenger.name,
+        reason: 'Technical contradiction: Raft linearizable consensus vs masterless eventual consistency',
+        targetCompetency: 'Architectural Consistency & Integrity',
+        priority: 'high',
+        proposedProbe: `Earlier you emphasized strict linearizable Raft consensus, but here you proposed a masterless eventual consistency model. How do you reconcile data conflicts and split-brain guarantees across those two models?`
+      }
+    };
+  }
+
+  // Case 5: Contextually evaluate architectural triggers against the candidate's claims
   for (const trigger of ARCHITECTURAL_TRIGGERS) {
     const match = clean.match(trigger.pattern);
     if (match) {
-      // Formulate a sharp, role-specific technical probe based on the claim
       let naturalProbe = '';
       if (trigger.reason === 'candidate_claimed_distributed_consensus') {
         naturalProbe = `You mentioned distributed consensus with ${match[0]}. How does your architecture handle split-brain partitions and verify quorum during sudden node isolation?`;
@@ -444,16 +652,32 @@ export function evaluateChallengerObservation(
     }
   }
 
-  // Routine non-architectural topics (e.g. IDEs, editors, basic tooling) do not warrant Challenger intervention
+  // Case 6: Routine non-architectural topics do not warrant Challenger intervention
   if (/\b(neovim|vim|vscode|intellij|editor|ide|laptop|dark\s*mode)\b/i.test(clean) || state.currentTopic?.toLowerCase().includes('tooling') || state.currentTopic?.toLowerCase().includes('productivity')) {
     return { action: 'NO_INTERVENTION', reason: 'Routine developer tooling discussion does not require architectural probing.' };
   }
 
-  // Proactively intervene if Challenger has not asked a question yet or after substantive technical response
+  // Case 7: Missing business/customer impact on substantive technical response
   const challengerTurnsCount = (state.structuredFloorRequests || []).filter(r => r.agent === 'challenger' && r.status === 'granted').length;
   const questionsCount = state.questionsAsked?.length || 0;
 
-  if (challengerTurnsCount === 0 || (questionsCount >= 2 && challengerTurnsCount < 2)) {
+  if (clean.length > 80 && !/\b(cost|slo|sla|customer|user|downtime|revenue|availability|latency budget)\b/i.test(clean) && questionsCount >= 4 && challengerTurnsCount < 2) {
+    return {
+      action: 'STRUCTURED_FLOOR_REQUEST',
+      reason: 'missing_business_customer_impact',
+      request: {
+        agentId: challenger.agentId,
+        agentName: challenger.name,
+        reason: 'Probe business impact, cost trade-offs, and customer-facing SLOs',
+        targetCompetency: 'Engineering Economics & Customer SLOs',
+        priority: 'medium',
+        proposedProbe: 'That covers the technical mechanics well. What was the direct business or customer-facing SLO impact of that design, and what trade-offs did you make regarding infrastructure cost versus availability?'
+      }
+    };
+  }
+
+  // Case 8: Proactively intervene after initial questions if Challenger has not asked a question yet and candidate provided substantive technical response
+  if (questionsCount >= 2 && challengerTurnsCount < 2) {
     const defaultProbes = [
       `Building on that architecture, what specific failure modes or network partition scenarios did you have to guard against in production, and how did you verify recovery?`,
       `How does your design handle sudden downstream latency spikes or backpressure when concurrent traffic scales 10x?`,
@@ -492,13 +716,19 @@ export function recordCandidateUtterance(
   floorRequestResult?: any;
   challengerObservation?: any;
   roundCompletion?: any;
+  primaryDecision?: PrimaryDecision;
+  challengerDecision?: ChallengerDecision;
+  arbiterDecision?: ArbiterDecision;
+  whyChallengerDidNotSpeak?: string;
+  candidateDirectedTo?: 'challenger' | 'primary' | 'none';
 } {
   const clean = utterance.trim();
   if (!clean) {
     return { 
       updatedState: state, 
       qualityReport: { classification: 'NO_ANSWER', qualityScore: 0 },
-      roundCompletion: checkRoundCompletionCriteria(state)
+      roundCompletion: checkRoundCompletionCriteria(state),
+      whyChallengerDidNotSpeak: 'CANDIDATE_SILENCE'
     };
   }
 
@@ -554,20 +784,120 @@ export function recordCandidateUtterance(
     updated.evidenceCollected = [...updated.evidenceCollected, quality.verbatimQuote];
   }
 
-  // Challenger Active Observation
-  const observation = evaluateChallengerObservation(updated, clean);
+  // 1. Detect candidate direct addressing
+  const directAddress = detectCandidateDirectedInterviewer(clean, updated.activeAgents);
+  const candidateDirectedTo = directAddress.directedTo;
+
+  // 2. Dual-agent structured decisions
+  const primaryDecision = evaluatePrimaryDecision(updated, clean, candidateDirectedTo);
+  const observation = evaluateChallengerObservation(updated, clean, candidateDirectedTo);
+  const challengerDecision: ChallengerDecision = {
+    action: observation.action === 'STRUCTURED_FLOOR_REQUEST' ? 'REQUEST_FLOOR' : 'NO_INTERVENTION',
+    reason: observation.reason,
+    priority: observation.request?.priority,
+    proposedProbe: observation.request?.proposedProbe,
+    targetCompetency: observation.request?.targetCompetency,
+    request: observation.request
+  };
+
+  // 3. Authoritative Turn Arbiter Resolution
+  const primaryAgent = updated.activeAgents.find(a => a.isPrimary && a.isActive);
+  const challengerAgent = updated.activeAgents.find(a => !a.isPrimary && a.isActive);
+
+  let arbiterDecision: ArbiterDecision;
+  let whyChallengerDidNotSpeak: string = 'ARJUN_DECIDED_NO_INTERVENTION';
   let floorRequestResult: any = null;
 
-  if (observation.action === 'STRUCTURED_FLOOR_REQUEST' && observation.request) {
-    const arbiterRes = evaluateChallengerFloorRequest(updated, observation.request, true);
-    updated = arbiterRes.updatedState;
-    floorRequestResult = {
-      granted: arbiterRes.granted,
-      decisionReason: arbiterRes.decisionReason,
-      proposedProbe: observation.request.proposedProbe,
-      targetCompetency: observation.request.targetCompetency,
-      priority: observation.request.priority
+  if (updated.currentRound === 'hr') {
+    const hrAgent = updated.activeAgents[0];
+    arbiterDecision = {
+      winningAgent: 'hr',
+      winningAgentName: hrAgent?.name || 'HR Interviewer',
+      action: 'HR_CONTINUE',
+      reason: 'HR round single interviewer mode'
     };
+    whyChallengerDidNotSpeak = 'NOT_APPLICABLE_HR_ROUND';
+  } else if (candidateDirectedTo === 'challenger' && challengerAgent) {
+    // Priority 1: Candidate directly addressed Challenger
+    const probe = observation.request?.proposedProbe || `From an architectural perspective, I'd evaluate how that scales under sudden network partitions. In your design, how do you handle partition recovery?`;
+    const floorRes = evaluateChallengerFloorRequest(updated, observation.request || {
+      agentId: challengerAgent.agentId,
+      agentName: challengerAgent.name,
+      reason: 'candidate_directly_addressed_challenger',
+      targetCompetency: updated.currentTopic || 'Distributed Architecture',
+      priority: 'high',
+      proposedProbe: probe
+    }, true);
+
+    updated = floorRes.updatedState;
+    floorRequestResult = {
+      granted: true,
+      decisionReason: 'Granted: Candidate directly addressed Challenger.',
+      proposedProbe: probe,
+      targetCompetency: observation.request?.targetCompetency || 'Distributed Architecture',
+      priority: 'high'
+    };
+    arbiterDecision = {
+      winningAgent: 'challenger',
+      winningAgentName: challengerAgent.name,
+      action: 'GRANT_CHALLENGER',
+      reason: 'Candidate directly addressed Challenger. Challenger takes the floor while Primary yields in silence.'
+    };
+    whyChallengerDidNotSpeak = 'ARJUN_RECEIVED_FLOOR';
+  } else if (candidateDirectedTo === 'primary' && primaryAgent) {
+    // Priority 1b: Candidate directly addressed Primary
+    updated = setAuthoritativeFloorState(updated, 'PRIMARY_SPEAKING');
+    arbiterDecision = {
+      winningAgent: 'primary',
+      winningAgentName: primaryAgent.name,
+      action: 'GRANT_PRIMARY',
+      reason: 'Candidate directly addressed Primary. Primary takes the floor.'
+    };
+    whyChallengerDidNotSpeak = 'CANDIDATE_DIRECTED_TO_PRIMARY';
+  } else if (challengerDecision.action === 'REQUEST_FLOOR' && challengerDecision.request && challengerAgent) {
+    // Priority 2: Challenger requests floor based on architectural triggers, contradiction, or proactive probe
+    const arbiterRes = evaluateChallengerFloorRequest(updated, challengerDecision.request, true);
+    if (arbiterRes.granted) {
+      updated = arbiterRes.updatedState;
+      floorRequestResult = {
+        granted: true,
+        decisionReason: arbiterRes.decisionReason,
+        proposedProbe: challengerDecision.request.proposedProbe,
+        targetCompetency: challengerDecision.request.targetCompetency,
+        priority: challengerDecision.request.priority
+      };
+      arbiterDecision = {
+        winningAgent: 'challenger',
+        winningAgentName: challengerAgent.name,
+        action: 'GRANT_CHALLENGER',
+        reason: arbiterRes.decisionReason
+      };
+      whyChallengerDidNotSpeak = 'ARJUN_RECEIVED_FLOOR';
+    } else {
+      // Challenger requested floor but arbiter denied (e.g. cooldown)
+      updated = setAuthoritativeFloorState(updated, 'PRIMARY_SPEAKING');
+      floorRequestResult = {
+        granted: false,
+        decisionReason: arbiterRes.decisionReason
+      };
+      arbiterDecision = {
+        winningAgent: 'primary',
+        winningAgentName: primaryAgent?.name || 'Primary Interviewer',
+        action: 'GRANT_PRIMARY',
+        reason: `Challenger floor request denied (${arbiterRes.decisionReason}). Primary retains floor for blueprint progression.`
+      };
+      whyChallengerDidNotSpeak = 'ARBITER_DENIED_COOLDOWN';
+    }
+  } else {
+    // Priority 3: Primary blueprint progression
+    updated = setAuthoritativeFloorState(updated, 'PRIMARY_SPEAKING');
+    arbiterDecision = {
+      winningAgent: 'primary',
+      winningAgentName: primaryAgent?.name || 'Primary Interviewer',
+      action: 'GRANT_PRIMARY',
+      reason: primaryDecision.reason || 'Primary continues blueprint progression; Challenger decided no intervention needed.'
+    };
+    whyChallengerDidNotSpeak = 'ARJUN_DECIDED_NO_INTERVENTION';
   }
 
   // Check for natural round completion
@@ -578,6 +908,11 @@ export function recordCandidateUtterance(
     qualityReport: quality, 
     floorRequestResult,
     challengerObservation: observation,
+    primaryDecision,
+    challengerDecision,
+    arbiterDecision,
+    whyChallengerDidNotSpeak,
+    candidateDirectedTo,
     roundCompletion 
   };
 }

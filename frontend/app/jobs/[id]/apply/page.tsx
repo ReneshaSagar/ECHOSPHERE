@@ -136,7 +136,7 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
             <span className="text-[11px] font-mono font-semibold px-3 py-1 rounded-full bg-white/[0.05] text-white/90 border border-white/[0.1]">
               nexora labs
             </span>
-            <span className="text-xs font-mono text-white/40">powered by omnipanel</span>
+            <span className="text-xs font-mono text-white/40">powered by OmniPanel</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-sans font-bold text-white tracking-tight">
             submit your application

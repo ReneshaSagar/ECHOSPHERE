@@ -49,12 +49,12 @@ export default function AdminSidebar({
     <div className="w-64 bg-[#0a0a0d] border-r border-white/[0.08] flex flex-col shrink-0 text-white select-none">
       <div className="p-5 border-b border-white/[0.06]">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-white/20 to-white/5 border border-white/20 flex items-center justify-center text-xs font-bold text-white shadow-[0_0_15px_rgba(255,255,255,0.15)]">
-            N
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 flex items-center justify-center text-xs font-bold text-white shadow-[0_0_15px_rgba(168,85,247,0.15)]">
+            O
           </div>
           <div>
-            <h1 className="text-sm font-sans font-bold text-white leading-tight">nexora labs ats</h1>
-            <p className="text-[10px] font-mono text-white/40 tracking-wider">powered by omnipanel</p>
+            <h1 className="text-sm font-sans font-bold text-white leading-tight tracking-wide">OMNIPANEL</h1>
+            <p className="text-[10px] font-mono text-white/40 tracking-wider mt-0.5">Nexora Labs · Hiring</p>
           </div>
         </div>
       </div>

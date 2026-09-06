@@ -43,30 +43,30 @@ export default function LandingPage() {
 
             {/* Editorial Headline */}
             <h1 className="text-4xl sm:text-6xl lg:text-[4.2rem] font-serif font-normal tracking-[-0.03em] text-white leading-[1.08]">
-              Nature doesn’t guess<br />
-              <span className="text-white/90">Neither should AI.</span>
+              The infrastructure for<br />
+              <span className="text-white/90">intelligent software.</span>
             </h1>
 
             {/* Subtitle */}
             <p className="text-sm sm:text-base text-zinc-400 font-sans leading-relaxed max-w-md">
-              Our conversational voice AI analyzes real-time technical dialogue to uncover genuine engineering mastery—beyond resumes and guesswork.
+              Nexora Labs builds the high-performance, real-time data and AI primitives powering the next generation of mission-critical systems.
             </p>
 
-            {/* Capsule CTA Button (Matching Reference Image) */}
+            {/* Capsule CTA Button */}
             <div className="pt-2 flex items-center gap-4 flex-wrap">
               <Link
-                href="/jobs"
+                href="/company"
                 className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-white/[0.08] hover:bg-white/[0.16] border border-white/[0.18] text-white text-xs font-semibold transition-all shadow-[0_0_25px_rgba(255,255,255,0.08)] transform hover:-translate-y-0.5"
               >
-                <span>Get started</span>
+                <span>Talk to us</span>
                 <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1 text-white/80" />
               </Link>
 
               <Link
-                href="/admin/schedule"
+                href="/products"
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-xs font-mono text-zinc-400 hover:text-white transition-colors"
               >
-                <span>ATS Schedule</span>
+                <span>Explore Products</span>
                 <span className="text-zinc-600">→</span>
               </Link>
             </div>
@@ -103,7 +103,7 @@ export default function LandingPage() {
                 Full-duplex WebRTC media pipelines with neural acoustic synchronization, adaptive barge-in handling, and zero audio packet jitter.
               </p>
               <div className="pt-2 text-[11px] font-mono text-amber-400 flex items-center gap-1">
-                <span>WebRTC · Agora RTC · Gemini Live</span>
+                <span>WebRTC · Agora RTC · Custom ML</span>
               </div>
             </div>
 
@@ -122,30 +122,30 @@ export default function LandingPage() {
             </div>
 
             <div className="glass-card glass-card-hover p-8 space-y-5 relative overflow-hidden group">
-              <div className="font-mono text-xs text-zinc-500">03 / EVALUATION INTELLIGENCE</div>
+              <div className="font-mono text-xs text-zinc-500">03 / AI PLATFORM</div>
               <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
                 <Sparkles className="w-5 h-5" />
               </div>
-              <h3 className="text-xl font-semibold text-white">OmniPanel AI Evaluation</h3>
+              <h3 className="text-xl font-semibold text-white">Autonomous Agent Orchestration</h3>
               <p className="text-xs text-zinc-400 leading-relaxed font-sans">
-                Stateful turn arbitration, calibrated multi-round rubric synthesis, and verified evidence grounding for technical talent assessment.
+                Stateful agent coordination, multi-round context synthesis, and grounded reasoning engines for enterprise AI workflows.
               </p>
               <div className="pt-2 text-[11px] font-mono text-purple-400 flex items-center gap-1">
-                <span>Multi-Persona Arbiter · RAG</span>
+                <span>Multi-Agent System · RAG</span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── 3. How It Works Section ── */}
+        {/* ── 3. Platform Architecture Section ── */}
         <section id="how-it-works" className="py-24 border-t border-white/[0.08] space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="font-mono text-[11px] text-zinc-500 uppercase tracking-widest">[ HOW IT WORKS ]</span>
+            <span className="font-mono text-[11px] text-zinc-500 uppercase tracking-widest">[ CAPABILITIES ]</span>
             <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white">
-              From application to signal in minutes.
+              From data to intelligence in milliseconds.
             </h2>
             <p className="text-xs sm:text-sm text-zinc-400 font-mono">
-              An objective, conversational hiring pipeline powered by OmniPanel.
+              An objective, scalable AI primitive pipeline.
             </p>
           </div>
 
@@ -157,18 +157,18 @@ export default function LandingPage() {
               </div>
               <h4 className="text-lg font-semibold text-white">Multi-Source Enrichment</h4>
               <p className="text-xs text-zinc-400 leading-relaxed">
-                Extracts verified project repositories from candidate GitHub and LinkedIn, identifying high-signal codecraft to probe during the interview.
+                Extracts and structures real-time data from disparate streams, identifying high-signal events for immediate downstream processing.
               </p>
             </div>
 
             <div className="p-6 rounded-2xl border border-white/[0.06] bg-[#08080b] space-y-4">
               <div className="flex items-center justify-between font-mono text-xs text-zinc-500">
                 <span>PHASE // 02</span>
-                <span className="text-zinc-600">LIVE AUDIO</span>
+                <span className="text-zinc-600">PROCESSING</span>
               </div>
-              <h4 className="text-lg font-semibold text-white">Multi-Agent Voice Panel</h4>
+              <h4 className="text-lg font-semibold text-white">Neural Stream Processing</h4>
               <p className="text-xs text-zinc-400 leading-relaxed">
-                Candidate joins a live room with technical leads (Priya Nair, Arjun Malhotra) who coordinate turns, probe scalability, and assess depth.
+                Parallelized inference pipelines analyze continuous streams, maintaining deep contextual state across distributed environments.
               </p>
             </div>
 
@@ -177,9 +177,9 @@ export default function LandingPage() {
                 <span>PHASE // 03</span>
                 <span className="text-zinc-600">DECISION</span>
               </div>
-              <h4 className="text-lg font-semibold text-white">Grounded Synthesis Scorecard</h4>
+              <h4 className="text-lg font-semibold text-white">Grounded Synthesis</h4>
               <p className="text-xs text-zinc-400 leading-relaxed">
-                Turn Arbiter synthesizes candidate explanations against objective rubrics, delivering comprehensive telemetry to engineering hiring committees.
+                Orchestrators synthesize processing results against objective business logic, delivering comprehensive telemetry and autonomous action.
               </p>
             </div>
           </div>

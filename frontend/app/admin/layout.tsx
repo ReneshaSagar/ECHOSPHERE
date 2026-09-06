@@ -9,7 +9,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const jobCount = db.jobs.length;
 
   return (
-    <div className="flex h-screen pt-16 bg-[#030304] text-[#f5f5f7] font-sans overflow-hidden selection:bg-purple-500/30 selection:text-white">
+    <div className="flex h-screen bg-[#030304] text-[#f5f5f7] font-sans overflow-hidden selection:bg-purple-500/30 selection:text-white">
       <AdminSidebar 
         applicantCount={applicantCount} 
         scheduledCount={scheduledCount} 

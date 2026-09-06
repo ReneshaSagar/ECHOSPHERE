@@ -82,7 +82,7 @@ export default async function JobBoardPage() {
             </div>
             <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.06]">
               <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-              <span>autonomous voice panel by omnipanel</span>
+              <span>autonomous voice panel by OmniPanel</span>
             </div>
           </div>
         </div>
@@ -210,7 +210,7 @@ export default async function JobBoardPage() {
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 text-xs font-mono text-purple-400">
             <Sparkles className="w-4 h-4" />
-            <span>evaluation process powered by omnipanel</span>
+            <span>evaluation process powered by OmniPanel</span>
           </div>
           <h3 className="text-xl font-sans font-bold text-white">
             how our autonomous voice interview works

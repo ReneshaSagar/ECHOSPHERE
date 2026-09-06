@@ -71,6 +71,7 @@ export default function ApplicantsClient({
   const [modalReason, setModalReason] = useState<string>('');
   const [modalAltRoles, setModalAltRoles] = useState<string>('');
   const [isUpdating, setIsUpdating] = useState(false);
+  const [decisionError, setDecisionError] = useState<string | null>(null);
 
   // Status Metrics
   const metrics = {
@@ -88,11 +89,13 @@ export default function ApplicantsClient({
     setModalStage(app.decisionStage || (app.interviewId ? 'ROUND_2_SYSTEM_DESIGN' : 'RESUME_SCREENING'));
     setModalReason(app.decisionReason || '');
     setModalAltRoles((app.recommendedAlternativeRoles || []).join(', '));
+    setDecisionError(null);
   };
 
   const handleSaveDecision = async () => {
     if (!activeModalApp) return;
     setIsUpdating(true);
+    setDecisionError(null);
 
     try {
       const altRolesArray = modalAltRoles.split(',').map(r => r.trim()).filter(Boolean);
@@ -121,9 +124,13 @@ export default function ApplicantsClient({
           return a;
         }));
         setActiveModalApp(null);
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        setDecisionError(errData.error || 'Failed to save decision. Please try again.');
       }
     } catch (e) {
       console.error('Failed to update decision:', e);
+      setDecisionError('Network error — failed to save decision.');
     }
     setIsUpdating(false);
   };
@@ -131,7 +138,27 @@ export default function ApplicantsClient({
   const handleSaveAndSchedule = async () => {
     if (!activeModalApp) return;
     const appId = activeModalApp.id;
-    await handleSaveDecision();
+    setIsUpdating(true);
+    try {
+      // Save the hiring notes/stage only — do NOT set status to SELECTED yet.
+      // Status will become INTERVIEW_SCHEDULED once the slot is picked.
+      // The offer email fires only after the interview completes and evaluator marks SELECTED.
+      const altRolesArray = modalAltRoles.split(',').map(r => r.trim()).filter(Boolean);
+      await fetch(`/api/applications/${appId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          decisionStage: modalStage,
+          decisionReason: modalReason || undefined,
+          recommendedAlternativeRoles: altRolesArray.length > 0 ? altRolesArray : undefined
+          // status intentionally omitted — will be set to INTERVIEW_SCHEDULED by /api/interviews POST
+        })
+      });
+    } catch (e) {
+      console.error('Failed to save pre-interview notes:', e);
+    }
+    setIsUpdating(false);
+    setActiveModalApp(null);
     router.push(`/admin/applications/${appId}/schedule`);
   };
 
@@ -645,33 +672,42 @@ export default function ApplicantsClient({
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-2">
-              <button
-                type="button"
-                onClick={() => setActiveModalApp(null)}
-                className="px-5 py-2.5 border border-white/[0.1] rounded-full text-xs font-mono text-white/60 hover:text-white transition"
-              >
-                cancel
-              </button>
-              {modalStatus === 'SELECTED' && (
+            <div className="space-y-3 pt-2">
+              {/* Error message from backend guard */}
+              {decisionError && (
+                <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs text-rose-300 font-sans leading-relaxed">
+                  ⚠️ {decisionError}
+                </div>
+              )}
+
+              <div className="flex justify-end gap-3">
                 <button
                   type="button"
-                  onClick={handleSaveAndSchedule}
-                  disabled={isUpdating}
-                  className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-full text-xs font-mono font-bold shadow-sm transition disabled:opacity-50 flex items-center gap-1.5"
+                  onClick={() => setActiveModalApp(null)}
+                  className="px-5 py-2.5 border border-white/[0.1] rounded-full text-xs font-mono text-white/60 hover:text-white transition"
                 >
-                  <Calendar className="w-3.5 h-3.5" />
-                  <span>{isUpdating ? 'Saving...' : 'Save & Pick Slot →'}</span>
+                  cancel
                 </button>
-              )}
-              <button
-                type="button"
-                onClick={handleSaveDecision}
-                disabled={isUpdating}
-                className="px-6 py-2.5 bg-white text-black hover:bg-neutral-200 rounded-full text-xs font-sans font-bold shadow-sm transition disabled:opacity-50"
-              >
-                {isUpdating ? 'saving...' : 'save decision'}
-              </button>
+                {modalStatus === 'SELECTED' && (
+                  <button
+                    type="button"
+                    onClick={handleSaveAndSchedule}
+                    disabled={isUpdating}
+                    className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-full text-xs font-mono font-bold shadow-sm transition disabled:opacity-50 flex items-center gap-1.5"
+                  >
+                    <Calendar className="w-3.5 h-3.5" />
+                    <span>{isUpdating ? 'Saving...' : 'Save & Pick Slot →'}</span>
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={handleSaveDecision}
+                  disabled={isUpdating}
+                  className="px-6 py-2.5 bg-white text-black hover:bg-neutral-200 rounded-full text-xs font-sans font-bold shadow-sm transition disabled:opacity-50"
+                >
+                  {isUpdating ? 'saving...' : 'save decision'}
+                </button>
+              </div>
             </div>
           </div>
         </div>

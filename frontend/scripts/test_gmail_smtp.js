@@ -95,7 +95,7 @@ async function main() {
           <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 24px; text-align: center; margin: 24px 0;">
             <div style="font-size: 11px; font-weight: 700; color: #1e40af; text-transform: uppercase; letter-spacing: 0.05em;">Confirmed Interview Slot</div>
             <div style="font-size: 18px; font-weight: 800; color: #1e3a8a; margin-top: 4px;">${formattedDate}</div>
-            <div style="font-size: 14px; font-weight: 700; color: #2563eb; margin-top: 2px;">${formattedTime} (45 mins duration)</div>
+            <div style="font-size: 14px; font-weight: 700; color: #2563eb; margin-top: 2px;">${formattedTime}</div>
             
             <div style="margin-top: 18px;">
               <a href="${interviewLink}" style="display: inline-block; background: #2563eb; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 14px; padding: 12px 28px; border-radius: 8px; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);">

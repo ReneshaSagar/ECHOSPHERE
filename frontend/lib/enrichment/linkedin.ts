@@ -87,13 +87,13 @@ export interface BrightDataLinkedInProfileRaw {
  */
 async function fetchFromBrightData(cleanUrl: string, apiToken: string): Promise<BrightDataLinkedInProfileRaw | null> {
   const datasetId = process.env.BRIGHTDATA_DATASET_ID || 'gd_l1viktl72bvl7bjuj0';
-  const scrapeEndpoint = 'https://api.brightdata.com/datasets/v3/scrape?dataset_id=' + datasetId + '&format=json&include_errors=true';
+  const scrapeEndpoint = 'https://api.brightdata.com/datasets/v3/trigger?dataset_id=' + datasetId + '&format=json&include_errors=true';
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 8000);
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
 
   try {
-    console.log('[Bright Data] Calling live synchronous scrape endpoint for:', cleanUrl);
+    console.log('[Bright Data] Calling live trigger endpoint for:', cleanUrl);
     const scrapeRes = await fetch(scrapeEndpoint, {
       method: 'POST',
       headers: {
@@ -118,16 +118,16 @@ async function fetchFromBrightData(cleanUrl: string, apiToken: string): Promise<
     }
 
     if (results && results.snapshot_id) {
-      console.log(`[Bright Data] Async snapshot created: ${results.snapshot_id}. Polling up to 10s...`);
-      for (let attempt = 0; attempt < 5; attempt++) {
-        await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log(`[Bright Data] Async snapshot created: ${results.snapshot_id}. Polling up to 60s...`);
+      for (let attempt = 0; attempt < 15; attempt++) {
+        await new Promise(resolve => setTimeout(resolve, 4000));
         try {
           const pollRes = await fetch(`https://api.brightdata.com/datasets/v3/snapshot/${results.snapshot_id}?format=json`, {
             headers: { 'Authorization': `Bearer ${apiToken}` }
           });
           if (pollRes.ok) {
             const snapData = await pollRes.json();
-            if (Array.isArray(snapData) && snapData.length > 0) {
+            if (Array.isArray(snapData) && snapData.length > 0 && snapData[0].name !== undefined) {
               console.log(`[Bright Data] Snapshot ${results.snapshot_id} completed successfully.`);
               return snapData[0] as BrightDataLinkedInProfileRaw;
             }
@@ -136,6 +136,7 @@ async function fetchFromBrightData(cleanUrl: string, apiToken: string): Promise<
           console.warn('[Bright Data] Polling notice:', pollErr.message);
         }
       }
+      console.warn('[Bright Data] Polling timed out after 60s.');
       return null;
     }
 

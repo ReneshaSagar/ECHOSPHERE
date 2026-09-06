@@ -18,7 +18,8 @@ import {
   RefreshCw,
   Cpu,
   Layers,
-  ArrowRightCircle
+  ArrowRightCircle,
+  Zap
 } from 'lucide-react';
 
 export default function TestInterviewSuitePage() {
@@ -29,17 +30,17 @@ export default function TestInterviewSuitePage() {
   const [message, setMessage] = useState<string | null>(null);
 
   // Initialize demo test interview and launch
-  const handleLaunchLiveInterview = async () => {
+  const handleLaunchLiveInterview = async (engine: 'cascading' | 'mllm' = 'cascading') => {
     try {
       setIsSeeding(true);
-      setMessage('Seeding isolated demo candidate (Alex Rivera) and 2-round blueprint...');
+      setMessage(`Seeding demo candidate (Alex Rivera) for ${engine.toUpperCase()} engine...`);
       
       const res = await fetch('/api/dev/demo-interview', { method: 'POST' });
       const data = await res.json();
       
       if (data.success) {
-        setMessage('Launching live interview room...');
-        router.push('/interview/demo-blueprint-test');
+        setMessage(`Launching ${engine.toUpperCase()} interview room...`);
+        router.push(`/interview/demo-blueprint-test?engine=${engine}`);
       } else {
         setMessage(`Error: ${data.error}`);
       }
@@ -237,48 +238,81 @@ export default function TestInterviewSuitePage() {
           </div>
         </div>
 
-        {/* Primary Test Launcher Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Primary Test Launcher Actions: Dual Engine Selector */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          {/* Action 1: Live Interactive Test */}
-          <div className="p-6 sm:p-8 rounded-3xl border border-white/[0.1] bg-[#07070a] hover:border-white/20 transition-all space-y-4 flex flex-col justify-between">
+          {/* Action 1: Cascading Engine Prototype */}
+          <div className="p-6 rounded-3xl border border-cyan-500/30 bg-cyan-950/20 hover:border-cyan-500/50 transition-all space-y-4 flex flex-col justify-between shadow-[0_0_30px_rgba(6,182,212,0.15)]">
             <div className="space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                <Play className="w-5 h-5 fill-amber-400" />
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                  <Zap className="w-5 h-5 fill-cyan-400" />
+                </div>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                  NEW PROTOTYPE
+                </span>
               </div>
-              <h3 className="text-lg font-bold text-white">Launch Live Interactive Interview</h3>
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                Starts the real Agora voice room with live AI audio, floor arbitration, and proctoring. You can speak to the agents directly or use the in-room fast-forward buttons.
+              <h3 className="text-lg font-bold text-white">Cascading Engine (ASR → LLM → TTS)</h3>
+              <p className="text-xs text-zinc-300 leading-relaxed">
+                Deterministic turn arbitration with 8-point answer classification, active Challenger observation, strict single-speaker volume gating, and candidate interruption priority.
               </p>
             </div>
 
             <button
-              onClick={handleLaunchLiveInterview}
+              onClick={() => handleLaunchLiveInterview('cascading')}
               disabled={isSeeding || isSimulating}
-              className="w-full py-3.5 px-6 rounded-full bg-white text-black font-semibold text-xs hover:bg-zinc-200 transition shadow-[0_0_25px_rgba(255,255,255,0.2)] flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-3.5 px-6 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs transition shadow-[0_0_25px_rgba(6,182,212,0.3)] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
             >
               <Play className="w-4 h-4 fill-black" />
-              <span>Initialize & Launch Live Test</span>
+              <span>Launch Cascading Prototype</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Action 2: 1-Click Instant Simulator */}
-          <div className="p-6 sm:p-8 rounded-3xl border border-white/[0.1] bg-[#07070a] hover:border-white/20 transition-all space-y-4 flex flex-col justify-between">
+          {/* Action 2: MLLM Engine Reference */}
+          <div className="p-6 rounded-3xl border border-white/[0.1] bg-[#07070a] hover:border-white/20 transition-all space-y-4 flex flex-col justify-between">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                  <Play className="w-5 h-5 fill-amber-400" />
+                </div>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-white/[0.05] text-zinc-400 border border-white/[0.08]">
+                  REFERENCE / FALLBACK
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-white">MLLM Engine (Gemini Live Audio)</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                The original dual-agent MLLM implementation running via Agora RTC and cloud worker instances with WebRTC audio channels.
+              </p>
+            </div>
+
+            <button
+              onClick={() => handleLaunchLiveInterview('mllm')}
+              disabled={isSeeding || isSimulating}
+              className="w-full py-3.5 px-6 rounded-full bg-white text-black font-semibold text-xs hover:bg-zinc-200 transition shadow-[0_0_25px_rgba(255,255,255,0.2)] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+            >
+              <Play className="w-4 h-4 fill-black" />
+              <span>Launch MLLM Reference</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Action 3: 1-Click Instant Simulator */}
+          <div className="p-6 rounded-3xl border border-purple-500/20 bg-purple-950/20 hover:border-purple-500/40 transition-all space-y-4 flex flex-col justify-between">
             <div className="space-y-2">
               <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
                 <Sparkles className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-white">1-Click Instant Pipeline Simulation</h3>
+              <h3 className="text-lg font-bold text-white">1-Click Fast-Forward Simulation</h3>
               <p className="text-xs text-zinc-400 leading-relaxed">
-                Instantly runs both rounds synthetically, evaluates the rubric, calculates the final integrity score, generates the full scorecard, and pushes results directly to the Admin Dashboard in 2 seconds.
+                Instantly runs both rounds synthetically, evaluates the rubric, calculates the final score, generates the full scorecard, and pushes results directly to Admin in 2s.
               </p>
             </div>
 
             <button
               onClick={handleRunSimulation}
               disabled={isSeeding || isSimulating}
-              className="w-full py-3.5 px-6 rounded-full bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition shadow-[0_0_25px_rgba(147,51,234,0.3)] flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-3.5 px-6 rounded-full bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition shadow-[0_0_25px_rgba(147,51,234,0.3)] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
             >
               <Sparkles className="w-4 h-4" />
               <span>{isSimulating ? 'Simulating Pipeline...' : 'Run Instant Simulation (2s)'}</span>

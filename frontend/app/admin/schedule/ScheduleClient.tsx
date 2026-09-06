@@ -190,7 +190,7 @@ export default function ScheduleClient({
 
       {/* Interview List Cards */}
       <div className="space-y-4">
-        {filteredInterviews.map((item) => {
+        {filteredInterviews.map((item, idx) => {
           const dateObj = new Date(item.scheduledAt);
           const parts = getDatePartsIST(item.scheduledAt);
           const isUpcoming = dateObj > now && item.status !== 'COMPLETED';
@@ -198,7 +198,7 @@ export default function ScheduleClient({
 
           return (
             <div
-              key={item.id}
+              key={`${item.id}_${idx}`}
               className="bg-[#0a0a0d] rounded-2xl border border-white/[0.08] p-5 shadow-[0_0_30px_rgba(0,0,0,0.4)] hover:border-white/20 transition-all flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6"
             >
               {/* Date & Time Badge */}
@@ -225,7 +225,6 @@ export default function ScheduleClient({
                     <span className="text-sm font-mono font-bold text-white" suppressHydrationWarning>
                       {parts.time}
                     </span>
-                    <span className="text-xs font-mono text-white/40">(45 mins)</span>
                     {isToday && (
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30">
                         Today

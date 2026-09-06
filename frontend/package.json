@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@mediapipe/tasks-vision": "^1.0.1",
     "@prisma/client": "^7.10.0",
     "agora-agents": "^2.7.0",
     "agora-rtc-sdk-ng": "^4.22.2",

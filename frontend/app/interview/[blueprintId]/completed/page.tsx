@@ -24,20 +24,17 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
 
   return (
     <div className="min-h-screen bg-[#030304] text-[#f5f5f7] font-sans flex flex-col pt-12 pb-16 px-4">
-      {/* Nexora Labs Brand Nav */}
+      {/* Brand Nav */}
       <div className="max-w-3xl mx-auto w-full mb-8 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-white/20 to-white/5 border border-white/20 flex items-center justify-center text-xs font-bold text-white shadow-[0_0_15px_rgba(255,255,255,0.15)]">
-            N
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 flex items-center justify-center text-xs font-bold text-white shadow-[0_0_15px_rgba(168,85,247,0.15)]">
+            O
           </div>
           <div>
             <div className="font-sans font-bold text-white text-base tracking-tight flex items-center gap-2">
-              <span>nexora labs</span>
-              <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-white/[0.05] text-white/70 border border-white/[0.08]">
-                omnipanel
-              </span>
+              <span>OMNIPANEL</span>
             </div>
-            <div className="text-xs font-mono text-white/40">autonomous technical evaluation</div>
+            <div className="text-xs font-mono text-white/40">Nexora Labs · autonomous evaluation</div>
           </div>
         </div>
         <span className="text-xs font-mono px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">

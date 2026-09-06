@@ -53,7 +53,7 @@ export default function ApplicationActions({ applicationId, currentStatus }: { a
               disabled={loading}
               className="px-5 py-2.5 rounded-full font-mono text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-1.5 cursor-pointer"
             >
-              <span>✓</span> Extend Job Offer (Hire)
+              <span>✓</span> Mark as Hired
             </button>
             
             <button 
@@ -75,8 +75,8 @@ export default function ApplicationActions({ applicationId, currentStatus }: { a
         ) : (
           <>
             <button 
-              onClick={() => updateStatus('SELECTED')}
-              disabled={loading || currentStatus === 'SELECTED'}
+              onClick={() => updateStatus('SHORTLISTED')}
+              disabled={loading || currentStatus === 'SHORTLISTED'}
               className="px-5 py-2.5 rounded-full font-mono text-xs font-bold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20 hover:border-emerald-500/50 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
             >
               ✓ Select for Interview
@@ -90,7 +90,7 @@ export default function ApplicationActions({ applicationId, currentStatus }: { a
               ✕ Reject Candidate
             </button>
 
-            {currentStatus === 'SELECTED' && (
+            {(currentStatus === 'SHORTLISTED' || currentStatus === 'SELECTED') && (
               <button 
                 onClick={() => router.push(`/admin/applications/${applicationId}/schedule`)}
                 className="sm:ml-auto px-6 py-2.5 bg-white text-black font-sans font-bold text-xs rounded-full hover:bg-neutral-200 shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all flex items-center gap-2 cursor-pointer"

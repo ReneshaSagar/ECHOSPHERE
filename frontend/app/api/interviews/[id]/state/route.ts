@@ -72,7 +72,18 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       interview.interviewState = setAuthoritativeFloorState(interview.interviewState, floorState);
       result = { interviewState: interview.interviewState, floorState: interview.interviewState.floorState };
     } else if (action === 'CANDIDATE_UTTERANCE') {
-      const { updatedState, qualityReport, floorRequestResult, challengerObservation, roundCompletion } = recordCandidateUtterance(interview.interviewState, utterance || '');
+      const { 
+        updatedState, 
+        qualityReport, 
+        floorRequestResult, 
+        challengerObservation, 
+        primaryDecision,
+        challengerDecision,
+        arbiterDecision,
+        whyChallengerDidNotSpeak,
+        candidateDirectedTo,
+        roundCompletion 
+      } = recordCandidateUtterance(interview.interviewState, utterance || '');
       interview.interviewState = updatedState;
       result = { 
         interviewState: updatedState, 
@@ -80,6 +91,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         qualityReport, 
         floorRequestResult,
         challengerObservation,
+        primaryDecision,
+        challengerDecision,
+        arbiterDecision,
+        whyChallengerDidNotSpeak,
+        candidateDirectedTo,
         roundCompletion
       };
     } else if (action === 'CHALLENGER_REQUEST') {

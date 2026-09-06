@@ -77,8 +77,8 @@ export default function ParticleTalkingOrb({
     canvas.style.height = `${size}px`;
 
     // ── Generate Uniform Fibonacci Sphere Point-Cloud ──
-    // 2,200 particles for dense, stippled point-cloud globe
-    const numParticles = 2200;
+    // 1,200 particles for dense, stippled point-cloud globe (optimized from 2200)
+    const numParticles = 1200;
     const particles: OrbParticle[] = [];
     const phi = Math.PI * (3 - Math.sqrt(5)); // Golden angle (~2.39996)
 
@@ -200,7 +200,7 @@ export default function ParticleTalkingOrb({
 
       // Breathing scale + Speech waveform expansion pulse
       const speechPulse = speaking 
-        ? Math.sin(time * 14.0) * 0.04 + Math.sin(time * 22.0) * 0.025 + (vol * 0.08)
+        ? Math.sin(time * 14.0) * 0.04 + Math.sin(time * 22.0) * 0.025 + (vol * 0.25)
         : listening 
           ? Math.sin(time * 2.5) * 0.015 
           : Math.sin(time * 1.2) * 0.012;
@@ -248,16 +248,20 @@ export default function ParticleTalkingOrb({
         let jitterZ = 0;
 
         if (speaking) {
-          // High-frequency speech vibration ripples across spherical latitude
-          const speechWave1 = Math.sin(p.lon * 6.0 + time * 16.0) * Math.cos(p.lat * 5.0 - time * 12.0);
-          const speechWave2 = Math.sin(p.lat * 11.0 + time * 24.0) * 0.5;
-          waveDisplacement = (speechWave1 + speechWave2) * 0.055 * (0.6 + vol * 0.8);
+          const dynamicVol = 0.5 + vol * 2.5;
+          // Use pre-computed time offsets mapped to jitterSeed to avoid expensive trig calls
+          const seedInt = Math.floor(p.jitterSeed);
+          // Pseudo-random fast sine approximation
+          const fastSine = Math.sin(time * 15.0 + seedInt); 
+          const fastCos = Math.cos(time * 18.0 + seedInt);
+          
+          waveDisplacement = (fastSine * 0.12 + fastCos * 0.08) * dynamicVol;
 
-          // Voice micro-jitter
-          const jitterAmount = 0.022 * currentVibe;
-          jitterX = (Math.sin(time * 30.0 + p.jitterSeed) * jitterAmount);
-          jitterY = (Math.cos(time * 35.0 + p.jitterSeed * 1.3) * jitterAmount);
-          jitterZ = (Math.sin(time * 28.0 + p.jitterSeed * 1.7) * jitterAmount);
+          const jitterAmount = 0.04 * currentVibe * dynamicVol;
+          jitterX = fastSine * jitterAmount;
+          jitterY = fastCos * jitterAmount;
+          jitterZ = (fastSine * fastCos) * jitterAmount;
+          
         } else if (listening) {
           // Gentle acoustic ripples
           waveDisplacement = Math.sin(p.lon * 3.0 + time * 4.0) * Math.cos(p.lat * 3.0) * 0.018;

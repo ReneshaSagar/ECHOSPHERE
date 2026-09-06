@@ -13,7 +13,9 @@ import {
   ArrowRight,
   ShieldCheck,
   Zap,
-  CalendarPlus
+  CalendarPlus,
+  Camera,
+  Eye
 } from 'lucide-react';
 
 const InterviewRoom = dynamic(() => import('./InterviewRoom'), {
@@ -22,10 +24,11 @@ const InterviewRoom = dynamic(() => import('./InterviewRoom'), {
     <div className="flex-1 flex flex-col items-center justify-center p-12 min-h-[460px] bg-[#0a0a0d] rounded-3xl border border-white/[0.08] text-white animate-in fade-in">
       <div className="w-10 h-10 border-2 border-white/20 border-t-white rounded-full animate-spin mb-4"></div>
       <div className="text-base font-sans font-bold">entering interview room...</div>
-      <div className="text-xs font-mono text-white/40 mt-1">connecting to agora voice panel</div>
+      <div className="text-xs font-mono text-white/40 mt-1">connecting to agora voice panel (MLLM)</div>
     </div>
   )
 });
+
 
 export default function InterviewLobbyWrapper({
   blueprint,
@@ -67,6 +70,7 @@ export default function InterviewLobbyWrapper({
 
   useEffect(() => {
     setMounted(true);
+
     const updateCountdown = () => {
       const now = new Date().getTime();
       const target = new Date(scheduledAt).getTime();
@@ -104,15 +108,17 @@ export default function InterviewLobbyWrapper({
   // If candidate has entered the room, render the full multi-round voice agent room
   if (hasStarted) {
     return (
-      <InterviewRoom
-        blueprint={blueprint}
-        interviewId={interviewId}
-        candidateName={candidateName}
-        jobTitle={jobTitle}
-        candidateContext={candidateContext}
-        resumeText={resumeText}
-        mcpServerUrl={mcpServerUrl}
-      />
+      <div className="min-h-screen bg-[#030304] flex flex-col overflow-hidden">
+        <InterviewRoom
+          blueprint={blueprint}
+          interviewId={interviewId}
+          candidateName={candidateName}
+          jobTitle={jobTitle}
+          candidateContext={candidateContext}
+          resumeText={resumeText}
+          mcpServerUrl={mcpServerUrl}
+        />
+      </div>
     );
   }
 
@@ -139,7 +145,7 @@ export default function InterviewLobbyWrapper({
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-white/70">
             <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-            <span>nexora labs · powered by omnipanel</span>
+            <span>Nexora Labs · powered by OmniPanel</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-sans font-bold text-white tracking-tight">
             welcome, {candidateName}
@@ -160,7 +166,7 @@ export default function InterviewLobbyWrapper({
             </div>
             <div className="text-sm font-mono text-purple-400 flex items-center justify-center gap-1.5">
               <Clock className="w-3.5 h-3.5" />
-              <span>{formattedTime} (45 mins)</span>
+              <span>{formattedTime}</span>
             </div>
           </div>
           <div className="py-6 flex items-center justify-center gap-3 text-white/40 text-xs font-mono">
@@ -178,7 +184,7 @@ export default function InterviewLobbyWrapper({
       <div className="text-center space-y-3">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-white/70">
           <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-          <span>nexora labs · powered by omnipanel</span>
+          <span>Nexora Labs · powered by OmniPanel</span>
         </div>
 
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-sans font-bold text-white tracking-tight">
@@ -204,9 +210,11 @@ export default function InterviewLobbyWrapper({
           </div>
           <div className="text-sm font-mono text-purple-300 flex items-center justify-center gap-1.5">
             <Clock className="w-3.5 h-3.5" />
-            <span>{formattedTime} (45 mins)</span>
+            <span>{formattedTime}</span>
           </div>
         </div>
+
+
 
         {/* Live Countdown Display */}
         {!timeLeft.isTimeArrived ? (
@@ -306,6 +314,24 @@ export default function InterviewLobbyWrapper({
         </div>
       </div>
 
+      {/* Monitoring & Camera Consent Notice */}
+      <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-5 flex items-start gap-4">
+        <Eye className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+        <div className="space-y-1.5">
+          <div className="text-sm font-bold text-amber-300 font-sans">You will be monitored during this interview</div>
+          <p className="text-xs text-amber-200/70 leading-relaxed font-sans">
+            OmniPanel AI Proctor is active during your session. Your <strong className="text-amber-200">webcam feed, tab focus, and behavioral signals</strong> are continuously analyzed to ensure a fair evaluation.
+            Switching tabs, covering your camera, or allowing others into the frame will be logged and will impact your integrity score.
+            By joining, you consent to this monitoring.
+          </p>
+          <div className="flex items-center gap-2 pt-1">
+            <span className="inline-flex items-center gap-1.5 text-[10px] font-mono text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full">
+              <Camera className="w-3 h-3" /> Ensure your camera is visible and unblocked before joining
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* Equipment & Pre-flight Checklist */}
       <div className="bg-[#0a0a0d] rounded-3xl border border-white/[0.08] p-6 sm:p-8 space-y-4 shadow-[0_0_40px_rgba(0,0,0,0.5)]">
         <h3 className="text-xs font-mono font-bold text-white/70 uppercase tracking-wider flex items-center gap-2">
@@ -313,7 +339,7 @@ export default function InterviewLobbyWrapper({
           <span>pre-flight audio & system checklist</span>
         </h3>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-sans">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-sans">
           <div className="p-4 bg-white/[0.02] rounded-2xl border border-white/[0.06] flex items-start gap-3">
             <Headphones className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
             <div className="space-y-1">
@@ -327,6 +353,14 @@ export default function InterviewLobbyWrapper({
             <div className="space-y-1">
               <div className="font-bold text-white">Allow Mic Permission</div>
               <div className="text-white/50 text-xs leading-relaxed">Your browser will prompt for microphone access when joining.</div>
+            </div>
+          </div>
+
+          <div className="p-4 bg-white/[0.02] rounded-2xl border border-white/[0.06] flex items-start gap-3">
+            <Camera className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <div className="font-bold text-white">Unblock Camera</div>
+              <div className="text-white/50 text-xs leading-relaxed">Ensure your webcam is unobstructed and clearly showing your face.</div>
             </div>
           </div>
 

@@ -103,24 +103,24 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       scorecard = {
         overall_recommendation: "No Hire",
         overallScore: Math.min(35, Math.max(15, stats.totalCandidateWords)),
-        overall_summary: `Candidate provided insufficient demonstrable technical evidence during the interview panel for ${job?.title || 'the role'}. Responses lacked concrete architectural depth, implementation mechanics, and clear technical reasoning.`,
-        strengths: stats.totalCandidateWords > 10 ? ["Attended the interview session"] : [],
+        overall_summary: `Evaluation generated with limited transcript data for this session. The scoring below reflects what was captured during the interview panel. A manual review of the session recording is recommended before making a final decision.`,
+        strengths: stats.totalCandidateWords > 10 ? ["Attended and participated in the interview session"] : [],
         weaknesses: [
-          "Lacked demonstrable technical depth in core systems and concurrency requirements",
-          "Provided vague, unintelligible, or non-substantive answers when challenged on architectural trade-offs",
-          "Did not substantiate resume claims with concrete implementation details"
+          "Insufficient transcript data to verify technical depth across core systems requirements",
+          "Unable to substantiate architectural reasoning from captured responses",
+          "Manual review recommended to supplement automated scoring"
         ],
         rubric_evaluations: [
           {
             pillar: "Technical Depth & Codecraft",
             score: 1,
-            feedback: "Insufficient evidence of technical competence or architectural reasoning.",
+            feedback: "Insufficient transcript evidence to score this pillar. Manual review recommended.",
             evidence: []
           },
           {
             pillar: "Behavioral & Communication",
             score: 2,
-            feedback: "Responses were non-substantive or evasive.",
+            feedback: "Limited data available. Session recording review recommended.",
             evidence: []
           }
         ]

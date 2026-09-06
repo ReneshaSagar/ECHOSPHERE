@@ -302,7 +302,7 @@ The Nexora Labs Talent & Engineering Team`;
     <div style="background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 24px; text-align: center; margin: 24px 0;">
       <div style="font-size: 12px; font-weight: 700; color: #0369a1; text-transform: uppercase; letter-spacing: 0.05em;">Confirmed Interview Slot</div>
       <div style="font-size: 18px; font-weight: 800; color: #0c4a6e; margin-top: 4px;">${formattedDate}</div>
-      <div style="font-size: 15px; font-weight: 600; color: #0284c7; margin-top: 2px;">${formattedTime} (45 mins duration)</div>
+      <div style="font-size: 15px; font-weight: 600; color: #0284c7; margin-top: 2px;">${formattedTime}</div>
 
       <div style="margin-top: 20px;">
         <a href="${interviewLink}" style="display: inline-block; background-color: #0284c7; color: #ffffff; font-weight: 700; font-size: 14px; text-decoration: none; padding: 12px 28px; border-radius: 8px; box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2);">
@@ -543,3 +543,68 @@ The Nexora Labs Talent & Recruiting Team`;
   });
 }
 
+
+/**
+ * 6. Application Processing Failed Email
+ */
+export async function sendApplicationFailedEmail(
+  candidate: { name: string; email: string },
+  job: { title: string },
+  errorReason: string
+) {
+  const subject = `Action Required: Issue Processing Your Application for ${job.title}`;
+
+  const bodyText = `Hi ${candidate.name},
+
+Thank you for applying to the ${job.title} position at Nexora Labs. 
+
+Unfortunately, we encountered a technical issue while processing your application materials. Specifically:
+${errorReason}
+
+Because our system requires a complete and parsable profile to set up your AI interview, your application could not be submitted successfully. 
+
+Please double-check your resume file or links, and submit your application again at our careers portal.
+
+Best regards,
+The Nexora Labs Talent Team`;
+
+  const htmlContent = wrapHtmlEmail(
+    subject,
+    `<div style="text-align: center; margin-bottom: 24px;">
+      <span style="background-color: #fee2e2; color: #b91c1c; font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; padding: 6px 14px; border-radius: 9999px; border: 1px solid #fecaca;">
+        Action Required
+      </span>
+      <h2 style="font-size: 20px; font-weight: 800; color: #0f172a; margin-top: 12px; margin-bottom: 6px;">
+        Issue Processing Application
+      </h2>
+      <p style="font-size: 14px; color: #64748b; margin: 0;">Role: <strong>${job.title}</strong></p>
+    </div>
+
+    <p>Hi <strong>${candidate.name}</strong>,</p>
+    <p>Thank you for your interest in the <strong>${job.title}</strong> position at Nexora Labs.</p>
+    
+    <p>Unfortunately, our system encountered a technical issue while attempting to extract and verify your application materials. Because of this, your application <strong>could not be submitted</strong>.</p>
+
+    <div style="background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 20px; margin: 24px 0;">
+      <div style="font-size: 12px; font-weight: 700; color: #b91c1c; text-transform: uppercase; letter-spacing: 0.05em;">Issue Details:</div>
+      <div style="font-size: 14px; color: #7f1d1d; margin-top: 6px; font-weight: 500;">
+        ${errorReason}
+      </div>
+    </div>
+
+    <p>Please resolve this issue (e.g., by ensuring your PDF is text-readable or your links are public) and <strong>submit your application again</strong>.</p>
+
+    <p style="margin-top: 24px;">We apologize for the inconvenience and look forward to receiving your updated application!</p>
+    <p>Best regards,<br/><strong>The Nexora Labs Talent Team</strong></p>`
+  );
+
+  return sendEmail({
+    recipientEmail: candidate.email,
+    recipientName: candidate.name,
+    type: 'APPLICATION_REJECTED',
+    subject,
+    bodyText,
+    htmlContent,
+    metadata: { jobTitle: job.title, errorReason }
+  });
+}

@@ -112,7 +112,7 @@ export default async function PublicJobDetailPage({ params }: { params: Promise<
           <section className="space-y-3">
             <h2 className="text-lg font-sans font-bold text-white flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-purple-400" />
-              <span>interview process (powered by omnipanel)</span>
+              <span>interview process (powered by OmniPanel)</span>
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {stages.map((stage: string, idx: number) => (

@@ -596,6 +596,51 @@ export async function enrichGitHubUrl(
       profileData = await fetchGitHubProfile(parsed.owner);
     }
 
+    if (!profileData && process.env.MOCK_GITHUB_ENRICHMENT === 'true') {
+      console.log('[GitHub Enrichment] Utilizing simulated fallback for development.');
+      profileData = {
+        username: parsed.owner,
+        name: 'Alex Rivera',
+        bio: 'Senior Backend Engineer | Rust & Go',
+        location: 'San Francisco, CA',
+        publicReposCount: 24,
+        followers: 128,
+        profileUrl: `https://github.com/${parsed.owner}`,
+        totalCommits: 1845,
+        recentCommits30Days: 45,
+        pinnedRepoNames: ['chronos-raft', 'flowmesh-webrtc'],
+        allRepoNames: ['chronos-raft', 'flowmesh-webrtc', 'pool-optimizer'],
+        repos: [
+          {
+            name: 'chronos-raft',
+            fullName: `${parsed.owner}/chronos-raft`,
+            description: 'A distributed consensus engine built in Rust, implementing the Raft protocol with sub-millisecond leader election.',
+            language: 'Rust',
+            stars: 450,
+            forks: 32,
+            topics: ['rust', 'raft', 'consensus', 'distributed-systems'],
+            url: `https://github.com/${parsed.owner}/chronos-raft`,
+            isPinned: true,
+            isRecent: true,
+            candidateCommits: 145
+          },
+          {
+            name: 'flowmesh-webrtc',
+            fullName: `${parsed.owner}/flowmesh-webrtc`,
+            description: 'Low-latency WebRTC mesh network signaling server for real-time video streaming, handling 10k+ concurrent peers.',
+            language: 'Go',
+            stars: 210,
+            forks: 18,
+            topics: ['go', 'webrtc', 'streaming', 'networking'],
+            url: `https://github.com/${parsed.owner}/flowmesh-webrtc`,
+            isPinned: true,
+            isRecent: true,
+            candidateCommits: 88
+          }
+        ]
+      };
+    }
+
     if (!profileData) {
       console.warn(`[GitHub Enrichment] No public data found for GitHub user/repo: ${parsed.owner}. Skipping gracefully.`);
       return null;
