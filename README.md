@@ -393,6 +393,6 @@ blueprints[]       → interviewId, blueprintJson (full agent briefing + rubric)
 
 Built with ❤️ using **Agora WebRTC** · **Google Gemini Live** · **MediaPipe** · **Next.js**
 
-*EchoSphere — Agora Hackathon 2025*
+*EchoSphere — Agora Hackathon 2026*
 
 </div>
