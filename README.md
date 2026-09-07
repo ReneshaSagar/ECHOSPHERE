@@ -82,7 +82,7 @@ Gemini Live processes audio natively — no transcription step, no TTS roundtrip
 
 #### 3. Dynamic Multi-Agent Architecture Over a Single Channel
 The multi-agent panel shares the **same Agora channel** but each agent runs as an independent Gemini Live session, with its own system prompt, persona, voice, and conversation context:
-
+Lets take an example :
 | Agent | Voice | Agora Role | Persona |
 |---|---|---|---|
 | **Priya Sharma** | `Aoede` | Publisher (primary) | Lead interviewer — structured, warm, covers architecture & behavioral |
