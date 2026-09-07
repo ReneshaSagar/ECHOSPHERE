@@ -10,7 +10,7 @@
 [![Gemini](https://img.shields.io/badge/Gemini-2.0_Live-4285F4?logo=google)](https://ai.google.dev)
 [![MediaPipe](https://img.shields.io/badge/MediaPipe-FaceLandmarker-green)](https://mediapipe.dev)
 
-*Two AI interviewers. One Agora channel. Zero scheduling headaches.*
+*A dynamic multi-agent AI interview panel. One Agora channel. Zero scheduling headaches.*
 
 </div>
 
@@ -25,18 +25,34 @@ First-round technical interviews are broken:
 - Candidates cheat with AI assistants while the interviewer has no visibility
 - Resume review is disconnected from GitHub reality and LinkedIn claims
 
-**EchoSphere replaces the entire first-round interview panel with two autonomous AI agents** — Priya (Lead Interviewer) and Arjun (Technical Challenger) — who conduct structured, personalized, real-time voice interviews over **Agora WebRTC**, then deliver a transcript-grounded evidence scorecard to the human hiring committee.
+**EchoSphere replaces the entire first-round interview panel with a dynamic multi-agent AI system** — Priya (Lead Interviewer) and Arjun (Technical Challenger) — who conduct structured, personalized, real-time voice interviews over **Agora WebRTC**, then deliver a transcript-grounded evidence scorecard to the human hiring committee.
+
+---
+
+## Screenshots
+
+### Landing Page
+![EchoSphere Landing Page](photos/landing.png)
+
+### Dynamic Multi-Agent Live Interview Room (Agora + Gemini Live)
+![Live MLLM Agent Interview](photos/mllm_agent.png)
+
+### Admin Panel — Application Review & Scorecard
+![Admin Panel](photos/admin_panel.png)
+
+### Automated Candidate Emails
+![Email Notifications](photos/email.png)
 
 ---
 
 ## Agora at the Core
 
-> EchoSphere is built around Agora as its real-time communication backbone. Every interaction in the live interview — audio transport, multi-agent turn coordination, low-latency voice delivery — runs through Agora's infrastructure.
+> EchoSphere is built around Agora as its real-time communication backbone. Every interaction in the live interview — audio transport, dynamic multi-agent turn coordination, low-latency voice delivery — runs through Agora's infrastructure.
 
 ### How We Use Agora
 
 #### 1. Real-Time Multi-Agent Audio Transport
-Each live interview session opens a dedicated **Agora RTC channel** where both AI agents (Priya and Arjun) and the candidate participate as audio publishers/subscribers:
+Each live interview session opens a dedicated **Agora RTC channel** where all AI agents and the candidate participate as audio publishers/subscribers:
 
 - The candidate's microphone is published as a live audio stream in the Agora channel
 - Each AI agent's synthesized voice is streamed back to the candidate through the same Agora channel
@@ -62,27 +78,27 @@ Candidate Audio → Agora → Gemini Live MLLM → Agora → Candidate Ear
                   ════════════ <500ms total latency ════════════
 ```
 
-Gemini Live processes audio natively — no transcription step, no TTS roundtrip. The result is natural, conversational, human-paced dialogue.
+Gemini Live processes audio natively — no transcription step, no TTS roundtrip. The result is natural, conversational, human-paced dialogue with zero perceptible lag.
 
-#### 3. Dual-Agent Architecture Over a Single Channel
-Both Priya and Arjun share the **same Agora channel** but are separate Gemini Live sessions, each with their own system prompt, persona, and voice:
+#### 3. Dynamic Multi-Agent Architecture Over a Single Channel
+The multi-agent panel shares the **same Agora channel** but each agent runs as an independent Gemini Live session, with its own system prompt, persona, voice, and conversation context:
 
 | Agent | Voice | Agora Role | Persona |
 |---|---|---|---|
 | **Priya Sharma** | `Aoede` | Publisher (primary) | Lead interviewer — structured, warm, covers architecture & behavioral |
 | **Arjun Mehta** | `Charon` | Publisher (challenger) | Technical deep-diver — analytical, probes implementation details |
 
-A **Turn Arbiter** (floor request state machine in `lib/interview/interviewState.ts`) ensures only one agent speaks at a time:
+A **Turn Arbiter** (floor request state machine in `lib/interview/interviewState.ts`) coordinates the dynamic multi-agent panel so only one agent speaks at a time:
 - When Priya is speaking, Arjun's floor requests are queued
 - Arjun raises a `FloorRequest` when the candidate mentions a specific technology (Kafka, Raft, Redis, WebRTC, concurrency patterns, etc.)
-- If the candidate says Arjun's name directly, he gets the floor immediately
-- A mutual-exclusion lock prevents audio overlap in the Agora channel
+- If the candidate addresses Arjun by name directly, he gets the floor immediately
+- A mutual-exclusion concurrency lock prevents audio overlap inside the Agora channel
 
 #### 4. Token-Authenticated Channels
 Every interview session generates Agora RTC tokens server-side using `agora-token`, scoped to the specific interview channel with time-bounded expiry. The candidate joins with a unique UID and the AI agents join as separate publisher UIDs.
 
 #### 5. Audio Level Monitoring
-`lib/agora.ts` continuously monitors audio levels of all participants in the channel, used to detect if the candidate's mic is silent for an extended period (potential disengagement flag in the proctoring system).
+`lib/agora.ts` continuously monitors audio levels of all participants in the Agora channel, used to detect if the candidate's mic is silent for an extended period — a potential disengagement flag surfaced in the proctoring integrity report.
 
 ---
 
@@ -98,7 +114,7 @@ Every interview session generates Agora RTC tokens server-side using `agora-toke
 │  │  Browser Mic ├───►│  Audio Stream ──► Gemini Live MLLM (Priya)      │  │
 │  │              │◄───┤  AI Voice     ◄── Gemini Live MLLM (Arjun)      │  │
 │  │  MediaPipe   │    │                                                   │  │
-│  │  (Proctor)   │    │         Turn Arbiter / Floor Lock                │  │
+│  │  (Proctor)   │    │    Dynamic Multi-Agent Turn Arbiter / Floor Lock │  │
 │  └──────────────┘    └───────────────────────────────────────────────────┘  │
 │                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
@@ -121,8 +137,8 @@ Every interview session generates Agora RTC tokens server-side using `agora-toke
                     ↓ Schedule interview → Gemini generates personalized blueprint
 
 3. LIVE INTERVIEW → Candidate joins Agora channel
-                    ↓ Priya introduces the panel and starts structured interview
-                    ↓ Arjun challenges technical claims in real time
+                    ↓ Dynamic multi-agent panel begins (Priya leads, Arjun challenges)
+                    ↓ Turn Arbiter coordinates agents in real time over Agora
                     ↓ MediaPipe proctoring runs in-browser at 30fps
                     ↓ Transcript is saved turn-by-turn
 
@@ -137,27 +153,29 @@ Every interview session generates Agora RTC tokens server-side using `agora-toke
 
 ## Features
 
-### 🎙️ Live Voice Interview Room
-- Agora WebRTC channel for real-time bidirectional audio
-- Two independent Gemini Live agents with distinct voices and personas
-- Floor arbiter prevents audio overlap — natural conversational dynamics
-- Personalized questions based on candidate's actual GitHub repos, resume claims, and LinkedIn history
+### 🎙️ Dynamic Multi-Agent Live Interview Room
+- Agora WebRTC channel for real-time bidirectional audio between candidate and AI panel
+- Multiple independent Gemini Live agents with distinct voices, personas, and system prompts — all sharing one Agora channel
+- Dynamic Floor Arbiter prevents audio overlap — natural conversational dynamics emerge organically
+- Personalized questions generated from candidate's actual GitHub repos, resume claims, and LinkedIn history
 - Turn-by-turn transcript saved to database for post-interview evaluation
 
-### 🤖 AI Agents
+### 🤖 The AI Panel Agents
 
 **Priya Sharma** — Lead Interviewer
+- Voice: `Aoede` (Gemini Live)
 - Warm, professional, structured
 - Covers systems design, architecture trade-offs, behavioral questions
 - Sets the interview agenda, manages round progression, detects completion signals
 
 **Arjun Mehta** — Technical Challenger
+- Voice: `Charon` (Gemini Live)
 - Analytical, rigorous, laser-focused on implementation depth
-- Monitors live transcript for technical keywords and raises `FloorRequest`
-- Probes: consensus mechanisms, database indexing, concurrency bugs, API design edge cases
+- Monitors the live session context for technical keywords and raises a `FloorRequest` to the Turn Arbiter
+- Probes: consensus mechanisms, database indexing, concurrency bugs, API design edge cases, distributed systems trade-offs
 
 ### 🛡️ Browser-Side Anti-Cheating (MediaPipe)
-Zero server cost. Zero video egress. All processing on the candidate's machine.
+Zero server cost. Zero video egress. All processing on the candidate's machine via WebAssembly + WebGL.
 
 | Detection | Severity | Method |
 |---|---|---|
@@ -172,22 +190,24 @@ Candidate sees only a subtle **"AI Proctor Active"** badge — no intimidating c
 
 ### 📊 Admin Dashboard
 - **Candidate Profile tab**: Identity, LinkedIn narrative, GitHub stats + repos, resume extraction, cross-source corroborated skills
-- **Interview Intelligence tab**: Full scorecard with radar chart, verified strengths, growth areas, competency rubric with verbatim evidence quotes, Executive MoM, agent briefing
+- **Interview Intelligence tab**: Full scorecard with radar chart, verified strengths, growth areas, competency rubric with verbatim evidence quotes, Executive MoM, agent briefing directives
 - **Live Session tab**: Proctoring violation timeline, integrity score, deduped events (shown as `EVENT ×N`)
 
 ### 📋 Post-Interview Report (Candidate-Facing)
-Available at `/report/[sessionId]` — shows the candidate their own evaluation:
-- Radar chart across all rubric pillars
+Available at `/report/[sessionId]`:
+- Overall verdict badge (Strong Hire / Hire / No Hire)
+- Radar chart across all competency rubric pillars
 - Key verified strengths and growth areas
-- Executive recruiter minutes of meeting
-- Detailed competency breakdown
+- Executive recruiter minutes of meeting with interviewer-observed quotes
+- Detailed competency breakdown with evidence
 
 ### ✉️ Automated Email Pipeline
+
 | Event | Email Sent |
 |---|---|
 | Application received | Confirmation with next steps |
 | Extraction failed | Failure details + what to fix |
-| Selected for interview | Invitation with Agora room link + time |
+| Selected for interview | Invitation with Agora room link + scheduled time |
 | Rejected | Polite rejection with feedback |
 | Job offered | Offer letter with compensation next steps |
 
@@ -201,7 +221,7 @@ Dual transport: **Resend** (primary) → **Gmail SMTP via Nodemailer** (zero-dom
 |---|---|
 | Framework | Next.js 16, React 19, TypeScript |
 | Real-Time Audio | **Agora RTC SDK** (`agora-rtc-sdk-ng`) |
-| AI Voice Agents | **Google Gemini 2.0 Flash Multimodal Live** |
+| Dynamic Multi-Agent AI | **Google Gemini 2.0 Flash Multimodal Live** |
 | AI Evaluation | Google Gemini (generative AI SDK) |
 | Computer Vision | **Google MediaPipe** FaceLandmarker |
 | Styling | Tailwind CSS, Framer Motion |
@@ -218,12 +238,17 @@ Dual transport: **Resend** (primary) → **Gmail SMTP via Nodemailer** (zero-dom
 
 ```
 echosphere/
+├── photos/
+│   ├── landing.png               # Landing page
+│   ├── mllm_agent.png            # Live multi-agent interview room
+│   ├── admin_panel.png           # Admin dashboard + scorecard
+│   └── email.png                 # Automated candidate emails
 ├── frontend/
 │   ├── app/
 │   │   ├── admin/
 │   │   │   ├── applications/[id]/
 │   │   │   │   ├── page.tsx              # Server component — fetches data
-│   │   │   │   ├── ApplicationTabView.tsx # 3-tab client component (profile / intelligence / session)
+│   │   │   │   ├── ApplicationTabView.tsx # 3-tab client component
 │   │   │   │   ├── ScorecardViewer.tsx   # Radar chart, rubric, evidence quotes
 │   │   │   │   └── ApplicationActions.tsx # Hire / Reject / Shortlist buttons
 │   │   │   ├── jobs/[id]/               # Job detail + pipeline Kanban
@@ -241,7 +266,7 @@ echosphere/
 │   │   │   ├── jobs/[id]/apply/         # Instant submission + async pipeline
 │   │   │   └── orchestrator/            # Turn arbiter + floor request handling
 │   │   ├── interview/[blueprintId]/
-│   │   │   ├── InterviewRoom.tsx        # Agora channel + dual Gemini Live agents
+│   │   │   ├── InterviewRoom.tsx        # Agora channel + dynamic multi-agent Gemini Live
 │   │   │   ├── ProctorEngine.tsx        # MediaPipe FaceLandmarker (30fps)
 │   │   │   └── InterviewLobbyWrapper.tsx
 │   │   ├── jobs/[id]/apply/             # Candidate application form
@@ -333,7 +358,7 @@ App is at **http://localhost:3000**
 |---|---|
 | `/jobs` | Public job listings |
 | `/jobs/[id]/apply` | Candidate application form |
-| `/interview/[blueprintId]` | **Live Agora interview room** |
+| `/interview/[blueprintId]` | **Live Agora multi-agent interview room** |
 | `/report/[sessionId]` | Post-interview candidate report |
 | `/admin` | Admin dashboard home |
 | `/admin/jobs/[id]` | Job detail + applicant pipeline |
@@ -344,20 +369,20 @@ App is at **http://localhost:3000**
 
 ## Engineering Decisions
 
-### Why Native Gemini Live over Agora instead of a cascading pipeline?
-Cascading (`ASR → LLM → TTS`) introduces ~2,000ms of latency per turn — enough to make the conversation feel robotic and stiff. By connecting Gemini 2.0 Multimodal Live directly to the Agora channel, audio goes in and synthesized voice comes back in under 500ms. The interview feels like talking to a real person.
+### Why native Gemini Live over Agora instead of a cascading pipeline?
+Cascading (`ASR → LLM → TTS`) introduces ~2,000ms of latency per turn — enough to make the conversation feel robotic. By connecting Gemini 2.0 Multimodal Live directly to the Agora channel, audio goes in and synthesized voice comes back in under 500ms. The multi-agent interview feels like talking to real people.
 
-### Why two separate Gemini Live sessions sharing one Agora channel?
-Each agent needs its own system prompt, persona, and conversation context. Two separate WebSocket sessions to Gemini Live (one for Priya, one for Arjun) publish to the same Agora channel from the server side. The Turn Arbiter manages who has the floor at any given moment, preventing overlap.
+### Why multiple independent Gemini Live sessions sharing one Agora channel?
+Each agent in the dynamic multi-agent panel needs its own system prompt, persona, and conversation context. Independent WebSocket sessions to Gemini Live — one per agent — publish to the same Agora channel. The Turn Arbiter manages who has the floor at any given moment, preventing audio overlap. This architecture makes the panel infinitely extensible: add more specialist agents (e.g. a domain-specific AI for ML or security roles) by simply adding another session to the pool.
 
 ### Why MediaPipe in the browser instead of sending video to a backend?
-Streaming 30fps video from hundreds of concurrent interview sessions to GPU instances would cost thousands of dollars in compute and egress. MediaPipe runs entirely in the candidate's browser using WebAssembly + WebGL — it costs **$0** in server resources, has zero video egress latency, and guarantees that no raw biometric footage ever leaves the device.
+Streaming 30fps video from hundreds of concurrent interview sessions to GPU instances would cost thousands of dollars in compute and egress. MediaPipe runs entirely in the candidate's browser using WebAssembly + WebGL — it costs **$0** in server resources, has zero video egress latency, and guarantees that no raw biometric footage ever leaves the candidate's device.
 
 ### Why JSON flat-file instead of a traditional database?
 For a hackathon prototype, `data.json` with `lib/db.ts` provides instant setup with no database provisioning, no migrations, and full read/write in a single file. Production would swap this for Postgres with Prisma (already included as a dev dependency).
 
 ### Human authority is non-negotiable
-The AI provides scores, evidence, and recommendations. It never sends a hire or rejection email automatically. Every outcome email is triggered by a human admin clicking a button. The platform augments the recruiter — it doesn't replace them.
+The dynamic multi-agent AI panel provides scores, evidence, and recommendations. It never sends a hire or rejection email automatically. Every outcome email is triggered by a human admin clicking a button. The platform augments the recruiter — it doesn't replace them.
 
 ---
 
@@ -372,19 +397,15 @@ applications[]     → candidateId, jobId, status, resumeText,
                      candidateContext (enriched), evaluationScore
 interviews[]       → applicationId, status, transcript[],
                      suspiciousEvents[], scorecard, proctoringReport
-blueprints[]       → interviewId, blueprintJson (full agent briefing)
+blueprints[]       → interviewId, blueprintJson (full agent briefing + rubric)
 ```
 
 ---
 
-## Human Authority
-
-> **EchoSphere is designed to empower human recruiters, not replace them.**
-
-The AI panel evaluates candidate responses, generates evidence-backed scorecards, and flags behavioral anomalies. Every score, transcript quote, and integrity alert is presented as structured evidence for the human hiring committee. The final hire/reject decision is always made by a person.
-
----
-
 <div align="center">
-Built with ❤️ using Agora WebRTC · Google Gemini Live · MediaPipe · Next.js
+
+Built with ❤️ using **Agora WebRTC** · **Google Gemini Live** · **MediaPipe** · **Next.js**
+
+*EchoSphere — Agora Hackathon 2025*
+
 </div>
