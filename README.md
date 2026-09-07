@@ -160,20 +160,6 @@ Every interview session generates Agora RTC tokens server-side using `agora-toke
 - Personalized questions generated from candidate's actual GitHub repos, resume claims, and LinkedIn history
 - Turn-by-turn transcript saved to database for post-interview evaluation
 
-### 🤖 The AI Panel Agents
-
-**Priya Sharma** — Lead Interviewer
-- Voice: `Aoede` (Gemini Live)
-- Warm, professional, structured
-- Covers systems design, architecture trade-offs, behavioral questions
-- Sets the interview agenda, manages round progression, detects completion signals
-
-**Arjun Mehta** — Technical Challenger
-- Voice: `Charon` (Gemini Live)
-- Analytical, rigorous, laser-focused on implementation depth
-- Monitors the live session context for technical keywords and raises a `FloorRequest` to the Turn Arbiter
-- Probes: consensus mechanisms, database indexing, concurrency bugs, API design edge cases, distributed systems trade-offs
-
 ### 🛡️ Browser-Side Anti-Cheating (MediaPipe)
 Zero server cost. Zero video egress. All processing on the candidate's machine via WebAssembly + WebGL.
 
