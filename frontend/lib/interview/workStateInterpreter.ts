@@ -198,9 +198,9 @@ export function checkStuckSignal(
     return {
       type: 'STUCK_SIGNAL',
       source,
-      summary: `Candidate has been inactive in the workspace with no code/diagram progress for ${Math.floor(timeSinceLastProgressSeconds)} seconds. Intervene conversationally now to ask if they need a hint or are working through their approach.`,
+      summary: `Candidate paused coding in IDE for ${Math.floor(timeSinceLastProgressSeconds)}s.`,
       competency: 'problem_solving_pacing',
-      significance: 'high',
+      significance: 'medium',
       confidence: 0.85,
       currentStep,
       timeSinceMeaningfulProgress: Math.floor(timeSinceLastProgressSeconds)

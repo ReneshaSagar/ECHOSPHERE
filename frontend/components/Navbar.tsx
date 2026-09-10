@@ -16,7 +16,7 @@ export default function Navbar() {
       <div className="pointer-events-auto flex items-center gap-3">
         <Link href="/" className="group flex items-center gap-2 text-white hover:opacity-90 transition-opacity">
           <span className="text-xl font-medium tracking-[-0.03em] font-sans lowercase text-white">
-            nexora
+            plantra
           </span>
           <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 opacity-80 group-hover:scale-125 transition-transform"></span>
         </Link>

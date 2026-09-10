@@ -1,5 +1,5 @@
 /**
- * Deterministic Date & Time Formatting for Nexora Labs (OmniPanel)
+ * Deterministic Date & Time Formatting for Plantra Labs (OmniPanel)
  * Avoids React hydration mismatches caused by locale / ICU variations across Node.js and browsers.
  */
 

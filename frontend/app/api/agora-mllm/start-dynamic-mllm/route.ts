@@ -62,11 +62,21 @@ export async function POST(req: NextRequest) {
       customerSecret
     });
     
+    const enhancedInstructions = `${instructions || ''}
+
+================================================================================
+CRITICAL OPENING GREETING INVARIANT:
+You MUST speak your full opening greeting message from start to finish naturally, clearly, and warmly.
+NEVER stop midway through your introduction or cut yourself off.
+NEVER rush ahead or ask detailed technical follow-up questions until after the candidate has replied to your opening greeting.
+Once you finish your opening greeting, STOP SPEAKING and wait in complete silence for the candidate to respond.
+================================================================================`;
+
     const agent = new Agent({ client }).withMllm(new GeminiLive({
       apiKey: geminiKey,
       model: 'gemini-3.1-flash-live-preview',
       voice: targetVoice,
-      instructions: instructions,
+      instructions: enhancedInstructions,
       greetingMessage: greeting_message && greeting_message.trim() ? greeting_message.trim() : undefined,
       transcribeAgent: true,
       transcribeUser: true,

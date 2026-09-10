@@ -64,7 +64,7 @@ export default function TestInterviewSuitePage() {
       // 2. Simulate Round 1 (Technical Round)
       setMessage('2/4: Simulating Round 1 (Technical Interview: Concurrency & Raft)...');
       const r1Transcript = [
-        { round: "Round 1: Technical Panel", speaker: "Priya Nair", text: "Hi Alex, welcome to Nexora Labs. Could you walk us through how you handled log batch replication in your Chronos-Raft engine?" },
+        { round: "Round 1: Technical Panel", speaker: "Priya Nair", text: "Hi Alex, welcome to Plantra Labs. Could you walk us through how you handled log batch replication in your Chronos-Raft engine?" },
         { round: "Round 1: Technical Panel", speaker: "Alex Rivera", text: "In Chronos-Raft, we batch append-entry RPCs using non-blocking ring buffers in Go. We vectorize disk writes via fdatasync to ensure zero disk stalls under heavy concurrency." },
         { round: "Round 1: Technical Panel", speaker: "Priya Nair", text: "Arjun, do you want to ask Alex about their Kafka backpressure handling?" },
         { round: "Round 1: Technical Panel", speaker: "Arjun Malhotra", text: "Alex, how do you prevent consumer group rebalancing storms when partitions scale to hundreds of topics?" },

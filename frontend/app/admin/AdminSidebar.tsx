@@ -54,7 +54,7 @@ export default function AdminSidebar({
           </div>
           <div>
             <h1 className="text-sm font-sans font-bold text-white leading-tight tracking-wide">OMNIPANEL</h1>
-            <p className="text-[10px] font-mono text-white/40 tracking-wider mt-0.5">Nexora Labs · Hiring</p>
+            <p className="text-[10px] font-mono text-white/40 tracking-wider mt-0.5">Plantra Labs · Hiring</p>
           </div>
         </div>
       </div>

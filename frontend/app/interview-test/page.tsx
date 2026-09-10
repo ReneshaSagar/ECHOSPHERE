@@ -1,5 +1,5 @@
 import React from 'react';
-import { getDb } from '@/lib/db';
+import { getDb, resolveInterview } from '@/lib/db';
 import InterviewRoom from '../interview/[blueprintId]/InterviewRoom';
 import { selectPanelForJob } from '@/lib/interview/interviewerPool';
 
@@ -11,11 +11,13 @@ export default async function InterviewTestPage() {
   const candidate = db.candidates.find(c => c.id === application?.candidateId) || db.candidates[0];
   const job = db.jobs.find(j => j.id === application?.jobId) || db.jobs[0];
 
+  const interview = resolveInterview(db, application?.id || 'demo-interview-test');
+
   const panel = selectPanelForJob(job?.title || 'Senior Software Engineer');
   const candidateContext = application?.candidateContext || candidate?.candidateContext;
   const candidateName = candidate?.name || 'Madhav Gairola';
 
-  // Build 3-Round Blueprint with Round 1 Coding/System Design
+  // Build 3-Round Blueprint with Round 1 Coding/System Design & Round 2 Multi-Agent Technical Panel
   const testBlueprint = {
     interview_rounds: [
       {
@@ -44,7 +46,7 @@ export default async function InterviewTestPage() {
             color: panel.technicalPrimary.color,
             is_primary: true,
             agent_uid: 9991,
-            instructions: `You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at Nexora Labs. Lead Round 1 (Practical Workspace Assessment) with candidate ${candidateName}. Observe their code/diagram changes as structured work events. Prompt them conversationally to explain their approach, complexity, and trade-offs.`,
+            instructions: `You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at Plantra Labs. Lead Round 1 (Practical Workspace Assessment) with candidate ${candidateName}. Observe their code/diagram changes as structured work events. Prompt them conversationally to explain their approach, complexity, and trade-offs.`,
             greeting_message: `Hello ${candidateName}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. In this first round, we will evaluate your practical problem-solving. You can choose between the Coding editor or System Design canvas in your workspace. Take a look at the problem and walk me through your initial thoughts!`
           }
         ],
@@ -69,8 +71,19 @@ export default async function InterviewTestPage() {
             color: panel.technicalPrimary.color,
             is_primary: true,
             agent_uid: 9991,
-            instructions: `Lead technical architecture discussion with ${candidateName}.`,
-            greeting_message: `Welcome to Round 2, ${candidateName}. Let's dive deeper into distributed systems and concurrency.`
+            instructions: `You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at Plantra Labs leading this panel interview with your co-interviewer ${panel.technicalChallenger.name} (${panel.technicalChallenger.role}). Open the interview by warmly introducing yourself and ${panel.technicalChallenger.name}. Lead the technical architecture discussion with ${candidateName}. Both you and ${panel.technicalChallenger.name} can hear each other and the candidate in real-time. Keep responses concise.`,
+            greeting_message: `Welcome to Round 2, ${candidateName}. I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}, joined today by ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}. Let's dive into distributed systems and concurrency.`
+          },
+          {
+            interviewer_id: panel.technicalChallenger.interviewerId,
+            name: panel.technicalChallenger.name,
+            role: panel.technicalChallenger.role,
+            voice: panel.technicalChallenger.voice,
+            color: panel.technicalChallenger.color,
+            is_primary: false,
+            agent_uid: 9992,
+            instructions: `You are ${panel.technicalChallenger.name}, ${panel.technicalChallenger.role} at Plantra Labs, co-interviewing with ${panel.technicalPrimary.name}. You are the Deep-Dive Specialist. When candidate explains system architecture, scalability, or concurrency, probe failure modes and edge cases.`,
+            greeting_message: ""
           }
         ],
         interviewer: {
@@ -118,7 +131,7 @@ export default async function InterviewTestPage() {
     <div className="w-screen h-screen bg-[#202124] overflow-hidden">
       <InterviewRoom
         blueprint={testBlueprint as any}
-        interviewId={application?.id || 'demo-interview-test'}
+        interviewId={interview.id}
         candidateName={candidateName}
         jobTitle={job?.title || 'Senior Software Engineer'}
         candidateContext={candidateContext}

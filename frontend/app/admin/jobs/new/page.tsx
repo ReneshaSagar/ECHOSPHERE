@@ -117,7 +117,7 @@ export default function NewJobPage() {
               name="mcpServerUrl" 
               type="url" 
               className="w-full bg-[#030304] border border-purple-500/20 rounded-2xl px-4 py-3 text-white text-sm font-mono focus:outline-none focus:border-purple-500/40 focus:ring-1 focus:ring-purple-500/30 transition-all placeholder:text-white/20" 
-              placeholder="https://company-mcp.nexora.internal/sse" 
+              placeholder="https://company-mcp.plantra.internal/sse" 
             />
             <p className="text-[11px] font-mono text-white/40 mt-1.5">Model Context Protocol endpoint for real-time internal architecture and ATS lookups.</p>
           </div>

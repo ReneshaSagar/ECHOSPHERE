@@ -1,7 +1,7 @@
 import React from 'react';
 import { getDb } from '@/lib/db';
 import Link from 'next/link';
-import { NEXORA_LABS } from '@/lib/company';
+import { PLANTRA_LABS } from '@/lib/company';
 import { 
   Sparkles, 
   MapPin, 
@@ -64,11 +64,11 @@ export default async function JobBoardPage() {
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-sans font-bold text-white tracking-tight">
-            careers at <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-white/90 to-white/60">nexora labs</span>
+            careers at <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-white/90 to-white/60">plantra labs</span>
           </h1>
 
           <p className="text-base sm:text-lg text-white/60 max-w-2xl mx-auto leading-relaxed">
-            {NEXORA_LABS.tagline} We are building low-latency distributed platforms, developer primitives, and multimodal agent infrastructure.
+            {PLANTRA_LABS.tagline} We are building low-latency distributed platforms, developer primitives, and multimodal agent infrastructure.
           </p>
 
           <div className="pt-4 flex flex-wrap items-center justify-center gap-4 text-xs font-mono text-white/50">
@@ -88,12 +88,12 @@ export default async function JobBoardPage() {
         </div>
       </div>
 
-      {/* Why Nexora Labs Culture Cards */}
+      {/* Why Plantra Labs Culture Cards */}
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-xl sm:text-2xl font-sans font-bold text-white flex items-center gap-2.5">
             <Layers className="w-5 h-5 text-white/70" />
-            <span>why build at nexora labs</span>
+            <span>why build at plantra labs</span>
           </h2>
           <span className="text-xs font-mono text-white/40">culture & principles</span>
         </div>
@@ -216,7 +216,7 @@ export default async function JobBoardPage() {
             how our autonomous voice interview works
           </h3>
           <p className="text-xs sm:text-sm text-white/50 max-w-3xl leading-relaxed">
-            At Nexora Labs, we value your time and technical depth. After you submit your resume and GitHub/LinkedIn links, our automated platform enriches your project background and invites qualified candidates to an interactive, multi-agent AI voice interview.
+            At Plantra Labs, we value your time and technical depth. After you submit your resume and GitHub/LinkedIn links, our automated platform enriches your project background and invites qualified candidates to an interactive, multi-agent AI voice interview.
           </p>
         </div>
 
@@ -247,7 +247,7 @@ export default async function JobBoardPage() {
               <span>hiring committee review</span>
             </div>
             <p className="text-white/50 text-xs leading-relaxed">
-              Objective scorecards and transcripts reviewed by Nexora engineering leads.
+              Objective scorecards and transcripts reviewed by Plantra engineering leads.
             </p>
           </div>
         </div>

@@ -105,7 +105,7 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
         <div className="space-y-2">
           <h2 className="text-3xl font-sans font-bold text-white">Application Submitted!</h2>
           <p className="text-white/60 text-sm sm:text-base max-w-lg mx-auto leading-relaxed font-sans">
-            Thank you for applying to <strong className="text-white">Nexora Labs</strong>. Our automated hiring engine is processing your credentials, and you will receive an email confirmation with your next steps shortly.
+            Thank you for applying to <strong className="text-white">Plantra Labs</strong>. Our automated hiring engine is processing your credentials, and you will receive an email confirmation with your next steps shortly.
           </p>
         </div>
         <div className="pt-4">
@@ -134,7 +134,7 @@ export default function ApplyPage({ params }: { params: Promise<{ id: string }> 
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-mono font-semibold px-3 py-1 rounded-full bg-white/[0.05] text-white/90 border border-white/[0.1]">
-              nexora labs
+              plantra labs
             </span>
             <span className="text-xs font-mono text-white/40">powered by OmniPanel</span>
           </div>

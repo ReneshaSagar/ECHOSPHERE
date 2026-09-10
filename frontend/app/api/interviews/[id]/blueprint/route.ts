@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDb, saveDb } from '@/lib/db';
+import { getDb, saveDb, resolveInterview } from '@/lib/db';
 import OpenAI from 'openai';
 import { selectPanelForJob } from '@/lib/interview/interviewerPool';
 import { createInitialInterviewState } from '@/lib/interview/interviewState';
@@ -10,10 +10,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const interviewId = resolvedParams.id;
     
     const db = getDb();
-    const interview = db.interviews.find(i => i.id === interviewId);
-    if (!interview) return NextResponse.json({ error: "Interview not found" }, { status: 404 });
+    const interview = resolveInterview(db, interviewId);
 
-    const application = db.applications.find(a => a.id === interview.applicationId);
+    const application = db.applications.find(a => a.id === interview.applicationId) || db.applications[db.applications.length - 1] || db.applications[0];
     if (!application) return NextResponse.json({ error: "Application not found" }, { status: 404 });
 
     const job = db.jobs.find(j => j.id === application.jobId);
@@ -29,23 +28,38 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     // Dynamically select 2-agent technical panel and 1 HR agent from company pool (No hardcoded Alex)
     const panel = selectPanelForJob(job.title);
 
-    const systemInstruction = `You are an expert AI Interview Orchestrator for Nexora Labs.
-Your job is to analyze a Job Description, a Candidate's Resume, and their CandidateContext (from verified LinkedIn/GitHub enrichment), and design a personalized multi-round interview blueprint.
+    const systemInstruction = `You are an expert AI Interview Orchestrator for Plantra Labs.
+Your job is to analyze a Job Description, a Candidate's Resume, and their CandidateContext (from verified LinkedIn/GitHub enrichment), and design a personalized 3-round interview blueprint.
 
-Nexora Labs uses a multi-agent interview panel architecture:
-- Round 1 (Technical Round): 2 AI interviewers in the session with strictly coordinated turn-taking:
+Plantra Labs uses a 3-round interview architecture:
+- Round 1 (Coding & System Design Workspace): 1 AI interviewer observing practical problem solving:
+  1. Primary Technical Lead: "${panel.technicalPrimary.name}" (${panel.technicalPrimary.role}) - introduces the workspace problem and observes code/diagram development.
+- Round 2 (Technical Panel Interview): 2 AI interviewers in the session with strictly coordinated turn-taking:
   1. Primary Technical Interviewer: "${panel.technicalPrimary.name}" (${panel.technicalPrimary.role}) - leads core topic progression, welcomes the candidate, and introduces the panel.
   2. Technical Specialist / Challenger: "${panel.technicalChallenger.name}" (${panel.technicalChallenger.role}) - stays silent during opening; only speaks when handed the floor to probe scalability, trade-offs, and edge cases.
-- Round 2 (HR Round): 1 AI interviewer:
-  1. HR / Talent Lead: "${panel.hrInterviewer.name}" (${panel.hrInterviewer.role}) - evaluates engineering ownership, communication, team collaboration, and cultural alignment at Nexora Labs.
+- Round 3 (HR & Culture Round): 1 AI interviewer:
+  1. HR / Talent Lead: "${panel.hrInterviewer.name}" (${panel.hrInterviewer.role}) - evaluates engineering ownership, communication, team collaboration, and cultural alignment at Plantra Labs.
 
 You MUST return ONLY valid JSON matching this exact structure:
 {
   "interview_rounds": [
     {
-      "round_name": "Technical Architecture & Concurrency",
-      "round_type": "technical",
-      "purpose": "Evaluate ${candidate.name}'s capabilities in core engineering, system architecture, and trade-offs for Nexora Labs.",
+      "round_name": "Practical Coding & System Design Assessment",
+      "round_type": "coding",
+      "coding_problem": {
+        "title": "1. High-Throughput Rate Limiter & Event Throttler",
+        "description": "Implement a sliding window rate limiter class that tracks incoming user requests and enforces a maximum threshold of requests per sliding window in TypeScript or Python. The implementation must support high concurrency and handle edge cases where multiple requests arrive at identical millisecond timestamps.",
+        "constraints": [
+          "allowRequest(userId, timestampMs) should run in O(1) or O(log N) average time complexity.",
+          "Space complexity should scale with the number of unique active user IDs.",
+          "Handle concurrent burst traffic and sliding window cleanup cleanly."
+        ]
+      },
+      "system_design_problem": {
+        "title": "Real-time Distributed Event Notification Pipeline",
+        "description": "Architect a resilient real-time notification engine capable of processing 100k events/sec with WebSocket push delivery, retry queues, and deduplication."
+      },
+      "purpose": "Evaluate ${candidate.name}'s practical problem-solving, live coding, and system architecture in an interactive workspace for ${job.title}.",
       "interviewers": [
         {
           "interviewer_id": "${panel.technicalPrimary.interviewerId}",
@@ -55,8 +69,33 @@ You MUST return ONLY valid JSON matching this exact structure:
           "color": "${panel.technicalPrimary.color}",
           "is_primary": true,
           "agent_uid": 9991,
-          "instructions": "You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at Nexora Labs leading this panel interview with your co-interviewer ${panel.technicalChallenger.name} (${panel.technicalChallenger.role}). Open the interview by warmly introducing yourself and ${panel.technicalChallenger.name}. Lead the technical architecture discussion. Both you and ${panel.technicalChallenger.name} can hear each other and the candidate in real-time. You can invite ${panel.technicalChallenger.name} to explore specific topics (e.g. '${panel.technicalChallenger.name}, do you want to dig into their scaling design?'). When ${panel.technicalChallenger.name} speaks, listen politely and do not interrupt. When ${panel.technicalChallenger.name} hands back to you, continue smoothly with the next topic. Keep responses concise (1-3 sentences).",
-          "greeting_message": "Hello ${candidate.name}, welcome to Nexora Labs! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}, and joining me today is ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}. We're excited to learn more about your technical background and architecture today. To get started, could you briefly introduce yourself and walk us through your recent engineering work?"
+          "instructions": "Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}. Observe their code/diagram changes as structured work events. Prompt them conversationally to explain their approach, complexity, and trade-offs.",
+          "greeting_message": "Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. In this first round, we will evaluate your practical problem-solving in our interactive workspace. Take a look at the problem and walk me through your initial thoughts!"
+        }
+      ],
+      "interviewer": {
+        "name": "${panel.technicalPrimary.name}",
+        "role": "${panel.technicalPrimary.role}",
+        "instructions": "Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}.",
+        "greeting_message": "Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}."
+      },
+      "topics": ["Problem Solving", "Algorithm Selection", "System Architecture", "Complexity Trade-offs"]
+    },
+    {
+      "round_name": "Technical Architecture & Concurrency",
+      "round_type": "technical",
+      "purpose": "Evaluate ${candidate.name}'s capabilities in core engineering, system architecture, and trade-offs for Plantra Labs.",
+      "interviewers": [
+        {
+          "interviewer_id": "${panel.technicalPrimary.interviewerId}",
+          "name": "${panel.technicalPrimary.name}",
+          "role": "${panel.technicalPrimary.role}",
+          "voice": "${panel.technicalPrimary.voice}",
+          "color": "${panel.technicalPrimary.color}",
+          "is_primary": true,
+          "agent_uid": 9991,
+          "instructions": "You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at Plantra Labs leading this panel interview with your co-interviewer ${panel.technicalChallenger.name} (${panel.technicalChallenger.role}). Open the interview by warmly introducing yourself and ${panel.technicalChallenger.name}. Lead the technical architecture discussion. Both you and ${panel.technicalChallenger.name} can hear each other and the candidate in real-time. You can invite ${panel.technicalChallenger.name} to explore specific topics (e.g. '${panel.technicalChallenger.name}, do you want to dig into their scaling design?'). When ${panel.technicalChallenger.name} speaks, listen politely and do not interrupt. When ${panel.technicalChallenger.name} hands back to you, continue smoothly with the next topic. Keep responses concise (1-3 sentences).",
+          "greeting_message": "Hello ${candidate.name}, welcome to Plantra Labs! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}, and joining me today is ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}. We're excited to learn more about your technical background and architecture today. To get started, could you briefly introduce yourself and walk us through your recent engineering work?"
         },
         {
           "interviewer_id": "${panel.technicalChallenger.interviewerId}",
@@ -66,22 +105,22 @@ You MUST return ONLY valid JSON matching this exact structure:
           "color": "${panel.technicalChallenger.color}",
           "is_primary": false,
           "agent_uid": 9992,
-          "instructions": "You are ${panel.technicalChallenger.name}, ${panel.technicalChallenger.role} at Nexora Labs, co-interviewing with ${panel.technicalPrimary.name} (${panel.technicalPrimary.role}). You can hear both ${panel.technicalPrimary.name} and the candidate. DO NOT speak during the opening greeting—let ${panel.technicalPrimary.name} welcome the candidate. You are the Deep-Dive Specialist. When the candidate explains system architecture, scalability, concurrency, distributed systems, or when ${panel.technicalPrimary.name} invites you, step in naturally: 'Thanks ${panel.technicalPrimary.name}. ${candidate.name}, diving into that...'. Ask 1 sharp follow-up question. After the candidate answers, conclude your follow-up and hand the floor back to ${panel.technicalPrimary.name}: 'Makes sense, back to you ${panel.technicalPrimary.name}.' NEVER speak over ${panel.technicalPrimary.name}. Wait for natural pauses.",
+          "instructions": "You are ${panel.technicalChallenger.name}, ${panel.technicalChallenger.role} at Plantra Labs, co-interviewing with ${panel.technicalPrimary.name} (${panel.technicalPrimary.role}). You can hear both ${panel.technicalPrimary.name} and the candidate. DO NOT speak during the opening greeting—let ${panel.technicalPrimary.name} welcome the candidate. You are the Deep-Dive Specialist. When the candidate explains system architecture, scalability, concurrency, distributed systems, or when ${panel.technicalPrimary.name} invites you, step in naturally: 'Thanks ${panel.technicalPrimary.name}. ${candidate.name}, diving into that...'. Ask 1 sharp follow-up question. After the candidate answers, conclude your follow-up and hand the floor back to ${panel.technicalPrimary.name}: 'Makes sense, back to you ${panel.technicalPrimary.name}.' NEVER speak over ${panel.technicalPrimary.name}. Wait for natural pauses.",
           "greeting_message": ""
         }
       ],
       "interviewer": {
         "name": "${panel.technicalPrimary.name}",
         "role": "${panel.technicalPrimary.role}",
-        "instructions": "You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at Nexora Labs leading the technical interview. Guide the candidate conversationally through their verified architecture and projects.",
-        "greeting_message": "Hello ${candidate.name}, welcome to Nexora Labs! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}, and I'm joined by ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}. We're excited to learn more about your technical background today. To get started, could you briefly introduce yourself?"
+        "instructions": "You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at Plantra Labs leading the technical interview. Guide the candidate conversationally through their verified architecture and projects.",
+        "greeting_message": "Hello ${candidate.name}, welcome to Plantra Labs! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}, and I'm joined by ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}. We're excited to learn more about your technical background today. To get started, could you briefly introduce yourself?"
       },
       "topics": ["Architecture & State", "Concurrency & Throughput", "Scalability Trade-offs"]
     },
     {
       "round_name": "Engineering Leadership & Culture",
       "round_type": "hr",
-      "purpose": "Evaluate engineering ownership, cross-functional collaboration, and cultural alignment for Nexora Labs.",
+      "purpose": "Evaluate engineering ownership, cross-functional collaboration, and cultural alignment for Plantra Labs.",
       "interviewers": [
         {
           "interviewer_id": "${panel.hrInterviewer.interviewerId}",
@@ -91,15 +130,15 @@ You MUST return ONLY valid JSON matching this exact structure:
           "color": "${panel.hrInterviewer.color}",
           "is_primary": true,
           "agent_uid": 9993,
-          "instructions": "You are ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at Nexora Labs. Explore the candidate's experiences leading engineering initiatives, collaborating with teams, and handling trade-offs.",
-          "greeting_message": "Hi ${candidate.name}, great to meet you! I'm ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at Nexora Labs. Today we'll explore your experiences leading projects, team collaboration, and how you navigate engineering challenges."
+          "instructions": "You are ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at Plantra Labs. Explore the candidate's experiences leading engineering initiatives, collaborating with teams, and handling trade-offs.",
+          "greeting_message": "Hi ${candidate.name}, great to meet you! I'm ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at Plantra Labs. Today we'll explore your experiences leading projects, team collaboration, and how you navigate engineering challenges."
         }
       ],
       "interviewer": {
         "name": "${panel.hrInterviewer.name}",
         "role": "${panel.hrInterviewer.role}",
-        "instructions": "You are ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at Nexora Labs. Explore project ownership and culture.",
-        "greeting_message": "Hi ${candidate.name}, great to meet you! I'm ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at Nexora Labs."
+        "instructions": "You are ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at Plantra Labs. Explore project ownership and culture.",
+        "greeting_message": "Hi ${candidate.name}, great to meet you! I'm ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at Plantra Labs."
       },
       "topics": ["Engineering Ownership", "Cross-Functional Collaboration", "Conflict Resolution"]
     }
@@ -161,7 +200,7 @@ ${application.relevantExperience ? `\nHighlighted Experience:\n${application.rel
 ${crossSourceStr}
 ${interviewContextStr}
 
-Generate the personalized multi-agent JSON Interview Blueprint containing Round 1 (Technical with Primary: ${panel.technicalPrimary.name} and Challenger: ${panel.technicalChallenger.name}) and Round 2 (HR with ${panel.hrInterviewer.name}) for ${job.title}.`;
+Generate the personalized 3-round JSON Interview Blueprint containing Round 1 (Coding Assessment with ${panel.technicalPrimary.name}), Round 2 (Technical Panel with Primary: ${panel.technicalPrimary.name} and Challenger: ${panel.technicalChallenger.name}), and Round 3 (HR with ${panel.hrInterviewer.name}) for ${job.title}.`;
 
     const openai = new OpenAI({
       apiKey: process.env.GEMINI_DIRECT_API_KEY || process.env.REQUESTY_API_KEY || process.env.GEMINI_API_KEY || '',
@@ -250,8 +289,8 @@ Generate the personalized multi-agent JSON Interview Blueprint containing Round 
                 color: panel.technicalPrimary.color,
                 is_primary: true,
                 agent_uid: 9991,
-                instructions: `You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at Nexora Labs leading this panel interview with your co-interviewer ${panel.technicalChallenger.name} (${panel.technicalChallenger.role}). Open the interview by warmly introducing yourself and ${panel.technicalChallenger.name}. Lead the technical architecture discussion on projects like ${topProjects}. You and ${panel.technicalChallenger.name} can hear each other and the candidate in real-time. Invite ${panel.technicalChallenger.name} to probe deep trade-offs when relevant. When ${panel.technicalChallenger.name} speaks, listen politely and do not interrupt. When ${panel.technicalChallenger.name} hands back to you, continue smoothly with the next topic. Keep responses concise (1-3 sentences).`,
-                greeting_message: `Hello ${candidate.name}, welcome to Nexora Labs! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}, and joining me today is ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}. We've been reviewing your background with ${topProjects}. Today we will explore your technical architecture and problem solving together. To get started, could you briefly introduce yourself?`
+                instructions: `You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at Plantra Labs leading this panel interview with your co-interviewer ${panel.technicalChallenger.name} (${panel.technicalChallenger.role}). Open the interview by warmly introducing yourself and ${panel.technicalChallenger.name}. Lead the technical architecture discussion on projects like ${topProjects}. You and ${panel.technicalChallenger.name} can hear each other and the candidate in real-time. Invite ${panel.technicalChallenger.name} to probe deep trade-offs when relevant. When ${panel.technicalChallenger.name} speaks, listen politely and do not interrupt. When ${panel.technicalChallenger.name} hands back to you, continue smoothly with the next topic. Keep responses concise (1-3 sentences).`,
+                greeting_message: `Hello ${candidate.name}, welcome to Plantra Labs! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}, and joining me today is ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}. We've been reviewing your background with ${topProjects}. Today we will explore your technical architecture and problem solving together. To get started, could you briefly introduce yourself?`
               },
               {
                 interviewer_id: panel.technicalChallenger.interviewerId,
@@ -261,7 +300,7 @@ Generate the personalized multi-agent JSON Interview Blueprint containing Round 
                 color: panel.technicalChallenger.color,
                 is_primary: false,
                 agent_uid: 9992,
-                instructions: `You are ${panel.technicalChallenger.name}, ${panel.technicalChallenger.role} at Nexora Labs, co-interviewing with ${panel.technicalPrimary.name} (${panel.technicalPrimary.role}). You can hear both ${panel.technicalPrimary.name} and the candidate. DO NOT speak during the opening greeting—let ${panel.technicalPrimary.name} welcome the candidate. You are the Deep-Dive Specialist. When the candidate explains system architecture, scalability, concurrency, distributed systems, or when ${panel.technicalPrimary.name} invites you, step in naturally: 'Thanks ${panel.technicalPrimary.name}. ${candidate.name}, diving into that...'. Ask 1 sharp follow-up question. After the candidate answers, conclude your follow-up and hand the floor back to ${panel.technicalPrimary.name}: 'Makes sense, back to you ${panel.technicalPrimary.name}.' NEVER speak over ${panel.technicalPrimary.name}. Wait for natural pauses.`,
+                instructions: `You are ${panel.technicalChallenger.name}, ${panel.technicalChallenger.role} at Plantra Labs, co-interviewing with ${panel.technicalPrimary.name} (${panel.technicalPrimary.role}). You can hear both ${panel.technicalPrimary.name} and the candidate. DO NOT speak during the opening greeting—let ${panel.technicalPrimary.name} welcome the candidate. You are the Deep-Dive Specialist. When the candidate explains system architecture, scalability, concurrency, distributed systems, or when ${panel.technicalPrimary.name} invites you, step in naturally: 'Thanks ${panel.technicalPrimary.name}. ${candidate.name}, diving into that...'. Ask 1 sharp follow-up question. After the candidate answers, conclude your follow-up and hand the floor back to ${panel.technicalPrimary.name}: 'Makes sense, back to you ${panel.technicalPrimary.name}.' NEVER speak over ${panel.technicalPrimary.name}. Wait for natural pauses.`,
                 greeting_message: ""
               }
             ],

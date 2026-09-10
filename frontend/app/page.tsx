@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import PixelMatrixFlower from '@/components/hero/PixelMatrixFlower';
-import { NEXORA_LABS } from '@/lib/company';
+import { PLANTRA_LABS } from '@/lib/company';
 import { 
   ArrowRight, 
   Sparkles, 
@@ -49,7 +49,7 @@ export default function LandingPage() {
 
             {/* Subtitle */}
             <p className="text-sm sm:text-base text-zinc-400 font-sans leading-relaxed max-w-md">
-              Nexora Labs builds the high-performance, real-time data and AI primitives powering the next generation of mission-critical systems.
+              Plantra Labs builds the high-performance, real-time data and AI primitives powering the next generation of mission-critical systems.
             </p>
 
             {/* Capsule CTA Button */}
@@ -200,7 +200,7 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {NEXORA_LABS.principles.map((p) => (
+            {PLANTRA_LABS.principles.map((p) => (
               <div key={p.number} className="p-6 rounded-2xl border border-white/[0.06] bg-[#07070a] hover:border-white/15 transition-all space-y-3">
                 <div className="font-mono text-[11px] text-amber-400">PRINCIPLE // {p.number}</div>
                 <h4 className="text-lg font-semibold text-white">{p.title}</h4>
@@ -230,7 +230,7 @@ export default function LandingPage() {
             <div>
               <span className="font-mono text-[11px] text-zinc-500 uppercase tracking-widest">[ CAREERS // 7 POSITIONS ]</span>
               <h2 className="text-3xl font-semibold tracking-tight text-white mt-1">
-                Open roles at Nexora Labs.
+                Open roles at Plantra Labs.
               </h2>
             </div>
 
@@ -292,8 +292,8 @@ export default function LandingPage() {
         {/* ── 6. Minimalist Dark Footer ── */}
         <footer className="pt-16 border-t border-white/[0.08] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 text-xs text-zinc-500 font-mono">
           <div className="flex items-center gap-4">
-            <span className="text-white font-sans font-medium text-sm lowercase">nexora</span>
-            <span>© 2026 Nexora Labs, Inc.</span>
+            <span className="text-white font-sans font-medium text-sm lowercase">plantra</span>
+            <span>© 2026 Plantra Labs, Inc.</span>
           </div>
 
           <div className="flex items-center gap-6">

@@ -984,6 +984,59 @@ export function yieldFloorToCandidate(state: InterviewState): InterviewState {
 }
 
 /**
+ * Transitions state from Round 1 (Coding/System Design Workspace) to Round 2 (Technical Panel Interview).
+ * ACTIVATES 2-agent technical panel (Primary + Challenger) and sets floorState to PRIMARY_SPEAKING.
+ */
+export function transitionToTechnicalRound(
+  state: InterviewState,
+  primaryAgent: InterviewerProfile,
+  challengerAgent: InterviewerProfile,
+  round1Score: number,
+  round1DecisionReason: string
+): InterviewState {
+  let updated = { ...state };
+
+  updated.currentRound = 'technical';
+  updated.interviewStatus = 'IN_PROGRESS';
+  updated.roundProgress = 0;
+  updated.structuredFloorRequests = [];
+  updated.agentFloorRequests = [];
+  updated.currentSpeaker = primaryAgent.interviewerId;
+
+  // Activate both technical panel agents
+  updated.activeAgents = [
+    {
+      agentId: primaryAgent.interviewerId,
+      name: primaryAgent.name,
+      role: primaryAgent.role,
+      voice: primaryAgent.voice,
+      color: primaryAgent.color,
+      isPrimary: true,
+      isActive: true,
+      hasFloor: true
+    },
+    {
+      agentId: challengerAgent.interviewerId,
+      name: challengerAgent.name,
+      role: challengerAgent.role,
+      voice: challengerAgent.voice,
+      color: challengerAgent.color,
+      isPrimary: false,
+      isActive: true,
+      hasFloor: false
+    }
+  ];
+
+  updated = setAuthoritativeFloorState(updated, 'PRIMARY_SPEAKING');
+
+  const r1Summary = `Round 1 (Practical Workspace Assessment) Passed (Score: ${round1Score}/100). Assessment Notes: ${round1DecisionReason}`;
+  updated.conversationSummary = `${updated.conversationSummary || ''}\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\n${r1Summary}`;
+  updated.updatedAt = new Date().toISOString();
+
+  return updated;
+}
+
+/**
  * Transitions state to HR Round cleanly.
  * DEACTIVATES technical agents, ACTIVATES single HR agent, sets floorState to HR_SPEAKING.
  */

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDb, saveDb } from '@/lib/db';
+import { getDb, saveDb, resolveInterview } from '@/lib/db';
 import { selectPanelForJob } from '@/lib/interview/interviewerPool';
 import { 
   createInitialInterviewState, 
@@ -8,6 +8,7 @@ import {
   recordAgentTurn, 
   evaluateChallengerFloorRequest,
   yieldFloorToCandidate,
+  transitionToTechnicalRound,
   transitionToHRRound
 } from '@/lib/interview/interviewState';
 
@@ -16,11 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const resolvedParams = await params;
     const interviewId = resolvedParams.id;
     const db = getDb();
-    const interview = db.interviews.find(i => i.id === interviewId);
-
-    if (!interview) {
-      return NextResponse.json({ error: 'Interview not found' }, { status: 404 });
-    }
+    const interview = resolveInterview(db, interviewId);
 
     if (!interview.interviewState) {
       const app = db.applications.find(a => a.id === interview.applicationId);
@@ -49,11 +46,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const { action, floorState, utterance, speaker, agentId, agentName, reason, targetCompetency, priority, proposedProbe, question, topic, hrScore, hrReason } = body;
 
     const db = getDb();
-    const interview = db.interviews.find(i => i.id === interviewId);
-
-    if (!interview) {
-      return NextResponse.json({ error: 'Interview not found' }, { status: 404 });
-    }
+    const interview = resolveInterview(db, interviewId);
 
     if (!interview.interviewState) {
       const app = db.applications.find(a => a.id === interview.applicationId);
@@ -120,6 +113,18 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     } else if (action === 'YIELD_FLOOR') {
       interview.interviewState = yieldFloorToCandidate(interview.interviewState);
       result = { interviewState: interview.interviewState, floorState: interview.interviewState.floorState };
+    } else if (action === 'TRANSITION_TECHNICAL') {
+      const app = db.applications.find(a => a.id === interview.applicationId);
+      const job = app ? db.jobs.find(j => j.id === app.jobId) : null;
+      const panel = selectPanelForJob(job?.title || '');
+      interview.interviewState = transitionToTechnicalRound(
+        interview.interviewState,
+        panel.technicalPrimary,
+        panel.technicalChallenger,
+        body.score || 85,
+        body.decisionReason || 'Demonstrated strong problem solving in Round 1 (Workspace Assessment).'
+      );
+      result = { interviewState: interview.interviewState, floorState: interview.interviewState.floorState };
     } else if (action === 'TRANSITION_HR') {
       const app = db.applications.find(a => a.id === interview.applicationId);
       const job = app ? db.jobs.find(j => j.id === app.jobId) : null;
@@ -127,8 +132,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       interview.interviewState = transitionToHRRound(
         interview.interviewState,
         panel.hrInterviewer,
-        hrScore || 85,
-        hrReason || 'Demonstrated solid technical problem solving in Round 1.'
+        hrScore || body.score || 85,
+        hrReason || body.decisionReason || 'Demonstrated solid technical problem solving in Technical Round.'
       );
       result = { interviewState: interview.interviewState, floorState: interview.interviewState.floorState };
     }

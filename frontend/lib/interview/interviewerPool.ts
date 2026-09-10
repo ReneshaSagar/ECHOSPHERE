@@ -1,7 +1,7 @@
 import { InterviewerProfile, CompanyInterviewerPool } from '@/lib/db';
 
 /**
- * Nexora Labs Company-Wide Persistent Interviewer Pool.
+ * Plantra Labs Company-Wide Persistent Interviewer Pool.
  * Dynamically selected based on the role requirements and department context.
  */
 export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {

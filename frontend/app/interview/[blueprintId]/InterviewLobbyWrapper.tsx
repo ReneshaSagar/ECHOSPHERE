@@ -130,10 +130,10 @@ export default function InterviewLobbyWrapper({
     const formatGCalDate = (d: Date) => d.toISOString().replace(/-|:|\.\d+/g, '');
     const dates = `${formatGCalDate(startTime)}/${formatGCalDate(endTime)}`;
 
-    const title = encodeURIComponent(`Nexora Labs AI Interview: ${candidateName} (${jobTitle})`);
+    const title = encodeURIComponent(`Plantra Labs AI Interview: ${candidateName} (${jobTitle})`);
     const roomLink = typeof window !== 'undefined' ? window.location.href : '';
     const details = encodeURIComponent(
-      `Candidate: ${candidateName}\nRole: ${jobTitle}${roomLink ? `\nRoom Link: ${roomLink}` : ''}\n\nPowered by OmniPanel for Nexora Labs.`
+      `Candidate: ${candidateName}\nRole: ${jobTitle}${roomLink ? `\nRoom Link: ${roomLink}` : ''}\n\nPowered by OmniPanel for Plantra Labs.`
     );
     const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}`;
     window.open(url, '_blank', 'noopener,noreferrer');
@@ -145,13 +145,13 @@ export default function InterviewLobbyWrapper({
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-white/70">
             <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-            <span>Nexora Labs · powered by OmniPanel</span>
+            <span>Plantra Labs · powered by OmniPanel</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-sans font-bold text-white tracking-tight">
             welcome, {candidateName}
           </h1>
           <p className="text-white/60 text-sm sm:text-base max-w-lg mx-auto font-sans">
-            You are confirmed for the <strong className="text-white">{jobTitle}</strong> technical interview at <strong className="text-white">Nexora Labs</strong>.
+            You are confirmed for the <strong className="text-white">{jobTitle}</strong> technical interview at <strong className="text-white">Plantra Labs</strong>.
           </p>
         </div>
 
@@ -184,14 +184,14 @@ export default function InterviewLobbyWrapper({
       <div className="text-center space-y-3">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-white/70">
           <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-          <span>Nexora Labs · powered by OmniPanel</span>
+          <span>Plantra Labs · powered by OmniPanel</span>
         </div>
 
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-sans font-bold text-white tracking-tight">
           welcome, {candidateName}
         </h1>
         <p className="text-white/60 text-sm sm:text-base max-w-lg mx-auto font-sans">
-          You are confirmed for the <strong className="text-white">{jobTitle}</strong> technical interview at <strong className="text-white">Nexora Labs</strong>.
+          You are confirmed for the <strong className="text-white">{jobTitle}</strong> technical interview at <strong className="text-white">Plantra Labs</strong>.
         </p>
       </div>
 

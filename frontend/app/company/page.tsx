@@ -7,10 +7,10 @@ export default function CompanyPage() {
       <div className="max-w-4xl mx-auto space-y-8">
         <h1 className="text-4xl sm:text-6xl font-serif text-white">Company</h1>
         <p className="text-zinc-400 font-sans leading-relaxed text-lg">
-          Nexora Labs is a global technology company building the infrastructure behind intelligent software.
+          Plantra Labs is a global technology company building the infrastructure behind intelligent software.
         </p>
         <ul className="space-y-4 text-zinc-300 font-mono text-sm">
-          <li>- About Nexora</li>
+          <li>- About Plantra</li>
           <li>- Mission & Principles</li>
           <li>- Locations</li>
           <li>- Leadership Team</li>

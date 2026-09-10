@@ -3,8 +3,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 // Character sets for the matrix floral sculpture
-const MATRIX_CHARS = '0123456789NEXORA890147';
-const GLYPHS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'N', 'E', 'X', 'O', 'R', 'A', '8', '9'];
+const MATRIX_CHARS = '0123456789PLANTRA890147';
+const GLYPHS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'P', 'L', 'A', 'N', 'T', 'R', 'A', '8'];
 
 interface ContourPoint {
   // Base coordinates in normalized 3D space

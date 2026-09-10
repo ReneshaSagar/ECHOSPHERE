@@ -731,7 +731,7 @@ export default function SetupPage() {
 
         {/* ── Footer */}
         <div className="mt-6 flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.15em] text-[#8baab8]">
-          <span>Nexora Labs</span>
+          <span>Plantra Labs</span>
           <span className="text-[#00AEEF]">Powered by OmniPanel</span>
         </div>
       </div>

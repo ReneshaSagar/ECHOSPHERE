@@ -27,8 +27,8 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-  title: 'nexora — Nature doesn’t guess. Neither should AI.',
-  description: 'Nexora Labs builds the infrastructure behind modern intelligent software. Real-time conversational AI screening and deep technical evaluation.',
+  title: 'plantra — Nature doesn’t guess. Neither should AI.',
+  description: 'Plantra Labs builds the infrastructure behind modern intelligent software. Real-time conversational AI screening and deep technical evaluation.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

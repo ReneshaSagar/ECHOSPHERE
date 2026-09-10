@@ -7,7 +7,7 @@ export default function DevelopersPage() {
       <div className="max-w-4xl mx-auto space-y-8">
         <h1 className="text-4xl sm:text-6xl font-serif text-white">Developers</h1>
         <p className="text-zinc-400 font-sans leading-relaxed text-lg">
-          Build the next generation of intelligent software with the Nexora SDK.
+          Build the next generation of intelligent software with the Plantra SDK.
         </p>
         <ul className="space-y-4 text-zinc-300 font-mono text-sm">
           <li>- API Overview</li>

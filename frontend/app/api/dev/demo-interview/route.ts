@@ -89,11 +89,54 @@ export async function POST() {
     if (appIdx >= 0) db.applications[appIdx] = application;
     else db.applications.push(application);
 
-    // 4. Seed 2-Round Interview Blueprint
+    // 4. Seed 3-Round Interview Blueprint
     const blueprintData = {
       interview_rounds: [
         {
-          round_name: "Round 1: Technical Panel (Systems & Concurrency)",
+          round_name: "Round 1: Practical Coding & System Design Assessment",
+          round_type: "coding",
+          coding_problem: {
+            title: "1. High-Throughput Rate Limiter & Event Throttler",
+            difficulty: "Medium",
+            description: "Implement a sliding window rate limiter class that tracks incoming user requests and enforces a maximum threshold of requests per sliding window in TypeScript or Go. The implementation must support high concurrency and handle edge cases where multiple requests arrive at identical millisecond timestamps.",
+            constraints: [
+              "allowRequest(userId, timestampMs) should run in O(1) or O(log N) average time complexity.",
+              "Space complexity should scale with the number of unique active user IDs.",
+              "Handle concurrent burst traffic and sliding window cleanup cleanly."
+            ]
+          },
+          system_design_problem: {
+            title: "Real-time Distributed Event Notification Pipeline",
+            description: "Architect a resilient real-time notification engine capable of processing 100k events/sec with WebSocket push delivery, retry queues, and deduplication."
+          },
+          purpose: "Evaluate Alex Rivera's practical problem-solving, live coding, and system architecture in an interactive workspace.",
+          interviewers: [
+            {
+              name: "Priya Nair",
+              role: "Principal Infrastructure Lead",
+              voice: "Aoede",
+              color: "#3B82F6",
+              is_primary: true,
+              agent_uid: 9991,
+              instructions: `You are Priya Nair, Principal Infrastructure Lead at Plantra Labs. You are conducting Round 1 (Coding & System Design Workspace Assessment) with Alex Rivera.
+Observe their code and architecture in real time. Prompt them to explain their rate limiter approach, time complexity, and concurrency guarantees.`,
+              greeting_message: "Hello Alex, welcome to Plantra Labs! I'm Priya, Principal Infrastructure Lead. In this first round, we will focus on practical problem solving in your workspace. Take a look at the rate limiter problem in your editor and walk me through your initial approach!"
+            }
+          ],
+          interviewer: {
+            name: "Priya Nair",
+            role: "Principal Infrastructure Lead",
+            instructions: "Observe workspace progress and evaluate live coding.",
+            greeting_message: "Hello Alex, welcome! I'm Priya, Principal Infrastructure Lead."
+          },
+          topics: [
+            "Sliding Window Algorithm",
+            "Concurrency Primitives in Go / TypeScript",
+            "Throughput & Memory Efficiency"
+          ]
+        },
+        {
+          round_name: "Round 2: Technical Panel (Systems & Concurrency)",
           round_type: "technical",
           purpose: "Evaluate core distributed systems design, lock-free concurrency in Go, Kafka partition throughput, and Raft consensus.",
           interviewers: [
@@ -104,7 +147,7 @@ export async function POST() {
               color: "#3B82F6",
               is_primary: true,
               agent_uid: 9991,
-              instructions: `You are Priya Nair, Principal Infrastructure Lead at Nexora Labs. You and Arjun Malhotra are equal peer interviewers on this technical panel interviewing Alex Rivera for the Senior Backend Engineer role.
+              instructions: `You are Priya Nair, Principal Infrastructure Lead at Plantra Labs. You and Arjun Malhotra are equal peer interviewers on this technical panel interviewing Alex Rivera for the Senior Backend Engineer role.
 You ask core architectural and implementation questions.
 Focus areas:
 - Distributed concurrency & lock-free Go primitives
@@ -116,7 +159,7 @@ Ask one question at a time.
 Direct all questions to Alex. When Alex answers, validate their technical reasoning before moving on.
 If Alex addresses Arjun directly, remain silent and let Arjun answer.
 Do not invent candidate facts. Follow the Answer Validation Protocol strictly.`,
-              greeting_message: "Hi Alex, welcome to Nexora Labs! I'm Priya, Principal Infrastructure Lead, and joining me is Arjun, our Staff Distributed Systems Specialist. We're excited to dive into your systems and scaling background today. To kick things off: could you walk us through the high-level architecture of the real-time event streaming cluster you built at Vortex Cloud, and how you handled data partitioning?"
+              greeting_message: "Hi Alex, welcome to Round 2! I'm Priya, Principal Infrastructure Lead, and joining me is Arjun, our Staff Distributed Systems Specialist. We're excited to dive deeper into your systems and scaling background today. To kick things off: could you walk us through the high-level architecture of the real-time event streaming cluster you built at Vortex Cloud, and how you handled data partitioning?"
             },
             {
               name: "Arjun Malhotra",
@@ -125,7 +168,7 @@ Do not invent candidate facts. Follow the Answer Validation Protocol strictly.`,
               color: "#8B5CF6",
               is_primary: false,
               agent_uid: 9992,
-              instructions: `You are Arjun Malhotra, Staff Distributed Systems Specialist at Nexora Labs. You and Priya Nair are equal peer interviewers on this technical panel interviewing Alex Rivera.
+              instructions: `You are Arjun Malhotra, Staff Distributed Systems Specialist at Plantra Labs. You and Priya Nair are equal peer interviewers on this technical panel interviewing Alex Rivera.
 You specialize in probing deeper architectural failure modes, trade-offs, and scalability limits.
 Focus areas:
 - Distributed consensus guarantees & split-brain prevention
@@ -146,7 +189,7 @@ Follow the Answer Validation Protocol strictly.`,
           ]
         },
         {
-          round_name: "Round 2: HR, Culture & Engineering Leadership",
+          round_name: "Round 3: HR, Culture & Engineering Leadership",
           round_type: "hr",
           purpose: "Evaluate collaborative problem solving, incident retrospective ownership, technical mentorship, and cross-functional communication.",
           interviewers: [
@@ -157,10 +200,10 @@ Follow the Answer Validation Protocol strictly.`,
               color: "#F59E0B",
               is_primary: true,
               agent_uid: 9993,
-              instructions: `You are Sarah Jenkins, VP of Engineering Culture & People at Nexora Labs.
-You are conducting the second round of Alex Rivera's interview, focusing on engineering ownership, incident retrospectives, and cross-functional collaboration.
+              instructions: `You are Sarah Jenkins, VP of Engineering Culture & People at Plantra Labs.
+You are conducting the third round of Alex Rivera's interview, focusing on engineering ownership, incident retrospectives, and cross-functional collaboration.
 Ask one thoughtful question at a time and listen attentively to Alex's answers.`,
-              greeting_message: "Hello Alex, wonderful to meet you! Priya and Arjun shared great notes from the technical round. In this section, I'd love to understand more about your leadership approach, how you navigate high-severity production incidents, and how you mentor engineers on your team."
+              greeting_message: "Hello Alex, wonderful to meet you! Priya and Arjun shared great notes from the technical rounds. In this final section, I'd love to understand more about your leadership approach, how you navigate high-severity production incidents, and how you mentor engineers on your team."
             }
           ],
           topics: [

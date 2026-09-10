@@ -1,5 +1,5 @@
 /**
- * Nexora Labs Company Entity & Product Narrative Configuration
+ * Plantra Labs Company Entity & Product Narrative Configuration
  * 
  * Fictional Series B technology company building infrastructure for modern, AI-native software.
  * Hiring Platform / Technology Attribution: OmniPanel
@@ -39,12 +39,12 @@ export interface CompanyEntity {
   };
 }
 
-export const NEXORA_LABS: CompanyEntity = {
-  name: 'Nexora Labs',
-  legalName: 'Nexora Labs, Inc.',
-  tagline: 'Nexora Labs builds the infrastructure behind intelligent products.',
+export const PLANTRA_LABS: CompanyEntity = {
+  name: 'Plantra Labs',
+  legalName: 'Plantra Labs, Inc.',
+  tagline: 'Plantra Labs builds the infrastructure behind intelligent products.',
   mission: 'Empowering engineers to build, scale, and orchestrate resilient AI-native systems with sub-millisecond reliability.',
-  description: 'Nexora Labs is a Series B technology infrastructure company headquartered in Bengaluru with global hubs in Singapore and London. We build foundational developer platforms, distributed real-time audio/data pipelines, and scalable AI inference orchestration engines.',
+  description: 'Plantra Labs is a Series B technology infrastructure company headquartered in Bengaluru with global hubs in Singapore and London. We build foundational developer platforms, distributed real-time audio/data pipelines, and scalable AI inference orchestration engines.',
   stage: 'Series B',
   founded: '2023',
   headquarters: {
@@ -130,3 +130,5 @@ export const NEXORA_LABS: CompanyEntity = {
     badgeText: 'Powered by OmniPanel'
   }
 };
+
+export const NEXORA_LABS = PLANTRA_LABS;

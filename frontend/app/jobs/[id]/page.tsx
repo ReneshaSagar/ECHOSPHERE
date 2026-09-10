@@ -1,7 +1,7 @@
 import React from 'react';
 import { getDb } from '@/lib/db';
 import Link from 'next/link';
-import { NEXORA_LABS } from '@/lib/company';
+import { PLANTRA_LABS } from '@/lib/company';
 import { 
   ArrowLeft, 
   MapPin, 
@@ -64,7 +64,7 @@ export default async function PublicJobDetailPage({ params }: { params: Promise<
         <div className="border-b border-white/[0.08] pb-8 space-y-4">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[11px] font-mono font-semibold px-3 py-1 rounded-full bg-white/[0.05] text-white/90 border border-white/[0.1]">
-              nexora labs
+              plantra labs
             </span>
             <span className="text-[11px] font-mono text-white/70 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.06] flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5 text-white/40" />
@@ -129,14 +129,14 @@ export default async function PublicJobDetailPage({ params }: { params: Promise<
             </div>
           </section>
 
-          {/* About Nexora Labs Box */}
+          {/* About Plantra Labs Box */}
           <section className="bg-white/[0.02] p-6 rounded-2xl border border-white/[0.06] space-y-2 text-xs text-white/60">
             <h3 className="font-sans font-bold text-sm text-white flex items-center gap-2">
               <Layers className="w-4 h-4 text-white/80" />
-              <span>about nexora labs</span>
+              <span>about plantra labs</span>
             </h3>
             <p className="leading-relaxed font-sans">
-              {NEXORA_LABS.description} We value deep ownership, clear architectural thinking, and high-craft code. Our evaluation process uses OmniPanel's autonomous voice intelligence to provide an objective, interactive technical conversation.
+              {PLANTRA_LABS.description} We value deep ownership, clear architectural thinking, and high-craft code. Our evaluation process uses OmniPanel's autonomous voice intelligence to provide an objective, interactive technical conversation.
             </p>
           </section>
         </div>

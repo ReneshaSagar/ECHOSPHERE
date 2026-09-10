@@ -14,7 +14,7 @@ export default function CandidateLayout({ children }: { children: React.ReactNod
       <footer className="border-t border-white/[0.06] bg-[#030304] py-8 mt-16 relative z-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-white/40">
           <div>
-            © 2026 nexora labs, inc. · bengaluru · singapore · london
+            © 2026 plantra labs, inc. · bengaluru · singapore · london
           </div>
           <div className="flex items-center gap-2 text-white/60">
             <Sparkles className="w-3.5 h-3.5 text-white/80" />

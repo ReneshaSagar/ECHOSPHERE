@@ -19,7 +19,7 @@ const gmailTransporter = (gmailUser && gmailPass)
   : null;
 
 /**
- * Base email layout wrapper with Nexora Labs branding
+ * Base email layout wrapper with Plantra Labs branding
  */
 function wrapHtmlEmail(title: string, bodyContent: string): string {
   return `<!DOCTYPE html>
@@ -40,7 +40,7 @@ function wrapHtmlEmail(title: string, bodyContent: string): string {
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td>
-                    <div style="font-size: 20px; font-weight: 800; letter-spacing: -0.02em; color: #ffffff;">Nexora Labs</div>
+                    <div style="font-size: 20px; font-weight: 800; letter-spacing: -0.02em; color: #ffffff;">Plantra Labs</div>
                     <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #bae6fd; margin-top: 2px;">Talent & Recruiting • Powered by OmniPanel</div>
                   </td>
                 </tr>
@@ -56,8 +56,8 @@ function wrapHtmlEmail(title: string, bodyContent: string): string {
           <!-- Footer -->
           <tr>
             <td style="padding: 20px 32px 24px 32px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b; line-height: 1.5;">
-              <div>Nexora Labs Talent Team • Autonomous Voice Evaluation by OmniPanel</div>
-              <div style="margin-top: 4px; font-size: 11px; color: #94a3b8;">Nexora Labs, Inc. • Bengaluru HQ · Singapore · London</div>
+              <div>Plantra Labs Talent Team • Autonomous Voice Evaluation by OmniPanel</div>
+              <div style="margin-top: 4px; font-size: 11px; color: #94a3b8;">Plantra Labs, Inc. • Bengaluru HQ · Singapore · London</div>
             </td>
           </tr>
         </table>
@@ -100,7 +100,7 @@ export async function sendEmail({
   if (gmailTransporter && gmailUser) {
     try {
       const mailOptions = {
-        from: `"Nexora Labs Talent" <${gmailUser}>`,
+        from: `"Plantra Labs Talent" <${gmailUser}>`,
         to: recipientEmail,
         subject: subject,
         text: bodyText,
@@ -120,7 +120,7 @@ export async function sendEmail({
   if (!deliveryId && resend) {
     try {
       const response = await resend.emails.send({
-        from: 'Nexora Labs Talent <onboarding@resend.dev>',
+        from: 'Plantra Labs Talent <onboarding@resend.dev>',
         to: recipientEmail,
         subject: subject,
         text: bodyText,
@@ -176,11 +176,11 @@ export async function sendApplicationReceivedEmail(
   candidate: { name: string; email: string },
   job: { title: string }
 ) {
-  const subject = `Application Received: ${job.title} at Nexora Labs`;
+  const subject = `Application Received: ${job.title} at Plantra Labs`;
 
   const bodyText = `Hi ${candidate.name},
 
-Thank you for applying for the ${job.title} position at Nexora Labs!
+Thank you for applying for the ${job.title} position at Plantra Labs!
 
 We have successfully received your application, resume, and technical links. Our autonomous evaluation engine and talent team are currently reviewing your qualifications and codecraft.
 
@@ -188,16 +188,16 @@ What to expect next:
 - If your experience aligns with the core requirements of the role, you will be invited to our autonomous AI Voice Technical Interview led by our specialized technical panel.
 - You will receive a separate invitation email with your scheduled date, time, and private room link.
 
-Thank you again for your enthusiasm about building with Nexora Labs.
+Thank you again for your enthusiasm about building with Plantra Labs.
 
 Best regards,
-The Nexora Labs Talent & Recruiting Team`;
+The Plantra Labs Talent & Recruiting Team`;
 
   const htmlContent = wrapHtmlEmail(
     subject,
     `<h2 style="font-size: 20px; font-weight: 700; color: #0f172a; margin-top: 0; margin-bottom: 16px;">Application Received</h2>
     <p>Hi <strong>${candidate.name}</strong>,</p>
-    <p>Thank you for applying for the <strong>${job.title}</strong> role at Nexora Labs! We are excited to learn more about your experience and background.</p>
+    <p>Thank you for applying for the <strong>${job.title}</strong> role at Plantra Labs! We are excited to learn more about your experience and background.</p>
     
     <div style="background-color: #f1f5f9; border-left: 4px solid #0284c7; padding: 16px; border-radius: 6px; margin: 20px 0;">
       <div style="font-weight: 700; color: #1e293b; font-size: 14px;">Next Steps in the Hiring Process:</div>
@@ -209,7 +209,7 @@ The Nexora Labs Talent & Recruiting Team`;
     </div>
     
     <p>Thank you again for your time and interest in joining our engineering team.</p>
-    <p style="margin-top: 24px;">Warm regards,<br/><strong>The Nexora Labs Talent & Engineering Team</strong></p>`
+    <p style="margin-top: 24px;">Warm regards,<br/><strong>The Plantra Labs Talent & Engineering Team</strong></p>`
   );
 
   return sendEmail({
@@ -253,15 +253,15 @@ export async function sendInterviewInvitationEmail(
   const endTime = new Date(startTime.getTime() + 45 * 60 * 1000);
   const formatGCalDate = (d: Date) => d.toISOString().replace(/-|:|\.\d+/g, '');
   const dates = `${formatGCalDate(startTime)}/${formatGCalDate(endTime)}`;
-  const title = encodeURIComponent(`Nexora Labs AI Interview: ${candidate.name} (${job.title})`);
-  const details = encodeURIComponent(`Role: ${job.title}\nRoom: ${interviewLink}\nCandidate: ${candidate.name}\nTime: ${fullDateTime}\n\nPowered by OmniPanel for Nexora Labs.`);
+  const title = encodeURIComponent(`Plantra Labs AI Interview: ${candidate.name} (${job.title})`);
+  const details = encodeURIComponent(`Role: ${job.title}\nRoom: ${interviewLink}\nCandidate: ${candidate.name}\nTime: ${fullDateTime}\n\nPowered by OmniPanel for Plantra Labs.`);
   const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}`;
 
-  const subject = `Congratulations! You're Selected for an Interview: ${job.title} at Nexora Labs`;
+  const subject = `Congratulations! You're Selected for an Interview: ${job.title} at Plantra Labs`;
 
   const bodyText = `Hi ${candidate.name},
 
-Congratulations! We were impressed by your background, codecraft, and experience, and we are excited to invite you to the next stage of our evaluation process for the ${job.title} role at Nexora Labs.
+Congratulations! We were impressed by your background, codecraft, and experience, and we are excited to invite you to the next stage of our evaluation process for the ${job.title} role at Plantra Labs.
 
 📅 Scheduled Interview Time:
 ${fullDateTime}
@@ -281,7 +281,7 @@ When you open your room link before the scheduled time, a live countdown will di
 We look forward to meeting you!
 
 Warm regards,
-The Nexora Labs Talent & Engineering Team`;
+The Plantra Labs Talent & Engineering Team`;
 
   const htmlContent = wrapHtmlEmail(
     subject,
@@ -292,7 +292,7 @@ The Nexora Labs Talent & Engineering Team`;
       <h2 style="font-size: 22px; font-weight: 800; color: #0f172a; margin-top: 12px; margin-bottom: 6px;">
         You're Invited to an AI Voice Technical Interview
       </h2>
-      <p style="font-size: 14px; color: #64748b; margin: 0;">Role: <strong>${job.title}</strong> at Nexora Labs</p>
+      <p style="font-size: 14px; color: #64748b; margin: 0;">Role: <strong>${job.title}</strong> at Plantra Labs</p>
     </div>
 
     <p>Hi <strong>${candidate.name}</strong>,</p>
@@ -324,7 +324,7 @@ The Nexora Labs Talent & Engineering Team`;
     </div>
 
     <p style="margin-top: 24px;">We look forward to speaking with you!</p>
-    <p>Warm regards,<br/><strong>The Nexora Labs Talent & Engineering Team</strong></p>`
+    <p>Warm regards,<br/><strong>The Plantra Labs Talent & Engineering Team</strong></p>`
   );
 
   return sendEmail({
@@ -352,11 +352,11 @@ export async function sendRejectionEmail(
     ? `\nSpecific Feedback from the Review Team:\n"${reason}"\n` 
     : '';
 
-  const subject = `Update regarding your application for ${job.title} at Nexora Labs`;
+  const subject = `Update regarding your application for ${job.title} at Plantra Labs`;
 
   const bodyText = `Hi ${candidate.name},
 
-Thank you for your interest in Nexora Labs and for the time you took to apply for the ${job.title} position.
+Thank you for your interest in Plantra Labs and for the time you took to apply for the ${job.title} position.
 
 Our team reviewed your background and qualifications thoroughly. We received many strong applications, and after careful consideration${stageFormatted}, we have decided not to move forward with your candidacy for this specific opening at this time.
 ${reasonText}
@@ -365,7 +365,7 @@ Please know that this was a difficult decision. We were very glad to learn about
 We wish you the very best of luck in your job search and your ongoing engineering journey.
 
 Sincerely,
-The Nexora Labs Talent Team`;
+The Plantra Labs Talent Team`;
 
   const htmlContent = wrapHtmlEmail(
     subject,
@@ -373,7 +373,7 @@ The Nexora Labs Talent Team`;
       Application Status Update
     </h2>
     <p>Hi <strong>${candidate.name}</strong>,</p>
-    <p>Thank you for taking the time to apply for the <strong>${job.title}</strong> role at Nexora Labs. We truly appreciate the opportunity to review your profile and codecraft.</p>
+    <p>Thank you for taking the time to apply for the <strong>${job.title}</strong> role at Plantra Labs. We truly appreciate the opportunity to review your profile and codecraft.</p>
     
     <p>We evaluated your qualifications carefully alongside a competitive pool of candidates. After careful consideration${stageFormatted}, we have decided to move forward with other candidates whose experience more closely fits our immediate technical requirements for this specific role.</p>
 
@@ -386,7 +386,7 @@ The Nexora Labs Talent Team`;
 
     <p>Please know that this was a difficult choice. We were impressed by aspects of your background, and we will keep your resume and portfolio in our talent pool for future openings that match your skill set.</p>
     <p>We wish you the very best of luck in your ongoing career endeavors.</p>
-    <p style="margin-top: 24px;">Sincerely,<br/><strong>The Nexora Labs Talent Team</strong></p>`
+    <p style="margin-top: 24px;">Sincerely,<br/><strong>The Plantra Labs Talent Team</strong></p>`
   );
 
   return sendEmail({
@@ -409,24 +409,24 @@ export async function sendSelectionOfferEmail(
   score?: number,
   summary?: string
 ) {
-  const subject = `Congratulations! Offer & Selection Update for ${job.title} at Nexora Labs`;
+  const subject = `Congratulations! Offer & Selection Update for ${job.title} at Plantra Labs`;
   const scoreText = score ? `\nEvaluation Score: ${score}/100\n` : '';
 
   const bodyText = `Hi ${candidate.name},
 
-Congratulations! We are delighted to inform you that you have been SELECTED for the ${job.title} position at Nexora Labs!
+Congratulations! We are delighted to inform you that you have been SELECTED for the ${job.title} position at Plantra Labs!
 
-Our evaluation panel and technical leadership were thoroughly impressed by your performance across all interview rounds, your technical codecraft, and your cultural alignment with Nexora Labs.
+Our evaluation panel and technical leadership were thoroughly impressed by your performance across all interview rounds, your technical codecraft, and your cultural alignment with Plantra Labs.
 ${scoreText}
 ${summary ? `Panel Feedback:\n"${summary}"\n` : ''}
 What happens next:
 1. Our talent operations team will contact you within 24-48 hours to discuss offer compensation, equity packages, and start dates.
 2. In the meantime, feel free to reply directly to this email if you have any questions about the role or team.
 
-Welcome to Nexora Labs! We are thrilled about the prospect of building groundbreaking infrastructure together.
+Welcome to Plantra Labs! We are thrilled about the prospect of building groundbreaking infrastructure together.
 
 Warmest congratulations,
-The Nexora Labs Leadership & Talent Team`;
+The Plantra Labs Leadership & Talent Team`;
 
   const htmlContent = wrapHtmlEmail(
     subject,
@@ -437,11 +437,11 @@ The Nexora Labs Leadership & Talent Team`;
       <h2 style="font-size: 22px; font-weight: 800; color: #0f172a; margin-top: 12px; margin-bottom: 6px;">
         Congratulations! You Have Been Selected
       </h2>
-      <p style="font-size: 14px; color: #64748b; margin: 0;">Role: <strong>${job.title}</strong> at Nexora Labs</p>
+      <p style="font-size: 14px; color: #64748b; margin: 0;">Role: <strong>${job.title}</strong> at Plantra Labs</p>
     </div>
 
     <p>Hi <strong>${candidate.name}</strong>,</p>
-    <p>We are delighted to inform you that following your interview panel and autonomous assessment, you have been <strong>selected</strong> for the <strong>${job.title}</strong> position at Nexora Labs!</p>
+    <p>We are delighted to inform you that following your interview panel and autonomous assessment, you have been <strong>selected</strong> for the <strong>${job.title}</strong> position at Plantra Labs!</p>
 
     <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px; margin: 24px 0;">
       <div style="font-size: 12px; font-weight: 700; color: #166534; text-transform: uppercase; letter-spacing: 0.05em;">Panel Evaluation Summary</div>
@@ -459,8 +459,8 @@ The Nexora Labs Leadership & Talent Team`;
       </ul>
     </div>
 
-    <p style="margin-top: 24px;">Welcome to the Nexora Labs team!</p>
-    <p>Warm regards,<br/><strong>The Nexora Labs Talent & Executive Team</strong></p>`
+    <p style="margin-top: 24px;">Welcome to the Plantra Labs team!</p>
+    <p>Warm regards,<br/><strong>The Plantra Labs Talent & Executive Team</strong></p>`
   );
 
   return sendEmail({
@@ -484,11 +484,11 @@ export async function sendWaitlistAltRoleEmail(
   reason?: string
 ) {
   const rolesList = (altRoles && altRoles.length > 0) ? altRoles.join(', ') : 'related engineering and technical roles';
-  const subject = `Talent Pool & Alternative Role Allocation: ${job.title} at Nexora Labs`;
+  const subject = `Talent Pool & Alternative Role Allocation: ${job.title} at Plantra Labs`;
 
   const bodyText = `Hi ${candidate.name},
 
-Thank you for completing the interview process for the ${job.title} position at Nexora Labs.
+Thank you for completing the interview process for the ${job.title} position at Plantra Labs.
 
 Our evaluation panel found many strong strengths in your profile and interview performance. While we have selected a candidate whose immediate experience was an exact match for this specific opening, our team has recommended you for our Priority Talent Pool and the following alternative positions:
 ${rolesList}
@@ -501,7 +501,7 @@ What this means:
 Thank you again for your time and energy. We look forward to staying connected.
 
 Best regards,
-The Nexora Labs Talent & Recruiting Team`;
+The Plantra Labs Talent & Recruiting Team`;
 
   const htmlContent = wrapHtmlEmail(
     subject,
@@ -516,7 +516,7 @@ The Nexora Labs Talent & Recruiting Team`;
     </div>
 
     <p>Hi <strong>${candidate.name}</strong>,</p>
-    <p>Thank you for taking the time to interview with us for the <strong>${job.title}</strong> role at Nexora Labs. We were impressed by your communication and technical problem-solving capabilities.</p>
+    <p>Thank you for taking the time to interview with us for the <strong>${job.title}</strong> role at Plantra Labs. We were impressed by your communication and technical problem-solving capabilities.</p>
 
     <div style="background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 12px; padding: 20px; margin: 24px 0;">
       <div style="font-size: 12px; font-weight: 700; color: #0369a1; text-transform: uppercase; letter-spacing: 0.05em;">Alternative Role Allocations:</div>
@@ -528,8 +528,8 @@ The Nexora Labs Talent & Recruiting Team`;
 
     <p>Our team has added your verified interview results to our priority talent roster. As new positions open up in these areas, our recruiting leads will reach out directly to discuss these opportunities with you.</p>
 
-    <p style="margin-top: 24px;">Thank you again for your enthusiasm for building with Nexora Labs.</p>
-    <p>Warm regards,<br/><strong>The Nexora Labs Talent Team</strong></p>`
+    <p style="margin-top: 24px;">Thank you again for your enthusiasm for building with Plantra Labs.</p>
+    <p>Warm regards,<br/><strong>The Plantra Labs Talent Team</strong></p>`
   );
 
   return sendEmail({
@@ -556,7 +556,7 @@ export async function sendApplicationFailedEmail(
 
   const bodyText = `Hi ${candidate.name},
 
-Thank you for applying to the ${job.title} position at Nexora Labs. 
+Thank you for applying to the ${job.title} position at Plantra Labs. 
 
 Unfortunately, we encountered a technical issue while processing your application materials. Specifically:
 ${errorReason}
@@ -566,7 +566,7 @@ Because our system requires a complete and parsable profile to set up your AI in
 Please double-check your resume file or links, and submit your application again at our careers portal.
 
 Best regards,
-The Nexora Labs Talent Team`;
+The Plantra Labs Talent Team`;
 
   const htmlContent = wrapHtmlEmail(
     subject,
@@ -581,7 +581,7 @@ The Nexora Labs Talent Team`;
     </div>
 
     <p>Hi <strong>${candidate.name}</strong>,</p>
-    <p>Thank you for your interest in the <strong>${job.title}</strong> position at Nexora Labs.</p>
+    <p>Thank you for your interest in the <strong>${job.title}</strong> position at Plantra Labs.</p>
     
     <p>Unfortunately, our system encountered a technical issue while attempting to extract and verify your application materials. Because of this, your application <strong>could not be submitted</strong>.</p>
 
@@ -595,7 +595,7 @@ The Nexora Labs Talent Team`;
     <p>Please resolve this issue (e.g., by ensuring your PDF is text-readable or your links are public) and <strong>submit your application again</strong>.</p>
 
     <p style="margin-top: 24px;">We apologize for the inconvenience and look forward to receiving your updated application!</p>
-    <p>Best regards,<br/><strong>The Nexora Labs Talent Team</strong></p>`
+    <p>Best regards,<br/><strong>The Plantra Labs Talent Team</strong></p>`
   );
 
   return sendEmail({

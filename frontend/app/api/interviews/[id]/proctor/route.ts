@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDb, saveDb } from '@/lib/db';
+import { getDb, saveDb, resolveInterview } from '@/lib/db';
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -9,11 +9,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const { type, details, severity, duration, score_impact, currentScores } = body;
 
     const db = getDb();
-    const interview = db.interviews.find(i => i.id === interviewId);
-    
-    if (!interview) {
-      return NextResponse.json({ error: "Interview not found" }, { status: 404 });
-    }
+    const interview = resolveInterview(db, interviewId);
 
     if (!interview.suspiciousEvents) {
       interview.suspiciousEvents = [];
@@ -59,11 +55,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const interviewId = resolvedParams.id;
 
     const db = getDb();
-    const interview = db.interviews.find(i => i.id === interviewId);
-    
-    if (!interview) {
-      return NextResponse.json({ error: "Interview not found" }, { status: 404 });
-    }
+    const interview = resolveInterview(db, interviewId);
 
     return NextResponse.json({ 
       success: true, 

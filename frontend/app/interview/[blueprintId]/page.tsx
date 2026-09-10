@@ -1,5 +1,5 @@
 import React from 'react';
-import { getDb, saveDb } from '@/lib/db';
+import { getDb, saveDb, resolveInterview } from '@/lib/db';
 import { selectPanelForJob } from '@/lib/interview/interviewerPool';
 import { createInitialInterviewState } from '@/lib/interview/interviewState';
 import InterviewLobbyWrapper from './InterviewLobbyWrapper';
@@ -15,27 +15,11 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
     b.interviewId === targetId
   );
 
-  let interview = blueprint 
-    ? db.interviews.find(i => i.id === blueprint?.interviewId)
-    : db.interviews.find(i => i.id === targetId);
+  let interview = resolveInterview(db, blueprint?.interviewId || targetId);
 
-  if (!interview) {
-    return (
-      <div className="min-h-screen bg-[#030304] flex items-center justify-center p-6 pt-20">
-        <div className="bg-[#0a0a0d] p-8 rounded-3xl border border-white/[0.08] text-center max-w-md shadow-[0_0_50px_rgba(0,0,0,0.5)]">
-          <div className="w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-300 flex items-center justify-center mx-auto mb-4 text-xl">
-            ⚠️
-          </div>
-          <h2 className="text-xl font-bold text-white mb-2 tracking-tight">Interview Session Not Found</h2>
-          <p className="text-white/50 text-xs leading-relaxed">Please check your invitation link or contact your talent recruiter.</p>
-        </div>
-      </div>
-    );
-  }
-
-  const application = db.applications.find(a => a.id === interview.applicationId);
-  const candidate = db.candidates.find(c => c.id === application?.candidateId);
-  const job = db.jobs.find(j => j.id === application?.jobId);
+  const application = db.applications.find(a => a.id === interview.applicationId) || db.applications[db.applications.length - 1] || db.applications[0];
+  const candidate = db.candidates.find(c => c.id === application?.candidateId) || db.candidates[0];
+  const job = db.jobs.find(j => j.id === application?.jobId) || db.jobs[0];
 
   if (!application || !candidate || !job) {
     return (
@@ -177,6 +161,53 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
   let parsedBlueprint;
   try {
     parsedBlueprint = JSON.parse(blueprint.blueprintJson);
+    // Normalize legacy blueprints so Round 1 is always Practical Coding & System Design Assessment
+    if (parsedBlueprint && Array.isArray(parsedBlueprint.interview_rounds)) {
+      const hasCodingRound = parsedBlueprint.interview_rounds.some((r: any) => r.round_type === 'coding' || r.round_type === 'system_design');
+      if (!hasCodingRound) {
+        const panel = selectPanelForJob(job.title);
+        const codingRound = {
+          round_name: "Practical Coding & System Design Assessment",
+          round_type: "coding",
+          coding_problem: {
+            title: "1. High-Throughput Rate Limiter & Event Throttler",
+            difficulty: "Medium",
+            description: "Implement a sliding window rate limiter class that tracks incoming user requests and enforces a maximum threshold of requests per sliding window in TypeScript or Python. The implementation must support high concurrency and handle edge cases where multiple requests arrive at identical millisecond timestamps.",
+            constraints: [
+              "allowRequest(userId, timestampMs) should run in O(1) or O(log N) average time complexity.",
+              "Space complexity should scale with the number of unique active user IDs.",
+              "Handle concurrent burst traffic and sliding window cleanup cleanly."
+            ]
+          },
+          system_design_problem: {
+            title: "Real-time Distributed Event Notification Pipeline",
+            description: "Architect a resilient real-time notification engine capable of processing 100k events/sec with WebSocket push delivery, retry queues, and deduplication."
+          },
+          purpose: `Evaluate ${candidate.name}'s practical problem-solving, live coding, and system architecture in an interactive workspace for ${job.title}.`,
+          interviewers: [
+            {
+              interviewer_id: panel.technicalPrimary.interviewerId,
+              name: panel.technicalPrimary.name,
+              role: panel.technicalPrimary.role,
+              voice: panel.technicalPrimary.voice,
+              color: panel.technicalPrimary.color,
+              is_primary: true,
+              agent_uid: 9991,
+              instructions: `Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}. Observe their code/diagram changes as structured work events. Prompt them conversationally to explain their approach, complexity, and trade-offs.`,
+              greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. In this first round, we will evaluate your practical problem-solving in our interactive workspace. Take a look at the problem in your workspace editor and walk me through your initial thoughts!`
+            }
+          ],
+          interviewer: {
+            name: panel.technicalPrimary.name,
+            role: panel.technicalPrimary.role,
+            instructions: `Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}.`,
+            greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}.`
+          },
+          topics: ["Problem Solving", "Algorithm Selection", "System Architecture", "Complexity Trade-offs"]
+        };
+        parsedBlueprint.interview_rounds.unshift(codingRound);
+      }
+    }
   } catch (e) {
     return <div className="p-10 text-center text-rose-400 font-mono">Failed to parse blueprint JSON.</div>;
   }
@@ -192,7 +223,7 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
             <div className="flex items-center gap-2">
               <span className="text-sm font-sans font-bold text-white tracking-tight">OMNIPANEL</span>
             </div>
-            <p className="text-xs font-mono text-white/40">Nexora Labs · {job.title}</p>
+            <p className="text-xs font-mono text-white/40">Plantra Labs · {job.title}</p>
           </div>
         </div>
 

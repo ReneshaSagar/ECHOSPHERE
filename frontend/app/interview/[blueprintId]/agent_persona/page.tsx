@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { getDb } from '@/lib/db';
+import { getDb, resolveInterview } from '@/lib/db';
 import { 
   Bot, 
   Terminal, 
@@ -27,9 +27,7 @@ export default async function AgentPersonaInspectorPage({ params }: { params: Pr
     b.interviewId === targetId
   );
 
-  const interview = blueprint 
-    ? db.interviews.find(i => i.id === blueprint.interviewId)
-    : db.interviews.find(i => i.id === targetId);
+  const interview = resolveInterview(db, blueprint?.interviewId || targetId);
 
   const application = interview ? db.applications.find(a => a.id === interview.applicationId) : null;
   const candidate = application ? db.candidates.find(c => c.id === application.candidateId) : null;

@@ -84,8 +84,26 @@ export default function AgentPanel({
     }
   }, [localStream, localVideoRef]);
 
-  const isSingleAgentMode = activePanelAgents.length === 1;
-  const totalTiles = activePanelAgents.length + 1;
+  const currentRoundData = blueprint?.interview_rounds?.[currentRound];
+  const roundInterviewers = currentRoundData?.interviewers && currentRoundData.interviewers.length > 0
+    ? currentRoundData.interviewers
+    : (currentRoundData?.interviewer ? [currentRoundData.interviewer] : []);
+
+  const fallbackDisplayAgents: RunningAgent[] = roundInterviewers.map((intv: any, idx: number) => ({
+    agentId: `preview_${intv.agent_uid || idx}`,
+    agentUid: intv.agent_uid || (idx === 0 ? 9991 : 9992),
+    name: intv.name || (idx === 0 ? 'Lead Interviewer' : 'Specialist Interviewer'),
+    role: intv.role || (idx === 0 ? 'Lead Interviewer' : 'Specialist'),
+    voice: intv.voice || 'Aoede',
+    color: intv.color || (idx === 0 ? '#3B82F6' : '#8B5CF6'),
+    isPrimary: idx === 0,
+    hasFloor: idx === 0,
+    intervening: false
+  }));
+
+  const effectiveAgents: RunningAgent[] = activePanelAgents.length > 0 ? activePanelAgents : fallbackDisplayAgents;
+  const isSingleAgentMode = effectiveAgents.length === 1;
+  const totalTiles = effectiveAgents.length + 1;
   const gridColsClass = totalTiles === 2 && !isSingleAgentMode ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
 
   return (
@@ -96,12 +114,12 @@ export default function AgentPanel({
         </div>
       )}
 
-      {testState === 'RUNNING' || testState === 'STARTING' || testState === 'ROUND_TRANSITION' ? (
+      {testState !== 'IDLE' ? (
         isSingleAgentMode ? (
           /* Vertical 50/50 Stacked Layout for Workspace / Single Agent Round */
           <div className="flex-1 flex flex-col gap-3 p-1 h-full min-h-0">
             {/* 50% Top Tile: Single Interviewer Agent */}
-            {activePanelAgents.map((agent) => {
+            {effectiveAgents.map((agent) => {
               const isAgentSpeaking = floorOwner === 'PRIMARY_AI' || floorOwner === 'HR_AI';
               
               return (
@@ -110,13 +128,13 @@ export default function AgentPanel({
                     <ParticleTalkingOrb 
                       isSpeaking={isAgentSpeaking}
                       isListening={floorOwner === 'CANDIDATE'}
-                      isThinking={agent.intervening || testState === 'STARTING' || testState === 'ROUND_TRANSITION'}
+                      isThinking={agent.intervening || testState === 'STARTING' || testState === 'ROUND_TRANSITION' || activePanelAgents.length === 0}
                       size={150}
                       accentColor={agent.color || '#3B82F6'}
                     />
                   </div>
                   <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-lg text-white text-xs font-medium flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${isAgentSpeaking ? 'bg-blue-400 animate-pulse' : 'bg-gray-400'}`}></div>
+                    <div className={`w-2 h-2 rounded-full ${isAgentSpeaking ? 'bg-blue-400 animate-pulse' : (testState === 'STARTING' || testState === 'ROUND_TRANSITION') ? 'bg-amber-400 animate-pulse' : 'bg-gray-400'}`}></div>
                     {agent.name} <span className="text-gray-400 text-[10px]">({agent.role})</span>
                   </div>
                 </div>
@@ -167,8 +185,8 @@ export default function AgentPanel({
           /* Grid Layout for Multi-Agent Panel Round */
           <div className={`flex-1 grid gap-4 ${gridColsClass} p-2 h-full min-h-0`}>
             {/* Agent Tiles */}
-            {activePanelAgents.map((agent) => {
-              const isAgentSpeaking = floorOwner === (agent.isPrimary && activePanelAgents.length > 1 ? 'PRIMARY_AI' : (activePanelAgents.length > 1 ? 'CHALLENGER_AI' : (floorOwner === 'HR_AI' || floorOwner === 'PRIMARY_AI' ? floorOwner : 'NONE')));
+            {effectiveAgents.map((agent) => {
+              const isAgentSpeaking = floorOwner === (agent.isPrimary && effectiveAgents.length > 1 ? 'PRIMARY_AI' : (effectiveAgents.length > 1 ? 'CHALLENGER_AI' : (floorOwner === 'HR_AI' || floorOwner === 'PRIMARY_AI' ? floorOwner : 'NONE')));
               
               return (
                 <div key={agent.agentUid} className={`relative bg-[#3c4043] rounded-2xl overflow-hidden shadow-lg flex flex-col items-center justify-center border-2 transition-colors ${isAgentSpeaking ? 'border-blue-500' : 'border-transparent'}`}>
@@ -176,13 +194,13 @@ export default function AgentPanel({
                     <ParticleTalkingOrb 
                       isSpeaking={isAgentSpeaking}
                       isListening={floorOwner === 'CANDIDATE'}
-                      isThinking={agent.intervening || testState === 'STARTING' || testState === 'ROUND_TRANSITION'}
+                      isThinking={agent.intervening || testState === 'STARTING' || testState === 'ROUND_TRANSITION' || activePanelAgents.length === 0}
                       size={180}
                       accentColor={agent.color || '#3B82F6'}
                     />
                   </div>
                   <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-lg text-white text-sm font-medium flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${isAgentSpeaking ? 'bg-blue-400 animate-pulse' : 'bg-gray-400'}`}></div>
+                    <div className={`w-2 h-2 rounded-full ${isAgentSpeaking ? 'bg-blue-400 animate-pulse' : (testState === 'STARTING' || testState === 'ROUND_TRANSITION') ? 'bg-amber-400 animate-pulse' : 'bg-gray-400'}`}></div>
                     {agent.name} <span className="text-gray-400 text-xs hidden sm:inline">({agent.role})</span>
                   </div>
                 </div>
@@ -340,13 +358,17 @@ export default function AgentPanel({
         </div>
       )}
 
-      {/* Technical Closing Overlay */}
+      {/* Technical / Workspace Closing Overlay */}
       {testState === 'TECHNICAL_CLOSING' && (
         <div className="absolute inset-0 bg-gray-950/80 z-20 flex flex-col items-center justify-center text-white backdrop-blur-sm rounded-2xl p-6">
           <Mic className="w-10 h-10 text-blue-400 mb-4 animate-pulse" />
-          <h3 className="text-xl font-bold">Technical Round Concluding</h3>
+          <h3 className="text-xl font-bold">
+            {currentRound === 0 ? 'Workspace Assessment Concluding' : 'Technical Round Concluding'}
+          </h3>
           <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
-            The primary interviewer is wrapping up. Please wait...
+            {currentRound === 0 
+              ? 'Capturing final code & system design snapshot. Please wait...' 
+              : 'The primary interviewer is wrapping up. Please wait...'}
           </p>
         </div>
       )}
@@ -367,12 +389,12 @@ export default function AgentPanel({
         <div className="absolute inset-0 bg-gray-950/90 z-20 flex flex-col items-center justify-center text-white backdrop-blur-md rounded-2xl p-6">
           <svg className="animate-spin h-10 w-10 text-blue-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
           <h3 className="text-xl font-bold">
-            {testState === 'DECISION_GATE' ? 'Decision Gate' : 'Evaluating Round Performance'}
+            {testState === 'DECISION_GATE' ? 'Decision Gate Evaluation' : 'Evaluating Workspace & Evidence'}
           </h3>
           <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
             {testState === 'DECISION_GATE' 
-              ? 'Determining whether the candidate proceeds to the next round...'
-              : 'Synthesizing evidence from the interview panel...'}
+              ? 'Synthesizing performance rubrics and transitioning to the next round...'
+              : 'Analyzing live code execution, test pass rates, and architectural reasoning...'}
           </p>
         </div>
       )}
@@ -383,11 +405,40 @@ export default function AgentPanel({
           <div className="w-14 h-14 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mb-4 border border-emerald-500/40">
             <Sparkles className="w-7 h-7" />
           </div>
-          <h3 className="text-xl font-bold text-emerald-400">Technical Round Passed!</h3>
+          <h3 className="text-xl font-bold text-emerald-400">
+            {currentRound === 1 
+              ? 'Round 1 (Coding Assessment) Complete!' 
+              : currentRound === 2 
+                ? 'Technical Panel Round Complete!' 
+                : `Round ${currentRound} Complete!`}
+          </h3>
           <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
-            Transitioning to the HR & Culture round. Your HR interviewer will join shortly...
+            {currentRound === 1
+              ? `Transitioning to Round 2: ${currentRoundData?.round_name || 'Technical Panel Interview'}. Your technical interviewers are joining...`
+              : currentRound === 2
+                ? `Transitioning to Round 3: ${currentRoundData?.round_name || 'Engineering Leadership & Culture'}. Your HR interviewer is joining...`
+                : `Transitioning to Round ${currentRound + 1}: ${currentRoundData?.round_name || 'Next Round'}...`}
           </p>
           <svg className="animate-spin h-5 w-5 text-gray-500 mt-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+        </div>
+      )}
+
+      {/* Error Overlay with Reconnect Action */}
+      {testState === 'ERROR' && (
+        <div className="absolute inset-0 bg-gray-950/90 z-30 flex flex-col items-center justify-center text-white backdrop-blur-md rounded-2xl p-6 text-center">
+          <div className="w-14 h-14 bg-rose-500/20 text-rose-400 rounded-full flex items-center justify-center mb-4 border border-rose-500/40 shadow-[0_0_30px_rgba(244,63,94,0.3)]">
+            <MicOff className="w-7 h-7" />
+          </div>
+          <h3 className="text-xl font-bold text-white mb-1">Session Reconnection Needed</h3>
+          <p className="text-gray-400 max-w-sm text-xs mb-5 leading-relaxed">
+            A temporary connection issue occurred while initializing the panel. Click below to reconnect to Round {currentRound + 1}.
+          </p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-blue-500/20 cursor-pointer flex items-center gap-2"
+          >
+            <span>↻ Reconnect to Interview</span>
+          </button>
         </div>
       )}
 

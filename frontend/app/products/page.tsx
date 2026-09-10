@@ -7,7 +7,7 @@ export default function ProductsPage() {
       <div className="max-w-4xl mx-auto space-y-8">
         <h1 className="text-4xl sm:text-6xl font-serif text-white">Products</h1>
         <p className="text-zinc-400 font-sans leading-relaxed text-lg">
-          Nexora Labs offers a suite of infrastructure primitives designed for high-performance intelligence.
+          Plantra Labs offers a suite of infrastructure primitives designed for high-performance intelligence.
         </p>
         <ul className="space-y-4 text-zinc-300 font-mono text-sm">
           <li>- Realtime Infrastructure</li>

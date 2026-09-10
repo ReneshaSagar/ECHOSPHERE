@@ -57,15 +57,15 @@ export default function ScheduleClient({
     const formatGCalDate = (d: Date) => d.toISOString().replace(/-|:|\.\d+/g, '');
     const dates = `${formatGCalDate(startTime)}/${formatGCalDate(endTime)}`;
 
-    const title = encodeURIComponent(`Nexora Labs AI Interview: ${item.candidate.name} (${item.job.title})`);
+    const title = encodeURIComponent(`Plantra Labs AI Interview: ${item.candidate.name} (${item.job.title})`);
     const details = encodeURIComponent(
       `Candidate: ${item.candidate.name} (${item.candidate.email})\n` +
       `Role: ${item.job.title}\n` +
       `Interview Room: http://localhost:3000/interview/${item.blueprint?.id || ''}\n` +
       `ATS Profile: http://localhost:3000/admin/applications/${item.applicationId}\n\n` +
-      `Powered by OmniPanel for Nexora Labs.`
+      `Powered by OmniPanel for Plantra Labs.`
     );
-    const location = encodeURIComponent(`Nexora Labs Virtual Voice Room (http://localhost:3000/interview/${item.blueprint?.id || ''})`);
+    const location = encodeURIComponent(`Plantra Labs Virtual Voice Room (http://localhost:3000/interview/${item.blueprint?.id || ''})`);
 
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`;
   };
@@ -79,15 +79,15 @@ export default function ScheduleClient({
     const icsContent = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//Nexora Labs//AI Interview Scheduler//EN',
+      'PRODID:-//Plantra Labs//AI Interview Scheduler//EN',
       'BEGIN:VEVENT',
-      `UID:nexoralabs-interview-${item.id}@nexoralabs.com`,
+      `UID:plantralabs-interview-${item.id}@plantralabs.com`,
       `DTSTAMP:${formatIcsDate(new Date())}`,
       `DTSTART:${formatIcsDate(startTime)}`,
       `DTEND:${formatIcsDate(endTime)}`,
-      `SUMMARY:Nexora Labs AI Interview: ${item.candidate.name} - ${item.job.title}`,
+      `SUMMARY:Plantra Labs AI Interview: ${item.candidate.name} - ${item.job.title}`,
       `DESCRIPTION:Candidate: ${item.candidate.name}\\nRole: ${item.job.title}\\nRoom: http://localhost:3000/interview/${item.blueprint?.id || ''}`,
-      `LOCATION:Nexora Labs Virtual Room`,
+      `LOCATION:Plantra Labs Virtual Room`,
       'STATUS:CONFIRMED',
       'END:VEVENT',
       'END:VCALENDAR'

@@ -7,7 +7,7 @@ export default function SolutionsPage() {
       <div className="max-w-4xl mx-auto space-y-8">
         <h1 className="text-4xl sm:text-6xl font-serif text-white">Solutions</h1>
         <p className="text-zinc-400 font-sans leading-relaxed text-lg">
-          Enterprise architecture powered by Nexora Labs.
+          Enterprise architecture powered by Plantra Labs.
         </p>
         <ul className="space-y-4 text-zinc-300 font-mono text-sm">
           <li>- AI Applications</li>

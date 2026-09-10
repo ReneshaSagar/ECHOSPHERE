@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { getDb } from '@/lib/db';
+import { getDb, resolveInterview } from '@/lib/db';
 import { CheckCircle2, ShieldCheck, Clock, FileCheck, ArrowRight, Home, Sparkles } from 'lucide-react';
 import ScorecardDisplay from '@/components/ScorecardDisplay';
 
@@ -15,9 +15,7 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
     b.interviewId === targetId
   );
 
-  const interview = blueprint 
-    ? db.interviews.find(i => i.id === blueprint.interviewId)
-    : db.interviews.find(i => i.id === targetId);
+  const interview = resolveInterview(db, blueprint?.interviewId || targetId);
 
   const application = interview ? db.applications.find(a => a.id === interview.applicationId) : null;
   const candidate = application ? db.candidates.find(c => c.id === application.candidateId) : null;
@@ -35,7 +33,7 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
             <div className="font-sans font-bold text-white text-base tracking-tight flex items-center gap-2">
               <span>OMNIPANEL</span>
             </div>
-            <div className="text-xs font-mono text-white/40">Nexora Labs · autonomous evaluation</div>
+            <div className="text-xs font-mono text-white/40">Plantra Labs · autonomous evaluation</div>
           </div>
         </div>
         <span className="text-xs font-mono px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
@@ -55,7 +53,7 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
             interview session completed!
           </h1>
           <p className="text-white/60 text-sm sm:text-base max-w-xl mx-auto leading-relaxed font-sans">
-            Thank you, <strong className="text-white font-semibold">{candidate?.name || 'Candidate'}</strong>. Your multi-round conversational interview for <strong className="text-white font-semibold">{job?.title || 'the target position'}</strong> at <strong>Nexora Labs</strong> has concluded successfully.
+            Thank you, <strong className="text-white font-semibold">{candidate?.name || 'Candidate'}</strong>. Your multi-round conversational interview for <strong className="text-white font-semibold">{job?.title || 'the target position'}</strong> at <strong>Plantra Labs</strong> has concluded successfully.
           </p>
         </div>
 
@@ -103,7 +101,7 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
                 2
               </div>
               <div className="text-sm space-y-1">
-                <div className="font-bold text-white">Nexora Labs Hiring Committee Review</div>
+                <div className="font-bold text-white">Plantra Labs Hiring Committee Review</div>
                 <div className="text-white/50 text-xs leading-relaxed">
                   Engineering and product leads review the complete session scorecard, verified telemetry, and corroborated background to make stage determinations.
                 </div>

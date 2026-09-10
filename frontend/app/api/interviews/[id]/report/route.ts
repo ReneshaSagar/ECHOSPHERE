@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getDb, resolveInterview } from '@/lib/db';
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
     const db = getDb();
 
-    const interview = db.interviews.find(i => i.id === id);
-    if (!interview) return NextResponse.json({ error: 'Interview not found' }, { status: 404 });
+    const interview = resolveInterview(db, id);
 
     const application = db.applications.find(a => a.id === interview.applicationId);
     const candidate = db.candidates.find(c => c.id === application?.candidateId);
