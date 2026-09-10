@@ -108,7 +108,7 @@ export default function InterviewLobbyWrapper({
   // If candidate has entered the room, render the full multi-round voice agent room
   if (hasStarted) {
     return (
-      <div className="min-h-screen bg-[#030304] flex flex-col overflow-hidden">
+      <div className="h-full flex-1 bg-[#030304] flex flex-col overflow-hidden relative">
         <InterviewRoom
           blueprint={blueprint}
           interviewId={interviewId}

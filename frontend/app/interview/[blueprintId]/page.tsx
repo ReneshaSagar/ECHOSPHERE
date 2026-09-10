@@ -60,6 +60,44 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
     const defaultBp = {
       interview_rounds: [
         {
+          round_name: "Practical Coding & System Design Assessment",
+          round_type: "coding",
+          coding_problem: {
+            title: "1. High-Throughput Rate Limiter & Event Throttler",
+            description: "Implement a sliding window rate limiter class that tracks incoming user requests and enforces a maximum threshold of requests per sliding window in TypeScript or Python. The implementation must support high concurrency and handle edge cases where multiple requests arrive at identical millisecond timestamps.",
+            constraints: [
+              "allowRequest(userId, timestampMs) should run in O(1) or O(log N) average time complexity.",
+              "Space complexity should scale with the number of unique active user IDs.",
+              "Handle concurrent burst traffic and sliding window cleanup cleanly."
+            ]
+          },
+          system_design_problem: {
+            title: "Real-time Distributed Event Notification Pipeline",
+            description: "Architect a resilient real-time notification engine capable of processing 100k events/sec with WebSocket push delivery, retry queues, and deduplication."
+          },
+          purpose: `Evaluate ${candidate.name}'s practical problem-solving, live coding, and system architecture in an interactive workspace for ${job.title}.`,
+          interviewers: [
+            {
+              interviewer_id: panel.technicalPrimary.interviewerId,
+              name: panel.technicalPrimary.name,
+              role: panel.technicalPrimary.role,
+              voice: panel.technicalPrimary.voice,
+              color: panel.technicalPrimary.color,
+              is_primary: true,
+              agent_uid: 9991,
+              instructions: `Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}. Observe their code/diagram changes as structured work events. Prompt them conversationally to explain their approach, complexity, and trade-offs in ${topProjects}.`,
+              greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. In this first round, we will evaluate your practical problem-solving. You can choose between the Coding editor or System Design canvas in your workspace. Take a look at the problem and walk me through your initial thoughts!`
+            }
+          ],
+          interviewer: {
+            name: panel.technicalPrimary.name,
+            role: panel.technicalPrimary.role,
+            instructions: `Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}.`,
+            greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}.`
+          },
+          topics: ["Problem Solving", "Algorithm Selection", "System Architecture", "Complexity Trade-offs"]
+        },
+        {
           round_name: "Technical Architecture & Concurrency",
           round_type: "technical",
           purpose: `Evaluate ${candidate.name}'s capabilities in core engineering, concurrency, and real-world system architecture for ${job.title}.`,
@@ -73,25 +111,14 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
               is_primary: true,
               agent_uid: 9991,
               instructions: `Speak naturally and concisely with ${candidate.name}. Explore their codecraft and system design depth in ${topProjects}.`,
-              greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}, and joining me is ${panel.technicalChallenger.name}. To kick things off, could you briefly introduce yourself and walk us through a recent project you built?`
-            },
-            {
-              interviewer_id: panel.technicalChallenger.interviewerId,
-              name: panel.technicalChallenger.name,
-              role: panel.technicalChallenger.role,
-              voice: panel.technicalChallenger.voice,
-              color: panel.technicalChallenger.color,
-              is_primary: false,
-              agent_uid: 9992,
-              instructions: `You are ${panel.technicalChallenger.name}, ${panel.technicalChallenger.role}. Challenge architectural trade-offs, probe scalability bottlenecks, evaluate latency budgets, and ask about edge cases and failure modes.`,
-              greeting_message: `Hi ${candidate.name}, I'm ${panel.technicalChallenger.name}, ${panel.technicalChallenger.role}. I'll be focusing on system design trade-offs, scalability boundaries, and failure modes with you today.`
+              greeting_message: `Welcome to Round 2, ${candidate.name}! In this round, we'll dive deeper into high-scale distributed systems and concurrency.`
             }
           ],
           interviewer: {
             name: panel.technicalPrimary.name,
             role: panel.technicalPrimary.role,
             instructions: `Speak naturally and concisely with ${candidate.name}. Explore their codecraft and system design depth in ${topProjects}.`,
-            greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. To kick things off, could you introduce yourself and tell us about your recent work?`
+            greeting_message: `Welcome to Round 2, ${candidate.name}!`
           },
           topics: ["Core Architecture", "Data Structures", "System Scale", "Engineering Trade-offs"]
         },
@@ -122,8 +149,9 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
         }
       ],
       rubric: {
+        "Problem Solving": "Evaluates algorithm choice and workspace progress",
+        "System Architecture": "Evaluates component selection and trade-off reasoning",
         "Technical Depth": "Evaluates codecraft and architecture",
-        "System Scale": "Evaluates distributed systems concepts",
         "Communication": "Evaluates clarity and structured thought"
       }
     };
@@ -154,7 +182,7 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
   }
 
   return (
-    <div className="min-h-screen bg-[#030304] text-[#f5f5f7] flex flex-col font-sans">
+    <div className="h-screen bg-[#030304] text-[#f5f5f7] flex flex-col font-sans">
       <header className="sticky top-0 z-40 bg-[#030304]/80 backdrop-blur-xl border-b border-white/[0.06] py-3.5 px-6 flex justify-between items-center shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 flex items-center justify-center text-xs font-bold text-white shadow-[0_0_15px_rgba(168,85,247,0.15)]">

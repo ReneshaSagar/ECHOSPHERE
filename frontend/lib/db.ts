@@ -209,6 +209,9 @@ export interface CandidateContext {
   crossSourceContext?: CrossSourceContext;
   interviewContext?: InterviewContext;
 
+  // --- LLM Preprocessed Agent Brief ---
+  interviewBrief?: any; // The compact structured JSON brief for the agent
+
   // --- Backwards Compatibility Accessors ---
   headline?: string;
   about?: string;

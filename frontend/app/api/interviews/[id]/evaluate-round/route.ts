@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import OpenAI from 'openai';
 import { getDb, saveDb } from '@/lib/db';
 
 /**
@@ -93,7 +93,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       };
     } else {
       try {
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
         const systemInstruction = `You are an expert AI Interview Evaluator and Senior Technical Hiring Partner at Nexora Labs.
 Evaluate candidate performance on this specific round by scoring REQUIRED COMPETENCIES FIRST against the rubric, then deriving the overall score.
 
@@ -134,14 +133,22 @@ ${cleanTranscript.map((t: any) => `[${t.speaker || 'Speaker'}]: ${t.text || ''}`
 
 Evaluate competencies first, derive the score, and return the JSON decision.`;
 
-        const model = genAI.getGenerativeModel({
-          model: "gemini-3.6-flash",
-          systemInstruction,
-          generationConfig: { responseMimeType: "application/json" },
+        const openai = new OpenAI({
+          apiKey: process.env.GEMINI_DIRECT_API_KEY || process.env.REQUESTY_API_KEY || process.env.GEMINI_API_KEY || '',
+          baseURL: 'https://router.requesty.ai/v1'
         });
 
-        const result = await model.generateContent(userPrompt);
-        const parsed = JSON.parse(result.response.text());
+        const response = await openai.chat.completions.create({
+          model: "google/gemini-2.0-flash-exp",
+          messages: [
+            { role: "system", content: systemInstruction },
+            { role: "user", content: userPrompt }
+          ],
+          response_format: { type: "json_object" }
+        });
+        
+        const resultText = response.choices[0].message.content || '{}';
+        const parsed = JSON.parse(resultText.replace(/```json/g, '').replace(/```/g, '').trim());
         
         let score = typeof parsed.score === 'number' ? parsed.score : 50;
         let decision = parsed.decision === 'PASS' ? 'PASS' : 'FAIL';

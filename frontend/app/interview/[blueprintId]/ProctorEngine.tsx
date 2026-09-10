@@ -12,6 +12,25 @@ import {
 } from '@/lib/proctoringEngine';
 import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 
+// Filter Emscripten/MediaPipe WASM C++ internal INFO logs sent via console.error (stderr)
+if (typeof window !== 'undefined' && !(window as any).__mediapipe_log_patched) {
+  (window as any).__mediapipe_log_patched = true;
+  const originalError = console.error;
+  console.error = (...args: any[]) => {
+    const msg = args[0] ? String(args[0]) : '';
+    if (
+      msg.includes('INFO:') || 
+      msg.includes('TensorFlow Lite') || 
+      msg.includes('XNNPACK delegate') ||
+      msg.includes('Created TensorFlow')
+    ) {
+      console.info(...args);
+      return;
+    }
+    originalError.apply(console, args);
+  };
+}
+
 interface ProctorEngineProps {
   interviewId: string;
   isRunning: boolean;
@@ -68,6 +87,8 @@ export default function ProctorEngine({
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const faceLandmarkerRef = useRef<FaceLandmarker | null>(null);
   const lastCameraBlockedAlertRef = useRef<number>(0);
+  const lastVideoTimeRef = useRef<number>(-1);
+  const lastTimestampRef = useRef<number>(0);
 
   const logEvent = useCallback(async (event: ProctorEvent) => {
     eventsHistoryRef.current.push(event);
@@ -175,7 +196,7 @@ export default function ProctorEngine({
         const landmarker = await FaceLandmarker.createFromOptions(vision, {
           baseOptions: {
             modelAssetPath: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
-            delegate: "GPU"
+            delegate: "CPU"
           },
           outputFaceBlendshapes: true,
           runningMode: "VIDEO",
@@ -259,8 +280,34 @@ export default function ProctorEngine({
           }
         }
 
-        const results = faceLandmarkerRef.current.detectForVideo(videoRef.current, performance.now());
-        const faceCount = results.faceLandmarks ? results.faceLandmarks.length : 0;
+        if (!videoRef.current || videoRef.current.readyState < 2 || videoRef.current.paused || videoRef.current.ended) {
+          animationFrameRef.current = requestAnimationFrame(renderLoop);
+          return;
+        }
+
+        let faceCount = 0;
+        let results: any = null;
+
+        if (
+          faceLandmarkerRef.current &&
+          videoRef.current &&
+          videoRef.current.videoWidth > 0 &&
+          videoRef.current.currentTime !== lastVideoTimeRef.current
+        ) {
+          lastVideoTimeRef.current = videoRef.current.currentTime;
+          let nowTimestamp = Math.floor(performance.now());
+          if (nowTimestamp <= lastTimestampRef.current) {
+            nowTimestamp = lastTimestampRef.current + 1;
+          }
+          lastTimestampRef.current = nowTimestamp;
+
+          try {
+            results = faceLandmarkerRef.current.detectForVideo(videoRef.current, nowTimestamp);
+            faceCount = results?.faceLandmarks ? results.faceLandmarks.length : 0;
+          } catch (err) {
+            // Safeguard against timestamp non-monotonicity or frame read errors
+          }
+        }
 
         if (now - lastComputeTime > 1000) {
           lastComputeTime = now;
@@ -293,10 +340,10 @@ export default function ProctorEngine({
             }
           }
 
-          if (faceCount === 1 && results.faceBlendshapes && results.faceBlendshapes[0]) {
+          if (faceCount === 1 && results && results.faceBlendshapes && results.faceBlendshapes[0]) {
             const blendshapes = results.faceBlendshapes[0].categories;
-            const eyeLookInLeft = blendshapes.find(b => b.categoryName === 'eyeLookInLeft')?.score || 0;
-            const eyeLookOutRight = blendshapes.find(b => b.categoryName === 'eyeLookOutRight')?.score || 0;
+            const eyeLookInLeft = blendshapes.find((b: any) => b.categoryName === 'eyeLookInLeft')?.score || 0;
+            const eyeLookOutRight = blendshapes.find((b: any) => b.categoryName === 'eyeLookOutRight')?.score || 0;
             if (eyeLookInLeft > 0.6 && eyeLookOutRight > 0.6 && !alertSent) {
               newGazeScore = 40;
               if (now - lastAlertTime > 5000) {

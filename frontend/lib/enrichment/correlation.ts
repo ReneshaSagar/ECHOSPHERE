@@ -1,4 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getDb, saveDb, Candidate } from '@/lib/db';
+import OpenAI from 'openai';
 import type { 
   CandidateContext, 
   NormalizedResumeContext, 
@@ -491,99 +493,155 @@ export async function correlateAndBuildCandidateContext({
 
   let geminiSynthesisOutput: EnrichmentSourceLogging['geminiSynthesis'] = {
     careerProgression: crossSourceContext.careerProgressionSummary,
-    notableClaims: crossSourceContext.notableClaims,
+      notableClaims: crossSourceContext.notableClaims,
     interviewHooks: interviewContext.technicalInterviewHooks.concat(interviewContext.behavioralInterviewHooks)
   };
 
-  // 4. Gemini SYNTHESIS ONLY (Strictly forbidden from generating factual profile information)
-  const geminiKey = process.env.GEMINI_API_KEY;
-  if (geminiKey) {
+  // 4. Gemini SYNTHESIS ONLY (Generates compact Candidate Interview Brief)
+  const requestyKey = process.env.REQUESTY_API_KEY || (process.env.OPENAI_API_KEY?.startsWith('rqsty') ? process.env.OPENAI_API_KEY : undefined);
+  const directGeminiKey = process.env.GEMINI_DIRECT_API_KEY || process.env.GEMINI_API_KEY;
+  
+  // Prefer Direct Gemini Key if available
+  const apiKey = directGeminiKey || requestyKey;
+  const isUsingRequesty = !directGeminiKey && requestyKey;
+  
+  if (apiKey) {
     try {
-      const genAI = new GoogleGenerativeAI(geminiKey);
-      const model = genAI.getGenerativeModel({
-        model: "gemini-3.6-flash",
-        generationConfig: { responseMimeType: "application/json" }
+      const openai = new OpenAI({
+        apiKey: apiKey,
+        baseURL: isUsingRequesty ? 'https://router.requesty.ai/v1' : 'https://generativelanguage.googleapis.com/v1beta/openai/'
       });
 
-      const prompt = `You are an AI synthesis strategist and principal interviewer for Nexora Labs (powered by OmniPanel).
-You are given verified, immutable CandidateContext extracted deterministically from Resume, LinkedIn, and GitHub, alongside a target Job Description.
+      const systemInstruction = `You are an elite technical recruiting strategist and engineering assessment expert.
+Your job is to read raw candidate data (Resume, LinkedIn, GitHub) and a target Job Description, and produce an in-depth, multi-dimensional Candidate Interview Brief.
+This brief will be injected directly into the prompt of AI Interviewer Agents to guide a highly rigorous, adaptive technical interview.
 
-STRICT DATA INTEGRITY DIRECTIVE:
-- YOU ARE STRICTLY FORBIDDEN FROM GENERATING OR ALTERING FACTUAL PROFILE FIELDS:
-  Do NOT generate or modify: headline, name, bio/about, experience, education, skills, projects, certifications, organizations, repository names, pinned repositories, stars, languages, or commit counts.
-- All factual information is already finalized by deterministic mappers from provider APIs.
-- Your output is EXCLUSIVELY limited to high-level analysis and question synthesis.
-
-REQUIRED SYNTHESIS OUTPUTS:
-1. "careerProgressionSummary": 1-2 sentence narrative summarizing their professional trajectory based strictly on the verified roles and dates provided.
-2. "notableClaims": 2-4 verified claims, achievements, or metrics explicitly stated in their background with a "verificationFocus" for live interview probing.
-3. "highRelevanceEvidence": 3-4 topics from their verified background that directly align with "${job.title}".
-4. "technicalInterviewHooks": 2-4 deep technical questions probing their architectural choices, data flows, or concurrency in their verified projects.
-5. "behavioralInterviewHooks": 1-2 behavioral questions regarding collaboration and production challenges.
-6. "projectsWorthProbing": 1-3 projects from their verified project list that are relevant to "${job.title}".
-7. "ignoredOrLowRelevanceTopics": Background topics that are outside the scope of "${job.title}" (e.g. blockchain/crypto, unrelated game scripts, generic web utilities) to omit from the interview.
+CRITICAL ASSESSMENT INSTRUCTIONS:
+1. Extract ONLY information useful for interviewing this candidate for this specific role.
+2. Strictly distinguish between:
+   - "candidate_claim": something the candidate explicitly claims in their resume/profile.
+   - "observed_evidence": something directly supported by concrete source data (e.g. a GitHub repo with commit history or stars).
+   - "inference": an interpretation or assumption made by you.
+   Never turn an inference or resume claim into a verified fact.
+3. Preserve provenance for all information (e.g., source: "Resume", "LinkedIn", "GitHub").
+4. For areas worth probing, always specify WHY it is worth probing.
 
 Target Job:
 Role: ${job.title}
 Description: ${job.description}
 Requirements: ${job.requirements}
 
-Verified Candidate Context (Deterministic Ground Truth):
-Resume Summary: ${JSON.stringify(resume, null, 2)}
-Verified LinkedIn: ${JSON.stringify(linkedin || {}, null, 2)}
-Verified GitHub Repositories: ${JSON.stringify((github?.repositories || []).map(r => ({ name: r.name, description: r.description, language: r.language, isPinned: r.isPinned })), null, 2)}
+Raw Candidate Data:
+Resume: ${JSON.stringify(resume, null, 2)}
+LinkedIn: ${JSON.stringify(linkedin || {}, null, 2)}
+GitHub Repos: ${JSON.stringify((github?.repositories || []).map(r => ({ name: r.name, description: r.description, language: r.language, isPinned: r.isPinned, stars: (r as any).stars, commits: (r as any).candidateCommits })), null, 2)}
 
-Return ONLY valid JSON matching this exact schema:
+Return ONLY valid JSON matching this exact 10-part schema:
 {
-  "careerProgressionSummary": "...",
-  "notableClaims": [
-    { "claim": "...", "source": "resume" | "linkedin" | "github", "verificationFocus": "..." }
+  "candidate_snapshot": {
+    "current_role": "...",
+    "relevant_background": "...",
+    "target_role": "...",
+    "overall_relevance": "..."
+  },
+  "relevant_technical_skills": [
+    {
+      "skill": "...",
+      "evidence_type": "candidate_claim" | "observed_evidence" | "inference",
+      "source": "..."
+    }
   ],
-  "highRelevanceEvidence": [
-    { "topic": "...", "relevance": "HIGH", "reason": "...", "evidenceSources": ["resume", "github"] }
+  "relevant_experience": [
+    {
+      "company": "...",
+      "role": "...",
+      "duration": "...",
+      "what_they_worked_on": "...",
+      "relevant_responsibilities": "...",
+      "source": "...",
+      "claims_vs_evidence": "..."
+    }
   ],
-  "technicalInterviewHooks": [ "..." ],
-  "behavioralInterviewHooks": [ "..." ],
-  "projectsWorthProbing": [
-    { "name": "...", "relevanceLevel": "HIGH", "reasonToProbe": "...", "suggestedQuestions": ["..."], "sourceUrl": "..." }
+  "relevant_projects": [
+    {
+      "name": "...",
+      "description": "...",
+      "technologies": ["..."],
+      "candidate_contribution": "...",
+      "why_relevant": "...",
+      "source": "..."
+    }
   ],
-  "ignoredOrLowRelevanceTopics": [ "..." ]
+  "verified_evidence": [
+    {
+      "item": "...",
+      "evidence_strength": "High" | "Medium" | "Low",
+      "provenance": "..."
+    }
+  ],
+  "claims_to_validate": [
+    {
+      "claim": "...",
+      "source": "...",
+      "what_needs_validation": "..."
+    }
+  ],
+  "areas_worth_probing": [
+    {
+      "area": "...",
+      "why_worth_probing": "..."
+    }
+  ],
+  "potential_gaps": [
+    {
+      "gap": "...",
+      "concern_level": "Minor" | "Moderate" | "Major"
+    }
+  ],
+  "role_alignment": {
+    "strong_matches": ["..."],
+    "partial_matches": ["..."],
+    "missing_or_unclear": ["..."]
+  },
+  "interview_guidance": {
+    "highest_value_investigations": ["..."],
+    "do_not_assume": ["..."]
+  }
 }`;
 
-      const res = await model.generateContent(prompt);
-      const parsed = JSON.parse(res.response.text());
+      let resultText = '';
+      let attempts = 0;
+      while (attempts < 2) {
+        try {
+          const response = await openai.chat.completions.create({
+            model: isUsingRequesty ? "google/gemini-2.0-flash-exp" : "gemini-3.6-flash",
+            messages: [
+              { role: "system", content: systemInstruction },
+              { role: "user", content: "Analyze the raw data and synthesize the Candidate Interview Brief JSON." }
+            ],
+            response_format: { type: "json_object" }
+          });
+          resultText = response.choices[0].message.content || '{}';
+          break;
+        } catch (e) {
+          attempts++;
+          if (attempts >= 2) throw e;
+        }
+      }
+
+      resultText = resultText.replace(/```json/g, '').replace(/```/g, '').trim();
+      const parsed = JSON.parse(resultText);
 
       if (parsed) {
-        if (parsed.careerProgressionSummary) {
-          crossSourceContext.careerProgressionSummary = parsed.careerProgressionSummary;
-        }
-        if (Array.isArray(parsed.notableClaims) && parsed.notableClaims.length > 0) {
-          crossSourceContext.notableClaims = parsed.notableClaims;
-        }
-        if (Array.isArray(parsed.highRelevanceEvidence) && parsed.highRelevanceEvidence.length > 0) {
-          interviewContext.highRelevanceEvidence = parsed.highRelevanceEvidence;
-        }
-        if (Array.isArray(parsed.technicalInterviewHooks) && parsed.technicalInterviewHooks.length > 0) {
-          interviewContext.technicalInterviewHooks = parsed.technicalInterviewHooks;
-        }
-        if (Array.isArray(parsed.behavioralInterviewHooks) && parsed.behavioralInterviewHooks.length > 0) {
-          interviewContext.behavioralInterviewHooks = parsed.behavioralInterviewHooks;
-        }
-        if (Array.isArray(parsed.projectsWorthProbing) && parsed.projectsWorthProbing.length > 0) {
-          interviewContext.projectsWorthProbing = parsed.projectsWorthProbing;
-        }
-        if (Array.isArray(parsed.ignoredOrLowRelevanceTopics) && parsed.ignoredOrLowRelevanceTopics.length > 0) {
-          interviewContext.ignoredOrLowRelevanceTopics = parsed.ignoredOrLowRelevanceTopics;
-        }
-
+        (mappedCandidateContext as any).interviewBrief = parsed;
         geminiSynthesisOutput = {
-          careerProgression: parsed.careerProgressionSummary,
-          notableClaims: parsed.notableClaims,
-          interviewHooks: (parsed.technicalInterviewHooks || []).concat(parsed.behavioralInterviewHooks || [])
+          careerProgression: "Stored in interviewBrief",
+          notableClaims: [],
+          interviewHooks: []
         };
       }
-    } catch (llmErr: any) {
-      console.warn('[Correlation Engine] Gemini synthesis fallback to heuristic:', llmErr.message);
+    } catch (error) {
+      console.error('[Gemini Synthesis Error]', error);
     }
   }
 
@@ -617,6 +675,7 @@ Return ONLY valid JSON matching this exact schema:
     github,
     crossSourceContext,
     interviewContext,
+    interviewBrief: (mappedCandidateContext as any).interviewBrief,
 
     // Factual fields directly from deterministic mapper (NEVER from Gemini)
     // Original headline exactly as returned by provider:

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb, saveDb } from '@/lib/db';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import OpenAI from 'openai';
 
 /**
  * Heuristically analyzes candidate responses from full multi-round transcript.
@@ -98,43 +98,27 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const stats = analyzeCandidateFullTranscript(transcript);
     let scorecard: any = null;
 
-    // Hard Guardrail: If candidate gave gibberish, non-answers, or empty responses (< 2 substantive technical answers)
-    if (!stats.hasSubstantialEvidence || stats.totalCandidateWords < 25) {
-      scorecard = {
-        overall_recommendation: "No Hire",
-        overallScore: Math.min(35, Math.max(15, stats.totalCandidateWords)),
-        overall_summary: `Evaluation generated with limited transcript data for this session. The scoring below reflects what was captured during the interview panel. A manual review of the session recording is recommended before making a final decision.`,
-        strengths: stats.totalCandidateWords > 10 ? ["Attended and participated in the interview session"] : [],
-        weaknesses: [
-          "Insufficient transcript data to verify technical depth across core systems requirements",
-          "Unable to substantiate architectural reasoning from captured responses",
-          "Manual review recommended to supplement automated scoring"
-        ],
-        rubric_evaluations: [
-          {
-            pillar: "Technical Depth & Codecraft",
-            score: 1,
-            feedback: "Insufficient transcript evidence to score this pillar. Manual review recommended.",
-            evidence: []
-          },
-          {
-            pillar: "Behavioral & Communication",
-            score: 2,
-            feedback: "Limited data available. Session recording review recommended.",
-            evidence: []
-          }
-        ]
-      };
-    } else {
-      // Try Gemini evaluation
-      try {
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-        const systemInstruction = `You are the Lead Hiring Partner and Senior Evaluator at Nexora Labs.
-Analyze the complete multi-round interview transcript (Technical Panel + HR Round) and evaluate candidate performance against the Job Description and Rubric with uncompromising technical rigor.
+    // Extract integrity and proctoring info
+    const integrityEvents = interview.suspiciousEvents || [];
+    const hasIntegrityFlags = integrityEvents.length > 0;
+    const proctoringSummary = hasIntegrityFlags 
+      ? JSON.stringify(integrityEvents.map(e => ({ type: e.type, details: e.details, timestamp: e.timestamp })))
+      : "No integrity flags detected.";
+
+    // Always use LLM, even for low data, so it can generate a professional report about the violations/absence.
+    try {
+      const systemInstruction = `You are the Lead Hiring Partner, Senior Evaluator, and Chief Proctor at Nexora Labs.
+Analyze the complete multi-round interview transcript and any proctoring/integrity events to evaluate candidate performance against the Job Description and Rubric with uncompromising technical rigor.
 
 CRITICAL EVALUATION RULES:
 1. EVIDENCE GROUNDING: You MUST evaluate ONLY what the candidate actually said in the transcript. Do NOT assume, extrapolate, or hallucinate skills.
-2. COMPETENCY EVIDENCE SCHEMA:
+2. INTEGRITY & PROCTORING: If the candidate has severe integrity violations (e.g., Camera Blocked, Tab Switches, No Face Detected) or provided practically zero substantive responses:
+   - You MUST disqualify the candidate ("overall_recommendation": "Disqualified / No Hire").
+   - You MUST set "overallScore" to 0.
+   - Your "overall_summary" MUST be a deeply professional, formal incident report explaining exactly what happened (e.g., "The evaluation was terminated due to repeated proctoring violations including tab switching and camera obstruction, preventing any valid assessment of technical competencies.").
+   - Your "weaknesses" MUST list the specific violations or the failure to participate.
+   - Your "rubric_evaluations" MUST reflect score 0 and state that the pillar could not be assessed due to violations or absence.
+3. COMPETENCY EVIDENCE SCHEMA:
    For every rubric competency, you must explicitly output:
    - "pillar": Name of the competency / pillar
    - "competencyScore": number (0-100)
@@ -143,27 +127,17 @@ CRITICAL EVALUATION RULES:
    - "missingEvidence": array of missing concepts or omitted mechanisms
    - "confidence": "HIGH" | "MEDIUM" | "LOW"
    - "feedback": 1-2 sentence assessment
-3. NO EVIDENCE = NO POSITIVE SCORE:
-   - If no evidence exists in the transcript for a competency, score must be <= 30 and evidenceQuality must be "NONE".
-4. WEAK/PARTIAL EVIDENCE = CONSTRAINED SCORE:
-   - If evidence is vague or lacking implementation details, evidenceQuality must be "VAGUE" or "PARTIAL", score 40-65.
-5. STRONG EVIDENCE = HIGH SCORE:
-   - High scores (80+) require sufficient, competency-specific, verbatim candidate quotes.
-6. OVERALL RECOMMENDATION:
-   - "Strong Hire" (88-100): Mastery demonstrated across all pillars with deep verbatim evidence.
-   - "Hire" (75-87): Solid competencies, structured communication, minor trade-off gaps.
-   - "Leaning Hire" (60-74): Acceptable foundations but inconsistent depth.
-   - "Leaning No Hire" (45-59): Significant technical gaps or missing evidence.
-   - "No Hire" (< 45): Minimal/no demonstrable evidence, gibberish, or failed core questions.
+4. NO EVIDENCE OR BS = NO SCORE:
+   - If no evidence exists in the transcript for a competency, or if the candidate is speaking vaguely/BSing without technical substance, the score MUST be between 0 and 20, and evidenceQuality must be "NONE" or "VAGUE". DO NOT default to a passing grade like 60-70 just for participation.
 
 You MUST return ONLY valid JSON matching this exact structure:
 {
-  "overall_recommendation": "Strong Hire" | "Hire" | "Leaning Hire" | "Leaning No Hire" | "No Hire",
-  "overallScore": <number 0-100 derived from competency scores>,
+  "overall_recommendation": "Strong Hire" | "Hire" | "Leaning Hire" | "Leaning No Hire" | "No Hire" | "Disqualified / No Hire",
+  "overallScore": <number 0-100 derived from competency scores, MUST be 0 if disqualified>,
   "confidence": "HIGH" | "MEDIUM" | "LOW",
-  "overall_summary": "A concise 2-3 sentence executive assessment of the candidate's performance across both rounds based on concrete transcript evidence.",
+  "overall_summary": "A concise, professional executive assessment (or incident report if disqualified) of the candidate's performance based on concrete transcript evidence and proctoring events.",
   "strengths": ["<Specific demonstrated technical strength with evidence>"],
-  "weaknesses": ["<Specific missing trade-off, lack of depth, or unverified claim>"],
+  "weaknesses": ["<Specific missing trade-off, lack of depth, unverified claim, or integrity violation>"],
   "rubric_evaluations": [
     {
       "pillar": "Technical Problem Solving & Architecture",
@@ -177,34 +151,56 @@ You MUST return ONLY valid JSON matching this exact structure:
   ]
 }`;
 
-        const formattedTranscript = transcript.length > 0 
-          ? transcript.map((t: any) => `[${t.speaker || 'Speaker'}]: ${t.text || ''}`).join('\n')
-          : "Candidate completed live interview panel session.";
+      const formattedTranscript = transcript.length > 0 
+        ? transcript.map((t: any) => `[${t.speaker || 'Speaker'}]: ${t.text || ''}`).join('\n')
+        : "No transcript data captured. Candidate was silent or absent.";
 
-        const prompt = `
+      const prompt = `
 Job Title: ${job?.title || 'Senior Software Engineer'}
 Job Description: ${job?.description || 'Build scalable software systems'}
-Candidate Resume: ${application?.resumeText?.slice(0, 2000) || 'Relevant experience'}
 Rubric: ${JSON.stringify(rubric, null, 2)}
+
+Proctoring / Integrity Log:
+${proctoringSummary}
+
 Full Transcript:
 ${formattedTranscript}
 
 Generate the JSON Scorecard.`;
 
-        const model = genAI.getGenerativeModel({
-          model: "gemini-3.6-flash",
-          systemInstruction,
-          generationConfig: { responseMimeType: "application/json" }
+        const openai = new OpenAI({
+          apiKey: process.env.GEMINI_DIRECT_API_KEY || process.env.REQUESTY_API_KEY || process.env.GEMINI_API_KEY || '',
+          baseURL: 'https://router.requesty.ai/v1'
         });
-
-        const result = await model.generateContent(prompt);
-        const parsed = JSON.parse(result.response.text());
+        
+        const response = await openai.chat.completions.create({
+          model: "google/gemini-2.0-flash-exp",
+          messages: [
+            { role: "system", content: systemInstruction },
+            { role: "user", content: prompt }
+          ],
+          response_format: { type: "json_object" }
+        });
+        
+        const resultText = response.choices[0].message.content || '{}';
+        const parsed = JSON.parse(resultText.replace(/```json/g, '').replace(/```/g, '').trim());
 
         let score = typeof parsed.overallScore === 'number' ? parsed.overallScore : 75;
         let rec = parsed.overall_recommendation || (score >= 80 ? 'Hire' : score >= 60 ? 'Leaning Hire' : 'No Hire');
 
-        // Post-validation guardrail on LLM output
-        if (score >= 80 && stats.verbatimQuotes.length < 2) {
+        // Post-validation guardrails on LLM output
+        if (!stats.hasSubstantialEvidence && stats.substantiveCount === 0) {
+          // The candidate said literally zero tech words. Absolute BS or silent.
+          score = 0;
+          rec = 'No Hire';
+          parsed.overall_summary = "Candidate provided no substantive technical answers during the evaluation. Responses were either absent or completely lacked relevant technical terminology, resulting in an automatic failure.";
+          parsed.rubric_evaluations = parsed.rubric_evaluations.map((e: any) => ({
+             ...e,
+             competencyScore: 0,
+             evidenceQuality: "NONE",
+             feedback: "No valid technical evidence provided."
+          }));
+        } else if (score >= 80 && stats.verbatimQuotes.length < 2) {
           score = 70;
           rec = 'Leaning Hire';
         }
@@ -246,7 +242,6 @@ Generate the JSON Scorecard.`;
           }))
         };
       }
-    }
 
     // Save scorecard and update interview status
     interview.scorecard = scorecard;

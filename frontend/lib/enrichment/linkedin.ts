@@ -118,9 +118,9 @@ async function fetchFromBrightData(cleanUrl: string, apiToken: string): Promise<
     }
 
     if (results && results.snapshot_id) {
-      console.log(`[Bright Data] Async snapshot created: ${results.snapshot_id}. Polling up to 60s...`);
-      for (let attempt = 0; attempt < 15; attempt++) {
-        await new Promise(resolve => setTimeout(resolve, 4000));
+      console.log(`[Bright Data] Async snapshot created: ${results.snapshot_id}. Polling up to 150s...`);
+      for (let attempt = 0; attempt < 30; attempt++) {
+        await new Promise(resolve => setTimeout(resolve, 5000));
         try {
           const pollRes = await fetch(`https://api.brightdata.com/datasets/v3/snapshot/${results.snapshot_id}?format=json`, {
             headers: { 'Authorization': `Bearer ${apiToken}` }
@@ -136,7 +136,7 @@ async function fetchFromBrightData(cleanUrl: string, apiToken: string): Promise<
           console.warn('[Bright Data] Polling notice:', pollErr.message);
         }
       }
-      console.warn('[Bright Data] Polling timed out after 60s.');
+      console.warn('[Bright Data] Polling timed out after 150s.');
       return null;
     }
 
@@ -197,10 +197,10 @@ export function mapRawLinkedInToCandidateContext(raw: any): CandidateContext {
           description: e.description ? String(e.description).trim() : undefined
         };
       });
-  } else if (raw.position && raw.current_company_name) {
+  } else if (raw.current_company_name || raw.position) {
     experience = [{
-      title: String(raw.position).trim(),
-      company: String(raw.current_company_name).trim(),
+      title: String(raw.position || raw.headline || 'Member').trim(),
+      company: String(raw.current_company_name || 'Unknown Company').trim(),
       duration: 'Present',
       description: about ? about.slice(0, 300) : undefined
     }];

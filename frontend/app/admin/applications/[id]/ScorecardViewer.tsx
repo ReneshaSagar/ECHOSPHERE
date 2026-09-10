@@ -12,7 +12,8 @@ import {
 function OverallScoreRing({ score, verdict }: { score: number; verdict: string }) {
   const isNoHire = verdict?.toLowerCase().includes('no hire');
   const isStrong = verdict?.toLowerCase().includes('strong');
-  const color = isNoHire ? '#f43f5e' : isStrong ? '#10b981' : '#f59e0b';
+  const isDisqualified = verdict?.toLowerCase().includes('disqualified');
+  const color = isDisqualified ? '#64748b' : isNoHire ? '#f43f5e' : isStrong ? '#10b981' : '#f59e0b';
   const size = 120;
   const r = (size - 12) / 2;
   const circ = 2 * Math.PI * r;
@@ -21,12 +22,20 @@ function OverallScoreRing({ score, verdict }: { score: number; verdict: string }
     <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="rotate-[-90deg]">
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={10} />
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={10}
-          strokeDasharray={`${dash} ${circ}`} strokeLinecap="round" />
+        {!isDisqualified && (
+          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={10}
+            strokeDasharray={`${dash} ${circ}`} strokeLinecap="round" />
+        )}
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-2xl font-bold text-white">{score}</span>
-        <span className="text-[9px] font-mono text-white/40 uppercase tracking-wider">/ 100</span>
+        {isDisqualified ? (
+          <Shield className="w-8 h-8 text-slate-500 mb-1" />
+        ) : (
+          <>
+            <span className="text-2xl font-bold text-white">{score}</span>
+            <span className="text-[9px] font-mono text-white/40 uppercase tracking-wider">/ 100</span>
+          </>
+        )}
       </div>
     </div>
   );

@@ -20,7 +20,11 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
 
   const job = db.jobs.find(j => j.id === application.jobId);
   const candidate = db.candidates.find(c => c.id === application.candidateId);
-  const candidateContext = application.candidateContext || candidate?.candidateContext;
+  const candidateContext = {
+    ...(application.candidateContext || {}),
+    ...(candidate?.candidateContext || {}),
+    interviewBrief: candidate?.candidateContext?.interviewBrief || application.candidateContext?.interviewBrief
+  };
 
   const interview = db.interviews.find(i => i.applicationId === application.id);
   const blueprint = interview ? db.blueprints.find(b => b.interviewId === interview.id) : undefined;

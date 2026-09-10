@@ -132,56 +132,39 @@ export function injectKnowledgeBaseIntoAgentInstructions(
   targetRole: string = 'Engineering Role',
   rawResumeText?: string
 ): string {
-  const kb = formatCandidateKnowledgeBase(candidateContext, candidateName, targetRole, rawResumeText);
-
   // If already injected, return as is
   if (baseInstructions.includes('CANDIDATE KNOWLEDGE BASE')) {
     return baseInstructions;
   }
+  
+  const prompts = require('@/config/prompts/systemPrompts.json');
+
+  const framingDirectives = `
+================================================================================
+PRIMARY INTERVIEW OBJECTIVE & ROLE FOCUS DIRECTIVES
+================================================================================
+1. MAIN FOCUS IS THE TARGET JOB: Your primary goal is to evaluate if ${candidateName} has the core technical capabilities, system design depth, and engineering bar required for the position: "${targetRole}".
+2. BRIEF IS SUPPLEMENTARY CONTEXT: The Candidate Knowledge Base below is supplementary background data to personalize questions and validate claims. Do NOT spend the entire interview interrogating their resume or GitHub repos line-by-line.
+3. BALANCED INTERVIEW FOCUS:
+   - 70% FOCUS: Evaluate core technical competencies, architectural trade-offs, and system design challenges essential for ${targetRole}.
+   - 30% FOCUS: Reference candidate's specific background, projects, or claims to ground your technical evaluation in real evidence.`;
+
+  let kb = '';
+  if (candidateContext?.interviewBrief) {
+    kb = `================================================================================
+CANDIDATE KNOWLEDGE BASE (LLM SYNTHESIZED BRIEF)
+Candidate: ${candidateName} | Target Position: ${targetRole}
+================================================================================
+${JSON.stringify(candidateContext.interviewBrief, null, 2)}`;
+  } else {
+    kb = formatCandidateKnowledgeBase(candidateContext, candidateName, targetRole, rawResumeText);
+  }
 
   return `${baseInstructions.trim()}
 
+${framingDirectives}
+
 ${kb}
 
-================================================================================
-CRITICAL ANSWER VALIDATION & BEHAVIORAL PROTOCOL (MANDATORY)
-================================================================================
-The candidate speaking DOES NOT mean they answered the question.
-You MUST evaluate the technical substance of EVERY answer before responding:
-
-1. STRONG / VALID ANSWER:
-   - Acknowledge briefly (1 short sentence max).
-   - Probe deeper into architectural trade-offs or move to the next topic if sufficient evidence was collected.
-
-2. PARTIAL ANSWER:
-   - Ask a direct, targeted clarification probing the specific missing component (e.g., "You covered the data model, but how would you ensure atomic updates under concurrent traffic?").
-
-3. VAGUE / HAND-WAVEY ANSWER:
-   - Demand concrete mechanisms, numbers, or code-level implementation details (e.g., "Can you walk me through the exact locking or partitioning mechanism you would use?").
-
-4. INCORRECT ANSWER:
-   - Challenge the technical reasoning directly (e.g., "Wouldn't that approach cause a deadlock or split-brain if node A disconnects? Walk me through what happens during a network partition.").
-
-5. IRRELEVANT ANSWER:
-   - Firmly redirect the candidate back to the original question (e.g., "I want to bring us back to the concurrency question. How would you prevent two requests from modifying the same resource simultaneously?").
-
-6. GIBBERISH / NONSENSE / UNINTELLIGIBLE:
-   - NEVER say "makes sense", "got it", or "sounds good".
-   - NEVER move forward to the next question.
-   - Ask the candidate to repeat or clarify their technical approach (e.g., "I didn't quite catch your technical explanation there. Could you explain your approach again clearly?").
-
-7. SILENCE / NO ANSWER:
-   - Politely prompt the candidate to share their initial thoughts or architecture.
-
-8. REPEATED NON-ANSWERS (After 2 attempts):
-   - Acknowledge and transition cleanly without pretending they answered (e.g., "Understood, let's move to our next architectural topic.").
-
---- MULTI-AGENT PEER PANEL RULES ---
-- Both interviewers are EQUAL PEERS. The BACKEND TURN ARBITER coordinates the floor. Neither controls the other.
-- The CANDIDATE is the sole focus of this call. Always direct questions directly to ${candidateName}.
-- NEVER converse with, validate, or pass verbal turns to the other AI interviewer. There are NO verbal handoffs.
-- NEVER claim your co-interviewer is merely "observing", "in standby", or "will speak when needed".
-- If ${candidateName} addresses your co-interviewer directly, REMAIN COMPLETELY SILENT and allow them to respond.
-- NEVER invent or assume facts about the candidate that are not in the Knowledge Base.
-- Keep turns concise (2-3 sentences max). Do NOT monologue.`;
+${prompts.knowledgeBaseValidationProtocol}`;
 }

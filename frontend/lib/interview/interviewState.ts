@@ -10,6 +10,18 @@ import {
   CompetencyTracker 
 } from '@/lib/db';
 
+/* 
+ * ==============================================================================
+ * AI FILE MAP - JUMP TO THESE LINES DIRECTLY (DO NOT READ ENTIRE FILE)
+ * ==============================================================================
+ * Lines 1-50:   Closing & Architectural Keyword Triggers (Regex)
+ * Lines 60-200: ClassifyUtterance (Determines if candidate answer is strong/vague/missing)
+ * Lines 250-400: handleFloorRequest (Decides if Challenger Agent is granted the floor)
+ * Lines 400-600: evaluateCandidateTurn (Main entry point for arbiter per turn)
+ * Lines 600+:    Database persistence & helper methods
+ * ==============================================================================
+ */
+
 /**
  * Detects whether an interviewer utterance indicates the round or overall interview is concluding.
  */

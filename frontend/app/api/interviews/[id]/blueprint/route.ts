@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb, saveDb } from '@/lib/db';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import OpenAI from 'openai';
 import { selectPanelForJob } from '@/lib/interview/interviewerPool';
 import { createInitialInterviewState } from '@/lib/interview/interviewState';
 
@@ -28,9 +28,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     // Dynamically select 2-agent technical panel and 1 HR agent from company pool (No hardcoded Alex)
     const panel = selectPanelForJob(job.title);
-
-    // Connect to Gemini
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
     const systemInstruction = `You are an expert AI Interview Orchestrator for Nexora Labs.
 Your job is to analyze a Job Description, a Candidate's Resume, and their CandidateContext (from verified LinkedIn/GitHub enrichment), and design a personalized multi-round interview blueprint.
@@ -166,10 +163,9 @@ ${interviewContextStr}
 
 Generate the personalized multi-agent JSON Interview Blueprint containing Round 1 (Technical with Primary: ${panel.technicalPrimary.name} and Challenger: ${panel.technicalChallenger.name}) and Round 2 (HR with ${panel.hrInterviewer.name}) for ${job.title}.`;
 
-    const model = genAI.getGenerativeModel({
-      model: "gemini-3.6-flash",
-      systemInstruction,
-      generationConfig: { responseMimeType: "application/json" },
+    const openai = new OpenAI({
+      apiKey: process.env.GEMINI_DIRECT_API_KEY || process.env.REQUESTY_API_KEY || process.env.GEMINI_API_KEY || '',
+      baseURL: 'https://router.requesty.ai/v1'
     });
 
     let blueprintJsonText = '';
@@ -178,21 +174,69 @@ Generate the personalized multi-agent JSON Interview Blueprint containing Round 
       let attempts = 0;
       while (attempts < 2) {
         try {
-          result = await model.generateContent(userPrompt);
+          const response = await openai.chat.completions.create({
+            model: "google/gemini-2.0-flash-exp",
+            messages: [
+              { role: "system", content: systemInstruction },
+              { role: "user", content: userPrompt }
+            ],
+            response_format: { type: "json_object" }
+          });
+          result = response.choices[0].message.content || '{}';
           break;
         } catch (e: any) {
           attempts++;
           if (attempts >= 2) throw e;
-          await new Promise(r => setTimeout(r, 2000));
+          await new Promise(resolve => setTimeout(resolve, 1000));
         }
       }
-      blueprintJsonText = result.response.text();
+      
+      blueprintJsonText = result;
+      blueprintJsonText = blueprintJsonText.replace(/```json/g, '').replace(/```/g, '').trim();
     } catch (genErr: any) {
       console.warn('[Blueprint Route] Gemini API limit reached. Utilizing personalized deterministic multi-agent fallback:', genErr.message);
       const topProjects = (candidateContext?.interviewContext?.projectsWorthProbing || candidateContext?.githubProjects || []).slice(0, 3).map((p: any) => `'${p.name}'`).join(' and ') || 'your recent technical projects';
 
       const fallbackBlueprint = {
         interview_rounds: [
+          {
+            round_name: "Practical Coding & System Design Assessment",
+            round_type: "coding",
+            coding_problem: {
+              title: "1. High-Throughput Rate Limiter & Event Throttler",
+              description: "Implement a sliding window rate limiter class that tracks incoming user requests and enforces a maximum threshold of requests per sliding window in TypeScript or Python. The implementation must support high concurrency and handle edge cases where multiple requests arrive at identical millisecond timestamps.",
+              constraints: [
+                "allowRequest(userId, timestampMs) should run in O(1) or O(log N) average time complexity.",
+                "Space complexity should scale with the number of unique active user IDs.",
+                "Handle concurrent burst traffic and sliding window cleanup cleanly."
+              ]
+            },
+            system_design_problem: {
+              title: "Real-time Distributed Event Notification Pipeline",
+              description: "Architect a resilient real-time notification engine capable of processing 100k events/sec with WebSocket push delivery, retry queues, and deduplication."
+            },
+            purpose: `Evaluate ${candidate.name}'s practical problem-solving, live coding, and system architecture in an interactive workspace for ${job.title}.`,
+            interviewers: [
+              {
+                interviewer_id: panel.technicalPrimary.interviewerId,
+                name: panel.technicalPrimary.name,
+                role: panel.technicalPrimary.role,
+                voice: panel.technicalPrimary.voice,
+                color: panel.technicalPrimary.color,
+                is_primary: true,
+                agent_uid: 9991,
+                instructions: `Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}. Observe their code/diagram changes as structured work events. Prompt them conversationally to explain their approach, complexity, and trade-offs in ${topProjects}.`,
+                greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. In this first round, we will evaluate your practical problem-solving in our interactive workspace. Take a look at the problem and walk me through your initial thoughts!`
+              }
+            ],
+            interviewer: {
+              name: panel.technicalPrimary.name,
+              role: panel.technicalPrimary.role,
+              instructions: `Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}.`,
+              greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}.`
+            },
+            topics: ["Problem Solving", "Algorithm Selection", "System Architecture", "Complexity Trade-offs"]
+          },
           {
             round_name: "Technical Architecture & Concurrency",
             round_type: "technical",

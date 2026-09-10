@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { getDb } from '@/lib/db';
 import { CheckCircle2, ShieldCheck, Clock, FileCheck, ArrowRight, Home, Sparkles } from 'lucide-react';
+import ScorecardDisplay from '@/components/ScorecardDisplay';
 
 export default async function InterviewCompletedPage({ params }: { params: Promise<{ blueprintId: string }> }) {
   const resolvedParams = await params;
@@ -77,7 +78,7 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
           </div>
         </div>
 
-        {/* What Happens Next Steps */}
+        {/* Next Steps (Hide Scorecard from candidate) */}
         <div className="space-y-4 pt-2 border-t border-white/[0.08]">
           <h2 className="text-lg font-sans font-bold text-white flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-purple-400" />

@@ -41,12 +41,6 @@ export async function POST() {
             company: 'Vortex Cloud Inc.',
             duration: '2021 — Present (3.5 yrs)',
             description: 'Architected real-time event streaming cluster handling 1.8M events/sec using Go, Apache Kafka, and RocksDB with p99 latency < 12ms.'
-          },
-          {
-            title: 'Backend Infrastructure Engineer',
-            company: 'Nexus Scale Labs',
-            duration: '2019 — 2021 (2 yrs)',
-            description: 'Implemented high-concurrency WebSocket gateways and distributed cache invalidation layers across multi-region Redis clusters.'
           }
         ],
         projects: [
@@ -54,13 +48,24 @@ export async function POST() {
             title: 'Chronos-Raft: Embedded High-Throughput Consensus Engine in Go',
             description: 'A lock-free Go implementation of Raft consensus with vectorized batch log replication.',
             url: 'https://github.com/alexrivera-eng/chronos-raft'
-          },
-          {
-            title: 'FlowMesh: Sub-10ms WebRTC Media Pipeline Ingestion',
-            description: 'Real-time media relay proxy with adaptive jitter buffers and acoustic frame synchronization.',
-            url: 'https://github.com/alexrivera-eng/flowmesh-webrtc'
           }
-        ]
+        ],
+        interviewBrief: {
+          relevant_experience: [
+            { role: "Senior Distributed Systems Engineer", company: "Vortex Cloud Inc.", duration: "2021 — Present", relevance_to_role: "Directly maps to event streaming and low-latency API requirements.", source: "linkedin" }
+          ],
+          relevant_technical_skills: [
+            { skill: "Go", evidence_type: "observed_evidence", source: "github" },
+            { skill: "Kafka", evidence_type: "candidate_claim", source: "resume" }
+          ],
+          areas_worth_probing: [
+            "Ask how they handled Kafka partition rebalancing under 1.8M events/sec load.",
+            "Probe the lock-free data structures used in Chronos-Raft."
+          ],
+          claims_worth_validating: [
+            { claim: "Reduced p99 latency from 45ms to 11ms.", how_to_validate: "Ask about the exact bottleneck diagnosed and the tradeoffs made to achieve this." }
+          ]
+        }
       }
     };
 

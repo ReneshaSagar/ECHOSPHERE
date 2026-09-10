@@ -66,3 +66,5 @@ Desktop.ini
 .agents/
 transcript.jsonl
 PROJECT_OVERVIEW.md
+*.tsbuildinfo
+skills-lock.json

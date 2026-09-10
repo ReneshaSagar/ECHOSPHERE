@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import OpenAI from 'openai';
 
 export async function POST(req: NextRequest) {
   try {
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
     const { job_description, resume, rubric, transcript } = await req.json();
 
     const systemInstruction = `You are an expert AI Technical Interview Evaluator.
@@ -51,14 +50,22 @@ ${formattedTranscript}
 
 Analyze the transcript and generate the JSON Scorecard.`;
 
-    const model = genAI.getGenerativeModel({
-      model: "gemini-3.6-flash",
-      systemInstruction,
-      generationConfig: { responseMimeType: "application/json" },
+    const openai = new OpenAI({
+      apiKey: process.env.GEMINI_DIRECT_API_KEY || process.env.REQUESTY_API_KEY || process.env.GEMINI_API_KEY || '',
+      baseURL: 'https://router.requesty.ai/v1'
     });
 
-    const result = await model.generateContent(userPrompt);
-    const scorecard = JSON.parse(result.response.text());
+    const response = await openai.chat.completions.create({
+      model: "google/gemini-2.0-flash-exp",
+      messages: [
+        { role: "system", content: systemInstruction },
+        { role: "user", content: userPrompt }
+      ],
+      response_format: { type: "json_object" }
+    });
+    
+    const resultText = response.choices[0].message.content || '{}';
+    const scorecard = JSON.parse(resultText.replace(/```json/g, '').replace(/```/g, '').trim());
     
     return NextResponse.json(scorecard);
   } catch (error: any) {

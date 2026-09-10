@@ -1,6 +1,7 @@
 import React from 'react';
 import { getDb } from '@/lib/db';
 import Link from 'next/link';
+import { Zap } from 'lucide-react';
 
 export default async function BlueprintViewerPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -52,6 +53,70 @@ export default async function BlueprintViewerPage({ params }: { params: Promise<
           <span>→</span>
         </Link>
       </div>
+
+      {candidate?.candidateContext?.interviewBrief && (
+        <div className="bg-[#0a0a0d] rounded-3xl border border-emerald-500/20 p-6 sm:p-8 shadow-[0_0_30px_rgba(16,185,129,0.08)] mb-6">
+          <h3 className="text-[10px] font-mono font-bold uppercase tracking-[0.18em] text-emerald-400 mb-4 flex items-center gap-2">
+            <Zap className="w-3.5 h-3.5" /> LLM Pre-Interview Brief
+          </h3>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              {candidate.candidateContext.interviewBrief.relevant_experience?.length > 0 && (
+                <div>
+                  <h4 className="text-[10px] font-mono font-bold uppercase tracking-wider text-white/40 mb-2">Relevant Experience</h4>
+                  <ul className="space-y-2">
+                    {candidate.candidateContext.interviewBrief.relevant_experience.map((exp: any, i: number) => (
+                      <li key={i} className="text-xs flex flex-col gap-1 text-white/70 bg-white/[0.03] border border-white/[0.06] p-2.5 rounded-xl">
+                        <span className="font-bold text-white/90">{exp.role} @ {exp.company}</span>
+                        <span className="text-white/50">{exp.relevance_to_role}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {candidate.candidateContext.interviewBrief.relevant_technical_skills?.length > 0 && (
+                <div>
+                  <h4 className="text-[10px] font-mono font-bold uppercase tracking-wider text-white/40 mb-2">Technical Alignment</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {candidate.candidateContext.interviewBrief.relevant_technical_skills.map((skill: any, i: number) => (
+                      <span key={i} className={`px-2 py-1 rounded-lg text-xs font-medium border ${skill.evidence_type === 'observed_evidence' ? 'bg-emerald-950/30 text-emerald-300 border-emerald-500/20' : 'bg-amber-950/30 text-amber-300 border-amber-500/20'}`}>
+                        {skill.skill} <span className="opacity-50">({skill.evidence_type === 'observed_evidence' ? 'Verified' : 'Claim'})</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="space-y-4">
+              {candidate.candidateContext.interviewBrief.areas_worth_probing?.length > 0 && (
+                <div>
+                  <h4 className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-400 mb-2">Areas to Probe</h4>
+                  <ul className="space-y-2">
+                    {candidate.candidateContext.interviewBrief.areas_worth_probing.map((area: string, i: number) => (
+                      <li key={i} className="text-xs flex items-start gap-2 text-cyan-100 bg-cyan-950/20 border border-cyan-500/20 p-2.5 rounded-xl">
+                        <span className="text-cyan-400 shrink-0">›</span> {area}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {candidate.candidateContext.interviewBrief.claims_worth_validating?.length > 0 && (
+                <div>
+                  <h4 className="text-[10px] font-mono font-bold uppercase tracking-wider text-purple-400 mb-2">Claims to Validate</h4>
+                  <ul className="space-y-2">
+                    {candidate.candidateContext.interviewBrief.claims_worth_validating.map((claim: any, i: number) => (
+                      <li key={i} className="text-xs flex flex-col gap-1 text-purple-100 bg-purple-950/20 border border-purple-500/20 p-2.5 rounded-xl">
+                        <span><strong className="text-white/60">Claim:</strong> {claim.claim}</span>
+                        <span className="text-purple-300/70"><strong className="text-purple-300/40">Validate:</strong> {claim.how_to_validate}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="bg-[#0a0a0d] rounded-3xl border border-white/[0.08] shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden">
         <div className="p-6 bg-[#030304]/60 border-b border-white/[0.06] flex items-center justify-between">

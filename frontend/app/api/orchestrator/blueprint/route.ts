@@ -1,36 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import OpenAI from 'openai';
 
 export async function POST(req: NextRequest) {
   try {
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
     const { job_description, resume, candidate_context } = await req.json();
 
     const systemInstruction = `You are an expert AI Interview Orchestrator. 
-Your job is to analyze a Job Description, a Candidate Resume, and optional CandidateContext (from verified LinkedIn enrichment), and design a multi-agent technical interview blueprint.
+Your job is to analyze a Job Description, a Candidate Resume, and optional CandidateContext (from verified LinkedIn enrichment), and design a single-agent technical interview blueprint.
 You MUST return ONLY valid JSON matching this exact structure:
 
 {
   "interview_rounds": [
     {
-      "round_name": "Technical Panel Interview",
+      "round_name": "Technical Interview",
       "round_type": "technical",
       "purpose": "Evaluate technical skills and experience match",
       "interviewers": [
         {
-          "name": "Alex (Primary)",
+          "name": "Alex",
           "role": "Senior Software Engineer",
           "voice": "Aoede",
           "agent_uid": 9991,
-          "instructions": "<highly specific instructions for the primary LLM voice agent>",
+          "instructions": "<highly specific instructions for the LLM voice agent>",
           "greeting_message": "<the exact opening line Alex will speak>"
-        },
-        {
-          "name": "Jordan (Challenger)",
-          "role": "Staff Engineer - Technical Prober",
-          "voice": "Charon",
-          "agent_uid": 9992,
-          "instructions": "<highly specific instructions for the challenger LLM voice agent>"
         }
       ],
       "topics": ["topic 1", "topic 2"]
@@ -64,14 +56,6 @@ The instructions for the agents MUST explicitly enforce:
 - NEVER reveal the rubric or feed the candidate answers.
 - Strict Answer Validation: evaluate every answer. NEVER say "makes sense" to vague answers, incorrect claims, or gibberish. Challenge incorrect reasoning and redirect irrelevant answers.
 
-CRITICAL RULES FOR MULTI-AGENT TECHNICAL PANEL:
-- AGENTS ARE EQUAL PEERS: Agent A and Agent B are equal peer interviewers. Neither manages the other. The BACKEND Turn Arbiter controls floor ownership.
-- AGENT A (Primary Peer, e.g. Priya): Asks primary architectural questions from the blueprint, validates implementation details, and collects required competency evidence.
-- AGENT B (Specialist Peer, e.g. Arjun): Probes failure modes, scalability limits, failover recovery, concurrency bottlenecks, and architectural trade-offs.
-- DIRECT CANDIDATE ADDRESS: If the candidate addresses Agent B directly, Agent B responds with technical substance and Agent A remains completely silent.
-- NO VERBAL AGENT-TO-AGENT CHATTER: Both interviewers address the CANDIDATE directly. Agents do NOT verbally hand off or claim the other is merely observing.
-- NEVER talk over the candidate. When the candidate speaks, remain completely silent.
-
 CRITICAL RULES FOR RELEVANCE & EVALUATION BOUNDARIES:
 - If CandidateContext is present, use verified projects and corroborated technical skills from the Knowledge Base to formulate sharp, tailored questions.
 - Strictly ground all questions in verifiable factual data. Do not invent candidate experiences.
@@ -82,14 +66,22 @@ Keep the instructions highly contextual to the specific JD, Resume, and Candidat
     const contextPart = candidate_context ? `\n\nCandidateContext (LinkedIn & GitHub):\n${JSON.stringify(candidate_context, null, 2)}` : '';
     const userPrompt = `Job Description:\n${job_description}\n\nCandidate Resume:\n${resume}${contextPart}\n\nGenerate the JSON Interview Blueprint.`;
 
-    const model = genAI.getGenerativeModel({
-      model: "gemini-3.6-flash",
-      systemInstruction,
-      generationConfig: { responseMimeType: "application/json" },
+    const openai = new OpenAI({
+      apiKey: process.env.GEMINI_DIRECT_API_KEY || process.env.REQUESTY_API_KEY || process.env.GEMINI_API_KEY || '',
+      baseURL: 'https://router.requesty.ai/v1'
     });
 
-    const result = await model.generateContent(userPrompt);
-    const blueprint = JSON.parse(result.response.text());
+    const response = await openai.chat.completions.create({
+      model: "google/gemini-2.0-flash-exp",
+      messages: [
+        { role: "system", content: systemInstruction },
+        { role: "user", content: userPrompt }
+      ],
+      response_format: { type: "json_object" }
+    });
+    
+    const resultText = response.choices[0].message.content || '{}';
+    const blueprint = JSON.parse(resultText.replace(/```json/g, '').replace(/```/g, '').trim());
     
     return NextResponse.json(blueprint);
   } catch (error: any) {

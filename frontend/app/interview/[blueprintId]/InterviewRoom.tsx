@@ -6,8 +6,14 @@ import Link from 'next/link';
 import ProctorEngine from './ProctorEngine';
 import { injectKnowledgeBaseIntoAgentInstructions } from '@/lib/enrichment/knowledgeBase';
 import { isClosingUtterance } from '@/lib/interview/interviewState';
-import { Users, Shield, Zap, Sparkles, Mic, Volume2, UserCheck, AlertCircle, Clock } from 'lucide-react';
+import { Users, Shield, Zap, Sparkles, Mic, MicOff, Volume2, VolumeX, UserCheck, AlertCircle, Clock, ChevronUp, ChevronDown, Video, CheckCircle, Code2, Layers } from 'lucide-react';
 import ParticleTalkingOrb from '@/components/room/ParticleTalkingOrb';
+import AgentPanel from './components/AgentPanel';
+import SystemTelemetry from './components/SystemTelemetry';
+import CodingWorkspace from '@/components/workspace/CodingWorkspace';
+import SystemDesignWorkspace from '@/components/workspace/SystemDesignWorkspace';
+import { useWorkStateInterpreter } from '@/hooks/useWorkStateInterpreter';
+import { WorkStateEvent } from '@/lib/interview/workStateInterpreter';
 
 type InterviewerInfo = {
   interviewer_id?: string;
@@ -24,7 +30,16 @@ type InterviewerInfo = {
 type Blueprint = {
   interview_rounds: {
     round_name: string;
-    round_type?: 'technical' | 'hr';
+    round_type?: 'coding' | 'system_design' | 'technical' | 'hr';
+    coding_problem?: {
+      title: string;
+      description: string;
+      constraints?: string[];
+    };
+    system_design_problem?: {
+      title: string;
+      description: string;
+    };
     purpose: string;
     interviewers?: InterviewerInfo[];
     interviewer: InterviewerInfo;
@@ -74,9 +89,270 @@ export default function InterviewRoom({
   const [floorOwner, setFloorOwner] = useState<'PRIMARY_AI' | 'CHALLENGER_AI' | 'HR_AI' | 'CANDIDATE' | 'NONE' | 'CROSSTALK'>('NONE');
   const [currentRound, setCurrentRound] = useState(0);
   const [activePanelAgents, setActivePanelAgents] = useState<RunningAgent[]>([]);
+  const activePanelAgentsRef = useRef<RunningAgent[]>([]);
+  useEffect(() => {
+    activePanelAgentsRef.current = activePanelAgents;
+  }, [activePanelAgents]);
+
   const [pendingFloorNotice, setPendingFloorNotice] = useState<string | null>(null);
   const [roundElapsedSeconds, setRoundElapsedSeconds] = useState(0);
   const [wrapUpWarning, setWrapUpWarning] = useState(false);
+  const [isTelemetryOpen, setIsTelemetryOpen] = useState(false);
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  const localVideoRef = useRef<HTMLVideoElement>(null);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isDeafened, setIsDeafened] = useState(false);
+  const isDeafenedRef = useRef(false);
+
+  useEffect(() => {
+    isDeafenedRef.current = isDeafened;
+  }, [isDeafened]);
+
+  // Round 1 Interactive Workspace State & Interpreter
+  const [workspaceMode, setWorkspaceMode] = useState<'coding' | 'excalidraw'>('coding');
+
+  const isRound1WorkspaceActive = currentRound === 0 || 
+    blueprint.interview_rounds[currentRound]?.round_type === 'coding' || 
+    blueprint.interview_rounds[currentRound]?.round_type === 'system_design';
+
+  const dataStreamIdRef = useRef<number | null>(null);
+  const codeRef = useRef<string>('');
+  const languageRef = useRef<string>('typescript');
+
+  const handleWorkStateEvent = (event: WorkStateEvent) => {
+    const componentName = event.type === 'STUCK_SIGNAL' ? 'Stuck Detector' : 'Work Interpreter';
+    addLog(componentName, `[${event.source.toUpperCase()}] ${event.summary}`);
+
+    setTranscript(prev => [
+      ...prev,
+      {
+        round: blueprint.interview_rounds[currentRound]?.round_name || 'Round 1',
+        speaker: 'System (Workspace Event)',
+        text: `[${event.type}] ${event.summary}`
+      }
+    ]);
+
+    const currentCode = codeRef.current;
+    const currentLang = languageRef.current;
+
+    // 1. Broadcast Workspace Event to AI Agent via Agora RTC Data Stream
+    if (clientRef.current && (clientRef.current as any).connectionState === 'CONNECTED') {
+      try {
+        const fullCode = (event.source === 'coding' && currentCode) ? currentCode.slice(0, 1200) : (event.metadata?.code || '');
+        const formattedText = `[SYSTEM WORKSPACE OBSERVATION] Candidate workspace activity (${event.source}): ${event.summary}${fullCode ? `\n\nCandidate Current IDE Source Code (${currentLang}):\n\`\`\`${currentLang}\n${fullCode}\n\`\`\`` : ''}`;
+        const payload = new TextEncoder().encode(JSON.stringify({
+          text: formattedText,
+          is_final: true,
+          uid: candidateUidRef.current
+        }));
+        
+        if (dataStreamIdRef.current !== null) {
+          (clientRef.current as any).sendStreamMessage(dataStreamIdRef.current, payload);
+        } else if (typeof (clientRef.current as any).createDataStream === 'function') {
+          (clientRef.current as any).createDataStream({ syncWithAudio: false, ordered: false })
+            .then((streamId: number) => {
+              dataStreamIdRef.current = streamId;
+              (clientRef.current as any).sendStreamMessage(streamId, payload);
+            })
+            .catch((err: any) => {
+              console.warn('[WorkspaceRTC] createDataStream failed:', err);
+            });
+        }
+      } catch (e) {
+        console.warn('[WorkspaceRTC] Data stream broadcast error:', e);
+      }
+    }
+
+    // 2. Sync Real-Time Workspace Update with Backend Real-Time Agent Endpoint via agentThink
+    const activeAgent = activePanelAgentsRef.current[0];
+    fetch('/api/agora-mllm/workspace-update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        session_id: interviewId,
+        candidate_uid: candidateUidRef.current,
+        agent_uid: activeAgent?.agentUid || 9993,
+        agent_id: activeAgent?.agentId || '',
+        event_type: event.type,
+        summary: event.summary,
+        source: event.source,
+        metadata: { ...(event.metadata || {}), code: currentCode ? currentCode.slice(0, 1200) : '', language: currentLang },
+        timestamp: Date.now()
+      })
+    }).catch(err => console.warn('[WorkspaceSync] Backend sync error:', err));
+  };
+
+  const {
+    code,
+    setCode,
+    language,
+    setLanguage,
+    diagramElements,
+    setDiagramElements,
+    handleCodeExecution
+  } = useWorkStateInterpreter({
+    mode: workspaceMode,
+    onWorkStateEvent: handleWorkStateEvent,
+    enabled: isRound1WorkspaceActive && (testState === 'RUNNING' || testState === 'STARTING')
+  });
+
+  useEffect(() => {
+    codeRef.current = code;
+  }, [code]);
+
+  useEffect(() => {
+    languageRef.current = language;
+  }, [language]);
+
+  // Periodic Live Code Stream Sync to Gemini Agent (Every 4 seconds)
+  const lastSyncedCodeRef = useRef<string>('');
+  useEffect(() => {
+    if (testState !== 'RUNNING' || !isRound1WorkspaceActive || workspaceMode !== 'coding' || !code) return;
+
+    const syncInterval = setInterval(() => {
+      if (code === lastSyncedCodeRef.current) return;
+      lastSyncedCodeRef.current = code;
+
+      const activeAgent = activePanelAgentsRef.current[0];
+
+      // 1. Broadcast via Agora RTC Data Stream
+      if (clientRef.current && (clientRef.current as any).connectionState === 'CONNECTED') {
+        try {
+          const payloadText = `[SYSTEM LIVE CODE SNAPSHOT] Candidate current live code in IDE (${language}):\n\`\`\`${language}\n${code.slice(0, 1200)}\n\`\`\``;
+          const payload = new TextEncoder().encode(JSON.stringify({
+            text: payloadText,
+            is_final: true,
+            uid: candidateUidRef.current
+          }));
+          if (dataStreamIdRef.current !== null) {
+            (clientRef.current as any).sendStreamMessage(dataStreamIdRef.current, payload);
+          }
+        } catch (e) {}
+      }
+
+      // 2. Sync via Backend agentThink HTTP API
+      if (activeAgent?.agentId) {
+        fetch('/api/agora-mllm/workspace-update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            session_id: interviewId,
+            candidate_uid: candidateUidRef.current,
+            agent_uid: activeAgent.agentUid,
+            agent_id: activeAgent.agentId,
+            event_type: 'WORK_STATE_UPDATE',
+            summary: 'Live IDE snapshot update',
+            source: workspaceMode,
+            metadata: { code: code.slice(0, 1200), language },
+            timestamp: Date.now()
+          })
+        }).catch(err => console.warn('[WorkspaceSync] Code snapshot sync error:', err));
+      }
+    }, 4000);
+
+    return () => clearInterval(syncInterval);
+  }, [testState, isRound1WorkspaceActive, workspaceMode, code, language, interviewId]);
+
+  const [deviceCheckStatus, setDeviceCheckStatus] = useState<{
+    camera: 'checking' | 'active' | 'blocked';
+    mic: 'checking' | 'active' | 'blocked';
+    errorMsg?: string;
+  }>({
+    camera: 'checking',
+    mic: 'checking'
+  });
+
+  const checkDevices = () => {
+    setDeviceCheckStatus({ camera: 'checking', mic: 'checking' });
+    
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setDeviceCheckStatus({
+        camera: 'blocked',
+        mic: 'blocked',
+        errorMsg: 'Your browser does not support WebRTC media access.'
+      });
+      return;
+    }
+
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then(stream => {
+        setLocalStream(stream);
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = stream;
+        }
+
+        const videoTracks = stream.getVideoTracks();
+        const audioTracks = stream.getAudioTracks();
+
+        const isCamOk = videoTracks.length > 0 && videoTracks[0].enabled && videoTracks[0].readyState === 'live';
+        const isMicOk = audioTracks.length > 0 && audioTracks[0].enabled && audioTracks[0].readyState === 'live';
+
+        setDeviceCheckStatus({
+          camera: isCamOk ? 'active' : 'blocked',
+          mic: isMicOk ? 'active' : 'blocked',
+          errorMsg: (!isCamOk || !isMicOk) ? 'Please ensure both camera and microphone are turned on.' : undefined
+        });
+      })
+      .catch(err => {
+        console.error('[Device Check Error]', err);
+        let errorMsg = 'Camera or Microphone permission was denied. Please allow camera and mic permissions in your browser settings.';
+        if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+          errorMsg = 'No camera or microphone hardware found on your device.';
+        } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+          errorMsg = 'Camera or microphone is currently in use by another program.';
+        }
+        setDeviceCheckStatus({
+          camera: 'blocked',
+          mic: 'blocked',
+          errorMsg
+        });
+      });
+  };
+
+  useEffect(() => {
+    checkDevices();
+    return () => {
+      localStream?.getTracks().forEach(track => track.stop());
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [isVideoOff, setIsVideoOff] = useState(false);
+
+  const toggleCamera = () => {
+    const nextState = !isVideoOff;
+    if (localStream) {
+      localStream.getVideoTracks().forEach(track => {
+        track.enabled = !nextState;
+      });
+    }
+    setIsVideoOff(nextState);
+  };
+
+  const toggleMute = () => {
+    // Standard stream
+    if (localStream) {
+      localStream.getAudioTracks().forEach(track => {
+        track.enabled = !track.enabled;
+      });
+    }
+    // Agora track
+    if (localAudioTrackRef.current) {
+      localAudioTrackRef.current.setMuted(!isMuted);
+    }
+    setIsMuted(!isMuted);
+  };
+
+  const toggleDeafen = () => {
+    const nextDeafened = !isDeafened;
+    setIsDeafened(nextDeafened);
+    // Because we use a ref to intercept, we just need to re-trigger setVolume for all tracks
+    // to their currently intended target volume. The interceptor will apply the deafened state.
+    remoteAudioTracksRef.current.forEach((track) => {
+      track.setVolume(track._targetVolume !== undefined ? track._targetVolume : 100);
+    });
+  };
+
   const autoFinishTriggeredRef = useRef<boolean>(false);
 
   // Round Timer & Criteria Progression (5 mins for tech, 3 mins for HR)
@@ -167,20 +443,47 @@ export default function InterviewRoom({
   const primarySpeakingRef = useRef<boolean>(false);
   const challengerSpeakingRef = useRef<boolean>(false);
 
-  // Stateful remote audio playback with strict floor track gating
+  // Stateful remote audio playback with strict floor track gating & autoplay fallback
   const initializeRemoteTrack = (uid: number, track: any) => {
+    // Intercept setVolume to respect hardware deafen state
+    const origSetVolume = track.setVolume.bind(track);
+    track._targetVolume = 100;
+    track.setVolume = (vol: number) => {
+      track._targetVolume = vol;
+      origSetVolume(isDeafenedRef.current ? 0 : vol);
+    };
+
     remoteAudioTracksRef.current.set(uid, track);
     try {
-      track.play();
-      if (uid === 9991 || uid === 9999) {
-        // Primary is audible unless Challenger has the floor
-        const vol = (introPhaseRef.current === 'CHALLENGER_GREETING' || currentFloorRef.current === 'CHALLENGER_AI') ? 0 : 100;
-        track.setVolume(vol);
-      } else if (uid === 9992) {
-        // Challenger is audible ONLY if it is actively the Challenger's greeting phase OR the floor is currently theirs
-        const vol = (introPhaseRef.current === 'CHALLENGER_GREETING' || currentFloorRef.current === 'CHALLENGER_AI') ? 100 : 0;
-        track.setVolume(vol);
+      const playRes = track.play();
+      if (playRes && typeof playRes.catch === 'function') {
+        playRes.catch((err: any) => {
+          console.warn('[AutonomousFloor] Autoplay policy blocked initial playback for UID', uid, err);
+          const resumeAudioOnGesture = () => {
+            track.play().catch(() => {});
+            document.removeEventListener('click', resumeAudioOnGesture);
+            document.removeEventListener('keydown', resumeAudioOnGesture);
+          };
+          document.addEventListener('click', resumeAudioOnGesture, { once: true });
+          document.addEventListener('keydown', resumeAudioOnGesture, { once: true });
+        });
+      }
+
+      const isMultiAgent = runningAgentsRef.current.length >= 2;
+      if (isMultiAgent) {
+        if (uid === 9991 || uid === 9999) {
+          // Primary is audible unless Challenger has the floor
+          const vol = (introPhaseRef.current === 'CHALLENGER_GREETING' || currentFloorRef.current === 'CHALLENGER_AI') ? 0 : 100;
+          track.setVolume(vol);
+        } else if (uid === 9992) {
+          // Challenger is audible ONLY if it is actively the Challenger's greeting phase OR the floor is currently theirs
+          const vol = (introPhaseRef.current === 'CHALLENGER_GREETING' || currentFloorRef.current === 'CHALLENGER_AI') ? 100 : 0;
+          track.setVolume(vol);
+        } else {
+          track.setVolume(100);
+        }
       } else {
+        // Single Agent round (e.g. Round 1 Coding or Round 3 HR): Always 100% volume
         track.setVolume(100);
       }
     } catch (e) {
@@ -476,7 +779,14 @@ export default function InterviewRoom({
     currentFloorRef.current = 'PRIMARY_AI';
     
     const targetRound = roundIdx !== undefined ? roundIdx : currentRound;
-    introPhaseRef.current = targetRound === 0 ? 'PRIMARY_GREETING' : 'INTERVIEW_RUNNING';
+    const round = blueprint.interview_rounds[targetRound] || blueprint.interview_rounds[0];
+    const isTechnicalRound = round.round_type === 'technical' || (targetRound === 1 && round.round_type !== 'coding' && round.round_type !== 'system_design');
+    const roundInterviewers: InterviewerInfo[] = round.interviewers && round.interviewers.length > 0
+      ? round.interviewers
+      : [round.interviewer];
+    const isMultiAgentPanel = false /* TEMPORARILY DISABLED */ && isTechnicalRound && roundInterviewers.length >= 2;
+
+    introPhaseRef.current = isMultiAgentPanel ? 'PRIMARY_GREETING' : 'INTERVIEW_RUNNING';
     challengerSpawnedRef.current = false;
     primaryIntroTextRef.current = '';
     challengerIntroTextRef.current = '';
@@ -511,20 +821,14 @@ export default function InterviewRoom({
       addLog('Frontend', `Initializing Agora RTC client (Candidate UID: ${candidateUid})...`);
       clientRef.current = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
 
-      const round = blueprint.interview_rounds[targetRound] || blueprint.interview_rounds[0];
-      const isTechnicalRound = targetRound === 0 || round.round_type === 'technical';
       addLog('Orchestrator', `Loaded Round ${targetRound + 1}: ${round.round_name}`);
-
-      const roundInterviewers: InterviewerInfo[] = round.interviewers && round.interviewers.length > 0
-        ? round.interviewers
-        : [round.interviewer];
 
       const runningAgents: RunningAgent[] = [];
       let channelName = '';
       let candidateToken = '';
       let challengerInstructions = '';
 
-      if (isTechnicalRound && roundInterviewers.length >= 2) {
+      if (false /* TEMPORARILY DISCONNECT MULTI-AGENT */ && isTechnicalRound && roundInterviewers.length >= 2) {
         // Multi-Agent Technical Panel: 2 AI Interviewers simultaneously
         const primary = roundInterviewers[0];
         const challenger = roundInterviewers[1];
@@ -644,19 +948,63 @@ CRITICAL INVARIANTS:
         });
 
       } else {
-        // Single Agent Round (e.g. Round 2 HR Round)
+        // Single Agent Round (Round 1 Coding/System Design OR Round 3 HR)
         const solo = roundInterviewers[0];
         addLog('Orchestrator', `Starting Single Agent Round: ${solo.name}`);
 
-        // Build HR context preamble with technical round summary
-        let hrContextPreamble = '';
-        if (currentRound > 0 && technicalSummaryRef.current) {
+        let contextPreamble = '';
+        let greetingMsg = solo.greeting_message;
+
+        if (targetRound === 0 || isRound1WorkspaceActive) {
+          const codingProb = round.coding_problem || {
+            title: "1. High-Throughput Rate Limiter & Event Throttler",
+            description: "Implement a sliding window rate limiter class that tracks incoming user requests and enforces a maximum threshold of requests per sliding window in TypeScript or Python. The implementation must support high concurrency and handle edge cases where multiple requests arrive at identical millisecond timestamps.",
+            constraints: [
+              "allowRequest(userId, timestampMs) should run in O(1) or O(log N) average time complexity.",
+              "Space complexity should scale with the number of unique active user IDs.",
+              "Handle concurrent burst traffic and sliding window cleanup cleanly."
+            ]
+          };
+          const systemProb = round.system_design_problem || {
+            title: "Real-time Distributed Event Notification Pipeline",
+            description: "Architect a resilient real-time notification engine capable of processing 100k events/sec with WebSocket push delivery, retry queues, and deduplication."
+          };
+
+          contextPreamble = `
+================================================================================
+ROUND 1: CODING & SYSTEM DESIGN WORKSPACE PROTOCOL
+================================================================================
+You are "${solo.name}" (${solo.role}), the interviewer conducting Round 1 (Coding & System Design workspace assessment) with "${candidateName}" for the position of ${jobTitle || 'Engineer'}.
+
+PRE-ASSIGNED WORKSPACE PROBLEMS FOR THIS INTERVIEW:
+1. CODING / DSA PROBLEM:
+   - Title: "${codingProb.title}"
+   - Description: ${codingProb.description}
+   - Constraints: ${Array.isArray(codingProb.constraints) ? codingProb.constraints.join('; ') : (codingProb.constraints || 'Standard optimal O(1) time complexity.')}
+
+2. SYSTEM DESIGN PROBLEM:
+   - Title: "${systemProb.title}"
+   - Description: ${systemProb.description}
+
+CRITICAL BEHAVIORAL INVARIANTS:
+- YOU HAVE DIRECT REAL-TIME VISIBILITY INTO THE CANDIDATE'S IDE AND SCREEN. You will continuously receive live data stream updates starting with "[SYSTEM WORKSPACE OBSERVATION]" and "[SYSTEM LIVE CODE SNAPSHOT]" containing the exact code typed by ${candidateName}.
+- When ${candidateName} asks "what do you see on my screen?", "read my code", or "what have I written so far?", YOU MUST QUOTE AND EXPLAIN THE EXACT SOURCE CODE FROM THE LATEST SYSTEM LIVE CODE SNAPSHOT. NEVER claim you cannot see their screen or make up non-existent code.
+- If ${candidateName} stops typing for 20 seconds, you will receive an observation starting with "[STUCK_SIGNAL]". INTERVENE CONVERSATIONALLY IMMEDIATELY after receiving a 20-second stuck signal and ask: "${candidateName}, how are you approaching the problem? Would you like a quick hint?"
+- DO NOT ask general conceptual technical interview questions (e.g. "What is binary search?", "What is garbage collection?", "Explain dependency injection"). Conceptual technical interview questions will be covered separately in Round 2 (Technical Panel).
+- Your 100% EXCLUSIVE focus in Round 1 is presenting, observing, and evaluating ${candidateName}'s progress on the assigned workspace problem ("${codingProb.title}").
+- Keep all spoken responses concise (1-3 sentences maximum) so the candidate can focus on coding and explaining their work.
+================================================================================
+`;
+          if (!greetingMsg || greetingMsg.length < 10) {
+            greetingMsg = `Hello ${candidateName}, welcome! I'm ${solo.name}, ${solo.role}. In this first round, we will focus on practical problem solving in your workspace. Your assigned coding problem is '${codingProb.title}'. Take a look at the workspace editor, and walk me through your initial thoughts when you're ready!`;
+          }
+        } else if (currentRound > 0 && technicalSummaryRef.current) {
           const ts = technicalSummaryRef.current;
-          hrContextPreamble = `\n\nIMPORTANT CONTEXT: The candidate (${candidateName}) has already completed the Technical Panel Interview. Technical Score: ${ts.score}/100. Panel assessment: "${ts.reason}". The technical round is COMPLETE — do NOT re-ask technical questions. You are now conducting the HR & Culture round. Begin with a warm, natural greeting and focus on behavioral fit, teamwork, and career goals.\n`;
+          contextPreamble = `\n\nIMPORTANT CONTEXT: The candidate (${candidateName}) has already completed the Technical Panel Interview. Technical Score: ${ts.score}/100. Panel assessment: "${ts.reason}". The technical round is COMPLETE — do NOT re-ask technical questions. You are now conducting the HR & Culture round. Begin with a warm, natural greeting and focus on behavioral fit, teamwork, and career goals.\n`;
         }
 
         const soloInstructions = injectKnowledgeBaseIntoAgentInstructions(
-          (solo.instructions || '') + hrContextPreamble,
+          (solo.instructions || '') + contextPreamble,
           candidateContext,
           candidateName,
           jobTitle || 'Engineering Role',
@@ -672,7 +1020,7 @@ CRITICAL INVARIANTS:
             agent_uid: solo.agent_uid || 9993,
             voice: solo.voice || 'Aoede',
             instructions: soloInstructions,
-            greeting_message: solo.greeting_message
+            greeting_message: greetingMsg
           })
         });
         const soloData = await soloRes.json();
@@ -1111,7 +1459,8 @@ CRITICAL INVARIANTS:
           }
         }, 14000);
       } else {
-        // Single Agent Round (e.g. HR round): immediately activate candidate speech recognition
+        // Single Agent Round (Coding or HR round): immediately activate candidate speech recognition
+        introPhaseRef.current = 'INTERVIEW_RUNNING';
         setupSpeechRecognition();
       }
 
@@ -1127,7 +1476,7 @@ CRITICAL INVARIANTS:
 
   const finishRound = async (triggerReason: string = 'NATURAL_COMPLETION') => {
     const round = blueprint.interview_rounds[currentRound];
-    const isTechnicalRound = currentRound === 0 || round.round_type === 'technical';
+    const isTechnicalRound = round.round_type === 'technical' || (currentRound === 1 && round.round_type !== 'coding' && round.round_type !== 'system_design');
     const isLastRound = currentRound + 1 >= blueprint.interview_rounds.length;
 
     addLog('Orchestrator', `Concluding ${isTechnicalRound ? 'Technical' : 'HR'} round [Trigger: ${triggerReason}]...`);
@@ -1224,35 +1573,27 @@ CRITICAL INVARIANTS:
       addLog('Arbiter', `Decision Gate: ${evalData.evaluation.decision} (Score: ${evalData.evaluation.score}/100)`);
       setTestState('DECISION_GATE');
 
-      // ── Phase 5: Transition Logic ──────────────────────────────────────
-      if (isTechnicalRound && !isLastRound) {
-        if (evalData.evaluation.decision === 'PASS') {
-          // Store technical summary for HR context injection
-          technicalSummaryRef.current = {
-            score: evalData.evaluation.score,
-            reason: evalData.evaluation.reason,
-            evidence: roundTranscript.slice(-10).map((t: any) => `[${t.speaker}]: ${t.text?.slice(0, 100)}`),
-          };
+      // ── Phase 5: Transition Logic (Supports Round 1 -> Round 2 -> Round 3) ──
+      if (!isLastRound) {
+        if (evalData.evaluation.decision === 'PASS' || currentRound === 0) {
+          addLog('System', `Round ${currentRound + 1} Passed (Score: ${evalData.evaluation.score}/100). Transitioning to Round ${currentRound + 2} (${blueprint.interview_rounds[currentRound + 1]?.round_name})...`);
 
-          addLog('System', `Technical Round Passed (Score: ${evalData.evaluation.score}/100). Transitioning to Round 2 (HR & Culture Round)...`);
-
-          // Transition shared interview state to HR
+          // Transition state backend
           await fetch(`/api/interviews/${interviewId}/state`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              action: 'TRANSITION_HR',
-              technicalScore: evalData.evaluation.score,
-              technicalDecisionReason: evalData.evaluation.reason
+              action: currentRound === 0 ? 'TRANSITION_TECHNICAL' : 'TRANSITION_HR',
+              score: evalData.evaluation.score,
+              decisionReason: evalData.evaluation.reason
             })
           }).catch(err => console.error('State transition error:', err));
 
           setTestState('ROUND_TRANSITION');
           setCurrentRound(prev => prev + 1);
-          // The useEffect watching for ROUND_TRANSITION will auto-start the next round
         } else {
-          // Technical round FAILED (Score < 60) -> Do NOT launch HR round
-          addLog('Decision Gate', `Technical Round FAILED (Score: ${evalData.evaluation.score}/100). Ending interview process.`);
+          // Round FAILED -> End process
+          addLog('Decision Gate', `Round ${currentRound + 1} FAILED (Score: ${evalData.evaluation.score}/100). Ending interview process.`);
           setTestState('INTERVIEW_COMPLETE');
           
           try {
@@ -1337,50 +1678,54 @@ CRITICAL INVARIANTS:
   const challengerAgent = activePanelAgents.find(a => !a.isPrimary);
 
   return (
-    <div className="flex-1 p-6 flex flex-col md:flex-row gap-6 relative">
+    <div className="absolute inset-0 w-full h-full bg-[#202124] flex flex-col overflow-hidden text-white font-sans">
       <ProctorEngine 
         interviewId={interviewId} 
         isRunning={testState === 'RUNNING'} 
         candidateName={candidateName}
       />
       
-      {/* Left Column: Multi-Agent Video/Controls */}
-      <div className="flex-1 flex flex-col gap-6">
-        <div className="bg-gray-900 rounded-2xl flex-1 min-h-[460px] flex flex-col justify-between relative overflow-hidden shadow-2xl border border-gray-800 p-6">
+      {/* Middle Section (Grid + Telemetry) */}
+      <div className="flex-1 flex overflow-hidden relative p-4">
+        
+        {/* Main Content Area (Video Grid) */}
+        <div className="flex-1 flex flex-col relative bg-transparent rounded-2xl overflow-hidden">
           
-          {/* Top Panel Bar: Round Info & Active Panel Members */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gray-800/80 pb-4">
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <div className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
-                <Users className="w-3.5 h-3.5 text-blue-400" />
-                <span>Round {currentRound + 1}: {blueprint.interview_rounds[currentRound]?.round_name}</span>
+          {/* Top Panel Bar: Round Info (floating overlay - hidden during active workspace to prevent overlap) */}
+          {!isRound1WorkspaceActive && (
+            <div className="absolute top-4 left-4 right-4 z-20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pointer-events-none">
+              <div className="flex items-center gap-2.5 flex-wrap pointer-events-auto">
+                <div className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5 text-blue-400" />
+                  <span>Round {currentRound + 1}: {blueprint.interview_rounds[currentRound]?.round_name}</span>
+                </div>
+
+                {testState === 'RUNNING' && (
+                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/90 text-gray-300 font-mono text-xs border border-gray-700 shadow-xs">
+                    <Clock className="w-3.5 h-3.5 text-blue-400 animate-pulse" />
+                    <span className="font-bold text-white">
+                      {Math.floor(roundElapsedSeconds / 60)}:{String(roundElapsedSeconds % 60).padStart(2, '0')}
+                    </span>
+                    <span className="text-gray-500">/</span>
+                    <span className="text-gray-400">
+                      {Math.floor(ROUND_TARGET_SECONDS / 60)}:00
+                    </span>
+                  </div>
+                )}
               </div>
 
-              {testState === 'RUNNING' && (
-                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/90 text-gray-300 font-mono text-xs border border-gray-700 shadow-xs">
-                  <Clock className="w-3.5 h-3.5 text-blue-400 animate-pulse" />
-                  <span className="font-bold text-white">
-                    {Math.floor(roundElapsedSeconds / 60)}:{String(roundElapsedSeconds % 60).padStart(2, '0')}
-                  </span>
-                  <span className="text-gray-500">/</span>
-                  <span className="text-gray-400">
-                    {Math.floor(ROUND_TARGET_SECONDS / 60)}:00
-                  </span>
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-400 font-medium hidden sm:inline">Panel:</span>
+                <span className="text-xs px-2 py-0.5 rounded bg-gray-800 text-gray-300 font-mono">
+                  {currentRound === 0 ? '1 Coding Agent' : currentRound === 1 ? '2 Technical Agents' : '1 HR Agent'}
+                </span>
+              </div>
             </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-400 font-medium hidden sm:inline">Panel:</span>
-              <span className="text-xs px-2 py-0.5 rounded bg-gray-800 text-gray-300 font-mono">
-                {currentRound === 0 ? '2 Technical Agents' : '1 HR Agent'}
-              </span>
-            </div>
-          </div>
+          )}
 
           {/* Developer / Sandbox Testing Fast-Forward Toolbar */}
           {(interviewId.includes('demo') || (typeof window !== 'undefined' && window.location.pathname.includes('demo'))) && (
-            <div className="mt-3 mb-2 p-3 rounded-xl bg-purple-950/40 border border-purple-500/40 flex flex-wrap items-center justify-between gap-3 text-xs font-mono animate-in fade-in">
+            <div className="absolute top-16 left-4 right-4 z-20 mt-3 mb-2 p-3 rounded-xl bg-purple-950/40 border border-purple-500/40 flex flex-wrap items-center justify-between gap-3 text-xs font-mono animate-in fade-in pointer-events-auto">
               <div className="flex items-center gap-2 text-purple-300">
                 <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
                 <span className="font-bold">DEV TEST CONTROLS // ISOLATED SANDBOX</span>
@@ -1424,285 +1769,247 @@ CRITICAL INVARIANTS:
             </div>
           )}
 
-          {/* Center: Multi-Agent Visualizer & Interviewer Cards */}
-          <div className="my-auto py-4">
-            {/* Wrap-up alert banner at 4:50 mark */}
-            {wrapUpWarning && (
-              <div className="mb-4 max-w-xl mx-auto bg-amber-500/20 border border-amber-500/50 rounded-2xl p-3 text-center text-amber-200 text-xs font-mono flex items-center justify-center gap-2 animate-bounce shadow-lg shadow-amber-500/10">
-                <Clock className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>⏱️ <strong>Target Round Time Reached (4:50)</strong> — Wrapping up this section smoothly...</span>
-              </div>
-            )}
-
-            {testState === 'RUNNING' && activePanelAgents.length >= 2 ? (
-              // 2-Agent Technical Panel (Primary + Challenger)
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-                {/* Primary Interviewer Card */}
-                <div className={`p-5 rounded-2xl border transition-all duration-300 flex flex-col items-center text-center ${
-                  floorOwner === 'PRIMARY_AI' 
-                    ? 'bg-blue-950/40 border-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.3)] scale-102' 
-                    : 'bg-gray-850/60 border-gray-800 opacity-90'
-                }`}>
-                  <div className="relative mb-2 flex items-center justify-center">
-                    <ParticleTalkingOrb 
-                      isSpeaking={floorOwner === 'PRIMARY_AI'}
-                      isListening={floorOwner === 'CANDIDATE'}
-                      size={150}
-                      accentColor={primaryAgent?.color || '#3B82F6'}
-                    />
+          {isRound1WorkspaceActive && (testState === 'RUNNING' || testState === 'STARTING') ? (
+            <div className="flex-1 flex flex-col lg:flex-row gap-4 p-2 overflow-hidden h-full">
+              {/* Workspace Column (Left 65%) */}
+              <div className="flex-1 lg:w-[65%] h-full flex flex-col min-h-0">
+                {/* Workspace Mode Switcher Header */}
+                <div className="flex items-center justify-between px-3 py-1.5 bg-[#252526] border border-gray-800 rounded-t-xl text-xs mb-1">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setWorkspaceMode('coding')}
+                      className={`px-3 py-1 rounded-lg font-medium transition flex items-center gap-1.5 cursor-pointer ${
+                        workspaceMode === 'coding' ? 'bg-blue-600 text-white' : 'bg-[#1e1e1e] text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      <Code2 className="w-3.5 h-3.5" />
+                      <span>Coding / DSA (Monaco)</span>
+                    </button>
+                    <button
+                      onClick={() => setWorkspaceMode('excalidraw')}
+                      className={`px-3 py-1 rounded-lg font-medium transition flex items-center gap-1.5 cursor-pointer ${
+                        workspaceMode === 'excalidraw' ? 'bg-blue-600 text-white' : 'bg-[#1e1e1e] text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      <Layers className="w-3.5 h-3.5" />
+                      <span>System Design (Excalidraw)</span>
+                    </button>
                   </div>
-                  <h3 className="text-lg font-bold text-white">{primaryAgent?.name}</h3>
-                  <p className="text-xs text-gray-400 mb-3">{primaryAgent?.role}</p>
-                  
-                  <div className="flex flex-wrap gap-1.5 justify-center mb-3">
-                    <span className="text-3xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 font-bold uppercase">
-                      Primary Driver
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-500/20 px-2 py-0.5 rounded hidden sm:inline flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                      AI Workspace Sync Active
                     </span>
-                    <span className={`text-3xs px-2 py-0.5 rounded-full font-bold uppercase transition-all ${
-                      floorOwner === 'PRIMARY_AI' 
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 ring-1 ring-emerald-500/40' 
-                        : 'bg-gray-800 text-gray-400'
-                    }`}>
-                      {floorOwner === 'PRIMARY_AI' ? '🎙️ Speaking (Lead)' : '👂 Listening'}
-                    </span>
+                    <div className="px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 font-mono text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
+                      <span>Round 1: Coding & System Design</span>
+                    </div>
+                    {testState === 'RUNNING' && (
+                      <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gray-800 text-gray-300 font-mono text-xs border border-gray-700">
+                        <Clock className="w-3 h-3 text-blue-400 animate-pulse" />
+                        <span className="font-bold text-white">
+                          {Math.floor(roundElapsedSeconds / 60)}:{String(roundElapsedSeconds % 60).padStart(2, '0')}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                {/* Challenger Interviewer Card */}
-                <div className={`p-5 rounded-2xl border transition-all duration-300 flex flex-col items-center text-center ${
-                  floorOwner === 'CHALLENGER_AI' 
-                    ? 'bg-purple-950/40 border-purple-500 shadow-[0_0_30px_rgba(139,92,246,0.3)] scale-102' 
-                    : challengerAgent?.intervening
-                      ? 'bg-amber-950/30 border-amber-500/60'
-                      : 'bg-gray-850/60 border-gray-800 opacity-90'
-                }`}>
-                  <div className="relative mb-2 flex items-center justify-center">
-                    <ParticleTalkingOrb 
-                      isSpeaking={floorOwner === 'CHALLENGER_AI'}
-                      isListening={floorOwner === 'CANDIDATE'}
-                      isThinking={challengerAgent?.intervening}
-                      size={150}
-                      accentColor={challengerAgent?.color || '#8B5CF6'}
+                {/* Active Workspace */}
+                <div className="flex-1 min-h-0">
+                  {workspaceMode === 'coding' ? (
+                    <CodingWorkspace
+                      code={code}
+                      setCode={setCode}
+                      language={language}
+                      setLanguage={setLanguage}
+                      onRunCode={handleCodeExecution}
+                      onSubmit={() => finishRound('CANDIDATE_SUBMITTED_ROUND_1')}
+                      problem={blueprint.interview_rounds[0]?.coding_problem || {
+                        title: "1. High-Throughput Rate Limiter & Event Throttler",
+                        difficulty: "Medium",
+                        description: "Implement a sliding window rate limiter class that tracks incoming user requests and enforces a maximum threshold of requests per sliding window in TypeScript or Python. The implementation must support high concurrency and handle edge cases where multiple requests arrive at identical millisecond timestamps.",
+                        constraints: [
+                          "allowRequest(userId, timestampMs) should run in O(1) or O(log N) average time complexity.",
+                          "Space complexity should scale with the number of unique active user IDs.",
+                          "Handle concurrent burst traffic and sliding window cleanup cleanly."
+                        ]
+                      }}
                     />
-                  </div>
-                  <h3 className="text-lg font-bold text-white">{challengerAgent?.name}</h3>
-                  <p className="text-xs text-gray-400 mb-3">{challengerAgent?.role}</p>
-
-                  <div className="flex flex-wrap gap-1.5 justify-center mb-3">
-                    <span className="text-3xs px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold uppercase">
-                      Specialist Lead
-                    </span>
-                    <span className={`text-3xs px-2 py-0.5 rounded-full font-bold uppercase transition-all ${
-                      floorOwner === 'CHALLENGER_AI'
-                        ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30 ring-1 ring-purple-500/40'
-                        : challengerAgent?.intervening
-                          ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30 animate-pulse'
-                          : 'bg-gray-800 text-gray-400'
-                    }`}>
-                      {floorOwner === 'CHALLENGER_AI' 
-                        ? '⚡ Probing Scale' 
-                        : challengerAgent?.intervening 
-                          ? '✋ Intervening' 
-                          : '👂 Listening'}
-                    </span>
-                  </div>
+                  ) : (
+                    <SystemDesignWorkspace
+                      diagramElements={diagramElements}
+                      setDiagramElements={setDiagramElements}
+                      onSubmit={() => finishRound('CANDIDATE_SUBMITTED_ROUND_1')}
+                    />
+                  )}
                 </div>
               </div>
-            ) : (
-              // Single Interviewer Display (HR Round or Pre-start)
-              <div className="flex flex-col items-center justify-center text-center">
-                <div className="relative mb-2 flex items-center justify-center">
-                  <ParticleTalkingOrb 
-                    isSpeaking={testState === 'RUNNING' && (floorOwner === 'HR_AI' || floorOwner === 'PRIMARY_AI')}
-                    isListening={floorOwner === 'CANDIDATE'}
-                    isThinking={testState === 'STARTING' || testState === 'ROUND_TRANSITION'}
-                    size={200}
-                  />
-                </div>
+
+              {/* Video Grid Column (Right 35%) */}
+              <div className="w-full lg:w-[35%] h-full flex flex-col min-h-0">
+                <AgentPanel
+                  testState={testState}
+                  wrapUpWarning={wrapUpWarning}
+                  activePanelAgents={activePanelAgents}
+                  floorOwner={floorOwner}
+                  primaryAgent={primaryAgent}
+                  challengerAgent={challengerAgent}
+                  currentRound={currentRound}
+                  blueprint={blueprint}
+                  pendingFloorNotice={pendingFloorNotice}
+                  interviewId={interviewId}
+                  micVolume={micVolume}
+                  finishRound={finishRound}
+                  localVideoRef={localVideoRef}
+                  candidateName={candidateName}
+                  localStream={localStream}
+                  isVideoOff={isVideoOff}
+                  toggleCamera={toggleCamera}
+                  isMuted={isMuted}
+                  toggleMute={toggleMute}
+                  isDeafened={isDeafened}
+                  toggleDeafen={toggleDeafen}
+                />
+              </div>
+            </div>
+          ) : (
+            <AgentPanel
+              testState={testState}
+              wrapUpWarning={wrapUpWarning}
+              activePanelAgents={activePanelAgents}
+              floorOwner={floorOwner}
+              primaryAgent={primaryAgent}
+              challengerAgent={challengerAgent}
+              currentRound={currentRound}
+              blueprint={blueprint}
+              pendingFloorNotice={pendingFloorNotice}
+              interviewId={interviewId}
+              micVolume={micVolume}
+              finishRound={finishRound}
+              localVideoRef={localVideoRef}
+              candidateName={candidateName}
+              localStream={localStream}
+              isVideoOff={isVideoOff}
+              toggleCamera={toggleCamera}
+              isMuted={isMuted}
+              toggleMute={toggleMute}
+              isDeafened={isDeafened}
+              toggleDeafen={toggleDeafen}
+            />
+          )}
+        </div>
+
+        {/* Pre-start Round Banner with Mandatory Hardware Verification */}
+        {testState === 'IDLE' && (
+          <div className="absolute inset-0 bg-[#202124]/95 backdrop-blur-md z-30 flex items-center justify-center p-6">
+            <div className="bg-[#2b2d31] p-6 sm:p-8 rounded-3xl text-center shadow-2xl max-w-md w-full border border-gray-700/50">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 font-medium text-xs mb-3">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Round {currentRound + 1} of {blueprint.interview_rounds.length} • Readiness Check</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-normal text-white mb-1">{blueprint.interview_rounds[currentRound]?.round_name}</h3>
+              <p className="text-gray-400 text-xs mb-6 leading-relaxed">{blueprint.interview_rounds[currentRound]?.purpose}</p>
+
+              {/* Hardware Device Checklist */}
+              <div className="bg-[#1e2023] rounded-2xl p-4 mb-6 border border-gray-800 text-left space-y-3">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-gray-400 block mb-1">Hardware & Permission Verification</span>
                 
-                <h2 className="text-xl font-bold text-white mt-2">
-                  {blueprint.interview_rounds[currentRound]?.interviewers?.[0]?.name || blueprint.interview_rounds[currentRound]?.interviewer?.name || 'AI Interviewer'}
-                </h2>
-                <p className="text-gray-400 text-sm">
-                  {blueprint.interview_rounds[currentRound]?.interviewers?.[0]?.role || blueprint.interview_rounds[currentRound]?.interviewer?.role || 'Interviewer'}
-                </p>
-              </div>
-            )}
-
-            {/* Challenger Floor Request Alert Banner */}
-            {pendingFloorNotice && (
-              <div className="mt-4 max-w-lg mx-auto bg-purple-900/40 border border-purple-500/50 rounded-xl p-3 text-xs text-purple-200 flex items-center gap-2.5 animate-in fade-in duration-200">
-                <Zap className="w-4 h-4 text-purple-400 shrink-0 animate-bounce" />
-                <span className="font-mono">{pendingFloorNotice}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Floor Arbiter Bar */}
-          {testState === 'RUNNING' && (
-            <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-800/80 p-3.5 rounded-xl border border-gray-700/60 backdrop-blur">
-              <div className={`px-4 py-1.5 rounded-full font-bold tracking-wider uppercase text-xs flex items-center gap-2 ${
-                floorOwner === 'PRIMARY_AI' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 
-                floorOwner === 'CHALLENGER_AI' ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : 
-                floorOwner === 'HR_AI' ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' : 
-                floorOwner === 'CANDIDATE' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 
-                floorOwner === 'CROSSTALK' ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 
-                'bg-gray-900/60 text-gray-400'
-              }`}>
-                {floorOwner === 'PRIMARY_AI' ? `🎙️ ${primaryAgent?.name || 'Primary'} Speaking` : 
-                 floorOwner === 'CHALLENGER_AI' ? `⚡ ${challengerAgent?.name || 'Challenger'} Intervening` : 
-                 floorOwner === 'HR_AI' ? '🎙️ HR Interviewer Speaking' : 
-                 floorOwner === 'CANDIDATE' ? '🗣️ You are Speaking' : 
-                 floorOwner === 'CROSSTALK' ? '⚠️ Interruption Detected' : 
-                 'Listening...'}
-              </div>
-
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <div className="flex-1 sm:w-48">
-                  <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-                    <div className="h-full bg-green-500 transition-all duration-75" style={{width: `${micVolume}%`}}></div>
+                {/* Camera Check */}
+                <div className="flex items-center justify-between text-xs p-3 rounded-xl bg-[#2b2d31] border border-gray-700/40">
+                  <div className="flex items-center gap-2.5 text-white">
+                    <Video className="w-4 h-4 text-gray-400" />
+                    <span className="font-medium">Camera</span>
                   </div>
+                  {deviceCheckStatus.camera === 'checking' && <span className="text-amber-400 animate-pulse font-mono text-[11px]">Checking...</span>}
+                  {deviceCheckStatus.camera === 'active' && <span className="text-emerald-400 font-medium flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> Ready</span>}
+                  {deviceCheckStatus.camera === 'blocked' && <span className="text-rose-400 font-medium flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> Blocked / Off</span>}
                 </div>
-                {currentRound === 0 ? (
-                  <button 
-                    onClick={() => finishRound('MANUAL_ADVANCE')} 
-                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-bold text-xs transition shadow-md whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
-                    title="Advance to HR Round (Fast-Forward)"
-                  >
-                    <span>Next Round (HR)</span>
-                    <span className="text-blue-200">→</span>
-                  </button>
-                ) : (
-                  <button 
-                    onClick={() => finishRound('MANUAL_END')} 
-                    className="px-4 py-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white rounded-lg font-bold text-xs transition shadow-md whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
-                    title="End Interview"
-                  >
-                    <span>End Interview</span>
-                    <span className="text-red-200">✗</span>
-                  </button>
+
+                {/* Mic Check */}
+                <div className="flex items-center justify-between text-xs p-3 rounded-xl bg-[#2b2d31] border border-gray-700/40">
+                  <div className="flex items-center gap-2.5 text-white">
+                    <Mic className="w-4 h-4 text-gray-400" />
+                    <span className="font-medium">Microphone</span>
+                  </div>
+                  {deviceCheckStatus.mic === 'checking' && <span className="text-amber-400 animate-pulse font-mono text-[11px]">Checking...</span>}
+                  {deviceCheckStatus.mic === 'active' && <span className="text-emerald-400 font-medium flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> Ready</span>}
+                  {deviceCheckStatus.mic === 'blocked' && <span className="text-rose-400 font-medium flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> Blocked / Off</span>}
+                </div>
+
+                {/* Error Banner if blocked */}
+                {(deviceCheckStatus.camera === 'blocked' || deviceCheckStatus.mic === 'blocked') && (
+                  <div className="bg-rose-500/10 border border-rose-500/20 p-3 rounded-xl text-rose-300 text-xs text-left space-y-2">
+                    <p className="leading-normal">{deviceCheckStatus.errorMsg || 'Camera and Microphone permissions are required to join the meeting.'}</p>
+                    <button 
+                      onClick={checkDevices}
+                      className="text-[11px] font-medium text-rose-200 underline hover:text-white transition cursor-pointer"
+                    >
+                      ↻ Retry Device Check
+                    </button>
+                  </div>
                 )}
               </div>
-            </div>
-          )}
 
-          {/* Technical Closing Overlay */}
-          {testState === 'TECHNICAL_CLOSING' && (
-            <div className="absolute inset-0 bg-gray-950/80 z-20 flex flex-col items-center justify-center text-white backdrop-blur-sm rounded-2xl p-6">
-              <Mic className="w-10 h-10 text-blue-400 mb-4 animate-pulse" />
-              <h3 className="text-xl font-bold">Technical Round Concluding</h3>
-              <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
-                The primary interviewer is wrapping up. Please wait...
-              </p>
-            </div>
-          )}
-
-          {/* HR Closing Overlay */}
-          {testState === 'HR_CLOSING' && (
-            <div className="absolute inset-0 bg-gray-950/80 z-20 flex flex-col items-center justify-center text-white backdrop-blur-sm rounded-2xl p-6">
-              <Mic className="w-10 h-10 text-orange-400 mb-4 animate-pulse" />
-              <h3 className="text-xl font-bold">HR Round Concluding</h3>
-              <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
-                The HR interviewer is wrapping up. Please wait...
-              </p>
-            </div>
-          )}
-
-          {/* Evaluating / Decision Gate Overlay */}
-          {(testState === 'EVALUATING' || testState === 'DECISION_GATE') && (
-            <div className="absolute inset-0 bg-gray-950/90 z-20 flex flex-col items-center justify-center text-white backdrop-blur-md rounded-2xl p-6">
-              <svg className="animate-spin h-10 w-10 text-blue-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-              <h3 className="text-xl font-bold">
-                {testState === 'DECISION_GATE' ? 'Decision Gate' : 'Evaluating Round Performance'}
-              </h3>
-              <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
-                {testState === 'DECISION_GATE' 
-                  ? 'Determining whether the candidate proceeds to the next round...'
-                  : 'Synthesizing evidence from the interview panel...'}
-              </p>
-            </div>
-          )}
-
-          {/* Round Transition Overlay */}
-          {testState === 'ROUND_TRANSITION' && (
-            <div className="absolute inset-0 bg-gray-950/90 z-20 flex flex-col items-center justify-center text-white backdrop-blur-md rounded-2xl p-6">
-              <div className="w-14 h-14 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mb-4 border border-emerald-500/40">
-                <Sparkles className="w-7 h-7" />
-              </div>
-              <h3 className="text-xl font-bold text-emerald-400">Technical Round Passed!</h3>
-              <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
-                Transitioning to the HR & Culture round. Your HR interviewer will join shortly...
-              </p>
-              <svg className="animate-spin h-5 w-5 text-gray-500 mt-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-            </div>
-          )}
-
-          {/* Interview Complete Overlay (generating scorecard) */}
-          {testState === 'INTERVIEW_COMPLETE' && (
-            <div className="absolute inset-0 bg-gray-950/90 z-20 flex flex-col items-center justify-center text-white backdrop-blur-md rounded-2xl p-6">
-              <svg className="animate-spin h-10 w-10 text-emerald-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-              <h3 className="text-xl font-bold">Generating Final Scorecard</h3>
-              <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
-                Synthesizing evidence across all rounds to produce your final evaluation...
-              </p>
-            </div>
-          )}
-
-          {/* Ended State Overlay */}
-          {testState === 'ENDED' && (
-            <div className="absolute inset-0 bg-gray-950/95 z-30 flex flex-col items-center justify-center text-white backdrop-blur-md rounded-2xl p-6 text-center animate-in fade-in">
-              <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mb-4 border border-emerald-500/40 shadow-[0_0_40px_rgba(16,185,129,0.3)]">
-                <UserCheck className="w-8 h-8" />
-              </div>
-              <h3 className="text-2xl font-black text-white mb-2">Interview Completed!</h3>
-              <p className="text-gray-300 max-w-sm text-sm mb-5">
-                Session telemetry and responses captured. Redirecting to your session completion report...
-              </p>
+              {/* Join Button (Gated by hardware verification) */}
               <button 
-                onClick={() => router.push(`/interview/${interviewId}/completed`)}
-                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-blue-500/20 cursor-pointer"
+                onClick={() => startTest()} 
+                disabled={deviceCheckStatus.camera !== 'active' || deviceCheckStatus.mic !== 'active'}
+                className={`w-full py-3.5 font-medium text-sm rounded-full shadow-lg transition-all flex items-center justify-center gap-2 ${
+                  deviceCheckStatus.camera === 'active' && deviceCheckStatus.mic === 'active'
+                    ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
+                    : 'bg-gray-700 text-gray-400 cursor-not-allowed opacity-60'
+                }`}
               >
-                View Session Summary →
+                {deviceCheckStatus.camera === 'active' && deviceCheckStatus.mic === 'active' ? (
+                  <>
+                    <span>Join meeting now</span>
+                    <Sparkles className="w-4 h-4" />
+                  </>
+                ) : (
+                  <span>Camera & Mic required to join</span>
+                )}
               </button>
             </div>
-          )}
-        </div>
-
-        {/* Pre-start Round Banner (only for initial IDLE state) */}
-        {testState === 'IDLE' && (
-          <div className="bg-[#0a0a0d] p-6 sm:p-8 rounded-3xl border border-white/[0.08] text-center shadow-[0_0_50px_rgba(0,0,0,0.5)]">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 font-mono font-bold text-xs mb-3 border border-cyan-500/20">
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Ready for Round {currentRound + 1} of {blueprint.interview_rounds.length}</span>
-            </div>
-            <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 tracking-tight">{blueprint.interview_rounds[currentRound]?.round_name}</h3>
-            <p className="text-white/60 text-xs sm:text-sm mb-6 max-w-lg mx-auto leading-relaxed">{blueprint.interview_rounds[currentRound]?.purpose}</p>
-            <button 
-              onClick={() => startTest()} 
-              className="px-8 py-3.5 bg-white text-black font-sans font-bold text-xs rounded-full shadow-[0_0_25px_rgba(255,255,255,0.25)] hover:bg-neutral-200 transition-all transform hover:scale-102 cursor-pointer"
-            >
-              Start Interview Session →
-            </button>
           </div>
         )}
+
       </div>
 
-      {/* Right Column: System Telemetry */}
-      <div className="w-full md:w-1/3 flex flex-col gap-6">
-        <div className="bg-[#0a0a0d] rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.3)] border border-white/[0.08] flex-1 flex flex-col overflow-hidden max-h-[92vh]">
-          <div className="p-3 bg-[#030304]/80 border-b border-white/[0.06]">
-            <h3 className="font-bold text-white/60 text-[11px] font-mono uppercase tracking-wider">Turn Arbiter & System Telemetry</h3>
-          </div>
-          <div className="flex-1 p-3 overflow-y-auto space-y-1.5 font-mono text-[10px] custom-scrollbar">
-            {logs.map((log, i) => (
-              <div key={i} className="text-white/70 border-b border-white/[0.04] pb-1">
-                <span className="text-white/30 mr-2">[{log.time}]</span>
-                <span className="text-cyan-400 font-bold mr-1.5">{log.comp}:</span>
-                <span className="text-emerald-400/90">{log.msg}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+      {/* Bottom Drawer: Collapsible SystemTelemetry */}
+      <div className={`transition-all duration-300 ease-in-out bg-[#1e1e1e] border-t border-gray-800 ${isTelemetryOpen ? 'h-64 opacity-100' : 'h-0 opacity-0 overflow-hidden'}`}>
+        <SystemTelemetry logs={logs} />
+      </div>
+
+      {/* Bottom Control Bar */}
+      <div className="h-[80px] bg-[#202124] border-t border-gray-800 flex items-center justify-between px-6 shrink-0 relative z-40">
+         <div className="text-white text-base font-medium flex items-center gap-4 w-1/3">
+            {testState === 'RUNNING' && (
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                {Math.floor(roundElapsedSeconds / 60)}:{String(roundElapsedSeconds % 60).padStart(2, '0')}
+              </span>
+            )}
+            <span className="text-gray-400 border-l border-gray-700 pl-4 hidden sm:block">Nexora Interview Panel</span>
+         </div>
+         
+         <div className="flex items-center justify-center gap-3 w-1/3">
+            <button onClick={toggleMute} className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors cursor-pointer ${isMuted ? 'bg-[#ea4335] hover:bg-[#d93025] text-white shadow-[0_0_15px_rgba(234,67,53,0.4)]' : 'bg-[#3c4043] hover:bg-[#4d5156] text-white'}`}>
+               {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+            </button>
+            <button onClick={toggleDeafen} className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors cursor-pointer ${isDeafened ? 'bg-[#ea4335] hover:bg-[#d93025] text-white shadow-[0_0_15px_rgba(234,67,53,0.4)]' : 'bg-[#3c4043] hover:bg-[#4d5156] text-white'}`}>
+               {isDeafened ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+            </button>
+            <button onClick={() => finishRound('USER_ENDED')} className="px-6 h-12 rounded-full bg-[#ea4335] hover:bg-[#d93025] text-white font-medium flex items-center gap-2 cursor-pointer transition-colors shadow-[0_0_15px_rgba(234,67,53,0.4)]">
+               End meeting
+            </button>
+         </div>
+
+         <div className="flex items-center justify-end gap-3 w-1/3">
+            <button onClick={() => setIsTelemetryOpen(!isTelemetryOpen)} className={`px-4 h-10 rounded-full flex items-center justify-center transition-colors cursor-pointer gap-2 ${isTelemetryOpen ? 'bg-blue-200 text-blue-900' : 'bg-transparent hover:bg-gray-800 text-white'}`} title="Show system logs">
+               {isTelemetryOpen ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
+               <span className="text-sm font-medium">Logs</span>
+            </button>
+         </div>
       </div>
     </div>
   );
