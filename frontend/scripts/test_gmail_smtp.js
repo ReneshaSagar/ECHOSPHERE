@@ -70,7 +70,7 @@ async function main() {
   const info = await transporter.sendMail({
     from: `"Plantra Labs Talent" <${gmailUser}>`,
     to: recipientEmail,
-    subject: `Interview Invitation: ${jobTitle} at Plantra Labs`,
+    subject: `Congratulations! You're Selected for an Interview: ${jobTitle} at Plantra Labs`,
     html: `
       <!DOCTYPE html>
       <html lang="en">

@@ -288,7 +288,7 @@ The Plantra Labs Talent Team`;
     );
     const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}`;
 
-    const subject = `Interview Invitation: ${job.title} at Plantra Labs`;
+    const subject = `Congratulations! You're Selected for an Interview: ${job.title} at Plantra Labs`;
 
     const bodyText = `Hi ${candidate.name},
 
@@ -392,7 +392,7 @@ The Plantra Labs Talent Team`;
   // CASE 3: SELECTION & FORMAL OFFER (NO SCORE)
   // =========================================================================
   {
-    const subject = `Offer of Employment: ${job.title} at Plantra Labs`;
+    const subject = `Congratulations! Offer & Selection Update: ${job.title} at Plantra Labs`;
 
     const bodyText = `Hi ${candidate.name},
 
@@ -465,7 +465,7 @@ The Plantra Labs Talent & Engineering Team`;
     ];
     const rolesList = altRoles.join(', ');
 
-    const subject = `Talent Pool Update: ${job.title} at Plantra Labs`;
+    const subject = `Priority Talent Pool & Alternative Role Allocation: ${job.title} at Plantra Labs`;
 
     const bodyText = `Hi ${candidate.name},
 
@@ -583,7 +583,7 @@ The Plantra Labs Talent Team`;
   // =========================================================================
   {
     const errorReason = "The uploaded file could not be read. Please ensure your PDF is text-readable or your Google Drive link is public.";
-    const subject = `Action Required: Application for ${job.title}`;
+    const subject = `Action Required: Issue Processing Your Application for ${job.title}`;
 
     const bodyText = `Hi ${candidate.name},
 

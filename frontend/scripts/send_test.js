@@ -57,7 +57,7 @@ async function main() {
   const response = await resend.emails.send({
     from: 'Plantra Labs Talent <onboarding@resend.dev>',
     to: recipientEmail,
-    subject: `Interview Invitation: ${jobTitle} at Plantra Labs`,
+    subject: `Congratulations! You're Selected for an Interview: ${jobTitle} at Plantra Labs`,
     html: `
       <!DOCTYPE html>
       <html lang="en">

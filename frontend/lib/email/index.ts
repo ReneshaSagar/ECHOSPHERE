@@ -303,7 +303,7 @@ export async function sendInterviewInvitationEmail(
   );
   const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}`;
 
-  const subject = `Interview Invitation: ${job.title} at Plantra Labs`;
+  const subject = `Congratulations! You're Selected for an Interview: ${job.title} at Plantra Labs`;
 
   const bodyText = `Hi ${candidate.name},
 
@@ -472,7 +472,7 @@ export async function sendSelectionOfferEmail(
   score?: number,
   summary?: string
 ) {
-  const subject = `Offer of Employment: ${job.title} at Plantra Labs`;
+  const subject = `Congratulations! Offer & Selection Update: ${job.title} at Plantra Labs`;
 
   const bodyText = `Hi ${candidate.name},
 
@@ -544,7 +544,7 @@ export async function sendWaitlistAltRoleEmail(
   _reason?: string
 ) {
   const rolesList = (altRoles && altRoles.length > 0) ? altRoles.join(', ') : 'related engineering roles';
-  const subject = `Talent Pool Update: ${job.title} at Plantra Labs`;
+  const subject = `Priority Talent Pool & Alternative Role Allocation: ${job.title} at Plantra Labs`;
 
   const bodyText = `Hi ${candidate.name},
 
@@ -609,7 +609,7 @@ export async function sendApplicationFailedEmail(
   job: { title: string },
   errorReason: string
 ) {
-  const subject = `Action Required: Application for ${job.title}`;
+  const subject = `Action Required: Issue Processing Your Application for ${job.title}`;
 
   const bodyText = `Hi ${candidate.name},
 
