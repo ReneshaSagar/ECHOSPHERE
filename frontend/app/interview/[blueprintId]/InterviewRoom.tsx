@@ -1695,7 +1695,7 @@ CRITICAL RULES & SCOPE:
           setFloorOwner(candidateSpeaking ? 'CANDIDATE' : (primarySpeaking ? 'PRIMARY_AI' : 'NONE'));
 
           // Only advance when Primary's greeting is finished AND Primary has stopped speaking (1800ms silence verification)
-          if ((primaryIntroFinishedRef.current || soloHasSpokenRef.current) && !primarySpeaking && !challengerSpawnedRef.current) {
+          if ((primaryIntroFinishedRef.current || soloHasSpokenRef.current) && !primarySpeaking) {
             if (!introTimerRef.current) {
               introTimerRef.current = setTimeout(() => {
                 triggerChallengerIntro();
