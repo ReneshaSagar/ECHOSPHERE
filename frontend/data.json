@@ -8508,20 +8508,9 @@
           "round": "Round 1: Practical Coding & System Design Assessment",
           "speaker": "System (Workspace Event)",
           "text": "[WORK_STATE_UPDATE] Candidate introduced a Hash Map / Set lookup structure to optimize lookup efficiency."
-        },
-        {
-          "round": "Round 1: Practical Coding & System Design Assessment",
-          "speaker": "System (Workspace Event)",
-          "text": "[WORK_STATE_UPDATE] Candidate updated code in editor (22 lines total)."
         }
       ],
       "evaluations": [
-        {
-          "round": "Round 2: Technical Architecture & Concurrency",
-          "decision": "PASS",
-          "score": 75,
-          "reason": "Candidate articulated technical architecture concepts and engineering trade-offs during the panel discussion."
-        },
         {
           "round": "Round 3: Engineering Leadership & Culture",
           "decision": "PASS",
@@ -8545,6 +8534,12 @@
           "decision": "FAIL",
           "score": 0,
           "reason": "Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace."
+        },
+        {
+          "round": "Round 2: Technical Architecture & Concurrency",
+          "decision": "FAIL",
+          "score": 0,
+          "reason": "Candidate was completely silent and provided zero verbal responses during the technical panel interview."
         }
       ],
       "suspiciousEvents": [
@@ -15470,6 +15465,916 @@
           "details": "Candidate is not visible to the webcam",
           "severity": "HIGH",
           "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:16.355Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:29.601Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:30.981Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:32.396Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:33.684Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:34.837Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:36.091Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:37.214Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:38.413Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:40.018Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:41.258Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:42.553Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:43.857Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:44.993Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:46.215Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:47.422Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:48.566Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:49.692Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:50.976Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:52.295Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:53.443Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:54.672Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:56.066Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:06:58.950Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:00.323Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:01.781Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:03.284Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:04.694Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:06.009Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:07.530Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:09.024Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:10.431Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:11.591Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:12.900Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:14.341Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:15.794Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:17.128Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:18.555Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:19.706Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:21.315Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:22.482Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:23.812Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:25.082Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:26.191Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:27.480Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:28.818Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:30.213Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:31.568Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:32.959Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:34.103Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:35.562Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:36.856Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:38.183Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:39.405Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:40.679Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:41.909Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:43.192Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:44.646Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:46.005Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:47.516Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:49.148Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:50.437Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:51.849Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:53.126Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:54.268Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:55.625Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:57.200Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:58.730Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:07:59.758Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:01.040Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:02.356Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:03.596Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:05.238Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:06.361Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:07.665Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:08.883Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:09.979Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:11.199Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:12.401Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:13.827Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:15.149Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:16.330Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:17.696Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:18.837Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:20.013Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:21.359Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:22.839Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:24.226Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:25.510Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:26.665Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:28.054Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:29.490Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:30.820Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:32.050Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:33.246Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:34.818Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:36.299Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:08:37.768Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:20:47.361Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:20:48.583Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:20:49.835Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:08.196Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:09.451Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:10.822Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:12.065Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:14.717Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:15.797Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:18.483Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:19.682Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:26.412Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:34.298Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:35.842Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:36.978Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:38.645Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:40.269Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:44.247Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:49.541Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:52.547Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:54.317Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:55.389Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:21:58.201Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:22:10.309Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:22:11.817Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:22:13.348Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:22:14.816Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:22:16.210Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:22:33.288Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-11T22:22:43.416Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:22:45.772Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T22:22:53.598Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
         }
       ],
       "round1Evaluation": {
@@ -15570,7 +16475,7 @@
           "debuggingReasoning": "No debugging performed."
         },
         "workspaceEvidence": {
-          "code": "class SlidingWindowRateLimiter {\n  private limit: number;\n  private windowMs: number;\n  private userLogs: Map<string, number[]>;\n\n  constructor(limit: number = 5, windowMs: number = 10000) {\n    this.limit = limit;\n    this.windowMs = windowMs;\n    this.userLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number = Date.now()): boolean {\n    // TODO: Implement sliding window rate limiting logic\n    return true;\n  }\n}\n\n// Test instance\nconst limiter = new SlidingWindowRateLimiter(3, 5000);\nconsole.log(\"Allowed t=1000:\", limiter.allowRequest(\"user1\", 1000));\nconsole.log(\"Allowed t=2000:\", limiter.allowRequest(\"user1\", 2000));\nskibidi",
+          "code": "class SlidingWindowRateLimiter {\n  private limit: number;\n  private windowMs: number;\n  private userLogs: Map<string, number[]>;\n\n  constructor(limit: number = 5, windowMs: number = 10000) {\n    this.limit = limit;\n    this.windowMs = windowMs;\n    this.userLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number = Date.now()): boolean {\n    // TODO: Implement sliding window rate limiting logic\n    return true;\n  }\n}\n\n// Test instance\nconst limiter = new SlidingWindowRateLimiter(3, 5000);\nconsole.log(\"Allowed t=1000:\", limiter.allowRequest(\"user1\", 1000));\nconsole.log(\"Allowed t=2000:\", limiter.allowRequest(\"user1\", 2000));\n",
           "language": "typescript",
           "codeExecutionResults": {
             "compileSuccess": true,
@@ -15579,7 +16484,7 @@
             "rawOutput": "Workspace snapshot captured"
           },
           "diagramElementCount": 0,
-          "submittedAt": "2026-09-11T21:56:05.434Z"
+          "submittedAt": "2026-09-11T22:20:56.164Z"
         },
         "keyEvidence": [],
         "missingEvidence": [
@@ -15587,10 +16492,10 @@
           "Algorithmic explanation",
           "Complexity analysis"
         ],
-        "evaluatedAt": "2026-09-11T21:56:05.434Z"
+        "evaluatedAt": "2026-09-11T22:20:56.164Z"
       },
       "round1Evidence": {
-        "code": "class SlidingWindowRateLimiter {\n  private limit: number;\n  private windowMs: number;\n  private userLogs: Map<string, number[]>;\n\n  constructor(limit: number = 5, windowMs: number = 10000) {\n    this.limit = limit;\n    this.windowMs = windowMs;\n    this.userLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number = Date.now()): boolean {\n    // TODO: Implement sliding window rate limiting logic\n    return true;\n  }\n}\n\n// Test instance\nconst limiter = new SlidingWindowRateLimiter(3, 5000);\nconsole.log(\"Allowed t=1000:\", limiter.allowRequest(\"user1\", 1000));\nconsole.log(\"Allowed t=2000:\", limiter.allowRequest(\"user1\", 2000));\nskibidi",
+        "code": "class SlidingWindowRateLimiter {\n  private limit: number;\n  private windowMs: number;\n  private userLogs: Map<string, number[]>;\n\n  constructor(limit: number = 5, windowMs: number = 10000) {\n    this.limit = limit;\n    this.windowMs = windowMs;\n    this.userLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number = Date.now()): boolean {\n    // TODO: Implement sliding window rate limiting logic\n    return true;\n  }\n}\n\n// Test instance\nconst limiter = new SlidingWindowRateLimiter(3, 5000);\nconsole.log(\"Allowed t=1000:\", limiter.allowRequest(\"user1\", 1000));\nconsole.log(\"Allowed t=2000:\", limiter.allowRequest(\"user1\", 2000));\n",
         "language": "typescript",
         "codeExecutionResults": {
           "compileSuccess": true,
@@ -15599,14 +16504,14 @@
           "rawOutput": "Workspace snapshot captured"
         },
         "diagramElementCount": 0,
-        "submittedAt": "2026-09-11T21:56:05.434Z"
+        "submittedAt": "2026-09-11T22:20:56.164Z"
       },
       "interviewState": {
         "interviewId": "demo-interview-test",
-        "currentRound": "technical",
-        "floorState": "PRIMARY_SPEAKING",
-        "currentSpeaker": "eng_be_01",
-        "conversationSummary": "Technical panel interview initialized.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 82/100). Assessment Notes: Candidate completed functional implementation in typescript with verified test execution.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 90/100). Highlights: . Panel Notes: Demonstrated exceptional deep concurrency knowledge in Technical Panel.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 75/100). Highlights: . Panel Notes: Candidate articulated technical architecture concepts and engineering trade-offs during the panel discussion.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 30/100). Highlights: . Panel Notes: Candidate provided brief or high-level remarks without sufficient distributed systems depth.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 30/100). Highlights: . Panel Notes: Candidate provided brief or high-level remarks without sufficient distributed systems depth.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 85/100). Highlights: . Panel Notes: Candidate was completely silent and provided zero verbal responses during the technical panel interview.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.",
+        "currentRound": "hr",
+        "floorState": "HR_SPEAKING",
+        "currentSpeaker": "hr_01",
+        "conversationSummary": "Technical panel interview initialized.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 82/100). Assessment Notes: Candidate completed functional implementation in typescript with verified test execution.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 90/100). Highlights: . Panel Notes: Demonstrated exceptional deep concurrency knowledge in Technical Panel.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 75/100). Highlights: . Panel Notes: Candidate articulated technical architecture concepts and engineering trade-offs during the panel discussion.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 30/100). Highlights: . Panel Notes: Candidate provided brief or high-level remarks without sufficient distributed systems depth.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 30/100). Highlights: . Panel Notes: Candidate provided brief or high-level remarks without sufficient distributed systems depth.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 85/100). Highlights: . Panel Notes: Candidate was completely silent and provided zero verbal responses during the technical panel interview.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 85/100). Highlights: . Panel Notes: Candidate was completely silent and provided zero verbal responses during the technical panel interview.",
         "questionsAsked": [],
         "topicsCovered": [],
         "evidenceCollected": [],
@@ -15650,6 +16555,16 @@
             "candidateUtterance": "So basically for that I ensured that there is an arbiter a third Arbiter which basically says nothing throughout the mean and just",
             "classification": "VAGUE",
             "qualityScore": 35
+          },
+          {
+            "id": "ev_7gveo",
+            "timestamp": 1789164478387,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "Hey there what is your post here",
+            "classification": "VAGUE",
+            "qualityScore": 35
           }
         ],
         "competencyTrackers": [
@@ -15660,7 +16575,8 @@
               "I basically used Agora Agora is",
               "Rtc supplier which basically helps you in you know making conversational models",
               "Uh it has two continuation model one is RT cascading which basically is curious and STD and the other is mlm I use mln model",
-              "So basically for that I ensured that there is an arbiter a third Arbiter which basically says nothing throughout the mean and just"
+              "So basically for that I ensured that there is an arbiter a third Arbiter which basically says nothing throughout the mean and just",
+              "Hey there what is your post here"
             ],
             "evidence": [],
             "evidenceQuality": "NONE",
@@ -15707,28 +16623,18 @@
         "interviewStatus": "IN_PROGRESS",
         "activeAgents": [
           {
-            "agentId": "eng_be_01",
-            "name": "Aditya Sharma",
-            "role": "Senior Backend Engineer",
-            "voice": "Fenrir",
-            "color": "#10B981",
+            "agentId": "hr_01",
+            "name": "Sarah Jenkins",
+            "role": "VP of Engineering Culture & People",
+            "voice": "Aoede",
+            "color": "#EA580C",
             "isPrimary": true,
             "isActive": true,
             "hasFloor": true
-          },
-          {
-            "agentId": "eng_be_02",
-            "name": "Arjun Malhotra",
-            "role": "Staff Backend Architect",
-            "voice": "Charon",
-            "color": "#7C3AED",
-            "isPrimary": false,
-            "isActive": true,
-            "hasFloor": false
           }
         ],
-        "updatedAt": "2026-09-11T21:56:05.844Z",
-        "candidateAnswer": "So basically for that I ensured that there is an arbiter a third Arbiter which basically says nothing throughout the mean and just"
+        "updatedAt": "2026-09-11T22:22:21.936Z",
+        "candidateAnswer": "Hey there what is your post here"
       },
       "scorecard": {
         "overall_recommendation": "No Hire",
@@ -15744,7 +16650,7 @@
             "weightedScore": 0
           },
           {
-            "roundName": "Round 2: Technical Panel (Systems & Concurrency)",
+            "roundName": "Round 2: Technical Architecture & Concurrency",
             "roundType": "technical",
             "rawScore": 0,
             "weight": 0.5,
@@ -15857,7 +16763,7 @@
             "debuggingReasoning": "No debugging performed."
           },
           "workspaceEvidence": {
-            "code": "class SlidingWindowRateLimiter {\n  private limit: number;\n  private windowMs: number;\n  private userLogs: Map<string, number[]>;\n\n  constructor(limit: number = 5, windowMs: number = 10000) {\n    this.limit = limit;\n    this.windowMs = windowMs;\n    this.userLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number = Date.now()): boolean {\n    // TODO: Implement sliding window rate limiting logic\n    return true;\n  }\n}\n\n// Test instance\nconst limiter = new SlidingWindowRateLimiter(3, 5000);\nconsole.log(\"Allowed t=1000:\", limiter.allowRequest(\"user1\", 1000));\nconsole.log(\"Allowed t=2000:\", limiter.allowRequest(\"user1\", 2000));\nskibidi",
+            "code": "class SlidingWindowRateLimiter {\n  private limit: number;\n  private windowMs: number;\n  private userLogs: Map<string, number[]>;\n\n  constructor(limit: number = 5, windowMs: number = 10000) {\n    this.limit = limit;\n    this.windowMs = windowMs;\n    this.userLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number = Date.now()): boolean {\n    // TODO: Implement sliding window rate limiting logic\n    return true;\n  }\n}\n\n// Test instance\nconst limiter = new SlidingWindowRateLimiter(3, 5000);\nconsole.log(\"Allowed t=1000:\", limiter.allowRequest(\"user1\", 1000));\nconsole.log(\"Allowed t=2000:\", limiter.allowRequest(\"user1\", 2000));\n",
             "language": "typescript",
             "codeExecutionResults": {
               "compileSuccess": true,
@@ -15866,7 +16772,7 @@
               "rawOutput": "Workspace snapshot captured"
             },
             "diagramElementCount": 0,
-            "submittedAt": "2026-09-11T21:56:05.434Z"
+            "submittedAt": "2026-09-11T22:20:56.164Z"
           },
           "keyEvidence": [],
           "missingEvidence": [
@@ -15874,10 +16780,10 @@
             "Algorithmic explanation",
             "Complexity analysis"
           ],
-          "evaluatedAt": "2026-09-11T21:56:05.434Z"
+          "evaluatedAt": "2026-09-11T22:20:56.164Z"
         },
         "round2Evaluation": {
-          "roundName": "Round 2: Technical Panel (Systems & Concurrency)",
+          "roundName": "Round 2: Technical Architecture & Concurrency",
           "roundType": "technical",
           "score": 0,
           "decision": "FAIL",
@@ -16042,7 +16948,7 @@
             "Architecture trade-offs",
             "Concurrency failure modes"
           ],
-          "evaluatedAt": "2026-09-11T19:55:51.024Z"
+          "evaluatedAt": "2026-09-11T22:22:21.631Z"
         },
         "round3Evaluation": {
           "roundName": "Round 3: HR, Culture & Engineering Leadership",
@@ -16218,22 +17124,22 @@
           }
         ]
       },
-      "completedAt": "2026-09-11T21:56:32.172Z",
+      "completedAt": "2026-09-11T22:22:57.412Z",
       "proctoringReport": {
-        "integrity_score": 55,
-        "confidence_score": 69,
-        "screen_attention_score": 0,
-        "gaze_stability_score": 0,
+        "integrity_score": 75,
+        "confidence_score": 92,
+        "screen_attention_score": 95,
+        "gaze_stability_score": 95,
         "head_attention_score": 95,
         "hand_activity_score": 95,
         "speech_confidence_score": 90,
-        "face_presence_score": 30,
+        "face_presence_score": 57,
         "behavioral_calmness_score": 94,
-        "behavioral_consistency_score": 56,
-        "compound_penalty": 0,
-        "assessment": "HIGH SUSPICION",
-        "assessment_desc": "Significant recurring behavioral anomaly patterns detected across multiple signals. Detailed audit required.",
-        "badge_color": "red",
+        "behavioral_consistency_score": 94,
+        "compound_penalty": 15,
+        "assessment": "MODERATE SUSPICION",
+        "assessment_desc": "Elevated behavioral indicators detected. Additional review recommended for specific flagged timestamps.",
+        "badge_color": "yellow",
         "weights": {
           "eye_gaze": 0.3,
           "face_presence": 0.15,
@@ -16247,28 +17153,29 @@
           "positive": [
             "Single face confirmed; no unauthorized secondary person detected.",
             "Speech delivery was fluent with consistent single vocal baseline.",
+            "Mostly stable screen gaze with natural cognitive saccades.",
             "Head orientation remained consistently centered toward screen.",
             "Hand activity was normal with natural conversational gestures."
           ],
           "cautions": [
             "Candidate had intermittent camera absence or was partially out of frame.",
-            "Several sustained gaze deviations away from the active display."
+            "Multi-modal compound alignment observed (correlated gaze/head/speech/context deviations)."
           ]
         },
         "components": {
-          "eye_gaze_contrib": 0,
-          "presence_contrib": 4.5,
+          "eye_gaze_contrib": 28.5,
+          "presence_contrib": 8.5,
           "multi_person_contrib": 20,
           "head_contrib": 9.5,
           "hand_contrib": 9.5,
           "speech_contrib": 9,
-          "consistency_contrib": 2.8
+          "consistency_contrib": 4.7
         },
-        "lastUpdated": "2026-09-11T21:56:29.575Z",
-        "totalEventsRecorded": 989
+        "lastUpdated": "2026-09-11T22:22:53.598Z",
+        "totalEventsRecorded": 1119
       },
       "round2Evaluation": {
-        "roundName": "Round 2: Technical Panel (Systems & Concurrency)",
+        "roundName": "Round 2: Technical Architecture & Concurrency",
         "roundType": "technical",
         "score": 0,
         "decision": "FAIL",
@@ -16433,7 +17340,7 @@
           "Architecture trade-offs",
           "Concurrency failure modes"
         ],
-        "evaluatedAt": "2026-09-11T19:55:51.024Z"
+        "evaluatedAt": "2026-09-11T22:22:21.631Z"
       },
       "round3Evaluation": {
         "roundName": "Round 3: HR, Culture & Engineering Leadership",
