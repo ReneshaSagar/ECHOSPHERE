@@ -125,7 +125,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         (e.round || '').toLowerCase().includes('round 1') ||
         (e.round || '').toLowerCase().includes('sliding')
       );
-      const r1Score = r1 ? r1.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 75 : stats.hasPartialEvidence ? 45 : 20);
+      const r1Score = r1 ? r1.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 75 : stats.hasPartialEvidence ? 28 : stats.totalCandidateWords >= 15 ? 25 : 0);
       round1Eval = {
         roundName: r1?.round || 'Round 1: Practical Problem Solving & Codecraft',
         roundType: 'coding',
@@ -144,7 +144,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         (e.round || '').toLowerCase().includes('round 2') ||
         (e.round || '').toLowerCase().includes('panel')
       );
-      const r2Score = r2 ? r2.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 72 : stats.hasPartialEvidence ? 40 : 15);
+      const r2Score = r2 ? r2.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 72 : stats.hasPartialEvidence ? 27 : stats.totalCandidateWords >= 15 ? 22 : 0);
       round2Eval = {
         roundName: r2?.round || 'Round 2: Technical Interview Assessment',
         roundType: 'technical',
@@ -165,7 +165,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         (e.round || '').toLowerCase().includes('behavioral') ||
         (e.round || '').toLowerCase().includes('round 3')
       );
-      const r3Score = r3 ? r3.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 75 : stats.hasPartialEvidence ? 45 : 20);
+      const r3Score = r3 ? r3.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 75 : stats.hasPartialEvidence ? 30 : stats.totalCandidateWords >= 15 ? 25 : 0);
       round3Eval = {
         roundName: r3?.round || 'Round 3: Behavioral & Cultural Alignment',
         roundType: 'hr',
@@ -236,10 +236,11 @@ CRITICAL SYNTHESIS INSTRUCTIONS:
 2. ZERO-PARTICIPATION & SILENCE CIRCUIT BREAKER:
    - If candidate was completely silent (0 candidate words) or provided no answers across rounds and submitted no code, composite score MUST be 0 / 100 ("No Hire").
    - Never invent or hallucinate strengths or positive feedback if candidate was silent or submitted zero workspace code.
-3. GROUNDED EVIDENCE & STRICT CALIBRATION:
+3. GROUNDED EVIDENCE & REALISTIC CALIBRATION:
    - Base all pillar ratings and overall recommendations strictly on substantiated proof (verbatim candidate quotes and concrete workspace outcomes).
    - DO NOT inflate scores for high-level buzzwords, 1-2 sentence hand-wavy answers, or unanswered questions.
-   - If candidate was vague, brief, or skipped technical depth, score them strictly between 20-40 ("No Hire" or "Leaning No Hire").
+   - If candidate was vague, brief, or skipped technical depth, score individual rubric pillars realistically with natural variance between 18-38 (e.g., Problem Solving: 25, Distributed Architecture: 20, Real-World Experience: 28, Ownership: 25, Collaboration: 30, Communication: 35) so the composite naturally sits around ~25-30 ("No Hire" or "Leaning No Hire").
+   - NEVER assign uniform identical flat scores across all rubric pillars (e.g., avoid outputting 40-40-40 or 30-30-30 for every item).
    - Only award scores >= 70 when candidate provided deep architectural explanations, clear trade-off justification, or working code.
 4. ADVISORY SIGNAL:
    Align with the calculated multi-round score: ${scoreAggregation.finalScore}/100.
@@ -386,22 +387,34 @@ Generate the JSON Scorecard.`;
         weaknesses: Array.isArray(parsed.weaknesses) ? parsed.weaknesses : ["Could deepen quantitative benchmarking in distributed systems"],
         rubric_evaluations: Array.isArray(parsed.rubric_evaluations) && parsed.rubric_evaluations.length > 0 
           ? parsed.rubric_evaluations 
-          : Object.keys(rubric).map(pillar => ({
-              pillar,
-              competencyScore: finalScore,
-              round: pillar.includes('Problem') ? 'Round 1: Coding' : pillar.includes('Architecture') || pillar.includes('Experience') ? 'Round 2: Technical' : pillar.includes('Ownership') || pillar.includes('Collaboration') ? 'Round 3: HR' : 'Cross-Round',
-              evidenceQuality: finalScore >= 75 ? "STRONG" : finalScore >= 50 ? "PARTIAL" : "VAGUE",
-              evidence: stats.verbatimQuotes.slice(0, 2),
-              missingEvidence: finalScore >= 75 ? [] : ["Detailed trade-off analysis and architectural failure modes"],
-              confidence: "HIGH",
-              feedback: finalScore >= 60 ? "Evaluated across multi-round criteria." : "Candidate provided brief or high-level answers lacking technical depth."
-            }))
+          : Object.keys(rubric).map(pillar => {
+              const pLower = pillar.toLowerCase();
+              let pScore = finalScore;
+              if (!stats.hasSubstantialEvidence && finalScore < 60) {
+                if (pLower.includes('problem') || pLower.includes('algorithm')) pScore = round1Eval?.score || 25;
+                else if (pLower.includes('architecture') || pLower.includes('system')) pScore = round2Eval?.score ? Math.max(15, round2Eval.score - 5) : 20;
+                else if (pLower.includes('experience')) pScore = round2Eval?.score || 28;
+                else if (pLower.includes('ownership')) pScore = round3Eval?.score ? Math.max(15, round3Eval.score - 5) : 25;
+                else if (pLower.includes('collaboration') || pLower.includes('cultural')) pScore = round3Eval?.score || 30;
+                else if (pLower.includes('communication')) pScore = stats.totalCandidateWords >= 15 ? 35 : 20;
+              }
+              return {
+                pillar,
+                competencyScore: isCandidateSilent ? 0 : pScore,
+                round: pillar.includes('Problem') ? 'Round 1: Coding' : pillar.includes('Architecture') || pillar.includes('Experience') ? 'Round 2: Technical' : pillar.includes('Ownership') || pillar.includes('Collaboration') ? 'Round 3: HR' : 'Cross-Round',
+                evidenceQuality: isCandidateSilent ? "NONE" : finalScore >= 75 ? "STRONG" : finalScore >= 50 ? "PARTIAL" : "VAGUE",
+                evidence: stats.verbatimQuotes.slice(0, 2),
+                missingEvidence: finalScore >= 75 ? [] : ["Detailed trade-off analysis and architectural failure modes"],
+                confidence: "HIGH",
+                feedback: finalScore >= 60 ? "Evaluated across multi-round criteria." : "Candidate provided brief or high-level answers lacking technical depth."
+              };
+            })
       };
 
     } catch (llmErr) {
       console.warn('[evaluate-final] LLM evaluation fallback triggered:', llmErr);
       const isCandidateSilent = stats.isCompletelySilent || (stats.totalCandidateWords === 0 && (round1Eval?.score === 0 || !round1Eval?.workspaceEvidence?.code));
-      const finalScore = isCandidateSilent ? 0 : (scoreAggregation.finalScore > 0 ? scoreAggregation.finalScore : (stats.hasSubstantialEvidence ? 75 : stats.hasPartialEvidence ? 40 : 20));
+      const finalScore = isCandidateSilent ? 0 : (scoreAggregation.finalScore > 0 ? scoreAggregation.finalScore : (stats.hasSubstantialEvidence ? 75 : stats.hasPartialEvidence ? 28 : stats.totalCandidateWords >= 15 ? 24 : 0));
       const isHire = finalScore >= 75;
       const isPass = finalScore >= 60;
 
@@ -438,16 +451,28 @@ Generate the JSON Scorecard.`;
           "Superficial technical explanations without detailed failure mode handling",
           "Workspace implementation was incomplete or unverified"
         ],
-        rubric_evaluations: Object.keys(rubric || {}).map(pillar => ({
-          pillar,
-          competencyScore: isCandidateSilent ? 0 : finalScore,
-          round: pillar.includes('Problem') ? 'Round 1: Coding' : pillar.includes('Architecture') || pillar.includes('Experience') ? 'Round 2: Technical' : pillar.includes('Ownership') || pillar.includes('Collaboration') ? 'Round 3: HR' : 'Cross-Round',
-          evidenceQuality: isCandidateSilent ? "NONE" : isHire ? "STRONG" : isPass ? "PARTIAL" : "VAGUE",
-          evidence: isCandidateSilent ? [] : stats.verbatimQuotes.slice(0, 2),
-          missingEvidence: isCandidateSilent ? ["No verbal response or workspace code provided during evaluation."] : isHire ? [] : ["Detailed multi-region failover mechanics and concurrency trade-offs"],
-          confidence: isCandidateSilent ? "HIGH" : "MEDIUM",
-          feedback: isCandidateSilent ? "Candidate was silent and did not demonstrate this competency." : isPass ? "Demonstrated practical knowledge in discussion and code." : "Candidate provided brief or high-level answers lacking architectural depth."
-        }))
+        rubric_evaluations: Object.keys(rubric || {}).map(pillar => {
+          const pLower = pillar.toLowerCase();
+          let pScore = finalScore;
+          if (!stats.hasSubstantialEvidence && finalScore < 60) {
+            if (pLower.includes('problem') || pLower.includes('algorithm')) pScore = round1Eval?.score || 25;
+            else if (pLower.includes('architecture') || pLower.includes('system')) pScore = round2Eval?.score ? Math.max(15, round2Eval.score - 5) : 20;
+            else if (pLower.includes('experience')) pScore = round2Eval?.score || 28;
+            else if (pLower.includes('ownership')) pScore = round3Eval?.score ? Math.max(15, round3Eval.score - 5) : 25;
+            else if (pLower.includes('collaboration') || pLower.includes('cultural')) pScore = round3Eval?.score || 30;
+            else if (pLower.includes('communication')) pScore = stats.totalCandidateWords >= 15 ? 35 : 20;
+          }
+          return {
+            pillar,
+            competencyScore: isCandidateSilent ? 0 : pScore,
+            round: pillar.includes('Problem') ? 'Round 1: Coding' : pillar.includes('Architecture') || pillar.includes('Experience') ? 'Round 2: Technical' : pillar.includes('Ownership') || pillar.includes('Collaboration') ? 'Round 3: HR' : 'Cross-Round',
+            evidenceQuality: isCandidateSilent ? "NONE" : isHire ? "STRONG" : isPass ? "PARTIAL" : "VAGUE",
+            evidence: isCandidateSilent ? [] : stats.verbatimQuotes.slice(0, 2),
+            missingEvidence: isCandidateSilent ? ["No verbal response or workspace code provided during evaluation."] : isHire ? [] : ["Detailed multi-region failover mechanics and concurrency trade-offs"],
+            confidence: isCandidateSilent ? "HIGH" : "MEDIUM",
+            feedback: isCandidateSilent ? "Candidate was silent and did not demonstrate this competency." : isPass ? "Demonstrated practical knowledge in discussion and code." : "Candidate provided brief or high-level answers lacking architectural depth."
+          };
+        })
       };
     }
 

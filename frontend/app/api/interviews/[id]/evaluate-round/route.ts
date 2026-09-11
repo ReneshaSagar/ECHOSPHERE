@@ -188,12 +188,13 @@ CRITICAL EVALUATION RULES:
 1. WORKSPACE EVIDENCE GROUNDING & STRICT REALISTIC CALIBRATION:
    - Base scores strictly on actual submitted code, test outcomes (${testPassedCount} passed, ${testFailedCount} failed, compileOk: ${isCompileOk}), and verbal explanation.
    - SCORING SPECTRUM:
-     * 0-10: Completely silent, no code, or unmodified template.
-     * 15-35: Monosyllabic, broken/empty code, skips without attempting logic.
+     * 0: Completely silent, no candidate words spoken, and zero code submitted.
+     * 15-35: Monosyllabic / brief speech, incomplete code, skips logic. Calibrate with natural variance across competencies (e.g., Communication 35, Problem Understanding 30, Approach 25, Implementation 15, Complexity 20) averaging around ~25-30.
      * 40-55: Partial/untested code, superficial explanation without complexity analysis.
      * 60-74: Working baseline code/diagram, valid syntax, good verbal communication, but missing edge cases or deep optimization.
      * 75-85: Clean optimal algorithm, tests passed, clear O(1)/O(N) complexity analysis, robust edge cases.
      * 86-100: Flawless production-grade implementation, comprehensive concurrency safety, exceptional walkthrough.
+   - NEVER output uniform flat scores across all competencies (e.g., avoid outputting identical scores like 40 or 30 for every item).
 2. COMPETENCY WEIGHTS (derive weighted score):
 ${activeCompetencies.map(c => `   - "${c.name}": weight ${(c.weight * 100).toFixed(0)}% (${c.description})`).join('\n')}
 3. DEMONSTRATED KNOWLEDGE SCHEMA:
@@ -288,19 +289,29 @@ Evaluate competencies strictly, calculate weighted score, and return the JSON ev
           const parsed = JSON.parse(resultText.replace(/```json/g, '').replace(/```/g, '').trim());
 
           // Process competencies and compute strict weighted score
+          const compVarianceMap: Record<string, number> = {
+            problem_understanding: hasValidCode ? 65 : stats.totalCandidateWords >= 15 ? 30 : 0,
+            approach_and_algorithm: hasValidCode ? 60 : stats.totalCandidateWords >= 15 ? 25 : 0,
+            implementation_correctness: hasValidCode ? (testPassedCount > 0 ? 80 : 45) : 15,
+            complexity_and_scaling: hasValidCode ? 55 : stats.totalCandidateWords >= 15 ? 20 : 0,
+            debugging_and_adaptability: hasValidCode ? 60 : stats.totalCandidateWords >= 15 ? 20 : 0,
+            communication_and_explanation: stats.hasSubstantialEvidence ? 75 : stats.totalCandidateWords >= 15 ? 35 : 0
+          };
+
           const competencyScores: CompetencyScoreItem[] = activeCompetencies.map(comp => {
             const matching = (parsed.competencyEvaluations || []).find((c: any) => 
               (c.competency || '').toLowerCase().includes(comp.key.replace(/_/g, ' ')) ||
               (c.competency || '').toLowerCase().includes(comp.name.toLowerCase().slice(0, 15))
             );
-            const score = typeof matching?.score === 'number' ? Math.max(0, Math.min(100, matching.score)) : (hasValidCode ? 65 : 15);
+            const defaultScore = compVarianceMap[comp.key] ?? (hasValidCode ? 60 : stats.totalCandidateWords >= 15 ? 25 : 0);
+            const score = typeof matching?.score === 'number' ? Math.max(0, Math.min(100, matching.score)) : defaultScore;
             return {
               competency: comp.name,
               weight: comp.weight,
               score,
               weightedScore: Number((score * comp.weight).toFixed(2)),
-              evidenceQuality: matching?.evidenceQuality || (score >= 75 ? 'STRONG' : score >= 50 ? 'PARTIAL' : 'NONE'),
-              evidence: Array.isArray(matching?.evidence) && matching.evidence.length > 0 ? matching.evidence : (hasValidCode ? [wsCode.slice(0, 100)] : []),
+              evidenceQuality: matching?.evidenceQuality || (score >= 75 ? 'STRONG' : score >= 40 ? 'PARTIAL' : 'NONE'),
+              evidence: Array.isArray(matching?.evidence) && matching.evidence.length > 0 ? matching.evidence : (hasValidCode ? [wsCode.slice(0, 100)] : stats.verbatimQuotes.slice(0, 1)),
               missingEvidence: Array.isArray(matching?.missingEvidence) ? matching.missingEvidence : [],
               feedback: matching?.feedback || comp.description
             };
@@ -357,27 +368,31 @@ Evaluate competencies strictly, calculate weighted score, and return the JSON ev
             baseScore = 78;
           } else if (hasValidCode) {
             baseScore = 45;
-          } else if (stats.totalCandidateWords >= 20) {
-            baseScore = 20;
+          } else if (stats.totalCandidateWords >= 15) {
+            baseScore = 28;
           } else {
-            baseScore = 5;
+            baseScore = 0;
           }
           const decision = baseScore >= 60 ? 'PASS' : 'FAIL';
 
+          const compFallbackVariance: Record<string, number> = {
+            problem_understanding: hasValidCode ? 55 : stats.totalCandidateWords >= 15 ? 30 : 0,
+            approach_and_algorithm: hasValidCode ? 50 : stats.totalCandidateWords >= 15 ? 25 : 0,
+            implementation_correctness: hasValidCode ? (testPassedCount > 0 ? 80 : 40) : (stats.totalCandidateWords >= 15 ? 15 : 0),
+            complexity_and_scaling: hasValidCode ? 45 : stats.totalCandidateWords >= 15 ? 20 : 0,
+            debugging_and_adaptability: hasValidCode ? 45 : stats.totalCandidateWords >= 15 ? 20 : 0,
+            communication_and_explanation: stats.hasSubstantialEvidence ? 75 : stats.totalCandidateWords >= 15 ? 35 : 0
+          };
+
           const competencyScores: CompetencyScoreItem[] = activeCompetencies.map(comp => {
-            let cScore = baseScore;
-            if (comp.key === 'implementation_correctness') {
-              cScore = hasValidCode ? (testPassedCount > 0 ? 80 : 40) : 0;
-            } else if (comp.key === 'communication_and_explanation') {
-              cScore = stats.hasSubstantialEvidence ? 75 : stats.totalCandidateWords >= 20 ? 40 : 0;
-            }
+            const cScore = compFallbackVariance[comp.key] ?? baseScore;
             return {
               competency: comp.name,
               weight: comp.weight,
               score: cScore,
               weightedScore: Number((cScore * comp.weight).toFixed(2)),
-              evidenceQuality: cScore >= 75 ? 'STRONG' : cScore >= 40 ? 'PARTIAL' : 'NONE',
-              evidence: hasValidCode ? [wsCode.slice(0, 100)] : [],
+              evidenceQuality: cScore >= 75 ? 'STRONG' : cScore >= 35 ? 'PARTIAL' : 'NONE',
+              evidence: hasValidCode ? [wsCode.slice(0, 100)] : stats.verbatimQuotes.slice(0, 1),
               missingEvidence: cScore < 60 ? [`Lacked complete implementation for ${comp.name}`] : [],
               feedback: cScore === 0 ? 'No evidence demonstrated.' : comp.description
             };
@@ -524,12 +539,13 @@ CRITICAL EVALUATION RULES:
    - Base all scores strictly on what the candidate articulated in the live transcript.
    - Profile/resume claims are NOT proof unless the candidate demonstrated genuine understanding, personal ownership, failure recovery, and trade-off mechanics in the dialogue.
    - SCORING SPECTRUM:
-     * 0-10: Completely silent / unresponsive.
-     * 15-30: Monosyllabic ("yes", "ok"), skips questions, unelaborated one-liners.
+     * 0: Completely silent / unresponsive (0 candidate words).
+     * 15-35: Monosyllabic ("yes", "ok"), brief answers, unelaborated one-liners. Score with realistic natural variance between 20-35 across competencies (e.g., Technical Knowledge 35, Technical Depth 20, Real-World Experience 25, Engineering Judgment 20, Problem Solving 25, Technical Communication 35) averaging around ~28.
      * 35-50: Vague high-level buzzwords without architectural mechanics, failure modes, or trade-offs.
      * 60-74: Sound baseline architecture, clear communication, but missing deep-dive failure isolation or quantitative benchmarks.
      * 75-85: Solid distributed systems depth, concrete trade-offs (CAP, latency/throughput), verified production experience.
      * 86-100: Exceptional architectural mastery, quantitative scale benchmarks, fault-tolerant failover designs.
+   - NEVER output uniform flat scores across all competencies (e.g., avoid flat 40s or flat 30s across every pillar).
 2. 6 JOB-AWARE TECHNICAL COMPETENCIES (derive 0-100 score strictly by weights):
 ${techCompetencies.map((c: any) => `   - "${c.name}": weight ${(c.weight * 100).toFixed(0)}% (${c.description})`).join('\n')}
 3. TECHNICAL BAR STATUS:
@@ -631,20 +647,28 @@ Evaluate the 6 technical competencies strictly, derive the weighted score, and r
           const resultText = response.choices[0].message.content || '{}';
           const parsed = JSON.parse(resultText.replace(/```json/g, '').replace(/```/g, '').trim());
 
-          const defaultCompFallback = stats.hasSubstantialEvidence ? 70 : (stats.hasPartialEvidence ? 40 : 20);
+          const techCompVarianceDefaults: Record<string, number> = {
+            technical_knowledge: stats.hasSubstantialEvidence ? 75 : stats.hasPartialEvidence ? 35 : stats.totalCandidateWords >= 15 ? 30 : 0,
+            technical_depth: stats.hasSubstantialEvidence ? 70 : stats.hasPartialEvidence ? 20 : stats.totalCandidateWords >= 15 ? 18 : 0,
+            real_world_experience: stats.hasSubstantialEvidence ? 72 : stats.hasPartialEvidence ? 25 : stats.totalCandidateWords >= 15 ? 22 : 0,
+            engineering_judgment: stats.hasSubstantialEvidence ? 70 : stats.hasPartialEvidence ? 20 : stats.totalCandidateWords >= 15 ? 18 : 0,
+            problem_solving_debugging: stats.hasSubstantialEvidence ? 68 : stats.hasPartialEvidence ? 25 : stats.totalCandidateWords >= 15 ? 22 : 0,
+            technical_communication: stats.hasSubstantialEvidence ? 76 : stats.hasPartialEvidence ? 35 : stats.totalCandidateWords >= 15 ? 35 : 0
+          };
 
           const competencyScores: CompetencyScoreItem[] = techCompetencies.map((comp: any) => {
             const matching = (parsed.competencyEvaluations || []).find((c: any) =>
               (c.competency || '').toLowerCase().includes(comp.key.replace(/_/g, ' ')) ||
               (c.competency || '').toLowerCase().includes(comp.name.toLowerCase().slice(0, 15))
             );
-            const compScore = typeof matching?.score === 'number' ? Math.max(0, Math.min(100, matching.score)) : defaultCompFallback;
+            const defaultScore = techCompVarianceDefaults[comp.key] ?? (stats.hasSubstantialEvidence ? 70 : stats.totalCandidateWords >= 15 ? 25 : 0);
+            const compScore = typeof matching?.score === 'number' ? Math.max(0, Math.min(100, matching.score)) : defaultScore;
             return {
               competency: comp.name,
               weight: comp.weight,
               score: compScore,
               weightedScore: Number((compScore * comp.weight).toFixed(2)),
-              evidenceQuality: matching?.evidenceQuality || (compScore >= 75 ? 'STRONG' : compScore >= 50 ? 'PARTIAL' : 'NONE'),
+              evidenceQuality: matching?.evidenceQuality || (compScore >= 75 ? 'STRONG' : compScore >= 35 ? 'PARTIAL' : 'NONE'),
               evidence: Array.isArray(matching?.evidence) && matching.evidence.length > 0 ? matching.evidence : stats.verbatimQuotes.slice(0, 1),
               missingEvidence: Array.isArray(matching?.missingEvidence) ? matching.missingEvidence : (compScore < 60 ? [`Lacked technical depth on ${comp.name}`] : []),
               feedback: matching?.feedback || comp.description
@@ -662,15 +686,15 @@ Evaluate the 6 technical competencies strictly, derive the weighted score, and r
             reason: parsed.reason || (decision === 'PASS'
               ? `Candidate articulated solid technical depth and verified real-world architecture in dialogue.`
               : `Candidate answers were brief or lacked sufficient technical depth and concrete trade-off reasoning.`),
-            technicalBar: parsed.technicalBar || (computedScore >= 70 ? 'met' : computedScore >= 50 ? 'insufficient_evidence' : 'not_met'),
+            technicalBar: parsed.technicalBar || (computedScore >= 70 ? 'met' : computedScore >= 45 ? 'insufficient_evidence' : 'not_met'),
             evidenceQuality: parsed.evidenceQuality || (stats.hasSubstantialEvidence ? 'STRONG' : stats.hasPartialEvidence ? 'PARTIAL' : 'WEAK'),
             evidenceSufficiency: parsed.evidenceSufficiency || (stats.hasSubstantialEvidence ? 'sufficient' : stats.hasPartialEvidence ? 'partial' : 'insufficient'),
             confidence: parsed.confidence || 'HIGH',
             competencies: parsed.competencies || {
-              technicalKnowledge: { score: competencyScores[0]?.score || 30, weight: 0.25, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
-              technicalDepth: { score: competencyScores[1]?.score || 25, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
-              realWorldExperience: { score: competencyScores[2]?.score || 30, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
-              engineeringJudgment: { score: competencyScores[3]?.score || 25, weight: 0.15, evidence: [], confidence: 'medium' },
+              technicalKnowledge: { score: competencyScores[0]?.score || 35, weight: 0.25, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
+              technicalDepth: { score: competencyScores[1]?.score || 20, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
+              realWorldExperience: { score: competencyScores[2]?.score || 25, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
+              engineeringJudgment: { score: competencyScores[3]?.score || 20, weight: 0.15, evidence: [], confidence: 'medium' },
               problemSolving: { score: competencyScores[4]?.score || 25, weight: 0.10, evidence: [], confidence: 'high' },
               technicalCommunication: { score: competencyScores[5]?.score || 35, weight: 0.10, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' }
             },
@@ -702,42 +726,50 @@ Evaluate the 6 technical competencies strictly, derive the weighted score, and r
 
         } catch (llmErr) {
           console.warn('[evaluate-round] Round 2 LLM evaluation fallback:', llmErr);
-          const baseScore = stats.hasSubstantialEvidence ? 72 : (stats.hasPartialEvidence ? 40 : stats.totalCandidateWords >= 15 ? 25 : 10);
-          const decision = baseScore >= 60 ? 'PASS' : 'FAIL';
+          const compFallbackVariance: Record<string, number> = stats.hasSubstantialEvidence
+            ? { technical_knowledge: 75, technical_depth: 70, real_world_experience: 72, engineering_judgment: 70, problem_solving_debugging: 68, technical_communication: 76 }
+            : stats.hasPartialEvidence
+            ? { technical_knowledge: 35, technical_depth: 20, real_world_experience: 25, engineering_judgment: 20, problem_solving_debugging: 25, technical_communication: 35 }
+            : stats.totalCandidateWords >= 15
+            ? { technical_knowledge: 30, technical_depth: 18, real_world_experience: 22, engineering_judgment: 18, problem_solving_debugging: 20, technical_communication: 32 }
+            : { technical_knowledge: 0, technical_depth: 0, real_world_experience: 0, engineering_judgment: 0, problem_solving_debugging: 0, technical_communication: 0 };
 
           const competencyScores: CompetencyScoreItem[] = techCompetencies.map((comp: any) => {
-            const compScore = baseScore;
+            const compScore = compFallbackVariance[comp.key] ?? 0;
             return {
               competency: comp.name,
               weight: comp.weight,
               score: compScore,
               weightedScore: Number((compScore * comp.weight).toFixed(2)),
-              evidenceQuality: compScore >= 70 ? 'STRONG' : compScore >= 40 ? 'PARTIAL' : 'NONE',
+              evidenceQuality: compScore >= 70 ? 'STRONG' : compScore >= 35 ? 'PARTIAL' : 'NONE',
               evidence: stats.verbatimQuotes.slice(0, 1),
               missingEvidence: compScore < 60 ? [`Lacked technical depth on ${comp.name}`] : [],
-              feedback: compScore < 30 ? 'Candidate provided minimal or no technical depth.' : comp.description
+              feedback: compScore === 0 ? 'Candidate provided minimal or no technical depth.' : comp.description
             };
           });
+
+          const computedScore = calculateTechnicalRoundScore(competencyScores);
+          const decision = computedScore >= 60 ? 'PASS' : 'FAIL';
 
           round2Result = {
             roundName: roundName || 'Round 2: Technical Architecture & Concurrency',
             roundType: 'technical',
-            score: calculateTechnicalRoundScore(competencyScores),
+            score: computedScore,
             decision,
             reason: decision === 'PASS'
               ? `Candidate articulated technical architecture concepts and engineering trade-offs during the panel discussion.`
               : `Candidate provided brief or high-level remarks without sufficient distributed systems depth.`,
-            technicalBar: baseScore >= 70 ? 'met' : baseScore >= 45 ? 'insufficient_evidence' : 'not_met',
+            technicalBar: computedScore >= 70 ? 'met' : computedScore >= 45 ? 'insufficient_evidence' : 'not_met',
             evidenceQuality: stats.hasSubstantialEvidence ? 'STRONG' : stats.hasPartialEvidence ? 'PARTIAL' : 'WEAK',
             evidenceSufficiency: stats.hasSubstantialEvidence ? 'sufficient' : stats.hasPartialEvidence ? 'partial' : 'insufficient',
             confidence: 'MEDIUM',
             competencies: {
-              technicalKnowledge: { score: baseScore, weight: 0.25, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
-              technicalDepth: { score: Math.max(0, baseScore - 5), weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
-              realWorldExperience: { score: baseScore, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
-              engineeringJudgment: { score: Math.max(0, baseScore - 5), weight: 0.15, evidence: [], confidence: 'medium' },
-              problemSolving: { score: Math.max(0, baseScore - 5), weight: 0.10, evidence: [], confidence: 'high' },
-              technicalCommunication: { score: Math.max(0, baseScore), weight: 0.10, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' }
+              technicalKnowledge: { score: competencyScores[0]?.score || 0, weight: 0.25, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
+              technicalDepth: { score: competencyScores[1]?.score || 0, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
+              realWorldExperience: { score: competencyScores[2]?.score || 0, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
+              engineeringJudgment: { score: competencyScores[3]?.score || 0, weight: 0.15, evidence: [], confidence: 'medium' },
+              problemSolving: { score: competencyScores[4]?.score || 0, weight: 0.10, evidence: [], confidence: 'high' },
+              technicalCommunication: { score: competencyScores[5]?.score || 0, weight: 0.10, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' }
             },
             competencyEvaluations: competencyScores,
             demonstratedExpertise: [
@@ -753,8 +785,8 @@ Evaluate the 6 technical competencies strictly, derive the weighted score, and r
               }
             ],
             unvalidatedClaims: [],
-            areasOfConcern: baseScore < 60 ? ['Limited evidence of failure recovery and distributed scalability'] : [],
-            strengths: baseScore >= 50 ? ['Familiar with core backend vocabulary'] : ['None demonstrated'],
+            areasOfConcern: computedScore < 60 ? ['Limited evidence of failure recovery and distributed scalability'] : [],
+            strengths: computedScore >= 50 ? ['Familiar with core backend vocabulary'] : ['None demonstrated'],
             weaknesses: ['Needs to demonstrate concrete architecture mechanics and scaling numbers'],
             keyEvidence: stats.verbatimQuotes.slice(0, 2),
             missingEvidence: [],
@@ -824,20 +856,33 @@ Evaluate the 6 technical competencies strictly, derive the weighted score, and r
         evaluatedAt: new Date().toISOString()
       };
     } else if (stats.candidateUtteranceCount <= 1 && stats.totalCandidateWords < 25) {
-      // Minimal dialogue (< 25 words)
-      const defaultComps: HRCompetencyScoreItem[] = hrCompetencies.map(c => ({
-        competency: c.name,
-        key: c.key,
-        weight: c.weight,
-        score: 20,
-        weightedScore: Number((20 * c.weight).toFixed(2)),
-        evidenceQuality: 'NONE',
-        evidence: stats.verbatimQuotes.length > 0 ? [
-          { summary: 'Candidate participated in brief introductory dialogue', quote: stats.verbatimQuotes[0], source: 'transcript' }
-        ] : [],
-        missingEvidence: ['Detailed STAR examples of navigating team conflicts, ownership, and engineering leadership.'],
-        feedback: 'Candidate provided minimal or monosyllabic behavioral depth.'
-      }));
+      // Minimal dialogue (< 25 words) with realistic competency variance
+      const hrCompMinimalVariance: Record<string, number> = {
+        communication_clarity: 35,
+        ownership_accountability: 25,
+        collaboration_teamwork: 30,
+        conflict_resolution: 20,
+        adaptability_learning: 25,
+        initiative_leadership: 20,
+        cultural_alignment: 30
+      };
+
+      const defaultComps: HRCompetencyScoreItem[] = hrCompetencies.map(c => {
+        const cScore = hrCompMinimalVariance[c.key] ?? 25;
+        return {
+          competency: c.name,
+          key: c.key,
+          weight: c.weight,
+          score: cScore,
+          weightedScore: Number((cScore * c.weight).toFixed(2)),
+          evidenceQuality: 'NONE',
+          evidence: stats.verbatimQuotes.length > 0 ? [
+            { summary: 'Candidate participated in brief introductory dialogue', quote: stats.verbatimQuotes[0], source: 'transcript' }
+          ] : [],
+          missingEvidence: ['Detailed STAR examples of navigating team conflicts, ownership, and engineering leadership.'],
+          feedback: 'Candidate provided minimal or monosyllabic behavioral depth.'
+        };
+      });
 
       const computedScore = calculateHRRoundScore(defaultComps);
 
@@ -877,12 +922,13 @@ CRITICAL EVALUATION INVARIANTS:
    - Base all findings strictly on what the candidate articulated in the live Round 3 HR transcript.
    - Do NOT inherit technical/coding evidence from previous rounds. The HR evaluation assesses behavioral competencies, team collaboration, ownership, conflict resolution, and values.
    - SCORING SPECTRUM:
-     * 0-10: Silent / 0 words.
-     * 15-30: Monosyllables ("yes", "no"), unelaborated skips.
+     * 0: Silent / 0 words.
+     * 15-35: Monosyllables ("yes", "no"), brief answers without STAR depth. Calibrate with natural competency variation between 20-35 (e.g., Communication 35, Ownership 25, Conflict Resolution 20, Collaboration 30, Adaptability 25, Initiative 20, Cultural Alignment 30) averaging ~27-30.
      * 35-50: Vague answers without STAR structure, ownership, or team alignment.
      * 60-74: Good communication, reasonable collaboration, but generic conflict resolution examples.
      * 75-85: Concrete STAR examples with strong accountability, mentorship, and constructive resolution.
      * 86-100: Exceptional leadership, blameless post-mortem ownership, high emotional intelligence.
+   - NEVER output uniform identical scores across all behavioral competencies (e.g., avoid flat 40s or flat 30s across every pillar).
 2. 7 BEHAVIORAL COMPETENCIES (Score 0-100 for each):
 ${hrCompetencies.map((c: any) => `   - "${c.name}" [key: "${c.key}"]: weight ${(c.weight * 100).toFixed(0)}% (${c.description})`).join('\n')}
 3. KEY BEHAVIORAL MOMENTS (STAR format):
@@ -1055,12 +1101,23 @@ Evaluate candidate behavioral competencies, ownership, collaboration, and cultur
         const parsed = JSON.parse(resultText.replace(/```json/g, '').replace(/```/g, '').trim());
 
         // Map parsed competencies ensuring all 7 HR competencies exist with correct weights
+        const hrCompDefaultVariance: Record<string, number> = {
+          communication_clarity: stats.hasSubstantialEvidence ? 78 : stats.hasPartialEvidence ? 35 : 30,
+          ownership_accountability: stats.hasSubstantialEvidence ? 74 : stats.hasPartialEvidence ? 25 : 22,
+          collaboration_teamwork: stats.hasSubstantialEvidence ? 76 : stats.hasPartialEvidence ? 30 : 25,
+          conflict_resolution: stats.hasSubstantialEvidence ? 70 : stats.hasPartialEvidence ? 20 : 18,
+          adaptability_learning: stats.hasSubstantialEvidence ? 72 : stats.hasPartialEvidence ? 25 : 20,
+          initiative_leadership: stats.hasSubstantialEvidence ? 70 : stats.hasPartialEvidence ? 20 : 18,
+          cultural_alignment: stats.hasSubstantialEvidence ? 75 : stats.hasPartialEvidence ? 30 : 25
+        };
+
         const parsedCompetencies: HRCompetencyScoreItem[] = hrCompetencies.map(def => {
           const found = (parsed.competencies || []).find((c: any) => 
             (c.key && c.key === def.key) || 
             (c.competency && c.competency.toLowerCase().includes(def.name.toLowerCase().slice(0, 8)))
           );
-          const score = typeof found?.score === 'number' ? Math.max(0, Math.min(100, found.score)) : 70;
+          const defaultScore = hrCompDefaultVariance[def.key] ?? (stats.hasSubstantialEvidence ? 75 : 25);
+          const score = typeof found?.score === 'number' ? Math.max(0, Math.min(100, found.score)) : defaultScore;
           
           let structuredEvidence: any[] = [];
           if (Array.isArray(found?.evidence)) {
@@ -1089,7 +1146,7 @@ Evaluate candidate behavioral competencies, ownership, collaboration, and cultur
             weight: def.weight,
             score,
             weightedScore: Number((score * def.weight).toFixed(2)),
-            evidenceQuality: found?.evidenceQuality || (score >= 75 ? 'STRONG' : score >= 50 ? 'PARTIAL' : 'NONE'),
+            evidenceQuality: found?.evidenceQuality || (score >= 75 ? 'STRONG' : score >= 35 ? 'PARTIAL' : 'NONE'),
             evidence: structuredEvidence,
             missingEvidence: Array.isArray(found?.missingEvidence) ? found.missingEvidence : [],
             feedback: found?.feedback || `Demonstrated ${def.name.toLowerCase()} in discussion.`
@@ -1131,36 +1188,47 @@ Evaluate candidate behavioral competencies, ownership, collaboration, and cultur
         };
       } catch (llmErr) {
         console.warn('[evaluate-round] HR LLM evaluation fallback:', llmErr);
-        const baseScore = stats.hasSubstantialEvidence ? 78 : (stats.hasPartialEvidence ? 45 : 20);
-        const fallbackComps: HRCompetencyScoreItem[] = hrCompetencies.map(c => ({
-          key: c.key,
-          competency: c.name,
-          weight: c.weight,
-          score: baseScore,
-          weightedScore: Number((baseScore * c.weight).toFixed(2)),
-          evidenceQuality: baseScore >= 70 ? 'STRONG' : baseScore >= 40 ? 'PARTIAL' : 'NONE',
-          evidence: stats.verbatimQuotes.length > 0 ? [
-            { summary: 'Demonstrated in behavioral discussion', quote: stats.verbatimQuotes[0], source: 'transcript' }
-          ] : [],
-          missingEvidence: baseScore < 60 ? ['Lacked detailed STAR behavioral examples'] : [],
-          feedback: `Demonstrated ${c.name.toLowerCase()} in discussion.`
-        }));
+        const hrCompCatchVariance: Record<string, number> = stats.hasSubstantialEvidence
+          ? { communication_clarity: 78, ownership_accountability: 74, collaboration_teamwork: 76, conflict_resolution: 70, adaptability_learning: 72, initiative_leadership: 70, cultural_alignment: 75 }
+          : stats.hasPartialEvidence
+          ? { communication_clarity: 35, ownership_accountability: 25, collaboration_teamwork: 30, conflict_resolution: 20, adaptability_learning: 25, initiative_leadership: 20, cultural_alignment: 30 }
+          : stats.totalCandidateWords >= 15
+          ? { communication_clarity: 30, ownership_accountability: 22, collaboration_teamwork: 25, conflict_resolution: 18, adaptability_learning: 20, initiative_leadership: 18, cultural_alignment: 25 }
+          : { communication_clarity: 0, ownership_accountability: 0, collaboration_teamwork: 0, conflict_resolution: 0, adaptability_learning: 0, initiative_leadership: 0, cultural_alignment: 0 };
 
+        const fallbackComps: HRCompetencyScoreItem[] = hrCompetencies.map(c => {
+          const cScore = hrCompCatchVariance[c.key] ?? 0;
+          return {
+            key: c.key,
+            competency: c.name,
+            weight: c.weight,
+            score: cScore,
+            weightedScore: Number((cScore * c.weight).toFixed(2)),
+            evidenceQuality: cScore >= 70 ? 'STRONG' : cScore >= 35 ? 'PARTIAL' : 'NONE',
+            evidence: stats.verbatimQuotes.length > 0 ? [
+              { summary: 'Demonstrated in behavioral discussion', quote: stats.verbatimQuotes[0], source: 'transcript' }
+            ] : [],
+            missingEvidence: cScore < 60 ? ['Lacked detailed STAR behavioral examples'] : [],
+            feedback: cScore === 0 ? 'Candidate provided zero behavioral participation.' : `Demonstrated ${c.name.toLowerCase()} in discussion.`
+          };
+        });
+
+        const computedScore = calculateHRRoundScore(fallbackComps);
         round3Result = {
           roundName: roundName || 'Round 3: Behavioral & Cultural Alignment',
           roundType: 'hr',
-          score: baseScore,
-          decision: baseScore >= 60 ? 'PASS' : 'FAIL',
-          reason: baseScore >= 60 
+          score: computedScore,
+          decision: computedScore >= 60 ? 'PASS' : 'FAIL',
+          reason: computedScore >= 60 
             ? 'Candidate communicated constructively and demonstrated good cultural alignment with engineering practices.'
             : 'Candidate provided brief remarks lacking depth across key behavioral competencies.',
-          overallRecommendation: baseScore >= 80 ? 'Hire' : baseScore >= 60 ? 'Leaning Hire' : 'No Hire',
-          evidenceQuality: baseScore >= 70 ? 'STRONG' : 'PARTIAL',
-          evidenceSufficiency: baseScore >= 60 ? 'sufficient' : 'insufficient',
+          overallRecommendation: computedScore >= 80 ? 'Hire' : computedScore >= 60 ? 'Leaning Hire' : 'No Hire',
+          evidenceQuality: computedScore >= 70 ? 'STRONG' : 'PARTIAL',
+          evidenceSufficiency: computedScore >= 60 ? 'sufficient' : 'insufficient',
           confidence: 'MEDIUM',
           competencies: fallbackComps,
-          behavioralStrengths: baseScore >= 60 ? ['Structured verbal communication', 'Collaborative attitude and accountability'] : ['None demonstrated'],
-          behavioralConcerns: baseScore < 60 ? ['Need deeper situational examples and demonstrated leadership'] : [],
+          behavioralStrengths: computedScore >= 60 ? ['Structured verbal communication', 'Collaborative attitude and accountability'] : ['None demonstrated'],
+          behavioralConcerns: computedScore < 60 ? ['Need deeper situational examples and demonstrated leadership'] : [],
           keyMoments: stats.verbatimQuotes.length > 0 ? [{
             situation: 'Discussion on engineering values and team workflow',
             action: 'Explained past team project experience and collaboration methods',
@@ -1168,7 +1236,7 @@ Evaluate candidate behavioral competencies, ownership, collaboration, and cultur
             competency: 'Collaboration & Teamwork',
             quote: stats.verbatimQuotes[0]
           }] : [],
-          culturalFitSummary: baseScore >= 60 ? 'Well-aligned with collaborative engineering norms and ownership principles.' : 'Insufficient behavioral depth to verify cultural alignment.',
+          culturalFitSummary: computedScore >= 60 ? 'Well-aligned with collaborative engineering norms and ownership principles.' : 'Insufficient behavioral depth to verify cultural alignment.',
           missingEvidence: [],
           evaluatedAt: new Date().toISOString()
         };
