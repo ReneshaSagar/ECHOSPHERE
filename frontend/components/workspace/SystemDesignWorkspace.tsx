@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
-import { Layers, Database, Cpu, HardDrive, RefreshCw, Zap, CheckCircle2 } from 'lucide-react';
+import '@excalidraw/excalidraw/index.css';
+import { Layers, Database, Cpu, RefreshCw, Zap, CheckCircle2 } from 'lucide-react';
 
 // Dynamic import for Excalidraw to ensure SSR safety in Next.js
 const Excalidraw = dynamic(
@@ -23,13 +24,13 @@ export default function SystemDesignWorkspace({
 }: SystemDesignWorkspaceProps) {
   const [excalidrawAPI, setExcalidrawAPI] = useState<any>(null);
 
-  // Quick-Add Component Helpers
+  // Quick-Add Component Helpers with hand-drawn styling matching Excalidraw defaults
   const addArchitectureNode = (label: string, type: 'gateway' | 'service' | 'cache' | 'queue' | 'db') => {
     if (!excalidrawAPI) return;
 
     const currentEls = excalidrawAPI.getSceneElements() || [];
-    const offsetX = 250 + (currentEls.length % 4) * 160;
-    const offsetY = 180 + Math.floor(currentEls.length / 4) * 120;
+    const offsetX = 180 + (currentEls.length % 4) * 170;
+    const offsetY = 140 + Math.floor(currentEls.length / 4) * 130;
 
     const colors: Record<string, string> = {
       gateway: '#3b82f6', // Blue
@@ -55,8 +56,8 @@ export default function SystemDesignWorkspace({
       y: offsetY,
       strokeColor: colors[type] || '#ffffff',
       backgroundColor: 'transparent',
-      width: 140,
-      height: 70,
+      width: 150,
+      height: 75,
       seed: Math.floor(Math.random() * 100000),
       groupIds: [],
       frameId: null,
@@ -79,8 +80,8 @@ export default function SystemDesignWorkspace({
       roughness: 1,
       opacity: 100,
       angle: 0,
-      x: offsetX + 15,
-      y: offsetY + 25,
+      x: offsetX + 20,
+      y: offsetY + 28,
       strokeColor: '#ffffff',
       backgroundColor: 'transparent',
       width: 110,
@@ -94,7 +95,7 @@ export default function SystemDesignWorkspace({
       link: null,
       locked: false,
       text: label,
-      fontSize: 14,
+      fontSize: 16,
       fontFamily: 1,
       textAlign: 'center',
       verticalAlign: 'middle',
@@ -109,69 +110,75 @@ export default function SystemDesignWorkspace({
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-[#1e1e1e] border border-gray-800 rounded-2xl overflow-hidden shadow-2xl">
+    <div className="w-full h-full flex flex-col bg-[#121212] border border-gray-800 rounded-2xl overflow-hidden shadow-2xl relative">
       
       {/* System Design Control Toolbar */}
-      <div className="flex flex-wrap items-center justify-between px-4 py-2 bg-[#2d2d2d] border-b border-gray-800 text-xs gap-2">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-mono text-gray-400 font-bold uppercase text-[10px] tracking-wider mr-2">Quick Add Architecture Nodes:</span>
+      <div className="flex flex-wrap items-center justify-between px-3 py-1.5 bg-[#18181b] border-b border-gray-800 text-xs gap-2 shrink-0 z-10">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="font-mono text-gray-400 font-bold uppercase text-[10px] tracking-wider mr-1">Quick Add:</span>
           
           <button
             onClick={() => addArchitectureNode('API Gateway', 'gateway')}
-            className="px-2.5 py-1 bg-[#1e1e1e] hover:bg-blue-950/40 text-blue-300 border border-blue-500/30 rounded-lg flex items-center gap-1.5 transition cursor-pointer"
+            className="px-2 py-1 bg-[#27272a] hover:bg-blue-950/50 text-blue-300 border border-blue-500/30 rounded-lg flex items-center gap-1.5 transition cursor-pointer text-[11px]"
           >
-            <Zap className="w-3.5 h-3.5" />
-            <span>API Gateway</span>
+            <Zap className="w-3 h-3 text-blue-400" />
+            <span>Gateway</span>
           </button>
 
           <button
             onClick={() => addArchitectureNode('App Service', 'service')}
-            className="px-2.5 py-1 bg-[#1e1e1e] hover:bg-emerald-950/40 text-emerald-300 border border-emerald-500/30 rounded-lg flex items-center gap-1.5 transition cursor-pointer"
+            className="px-2 py-1 bg-[#27272a] hover:bg-emerald-950/50 text-emerald-300 border border-emerald-500/30 rounded-lg flex items-center gap-1.5 transition cursor-pointer text-[11px]"
           >
-            <Cpu className="w-3.5 h-3.5" />
+            <Cpu className="w-3 h-3 text-emerald-400" />
             <span>Microservice</span>
           </button>
 
           <button
             onClick={() => addArchitectureNode('Redis Cache', 'cache')}
-            className="px-2.5 py-1 bg-[#1e1e1e] hover:bg-amber-950/40 text-amber-300 border border-amber-500/30 rounded-lg flex items-center gap-1.5 transition cursor-pointer"
+            className="px-2 py-1 bg-[#27272a] hover:bg-amber-950/50 text-amber-300 border border-amber-500/30 rounded-lg flex items-center gap-1.5 transition cursor-pointer text-[11px]"
           >
-            <Layers className="w-3.5 h-3.5" />
-            <span>Redis Cache</span>
+            <Layers className="w-3 h-3 text-amber-400" />
+            <span>Cache</span>
           </button>
 
           <button
             onClick={() => addArchitectureNode('Kafka Queue', 'queue')}
-            className="px-2.5 py-1 bg-[#1e1e1e] hover:bg-purple-950/40 text-purple-300 border border-purple-500/30 rounded-lg flex items-center gap-1.5 transition cursor-pointer"
+            className="px-2 py-1 bg-[#27272a] hover:bg-purple-950/50 text-purple-300 border border-purple-500/30 rounded-lg flex items-center gap-1.5 transition cursor-pointer text-[11px]"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
-            <span>Message Queue</span>
+            <RefreshCw className="w-3 h-3 text-purple-400" />
+            <span>Queue</span>
           </button>
 
           <button
             onClick={() => addArchitectureNode('PostgreSQL DB', 'db')}
-            className="px-2.5 py-1 bg-[#1e1e1e] hover:bg-pink-950/40 text-pink-300 border border-pink-500/30 rounded-lg flex items-center gap-1.5 transition cursor-pointer"
+            className="px-2 py-1 bg-[#27272a] hover:bg-pink-950/50 text-pink-300 border border-pink-500/30 rounded-lg flex items-center gap-1.5 transition cursor-pointer text-[11px]"
           >
-            <Database className="w-3.5 h-3.5" />
+            <Database className="w-3 h-3 text-pink-400" />
             <span>Database</span>
           </button>
         </div>
 
         <button
           onClick={onSubmit}
-          className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg text-xs flex items-center gap-1.5 transition cursor-pointer shadow-md ml-auto"
+          className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg text-xs flex items-center gap-1.5 transition cursor-pointer shadow-md ml-auto"
         >
           <CheckCircle2 className="w-3.5 h-3.5" />
-          <span>Complete System Design</span>
+          <span>Complete Design</span>
         </button>
       </div>
 
       {/* Excalidraw Canvas Area */}
-      <div className="flex-1 w-full relative min-h-[450px]">
+      <div className="flex-1 w-full h-full relative min-h-0 overflow-hidden">
         <Excalidraw
           excalidrawAPI={(api) => setExcalidrawAPI(api)}
           onChange={(elements) => setDiagramElements(elements as any[])}
           theme="dark"
+          initialData={{
+            appState: {
+              viewBackgroundColor: "#121212",
+              currentItemFontFamily: 1
+            }
+          }}
           UIOptions={{
             canvasActions: {
               changeViewBackgroundColor: false,
@@ -180,7 +187,8 @@ export default function SystemDesignWorkspace({
               loadScene: false,
               saveToActiveFile: false,
               toggleTheme: false
-            }
+            },
+            welcomeScreen: false
           }}
         />
       </div>

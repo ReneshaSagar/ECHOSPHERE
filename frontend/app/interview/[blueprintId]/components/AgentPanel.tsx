@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, Zap, Mic, MicOff, Video, VideoOff, Volume2, VolumeX, Sparkles, UserCheck } from 'lucide-react';
+import { Sparkles, Video, VideoOff, Mic, MicOff, UserCheck, Zap, ArrowRight } from 'lucide-react';
 import ParticleTalkingOrb from '@/components/room/ParticleTalkingOrb';
 import { useRouter } from 'next/navigation';
 
@@ -37,6 +37,7 @@ interface AgentPanelProps {
   toggleMute?: () => void;
   isDeafened?: boolean;
   toggleDeafen?: () => void;
+  isSidebar?: boolean;
 }
 
 export default function AgentPanel({
@@ -60,7 +61,8 @@ export default function AgentPanel({
   isMuted = false,
   toggleMute,
   isDeafened = false,
-  toggleDeafen
+  toggleDeafen,
+  isSidebar = false
 }: AgentPanelProps) {
   const router = useRouter();
   
@@ -92,10 +94,10 @@ export default function AgentPanel({
   const fallbackDisplayAgents: RunningAgent[] = roundInterviewers.map((intv: any, idx: number) => ({
     agentId: `preview_${intv.agent_uid || idx}`,
     agentUid: intv.agent_uid || (idx === 0 ? 9991 : 9992),
-    name: intv.name || (idx === 0 ? 'Lead Interviewer' : 'Specialist Interviewer'),
-    role: intv.role || (idx === 0 ? 'Lead Interviewer' : 'Specialist'),
+    name: intv.name || (idx === 0 ? 'Lead Evaluator' : 'Specialist Evaluator'),
+    role: intv.role || (idx === 0 ? 'Lead Evaluator' : 'Specialist'),
     voice: intv.voice || 'Aoede',
-    color: intv.color || (idx === 0 ? '#3B82F6' : '#8B5CF6'),
+    color: intv.color || (idx === 0 ? '#8B5CF6' : '#00AEEF'),
     isPrimary: idx === 0,
     hasFloor: idx === 0,
     intervening: false
@@ -109,46 +111,62 @@ export default function AgentPanel({
   return (
     <div className="flex-1 w-full h-full p-2 flex flex-col relative min-h-0">
       {wrapUpWarning && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-amber-500/90 text-black px-4 py-2 rounded-full font-bold text-xs shadow-lg animate-pulse">
-          ⏱️ Target Time Reached (4:50) — Wrapping up...
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-amber-500/10 border border-amber-500/30 text-amber-300 px-4 py-2 rounded-full font-mono text-xs shadow-lg backdrop-blur-md animate-pulse">
+          ⏱️ Target Time Reached (4:50) — Wrapping up evaluation
         </div>
       )}
 
       {testState !== 'IDLE' ? (
-        isSingleAgentMode ? (
-          /* Vertical 50/50 Stacked Layout for Workspace / Single Agent Round */
+        isSingleAgentMode && isSidebar ? (
+          /* Vertical 50/50 Stacked Layout for Workspace Sidebar (Round 1) */
           <div className="flex-1 flex flex-col gap-3 p-1 h-full min-h-0">
             {/* 50% Top Tile: Single Interviewer Agent */}
             {effectiveAgents.map((agent) => {
               const isAgentSpeaking = floorOwner === 'PRIMARY_AI' || floorOwner === 'HR_AI';
               
               return (
-                <div key={agent.agentUid} className={`flex-1 min-h-0 relative bg-[#3c4043] rounded-2xl overflow-hidden shadow-lg flex flex-col items-center justify-center border-2 transition-colors ${isAgentSpeaking ? 'border-blue-500' : 'border-transparent'}`}>
-                  <div className="flex-1 w-full flex items-center justify-center min-h-0">
+                <div 
+                  key={agent.agentUid} 
+                  className={`flex-1 min-h-0 relative bg-[#09090d]/90 backdrop-blur-2xl rounded-2xl overflow-hidden shadow-[0_12px_32px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center border transition-all duration-300 ${
+                    isAgentSpeaking 
+                      ? 'border-purple-500/60 shadow-[0_0_25px_rgba(168,85,247,0.25)] ring-1 ring-purple-500/40' 
+                      : 'border-white/[0.08]'
+                  }`}
+                >
+                  <div className="flex-1 w-full flex items-center justify-center min-h-0 relative z-10">
                     <ParticleTalkingOrb 
                       isSpeaking={isAgentSpeaking}
                       isListening={floorOwner === 'CANDIDATE'}
                       isThinking={agent.intervening || testState === 'STARTING' || testState === 'ROUND_TRANSITION' || activePanelAgents.length === 0}
-                      size={150}
-                      accentColor={agent.color || '#3B82F6'}
+                      size={140}
+                      accentColor={agent.color || '#8B5CF6'}
                     />
                   </div>
-                  <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-lg text-white text-xs font-medium flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${isAgentSpeaking ? 'bg-blue-400 animate-pulse' : (testState === 'STARTING' || testState === 'ROUND_TRANSITION') ? 'bg-amber-400 animate-pulse' : 'bg-gray-400'}`}></div>
-                    {agent.name} <span className="text-gray-400 text-[10px]">({agent.role})</span>
+                  
+                  {/* Subtle Nameplate */}
+                  <div className="absolute bottom-3 left-3 z-20 bg-[#030304]/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/[0.08] text-white text-xs font-medium flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${isAgentSpeaking ? 'bg-purple-400 animate-pulse' : (testState === 'STARTING' || testState === 'ROUND_TRANSITION') ? 'bg-amber-400 animate-pulse' : 'bg-zinc-500'}`}></div>
+                    <span>{agent.name}</span>
+                    <span className="text-zinc-400 font-mono text-[10px]">({agent.role})</span>
                   </div>
                 </div>
               );
             })}
 
             {/* 50% Bottom Tile: Candidate Local Camera Feed ("You") */}
-            <div className={`flex-1 min-h-0 relative bg-[#3c4043] rounded-2xl overflow-hidden shadow-lg flex flex-col items-center justify-center border-2 transition-colors ${floorOwner === 'CANDIDATE' ? 'border-blue-500' : 'border-transparent'}`}>
+            <div 
+              className={`flex-1 min-h-0 relative bg-[#09090d]/90 backdrop-blur-2xl rounded-2xl overflow-hidden shadow-[0_12px_32px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center border transition-all duration-300 ${
+                floorOwner === 'CANDIDATE' 
+                  ? 'border-emerald-500/60 shadow-[0_0_25px_rgba(16,185,129,0.25)] ring-1 ring-emerald-500/40' 
+                  : 'border-white/[0.08]'
+              }`}
+            >
               {isVideoOff ? (
-                <div className="flex flex-col items-center justify-center text-gray-400 gap-2 p-4">
-                  <div className="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700">
-                    <VideoOff className="w-6 h-6 text-gray-400" />
+                <div className="flex flex-col items-center justify-center text-zinc-500 gap-2 p-4">
+                  <div className="w-12 h-12 rounded-full bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
+                    <VideoOff className="w-5 h-5 text-zinc-400" />
                   </div>
-                  <span className="text-xs font-mono text-gray-300 font-medium">Camera Switched Off</span>
+                  <span className="text-xs font-mono text-zinc-400">Camera Off</span>
                 </div>
               ) : (
                 <video 
@@ -159,62 +177,65 @@ export default function AgentPanel({
                   className="w-full h-full object-cover transform -scale-x-100"
                 />
               )}
-              <div className="absolute inset-0 ring-inset ring-black/10 pointer-events-none"></div>
               
-              <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-lg text-white text-xs font-medium flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${floorOwner === 'CANDIDATE' ? 'bg-blue-400 animate-pulse' : 'bg-gray-400'}`}></div>
-                You
+              <div className="absolute bottom-3 left-3 z-20 bg-[#030304]/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/[0.08] text-white text-xs font-medium flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full ${floorOwner === 'CANDIDATE' ? 'bg-emerald-400 animate-pulse' : 'bg-zinc-500'}`}></div>
+                <span>{candidateName || 'You'}</span>
+                <span className="text-zinc-400 text-[10px] font-mono">(Candidate)</span>
               </div>
-
-              {toggleCamera && (
-                <button
-                  onClick={toggleCamera}
-                  className={`absolute bottom-3 right-3 p-2 rounded-xl transition-all backdrop-blur-md border cursor-pointer ${
-                    isVideoOff 
-                      ? 'bg-red-500/80 hover:bg-red-600/90 border-red-400 text-white shadow-lg shadow-red-500/20' 
-                      : 'bg-black/60 hover:bg-black/80 border-white/20 text-emerald-400'
-                  }`}
-                  title={isVideoOff ? "Turn Camera On" : "Turn Camera Off"}
-                >
-                  {isVideoOff ? <VideoOff className="w-4 h-4" /> : <Video className="w-4 h-4" />}
-                </button>
-              )}
             </div>
           </div>
         ) : (
-          /* Grid Layout for Multi-Agent Panel Round */
-          <div className={`flex-1 grid gap-4 ${gridColsClass} p-2 h-full min-h-0`}>
+          /* Side-by-Side 2-Column Grid OR 3-Tile Multi-Agent Grid */
+          <div className={`flex-1 grid gap-4 ${isSingleAgentMode ? 'grid-cols-1 md:grid-cols-2' : gridColsClass} p-2 h-full min-h-0`}>
             {/* Agent Tiles */}
             {effectiveAgents.map((agent) => {
-              const isAgentSpeaking = floorOwner === (agent.isPrimary && effectiveAgents.length > 1 ? 'PRIMARY_AI' : (effectiveAgents.length > 1 ? 'CHALLENGER_AI' : (floorOwner === 'HR_AI' || floorOwner === 'PRIMARY_AI' ? floorOwner : 'NONE')));
+              const isAgentSpeaking = isSingleAgentMode 
+                ? (floorOwner === 'PRIMARY_AI' || floorOwner === 'HR_AI')
+                : (floorOwner === (agent.isPrimary && effectiveAgents.length > 1 ? 'PRIMARY_AI' : (effectiveAgents.length > 1 ? 'CHALLENGER_AI' : (floorOwner === 'HR_AI' || floorOwner === 'PRIMARY_AI' ? floorOwner : 'NONE'))));
               
               return (
-                <div key={agent.agentUid} className={`relative bg-[#3c4043] rounded-2xl overflow-hidden shadow-lg flex flex-col items-center justify-center border-2 transition-colors ${isAgentSpeaking ? 'border-blue-500' : 'border-transparent'}`}>
-                  <div className="flex-1 w-full flex items-center justify-center min-h-0">
+                <div 
+                  key={agent.agentUid} 
+                  className={`relative bg-[#09090d]/90 backdrop-blur-2xl rounded-2xl overflow-hidden shadow-[0_16px_40px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center border transition-all duration-300 ${
+                    isAgentSpeaking 
+                      ? 'border-purple-500/60 shadow-[0_0_30px_rgba(168,85,247,0.25)] ring-1 ring-purple-500/40' 
+                      : 'border-white/[0.08]'
+                  }`}
+                >
+                  <div className="flex-1 w-full flex items-center justify-center min-h-0 relative z-10">
                     <ParticleTalkingOrb 
                       isSpeaking={isAgentSpeaking}
                       isListening={floorOwner === 'CANDIDATE'}
                       isThinking={agent.intervening || testState === 'STARTING' || testState === 'ROUND_TRANSITION' || activePanelAgents.length === 0}
-                      size={180}
-                      accentColor={agent.color || '#3B82F6'}
+                      size={isSingleAgentMode ? 200 : 170}
+                      accentColor={agent.color || '#8B5CF6'}
                     />
                   </div>
-                  <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-lg text-white text-sm font-medium flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${isAgentSpeaking ? 'bg-blue-400 animate-pulse' : (testState === 'STARTING' || testState === 'ROUND_TRANSITION') ? 'bg-amber-400 animate-pulse' : 'bg-gray-400'}`}></div>
-                    {agent.name} <span className="text-gray-400 text-xs hidden sm:inline">({agent.role})</span>
+                  
+                  <div className="absolute bottom-4 left-4 z-20 bg-[#030304]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/[0.08] text-white text-xs font-medium flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${isAgentSpeaking ? 'bg-purple-400 animate-pulse' : (testState === 'STARTING' || testState === 'ROUND_TRANSITION') ? 'bg-amber-400 animate-pulse' : 'bg-zinc-500'}`}></div>
+                    <span>{agent.name}</span>
+                    <span className="text-zinc-400 text-[11px] font-mono">({agent.role})</span>
                   </div>
                 </div>
               );
             })}
 
-            {/* Local Candidate Tile */}
-            <div className={`relative bg-[#3c4043] rounded-2xl overflow-hidden shadow-lg flex flex-col items-center justify-center border-2 transition-colors ${floorOwner === 'CANDIDATE' ? 'border-blue-500' : 'border-transparent'}`}>
+            {/* Local Candidate Tile (Next to Evaluator) */}
+            <div 
+              className={`relative bg-[#09090d]/90 backdrop-blur-2xl rounded-2xl overflow-hidden shadow-[0_16px_40px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center border transition-all duration-300 ${
+                floorOwner === 'CANDIDATE' 
+                  ? 'border-emerald-500/60 shadow-[0_0_30px_rgba(16,185,129,0.25)] ring-1 ring-emerald-500/40' 
+                  : 'border-white/[0.08]'
+              }`}
+            >
               {isVideoOff ? (
-                <div className="flex flex-col items-center justify-center text-gray-400 gap-2 p-4">
-                  <div className="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700">
-                    <VideoOff className="w-6 h-6 text-gray-400" />
+                <div className="flex flex-col items-center justify-center text-zinc-500 gap-2 p-4">
+                  <div className="w-14 h-14 rounded-full bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
+                    <VideoOff className="w-6 h-6 text-zinc-400" />
                   </div>
-                  <span className="text-xs font-mono text-gray-300 font-medium">Camera Switched Off</span>
+                  <span className="text-xs font-mono text-zinc-400">Camera Switched Off</span>
                 </div>
               ) : (
                 <video 
@@ -225,173 +246,114 @@ export default function AgentPanel({
                   className="w-full h-full object-cover transform -scale-x-100"
                 />
               )}
-              <div className="absolute inset-0 ring-inset ring-black/10 pointer-events-none"></div>
               
-              <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-lg text-white text-sm font-medium flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${floorOwner === 'CANDIDATE' ? 'bg-blue-400 animate-pulse' : 'bg-gray-400'}`}></div>
-                You
+              <div className="absolute bottom-4 left-4 z-20 bg-[#030304]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/[0.08] text-white text-xs font-medium flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full ${floorOwner === 'CANDIDATE' ? 'bg-emerald-400 animate-pulse' : 'bg-zinc-500'}`}></div>
+                <span>{candidateName || 'You'}</span>
+                <span className="text-zinc-400 text-[11px] font-mono">(Candidate)</span>
               </div>
-
-              {toggleCamera && (
-                <button
-                  onClick={toggleCamera}
-                  className={`absolute bottom-4 right-4 p-2 rounded-xl transition-all backdrop-blur-md border cursor-pointer ${
-                    isVideoOff 
-                      ? 'bg-red-500/80 hover:bg-red-600/90 border-red-400 text-white shadow-lg shadow-red-500/20' 
-                      : 'bg-black/60 hover:bg-black/80 border-white/20 text-emerald-400'
-                  }`}
-                  title={isVideoOff ? "Turn Camera On" : "Turn Camera Off"}
-                >
-                  {isVideoOff ? <VideoOff className="w-4 h-4" /> : <Video className="w-4 h-4" />}
-                </button>
-              )}
             </div>
           </div>
         )
       ) : (
         <div className="flex-1 flex flex-col items-center justify-center">
-          {/* Fallback for IDLE state is handled in InterviewRoom directly */}
+          {/* Fallback for IDLE state */}
         </div>
       )}
 
       {/* Challenger Floor Request Alert Banner */}
       {pendingFloorNotice && (
-        <div className="mt-4 max-w-lg mx-auto bg-purple-900/40 border border-purple-500/50 rounded-xl p-3 text-xs text-purple-200 flex items-center gap-2.5 animate-in fade-in duration-200">
-          <Zap className="w-4 h-4 text-purple-400 shrink-0 animate-bounce" />
+        <div className="mt-3 max-w-md mx-auto bg-purple-950/40 border border-purple-500/30 rounded-xl px-4 py-2.5 text-xs text-purple-200 flex items-center gap-2.5 backdrop-blur-md animate-in fade-in duration-200">
+          <Zap className="w-3.5 h-3.5 text-purple-400 shrink-0" />
           <span className="font-mono">{pendingFloorNotice}</span>
         </div>
       )}
 
-      {/* Floor Arbiter Bar */}
+      {/* Floor Arbiter Indicator Pill */}
       {testState === 'RUNNING' && (
-        <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-800/80 p-3.5 rounded-xl border border-gray-700/60 backdrop-blur">
-          <div className={`px-4 py-1.5 rounded-full font-bold tracking-wider uppercase text-xs flex items-center gap-2 ${
-            floorOwner === 'PRIMARY_AI' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 
-            floorOwner === 'CHALLENGER_AI' ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : 
-            floorOwner === 'HR_AI' ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' : 
-            floorOwner === 'CANDIDATE' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 
-            floorOwner === 'CROSSTALK' ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 
-            'bg-gray-900/60 text-gray-400'
+        <div className="mt-3 flex items-center justify-between px-3">
+          <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono transition-all ${
+            floorOwner === 'PRIMARY_AI' ? 'bg-purple-500/10 text-purple-300 border border-purple-500/20' : 
+            floorOwner === 'CHALLENGER_AI' ? 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/20' : 
+            floorOwner === 'HR_AI' ? 'bg-amber-500/10 text-amber-300 border border-amber-500/20' : 
+            floorOwner === 'CANDIDATE' ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20' : 
+            floorOwner === 'CROSSTALK' ? 'bg-rose-500/10 text-rose-300 border border-rose-500/20' : 
+            'bg-white/[0.03] text-zinc-500 border border-white/[0.06]'
           }`}>
-            {floorOwner === 'PRIMARY_AI' ? `🎙️ ${primaryAgent?.name || 'Primary'} Speaking` : 
-             floorOwner === 'CHALLENGER_AI' ? `⚡ ${challengerAgent?.name || 'Challenger'} Intervening` : 
-             floorOwner === 'HR_AI' ? '🎙️ HR Interviewer Speaking' : 
-             floorOwner === 'CANDIDATE' ? '🗣️ You are Speaking' : 
-             floorOwner === 'CROSSTALK' ? '⚠️ Interruption Detected' : 
-             'Listening...'}
+            <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse"></span>
+            <span>
+              {floorOwner === 'PRIMARY_AI' ? `${primaryAgent?.name || 'Primary'} speaking` : 
+               floorOwner === 'CHALLENGER_AI' ? `${challengerAgent?.name || 'Challenger'} intervening` : 
+               floorOwner === 'HR_AI' ? 'HR Evaluator speaking' : 
+               floorOwner === 'CANDIDATE' ? 'You are speaking' : 
+               floorOwner === 'CROSSTALK' ? 'Simultaneous speech detected' : 
+               'Panel listening...'}
+            </span>
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            {/* Quick Media Controls */}
-            <div className="flex items-center gap-1 bg-gray-900/80 p-1 rounded-xl border border-gray-700/80">
-              {toggleMute && (
-                <button
-                  onClick={toggleMute}
-                  className={`p-1.5 rounded-lg text-xs transition cursor-pointer ${
-                    isMuted ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30' : 'bg-gray-800 text-gray-300 hover:text-white'
-                  }`}
-                  title={isMuted ? "Unmute Mic" : "Mute Mic"}
-                >
-                  {isMuted ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
-                </button>
-              )}
-
-              {toggleCamera && (
-                <button
-                  onClick={toggleCamera}
-                  className={`p-1.5 rounded-lg text-xs transition cursor-pointer ${
-                    isVideoOff ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30' : 'bg-gray-800 text-gray-300 hover:text-white'
-                  }`}
-                  title={isVideoOff ? "Turn Camera On" : "Turn Camera Off"}
-                >
-                  {isVideoOff ? <VideoOff className="w-3.5 h-3.5" /> : <Video className="w-3.5 h-3.5" />}
-                </button>
-              )}
-
-              {toggleDeafen && (
-                <button
-                  onClick={toggleDeafen}
-                  className={`p-1.5 rounded-lg text-xs transition cursor-pointer ${
-                    isDeafened ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30' : 'bg-gray-800 text-gray-300 hover:text-white'
-                  }`}
-                  title={isDeafened ? "Undeafen Audio" : "Deafen Agent Audio"}
-                >
-                  {isDeafened ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-                </button>
-              )}
-            </div>
-
-            <div className="flex-1 sm:w-36">
-              <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-                <div className="h-full bg-green-500 transition-all duration-75" style={{width: `${micVolume}%`}}></div>
-              </div>
-            </div>
+          {/* Quick Round Advance Option */}
+          <div>
             {currentRound === 0 ? (
               <button 
                 onClick={() => finishRound('MANUAL_ADVANCE')} 
-                className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-bold text-xs transition shadow-md whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
-                title="Advance to Technical Round (Fast-Forward)"
+                disabled={testState !== 'RUNNING'}
+                className="text-xs font-mono text-zinc-400 hover:text-white transition-colors inline-flex items-center gap-1.5 cursor-pointer disabled:opacity-40"
               >
-                <span>Next Round (Technical)</span>
-                <span className="text-blue-200">→</span>
+                <span>Complete Round 1</span>
+                <ArrowRight className="w-3 h-3 text-purple-400" />
               </button>
             ) : currentRound === 1 ? (
               <button 
                 onClick={() => finishRound('MANUAL_ADVANCE')} 
-                className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg font-bold text-xs transition shadow-md whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
-                title="Advance to HR Round (Fast-Forward)"
+                disabled={testState !== 'RUNNING'}
+                className="text-xs font-mono text-zinc-400 hover:text-white transition-colors inline-flex items-center gap-1.5 cursor-pointer disabled:opacity-40"
               >
-                <span>Next Round (HR)</span>
-                <span className="text-purple-200">→</span>
+                <span>Complete Round 2</span>
+                <ArrowRight className="w-3 h-3 text-purple-400" />
               </button>
-            ) : (
-              <button 
-                onClick={() => finishRound('MANUAL_END')} 
-                className="px-4 py-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white rounded-lg font-bold text-xs transition shadow-md whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
-                title="End Interview"
-              >
-                <span>End Interview</span>
-                <span className="text-red-200">✗</span>
-              </button>
-            )}
+            ) : null}
           </div>
         </div>
       )}
 
       {/* Technical / Workspace Closing Overlay */}
       {testState === 'TECHNICAL_CLOSING' && (
-        <div className="absolute inset-0 bg-gray-950/80 z-20 flex flex-col items-center justify-center text-white backdrop-blur-sm rounded-2xl p-6">
-          <Mic className="w-10 h-10 text-blue-400 mb-4 animate-pulse" />
-          <h3 className="text-xl font-bold">
+        <div className="absolute inset-0 bg-[#030304]/90 z-20 flex flex-col items-center justify-center text-white backdrop-blur-xl rounded-2xl p-6">
+          <div className="w-12 h-12 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-4 animate-pulse">
+            <Mic className="w-6 h-6" />
+          </div>
+          <h3 className="text-lg font-sans font-semibold">
             {currentRound === 0 ? 'Workspace Assessment Concluding' : 'Technical Round Concluding'}
           </h3>
-          <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
+          <p className="text-zinc-400 mt-2 text-center max-w-sm text-xs leading-relaxed font-sans">
             {currentRound === 0 
-              ? 'Capturing final code & system design snapshot. Please wait...' 
-              : 'The primary interviewer is wrapping up. Please wait...'}
+              ? 'Capturing final code & system design snapshot. Transitioning to panel...' 
+              : 'The technical panel is wrapping up. Please wait...'}
           </p>
         </div>
       )}
 
       {/* HR Closing Overlay */}
       {testState === 'HR_CLOSING' && (
-        <div className="absolute inset-0 bg-gray-950/80 z-20 flex flex-col items-center justify-center text-white backdrop-blur-sm rounded-2xl p-6">
-          <Mic className="w-10 h-10 text-orange-400 mb-4 animate-pulse" />
-          <h3 className="text-xl font-bold">HR Round Concluding</h3>
-          <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
-            The HR interviewer is wrapping up. Please wait...
+        <div className="absolute inset-0 bg-[#030304]/90 z-20 flex flex-col items-center justify-center text-white backdrop-blur-xl rounded-2xl p-6">
+          <div className="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-4 animate-pulse">
+            <Mic className="w-6 h-6" />
+          </div>
+          <h3 className="text-lg font-sans font-semibold">Leadership Round Concluding</h3>
+          <p className="text-zinc-400 mt-2 text-center max-w-sm text-xs leading-relaxed font-sans">
+            The evaluator is concluding the session. Please hold on...
           </p>
         </div>
       )}
 
       {/* Evaluating / Decision Gate Overlay */}
       {(testState === 'EVALUATING' || testState === 'DECISION_GATE') && (
-        <div className="absolute inset-0 bg-gray-950/90 z-20 flex flex-col items-center justify-center text-white backdrop-blur-md rounded-2xl p-6">
-          <svg className="animate-spin h-10 w-10 text-blue-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-          <h3 className="text-xl font-bold">
+        <div className="absolute inset-0 bg-[#030304]/90 z-20 flex flex-col items-center justify-center text-white backdrop-blur-xl rounded-2xl p-6">
+          <div className="w-10 h-10 border-2 border-purple-500/30 border-t-purple-400 rounded-full animate-spin mb-4"></div>
+          <h3 className="text-lg font-sans font-semibold">
             {testState === 'DECISION_GATE' ? 'Decision Gate Evaluation' : 'Evaluating Workspace & Evidence'}
           </h3>
-          <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
+          <p className="text-zinc-400 mt-2 text-center max-w-sm text-xs leading-relaxed font-sans">
             {testState === 'DECISION_GATE' 
               ? 'Synthesizing performance rubrics and transitioning to the next round...'
               : 'Analyzing live code execution, test pass rates, and architectural reasoning...'}
@@ -401,71 +363,71 @@ export default function AgentPanel({
 
       {/* Round Transition Overlay */}
       {testState === 'ROUND_TRANSITION' && (
-        <div className="absolute inset-0 bg-gray-950/90 z-20 flex flex-col items-center justify-center text-white backdrop-blur-md rounded-2xl p-6">
-          <div className="w-14 h-14 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mb-4 border border-emerald-500/40">
-            <Sparkles className="w-7 h-7" />
+        <div className="absolute inset-0 bg-[#030304]/90 z-20 flex flex-col items-center justify-center text-white backdrop-blur-xl rounded-2xl p-6">
+          <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mb-4 border border-emerald-500/30">
+            <Sparkles className="w-6 h-6" />
           </div>
-          <h3 className="text-xl font-bold text-emerald-400">
+          <h3 className="text-lg font-sans font-semibold text-emerald-300">
             {currentRound === 1 
-              ? 'Round 1 (Coding Assessment) Complete!' 
+              ? 'Round 1 Assessment Complete' 
               : currentRound === 2 
-                ? 'Technical Panel Round Complete!' 
-                : `Round ${currentRound} Complete!`}
+                ? 'Technical Architecture Complete' 
+                : `Round ${currentRound} Complete`}
           </h3>
-          <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
+          <p className="text-zinc-400 mt-2 text-center max-w-sm text-xs leading-relaxed font-sans">
             {currentRound === 1
-              ? `Transitioning to Round 2: ${currentRoundData?.round_name || 'Technical Panel Interview'}. Your technical interviewers are joining...`
+              ? `Transitioning to Round 2 of 3: ${currentRoundData?.round_name || 'Technical Panel Interview'}. Your technical evaluators are joining...`
               : currentRound === 2
-                ? `Transitioning to Round 3: ${currentRoundData?.round_name || 'Engineering Leadership & Culture'}. Your HR interviewer is joining...`
-                : `Transitioning to Round ${currentRound + 1}: ${currentRoundData?.round_name || 'Next Round'}...`}
+                ? `Transitioning to Round 3 of 3: ${currentRoundData?.round_name || 'Engineering Leadership & Culture'}. Your evaluator is joining...`
+                : `Transitioning to Round ${Math.min(currentRound + 1, 3)}: ${currentRoundData?.round_name || 'Next Round'}...`}
           </p>
-          <svg className="animate-spin h-5 w-5 text-gray-500 mt-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+          <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin mt-4"></div>
         </div>
       )}
 
       {/* Error Overlay with Reconnect Action */}
       {testState === 'ERROR' && (
-        <div className="absolute inset-0 bg-gray-950/90 z-30 flex flex-col items-center justify-center text-white backdrop-blur-md rounded-2xl p-6 text-center">
-          <div className="w-14 h-14 bg-rose-500/20 text-rose-400 rounded-full flex items-center justify-center mb-4 border border-rose-500/40 shadow-[0_0_30px_rgba(244,63,94,0.3)]">
-            <MicOff className="w-7 h-7" />
+        <div className="absolute inset-0 bg-[#030304]/95 z-30 flex flex-col items-center justify-center text-white backdrop-blur-xl rounded-2xl p-6 text-center">
+          <div className="w-12 h-12 bg-rose-500/10 text-rose-400 rounded-full flex items-center justify-center mb-4 border border-rose-500/30">
+            <MicOff className="w-6 h-6" />
           </div>
-          <h3 className="text-xl font-bold text-white mb-1">Session Reconnection Needed</h3>
-          <p className="text-gray-400 max-w-sm text-xs mb-5 leading-relaxed">
+          <h3 className="text-lg font-sans font-semibold text-white mb-1">Session Reconnection Needed</h3>
+          <p className="text-zinc-400 max-w-sm text-xs mb-5 leading-relaxed font-sans">
             A temporary connection issue occurred while initializing the panel. Click below to reconnect to Round {currentRound + 1}.
           </p>
           <button 
             onClick={() => window.location.reload()}
-            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-blue-500/20 cursor-pointer flex items-center gap-2"
+            className="px-6 py-2.5 bg-white text-black font-semibold rounded-full text-xs transition hover:bg-zinc-200 cursor-pointer shadow-[0_0_20px_rgba(255,255,255,0.2)]"
           >
-            <span>↻ Reconnect to Interview</span>
+            ↻ Reconnect to Session
           </button>
         </div>
       )}
 
-      {/* Interview Complete Overlay (generating scorecard) */}
+      {/* Interview Complete Overlay */}
       {testState === 'INTERVIEW_COMPLETE' && (
-        <div className="absolute inset-0 bg-gray-950/90 z-20 flex flex-col items-center justify-center text-white backdrop-blur-md rounded-2xl p-6">
-          <svg className="animate-spin h-10 w-10 text-emerald-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-          <h3 className="text-xl font-bold">Generating Final Scorecard</h3>
-          <p className="text-gray-400 mt-2 text-center max-w-sm text-xs leading-relaxed">
-            Synthesizing evidence across all rounds to produce your final evaluation...
+        <div className="absolute inset-0 bg-[#030304]/90 z-20 flex flex-col items-center justify-center text-white backdrop-blur-xl rounded-2xl p-6">
+          <div className="w-10 h-10 border-2 border-emerald-500/30 border-t-emerald-400 rounded-full animate-spin mb-4"></div>
+          <h3 className="text-lg font-sans font-semibold">Generating Final Scorecard</h3>
+          <p className="text-zinc-400 mt-2 text-center max-w-sm text-xs leading-relaxed font-sans">
+            Synthesizing evidence across all rounds to produce your evaluation dossier...
           </p>
         </div>
       )}
 
       {/* Ended State Overlay */}
       {testState === 'ENDED' && (
-        <div className="absolute inset-0 bg-gray-950/95 z-30 flex flex-col items-center justify-center text-white backdrop-blur-md rounded-2xl p-6 text-center animate-in fade-in">
-          <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mb-4 border border-emerald-500/40 shadow-[0_0_40px_rgba(16,185,129,0.3)]">
-            <UserCheck className="w-8 h-8" />
+        <div className="absolute inset-0 bg-[#030304]/95 z-30 flex flex-col items-center justify-center text-white backdrop-blur-xl rounded-2xl p-6 text-center animate-in fade-in">
+          <div className="w-14 h-14 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mb-4 border border-emerald-500/30">
+            <UserCheck className="w-7 h-7" />
           </div>
-          <h3 className="text-2xl font-black text-white mb-2">Interview Completed!</h3>
-          <p className="text-gray-300 max-w-sm text-sm mb-5">
-            Session telemetry and responses captured. Redirecting to your session completion report...
+          <h3 className="text-xl font-sans font-semibold text-white mb-2">Interview Completed</h3>
+          <p className="text-zinc-400 max-w-sm text-xs mb-5 font-sans">
+            All session telemetry and signals captured. You can now view your candidate summary report.
           </p>
           <button 
             onClick={() => router.push(`/interview/${interviewId}/completed`)}
-            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-blue-500/20 cursor-pointer"
+            className="px-6 py-3 bg-white text-black font-semibold rounded-full text-xs transition hover:bg-zinc-200 shadow-[0_0_25px_rgba(255,255,255,0.2)] cursor-pointer"
           >
             View Session Summary →
           </button>

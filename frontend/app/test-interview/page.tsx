@@ -227,7 +227,7 @@ export default function TestInterviewSuitePage() {
               <div className="space-y-2 text-xs text-zinc-300">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-amber-400"></span>
-                  <strong>Sarah Jenkins</strong> (VP Culture, Puck voice) — Incident post-mortems & mentorship
+                  <strong>Sarah Jenkins</strong> (VP Culture, Aoede voice) — Incident post-mortems & mentorship
                 </div>
               </div>
               <p className="text-[11px] text-zinc-400 pt-1 border-t border-white/[0.06] font-mono">

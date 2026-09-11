@@ -6,29 +6,24 @@ import { formatDateFullIST, formatTimeIST } from '@/lib/dateFormat';
 import { 
   Calendar, 
   Clock, 
-  Mic, 
   Headphones, 
-  Volume2, 
-  Sparkles, 
+  Video, 
   ArrowRight,
-  ShieldCheck,
-  Zap,
-  CalendarPlus,
-  Camera,
-  Eye
+  Shield,
+  Volume2,
+  CalendarPlus
 } from 'lucide-react';
 
 const InterviewRoom = dynamic(() => import('./InterviewRoom'), {
   ssr: false,
   loading: () => (
-    <div className="flex-1 flex flex-col items-center justify-center p-12 min-h-[460px] bg-[#0a0a0d] rounded-3xl border border-white/[0.08] text-white animate-in fade-in">
-      <div className="w-10 h-10 border-2 border-white/20 border-t-white rounded-full animate-spin mb-4"></div>
-      <div className="text-base font-sans font-bold">entering interview room...</div>
-      <div className="text-xs font-mono text-white/40 mt-1">connecting to agora voice panel (MLLM)</div>
+    <div className="flex-1 flex flex-col items-center justify-center p-12 min-h-[460px] bg-[#030304] text-white animate-in fade-in duration-300">
+      <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin mb-4"></div>
+      <div className="text-sm font-sans font-medium text-white/90">Connecting to interview session...</div>
+      <div className="text-xs font-mono text-zinc-500 mt-1">Initializing voice panel & workspace</div>
     </div>
   )
 });
-
 
 export default function InterviewLobbyWrapper({
   blueprint,
@@ -130,248 +125,198 @@ export default function InterviewLobbyWrapper({
     const formatGCalDate = (d: Date) => d.toISOString().replace(/-|:|\.\d+/g, '');
     const dates = `${formatGCalDate(startTime)}/${formatGCalDate(endTime)}`;
 
-    const title = encodeURIComponent(`Plantra Labs AI Interview: ${candidateName} (${jobTitle})`);
+    const title = encodeURIComponent(`Plantra Labs Technical Assessment: ${candidateName} (${jobTitle})`);
     const roomLink = typeof window !== 'undefined' ? window.location.href : '';
     const details = encodeURIComponent(
-      `Candidate: ${candidateName}\nRole: ${jobTitle}${roomLink ? `\nRoom Link: ${roomLink}` : ''}\n\nPowered by OmniPanel for Plantra Labs.`
+      `Candidate: ${candidateName}\nRole: ${jobTitle}${roomLink ? `\nRoom Link: ${roomLink}` : ''}\n\nTechnical interview powered by Plantra Meet.`
     );
     const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  if (!mounted) {
-    return (
-      <div className="max-w-3xl mx-auto py-12 px-4 space-y-8 animate-in fade-in duration-300">
+  return (
+    <div className="relative min-h-[calc(100vh-65px)] flex flex-col justify-center items-center py-10 px-4 sm:px-6">
+      {/* Subtle Atmosphere Layer */}
+      <div className="pointer-events-none absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-b from-purple-600/10 via-pink-600/5 to-transparent blur-[140px] opacity-70" />
+      <div className="pointer-events-none absolute inset-0 dot-grid-fine opacity-10" />
+
+      <div className="relative z-10 w-full max-w-xl mx-auto space-y-8 animate-in fade-in duration-300">
+        
+        {/* Header Title Section */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-white/70">
-            <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-            <span>Plantra Labs · powered by OmniPanel</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] text-[11px] font-mono text-zinc-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+            <span>Plantra Meet · Live Evaluation</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-sans font-bold text-white tracking-tight">
-            welcome, {candidateName}
+
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-sans font-semibold text-white tracking-tight">
+            Welcome, {candidateName}
           </h1>
-          <p className="text-white/60 text-sm sm:text-base max-w-lg mx-auto font-sans">
-            You are confirmed for the <strong className="text-white">{jobTitle}</strong> technical interview at <strong className="text-white">Plantra Labs</strong>.
+          <p className="text-xs sm:text-sm text-zinc-400 max-w-md mx-auto leading-relaxed">
+            You are confirmed for the <span className="text-zinc-200 font-medium">{jobTitle}</span> technical interview with the autonomous AI panel.
           </p>
         </div>
 
-        <div className="bg-[#0a0a0d] rounded-3xl border border-white/[0.08] p-8 sm:p-12 text-center space-y-6 shadow-[0_0_50px_rgba(0,0,0,0.6)]">
-          <div className="space-y-2">
-            <div className="text-xs font-mono text-white/40 uppercase tracking-wider flex items-center justify-center gap-2">
-              <Calendar className="w-3.5 h-3.5 text-white/50" />
-              <span>scheduled start time</span>
+        {/* Central Entrance Card */}
+        <div className="bg-[#09090d]/90 backdrop-blur-2xl rounded-2xl border border-white/[0.08] p-6 sm:p-8 shadow-[0_16px_50px_rgba(0,0,0,0.6)] space-y-6">
+          
+          {/* Schedule Info */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-white/[0.06]">
+            <div className="space-y-1">
+              <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block">
+                Scheduled Start Time
+              </span>
+              <div className="text-base sm:text-lg font-medium text-white flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-zinc-400 shrink-0" />
+                <span>{formattedDate}</span>
+              </div>
             </div>
-            <div className="text-2xl sm:text-3xl font-sans font-bold text-white">
-              {formattedDate}
-            </div>
-            <div className="text-sm font-mono text-purple-400 flex items-center justify-center gap-1.5">
-              <Clock className="w-3.5 h-3.5" />
+
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-xs font-mono text-zinc-300 self-start sm:self-center">
+              <Clock className="w-3.5 h-3.5 text-purple-400" />
               <span>{formattedTime}</span>
             </div>
           </div>
-          <div className="py-6 flex items-center justify-center gap-3 text-white/40 text-xs font-mono">
-            <div className="w-4 h-4 rounded-full border-2 border-white/20 border-t-white animate-spin"></div>
-            <span>synchronizing interview session countdown...</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
-  return (
-    <div className="max-w-3xl mx-auto py-12 px-4 space-y-8 animate-in fade-in duration-300">
-      {/* Welcome Banner */}
-      <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-white/70">
-          <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-          <span>Plantra Labs · powered by OmniPanel</span>
-        </div>
-
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-sans font-bold text-white tracking-tight">
-          welcome, {candidateName}
-        </h1>
-        <p className="text-white/60 text-sm sm:text-base max-w-lg mx-auto font-sans">
-          You are confirmed for the <strong className="text-white">{jobTitle}</strong> technical interview at <strong className="text-white">Plantra Labs</strong>.
-        </p>
-      </div>
-
-      {/* Main Countdown & Time Card */}
-      <div className="bg-[#0a0a0d] rounded-3xl border border-white/[0.08] p-8 sm:p-12 text-center space-y-8 relative overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.6)]">
-        {/* Subtle radial ambient glows */}
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="space-y-2 relative z-10">
-          <div className="text-xs font-mono text-white/40 uppercase tracking-wider flex items-center justify-center gap-2">
-            <Calendar className="w-3.5 h-3.5 text-white/50" />
-            <span>scheduled start time</span>
-          </div>
-          <div className="text-2xl sm:text-3xl font-sans font-bold text-white">
-            {formattedDate}
-          </div>
-          <div className="text-sm font-mono text-purple-300 flex items-center justify-center gap-1.5">
-            <Clock className="w-3.5 h-3.5" />
-            <span>{formattedTime}</span>
-          </div>
-        </div>
-
-
-
-        {/* Live Countdown Display */}
-        {!timeLeft.isTimeArrived ? (
-          <div className="py-4 relative z-10">
-            <div className="text-xs font-mono text-white/40 uppercase tracking-widest mb-4">
-              interview starts in
-            </div>
-            <div className="grid grid-cols-4 gap-3 max-w-md mx-auto">
-              <div className="bg-white/[0.03] border border-white/[0.08] p-4 rounded-2xl">
-                <div className="text-2xl sm:text-3xl font-mono font-bold text-white">{timeLeft.days}</div>
-                <div className="text-[10px] font-mono text-white/40 uppercase mt-1">Days</div>
+          {/* Countdown / Ready State */}
+          <div className="text-center py-2 space-y-4">
+            {!mounted ? (
+              <div className="py-6 flex items-center justify-center gap-2 text-xs font-mono text-zinc-500">
+                <div className="w-3.5 h-3.5 rounded-full border-2 border-white/20 border-t-white animate-spin"></div>
+                <span>Syncing session timer...</span>
               </div>
-              <div className="bg-white/[0.03] border border-white/[0.08] p-4 rounded-2xl">
-                <div className="text-2xl sm:text-3xl font-mono font-bold text-white">
-                  {String(timeLeft.hours).padStart(2, '0')}
+            ) : !timeLeft.isTimeArrived ? (
+              <div className="space-y-3">
+                <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-widest block">
+                  Interview starts in
+                </span>
+                
+                {/* Minimalist Monospace Countdown Pill */}
+                <div className="inline-flex items-center justify-center gap-2 sm:gap-4 px-6 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                  <div className="text-center">
+                    <span className="text-xl sm:text-2xl font-mono font-semibold text-white">
+                      {String(timeLeft.days).padStart(2, '0')}
+                    </span>
+                    <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-0.5">Days</span>
+                  </div>
+                  <span className="text-zinc-600 font-mono text-sm">:</span>
+                  <div className="text-center">
+                    <span className="text-xl sm:text-2xl font-mono font-semibold text-white">
+                      {String(timeLeft.hours).padStart(2, '0')}
+                    </span>
+                    <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-0.5">Hours</span>
+                  </div>
+                  <span className="text-zinc-600 font-mono text-sm">:</span>
+                  <div className="text-center">
+                    <span className="text-xl sm:text-2xl font-mono font-semibold text-white">
+                      {String(timeLeft.minutes).padStart(2, '0')}
+                    </span>
+                    <span className="block text-[9px] font-mono text-zinc-500 uppercase mt-0.5">Mins</span>
+                  </div>
+                  <span className="text-zinc-600 font-mono text-sm">:</span>
+                  <div className="text-center">
+                    <span className="text-xl sm:text-2xl font-mono font-semibold text-purple-400">
+                      {String(timeLeft.seconds).padStart(2, '0')}
+                    </span>
+                    <span className="block text-[9px] font-mono text-purple-400/70 uppercase mt-0.5">Secs</span>
+                  </div>
                 </div>
-                <div className="text-[10px] font-mono text-white/40 uppercase mt-1">Hours</div>
               </div>
-              <div className="bg-white/[0.03] border border-white/[0.08] p-4 rounded-2xl">
-                <div className="text-2xl sm:text-3xl font-mono font-bold text-white">
-                  {String(timeLeft.minutes).padStart(2, '0')}
+            ) : (
+              <div className="py-2 space-y-1.5">
+                <div className="inline-flex items-center gap-2 text-emerald-400 font-medium text-sm">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>Interview is ready to begin</span>
                 </div>
-                <div className="text-[10px] font-mono text-white/40 uppercase mt-1">Minutes</div>
+                <p className="text-xs text-zinc-400">
+                  The AI evaluation panel has entered the room.
+                </p>
               </div>
-              <div className="bg-purple-500/10 border border-purple-500/30 p-4 rounded-2xl">
-                <div className="text-2xl sm:text-3xl font-mono font-bold text-purple-300 animate-pulse">
-                  {String(timeLeft.seconds).padStart(2, '0')}
-                </div>
-                <div className="text-[10px] font-mono text-purple-400 uppercase mt-1">Seconds</div>
-              </div>
-            </div>
+            )}
           </div>
-        ) : (
-          <div className="py-6 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-6 max-w-md mx-auto relative z-10 space-y-2">
-            <div className="flex items-center justify-center gap-2 text-emerald-300 font-sans font-bold text-base">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-              Your interview is ready to begin!
-            </div>
-            <p className="text-xs text-emerald-300/80 font-sans">
-              The AI technical panel has entered the room. Click below to join now.
-            </p>
-          </div>
-        )}
 
-        {/* Motivational Encouragement Banner */}
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4 text-xs text-white/60 max-w-lg mx-auto flex items-start gap-3 text-left relative z-10 font-sans leading-relaxed">
-          <Zap className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-          <div>
-            <span className="font-bold text-white">All the best!</span> Our autonomous AI interview panel is excited to discuss your hands-on codecraft, project architecture, and system design. Speak naturally, ask questions, and take your time.
-          </div>
-        </div>
-
-        {/* Action Button: Join Now */}
-        <div className="pt-2 space-y-4 relative z-10">
-          {timeLeft.isTimeArrived ? (
-            <button
-              onClick={() => setHasStarted(true)}
-              className="w-full sm:w-auto px-10 py-4 bg-white text-black hover:bg-neutral-200 font-sans font-bold rounded-full shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all transform hover:scale-102 text-base flex items-center justify-center gap-2 mx-auto cursor-pointer"
-            >
-              <Mic className="w-4 h-4 animate-pulse" />
-              <span>join interview now</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          ) : (
-            <div className="space-y-3">
+          {/* Action Group */}
+          <div className="space-y-3 pt-2">
+            {mounted && timeLeft.isTimeArrived ? (
               <button
-                disabled
-                className="w-full sm:w-auto px-10 py-4 bg-white/[0.05] border border-white/[0.08] text-white/30 font-sans font-bold rounded-full cursor-not-allowed text-sm flex items-center justify-center gap-2 mx-auto"
+                type="button"
+                onClick={() => setHasStarted(true)}
+                className="w-full py-3.5 px-6 rounded-xl bg-white text-black font-semibold text-sm hover:bg-zinc-200 transition-all flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(255,255,255,0.2)] cursor-pointer"
               >
-                <Clock className="w-4 h-4" />
-                <span>join button unlocks at {formattedTime}</span>
+                <span>Join Interview Now</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
-              
-              {/* Early Access / Practice Testing Option */}
-              <div>
+            ) : (
+              <div className="space-y-3">
                 <button
-                  onClick={() => setHasStarted(true)}
-                  className="text-xs font-mono text-purple-400 hover:text-purple-300 transition cursor-pointer"
+                  type="button"
+                  disabled
+                  className="w-full py-3.5 px-6 rounded-xl bg-white/[0.04] border border-white/[0.08] text-zinc-500 font-medium text-xs sm:text-sm flex items-center justify-center gap-2 cursor-not-allowed"
                 >
-                  🚀 ready early? click here to enter room now →
+                  <Clock className="w-3.5 h-3.5 text-zinc-600" />
+                  <span>Unlocks at {formattedTime}</span>
                 </button>
+
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={() => setHasStarted(true)}
+                    className="text-xs font-mono text-zinc-400 hover:text-white transition-colors inline-flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>Ready early? Test audio & video check in room</span>
+                    <span className="text-purple-400">→</span>
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Add to Google Calendar Option */}
-          <div>
-            <button
-              type="button"
-              onClick={handleOpenGoogleCalendar}
-              className="inline-flex items-center gap-1.5 text-xs font-mono text-white/40 hover:text-white transition cursor-pointer"
-            >
-              <CalendarPlus className="w-3.5 h-3.5 text-white/60" />
-              <span>add to google calendar</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Monitoring & Camera Consent Notice */}
-      <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-5 flex items-start gap-4">
-        <Eye className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-        <div className="space-y-1.5">
-          <div className="text-sm font-bold text-amber-300 font-sans">You will be monitored during this interview</div>
-          <p className="text-xs text-amber-200/70 leading-relaxed font-sans">
-            OmniPanel AI Proctor is active during your session. Your <strong className="text-amber-200">webcam feed, tab focus, and behavioral signals</strong> are continuously analyzed to ensure a fair evaluation.
-            Switching tabs, covering your camera, or allowing others into the frame will be logged and will impact your integrity score.
-            By joining, you consent to this monitoring.
-          </p>
-          <div className="flex items-center gap-2 pt-1">
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-mono text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full">
-              <Camera className="w-3 h-3" /> Ensure your camera is visible and unblocked before joining
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Equipment & Pre-flight Checklist */}
-      <div className="bg-[#0a0a0d] rounded-3xl border border-white/[0.08] p-6 sm:p-8 space-y-4 shadow-[0_0_40px_rgba(0,0,0,0.5)]">
-        <h3 className="text-xs font-mono font-bold text-white/70 uppercase tracking-wider flex items-center gap-2">
-          <ShieldCheck className="w-4 h-4 text-emerald-400" />
-          <span>pre-flight audio & system checklist</span>
-        </h3>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-sans">
-          <div className="p-4 bg-white/[0.02] rounded-2xl border border-white/[0.06] flex items-start gap-3">
-            <Headphones className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
-            <div className="space-y-1">
-              <div className="font-bold text-white">Use Headphones</div>
-              <div className="text-white/50 text-xs leading-relaxed">Prevents echo and feedback for conversational voice AI.</div>
-            </div>
-          </div>
-
-          <div className="p-4 bg-white/[0.02] rounded-2xl border border-white/[0.06] flex items-start gap-3">
-            <Mic className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-            <div className="space-y-1">
-              <div className="font-bold text-white">Allow Mic Permission</div>
-              <div className="text-white/50 text-xs leading-relaxed">Your browser will prompt for microphone access when joining.</div>
-            </div>
-          </div>
-
-          <div className="p-4 bg-white/[0.02] rounded-2xl border border-white/[0.06] flex items-start gap-3">
-            <Camera className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-            <div className="space-y-1">
-              <div className="font-bold text-white">Unblock Camera</div>
-              <div className="text-white/50 text-xs leading-relaxed">Ensure your webcam is unobstructed and clearly showing your face.</div>
-            </div>
-          </div>
-
-          <div className="p-4 bg-white/[0.02] rounded-2xl border border-white/[0.06] flex items-start gap-3">
-            <Volume2 className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
-            <div className="space-y-1">
-              <div className="font-bold text-white">Quiet Environment</div>
-              <div className="text-white/50 text-xs leading-relaxed">Find a distraction-free space for optimal voice transcription.</div>
+            {/* Secondary Action: Add to Calendar */}
+            <div className="flex justify-center pt-2">
+              <button
+                type="button"
+                onClick={handleOpenGoogleCalendar}
+                className="inline-flex items-center gap-2 text-xs font-mono text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer"
+              >
+                <CalendarPlus className="w-3.5 h-3.5" />
+                <span>Add to Google Calendar</span>
+              </button>
             </div>
           </div>
         </div>
+
+        {/* Pre-flight Checklist (Clean, Restrained Strip) */}
+        <div className="grid grid-cols-3 gap-2.5 sm:gap-3 text-center">
+          <div className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-1">
+            <div className="flex items-center justify-center gap-1.5 text-zinc-300 text-xs font-medium">
+              <Headphones className="w-3.5 h-3.5 text-purple-400" />
+              <span>Headphones</span>
+            </div>
+            <p className="text-[11px] text-zinc-500 hidden sm:block">Prevents echo feedback</p>
+          </div>
+
+          <div className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-1">
+            <div className="flex items-center justify-center gap-1.5 text-zinc-300 text-xs font-medium">
+              <Video className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Camera & Mic</span>
+            </div>
+            <p className="text-[11px] text-zinc-500 hidden sm:block">Permissions required</p>
+          </div>
+
+          <div className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-1">
+            <div className="flex items-center justify-center gap-1.5 text-zinc-300 text-xs font-medium">
+              <Volume2 className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Quiet Space</span>
+            </div>
+            <p className="text-[11px] text-zinc-500 hidden sm:block">Clear voice capture</p>
+          </div>
+        </div>
+
+        {/* Proctoring & Integrity Footnote */}
+        <div className="flex items-center justify-center gap-2 text-[11px] font-mono text-zinc-500 text-center px-4">
+          <Shield className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
+          <span>Automated proctoring active: Camera, tab focus, and speech metrics are recorded for integrity.</span>
+        </div>
+
       </div>
     </div>
   );

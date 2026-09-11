@@ -25,23 +25,47 @@ import {
 function analyzeCandidateTranscript(transcript: any[]) {
   const candidateUtterances = transcript.filter((t: any) => {
     const sp = (t.speaker || '').toLowerCase();
-    return !sp.includes('priya') && !sp.includes('arjun') && !sp.includes('sarah') && !sp.includes('interviewer') && !sp.includes('ai') && !sp.includes('system');
+    return !sp.includes('priya') && 
+           !sp.includes('arjun') && 
+           !sp.includes('sarah') && 
+           !sp.includes('vikram') && 
+           !sp.includes('marcus') && 
+           !sp.includes('elena') && 
+           !sp.includes('interviewer') && 
+           !sp.includes('ai') && 
+           !sp.includes('system') && 
+           !sp.includes('lead') && 
+           !sp.includes('specialist') && 
+           !sp.includes('panel');
   });
 
   const totalCandidateWords = candidateUtterances.reduce((acc, t) => acc + (t.text || '').split(/\s+/).filter(Boolean).length, 0);
+  const isCompletelySilent = candidateUtterances.length === 0 || totalCandidateWords === 0;
+  const isVirtuallySilent = totalCandidateWords < 5;
+
   const techPattern = /\b(api|array|async|await|batch|binary|buffer|cache|channel|cluster|complexity|concurrency|database|deadlock|dict|distributed|event|goroutine|grpc|hash|hashmap|http|index|json|kafka|latency|limiter|list|lock|log|map|memory|message|microservice|mutex|network|node|optimize|packet|partition|pipeline|pointer|postgres|process|proto|pubsub|query|queue|raft|rate|redis|replica|request|scale|server|service|set|sliding|socket|stream|sync|tcp|thread|throttle|throughput|timeout|transaction|tree|vector|webrtc|websocket|window)\b/gi;
-  
+  const reasoningPattern = /\b(because|tradeoff|trade-off|latency|throughput|bottleneck|failure|failover|partition|replicate|consistent|isolated|asynchronous|concurrency|mutex|lock|deadlock|index|overhead|benchmark|complexity|o\(1\)|o\(n\)|distributed|handling|recovery|mitigate)\b/gi;
+
   const verbatimQuotes: string[] = [];
   let substantiveCount = 0;
+  let vagueCount = 0;
   let gibberishCount = 0;
 
   for (const u of candidateUtterances) {
     const txt = (u.text || '').trim();
     const words = txt.split(/\s+/).filter(Boolean);
     const techMatches = txt.match(techPattern) || [];
+    const reasoningMatches = txt.match(reasoningPattern) || [];
 
-    if (words.length >= 6 && techMatches.length >= 1) {
+    // Substantive answer: at least 14+ words, mentions technical terms AND includes reasoning/trade-off markers
+    if (words.length >= 14 && techMatches.length >= 1 && reasoningMatches.length >= 1) {
       substantiveCount++;
+      const quote = txt.slice(0, 140) + (txt.length > 140 ? '...' : '');
+      if (!verbatimQuotes.includes(quote)) {
+        verbatimQuotes.push(quote);
+      }
+    } else if (words.length >= 6 && techMatches.length >= 1) {
+      vagueCount++;
       const quote = txt.slice(0, 140) + (txt.length > 140 ? '...' : '');
       if (!verbatimQuotes.includes(quote)) {
         verbatimQuotes.push(quote);
@@ -54,10 +78,14 @@ function analyzeCandidateTranscript(transcript: any[]) {
   return {
     candidateUtteranceCount: candidateUtterances.length,
     totalCandidateWords,
+    isCompletelySilent,
+    isVirtuallySilent,
     substantiveCount,
+    vagueCount,
     gibberishCount,
     verbatimQuotes,
-    hasSubstantialEvidence: substantiveCount >= 2 || (totalCandidateWords >= 35 && substantiveCount >= 1)
+    hasSubstantialEvidence: substantiveCount >= 2 && totalCandidateWords >= 50,
+    hasPartialEvidence: (substantiveCount >= 1 || vagueCount >= 2) && totalCandidateWords >= 25
   };
 }
 
@@ -96,22 +124,76 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       const wsExec = workspaceEvidence?.codeExecutionResults || {};
       const wsElementsCount = workspaceEvidence?.diagramElementCount || 0;
 
-      const hasValidCode = wsCode && wsCode.trim().length > 40 && !wsCode.includes('// TODO: Implement');
-      const testPassedCount = wsExec.passedTests || (wsExec.compileSuccess && !wsExec.runtimeErrors?.length ? 2 : 0);
+      const hasValidCode = wsCode && wsCode.trim().length > 40 && !wsCode.includes('// TODO: Implement') && !wsCode.trim().startsWith('// Starter');
+      const testPassedCount = wsExec.passedTests || (hasValidCode && wsExec.compileSuccess && !wsExec.runtimeErrors?.length ? 2 : 0);
       const testFailedCount = wsExec.failedTests || 0;
       const isCompileOk = wsExec.compileSuccess !== false;
 
       let round1Result: Round1EvaluationResult;
 
-      try {
-        const systemInstruction = `You are the Principal Engineering Hiring Evaluator and Chief Technical Assessor at Plantra Labs.
+      // ── CIRCUIT BREAKER: Zero verbal participation AND no working code submitted ──
+      if (stats.isCompletelySilent && !hasValidCode) {
+        const zeroCompetencies: CompetencyScoreItem[] = activeCompetencies.map(comp => ({
+          competency: comp.name,
+          weight: comp.weight,
+          score: 0,
+          weightedScore: 0,
+          evidenceQuality: 'NONE',
+          evidence: [],
+          missingEvidence: ['Candidate was completely silent and provided zero code submissions or verbal explanations in the workspace.'],
+          feedback: 'Candidate did not participate or attempt the workspace problem.'
+        }));
+
+        round1Result = {
+          roundName: roundName || 'Round 1: Practical Coding & System Design Assessment',
+          roundType: isSystemDesignRound ? 'system_design' : 'coding',
+          decision: 'FAIL',
+          score: 0,
+          reason: 'Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.',
+          evidenceQuality: 'NONE',
+          evidenceSufficiency: 'insufficient',
+          confidence: 'HIGH',
+          competencyEvaluations: zeroCompetencies,
+          demonstratedKnowledge: [
+            {
+              topic: isSystemDesignRound ? 'System Design & Architecture' : 'Data Structures & Algorithms',
+              level: 'not_demonstrated',
+              evidence: 'None (candidate was silent with no workspace submission)'
+            }
+          ],
+          reasoningEvidence: {
+            approachExplanation: 'No approach explained (candidate was silent).',
+            algorithmChoices: 'No algorithm chosen.',
+            complexityReasoning: 'No complexity analysis provided.',
+            edgeCasesIdentified: [],
+            debuggingReasoning: 'No debugging performed.'
+          },
+          workspaceEvidence: {
+            code: wsCode || '',
+            language: wsLang,
+            codeExecutionResults: wsExec,
+            diagramElementCount: wsElementsCount,
+            submittedAt: new Date().toISOString()
+          },
+          keyEvidence: [],
+          missingEvidence: ['Working code implementation', 'Algorithmic explanation', 'Complexity analysis'],
+          evaluatedAt: new Date().toISOString()
+        };
+      } else {
+        try {
+          const systemInstruction = `You are the Principal Engineering Hiring Evaluator and Chief Technical Assessor at Plantra Labs.
 Conduct a rigorous, evidence-grounded evaluation of the candidate's Round 1 ${isSystemDesignRound ? 'System Design' : 'Coding & Algorithm'} workspace assessment.
 
 CRITICAL EVALUATION RULES:
-1. WORKSPACE EVIDENCE GROUNDING:
-   - Ground Implementation Correctness directly in the candidate's final submitted code, syntax validity, and test execution outcomes (${testPassedCount} passed, ${testFailedCount} failed, compileOk: ${isCompileOk}).
-   - If candidate submitted empty, unmodified template, or broken code, "Implementation Correctness & Code Quality" score must be <= 25.
-   - If candidate implemented working algorithm with clean structures and tests passed, score 75-100.
+1. WORKSPACE EVIDENCE GROUNDING & STRICT REALISTIC CALIBRATION:
+   - Base scores strictly on actual submitted code, test outcomes (${testPassedCount} passed, ${testFailedCount} failed, compileOk: ${isCompileOk}), and verbal explanation.
+   - SCORING SPECTRUM:
+     * 0-10: Completely silent, no code, or unmodified template.
+     * 15-35: Monosyllabic, broken/empty code, skips without attempting logic.
+     * 40-55: Partial/untested code, superficial explanation without complexity analysis.
+     * 60-74: Working baseline code/diagram, valid syntax, good verbal communication, but missing edge cases or deep optimization.
+     * 75-85: Clean optimal algorithm, tests passed, clear O(1)/O(N) complexity analysis, robust edge cases.
+     * 86-100: Flawless production-grade implementation, comprehensive concurrency safety, exceptional walkthrough.
 2. COMPETENCY WEIGHTS (derive weighted score):
 ${activeCompetencies.map(c => `   - "${c.name}": weight ${(c.weight * 100).toFixed(0)}% (${c.description})`).join('\n')}
 3. DEMONSTRATED KNOWLEDGE SCHEMA:
@@ -165,7 +247,7 @@ Return ONLY valid JSON matching this exact structure:
   "missingEvidence": ["<Key gap 1>"]
 }`;
 
-        const userPrompt = `
+          const userPrompt = `
 Round: ${roundName || (isSystemDesignRound ? 'Round 1: System Design Workspace' : 'Round 1: Coding & Algorithm Workspace')}
 Workspace Mode: ${isSystemDesignRound ? 'System Design (Excalidraw / Architecture)' : 'Coding (Monaco IDE)'}
 
@@ -182,156 +264,163 @@ Test Execution Results:
 - Diagram Components: ${wsElementsCount}
 
 Candidate Verbal Dialogue & Transcript:
-${cleanTranscript.length > 0 ? cleanTranscript.map((t: any) => `[${t.speaker || 'Speaker'}]: ${t.text || ''}`).join('\n') : 'Candidate completed workspace silently.'}
+${cleanTranscript.length > 0 ? cleanTranscript.map((t: any) => `[${t.speaker || 'Speaker'}]: ${t.text || ''}`).join('\n') : 'Candidate was silent in dialogue.'}
+
+Candidate Dialogue Stats: totalWords: ${stats.totalCandidateWords}, substantiveCount: ${stats.substantiveCount}
 
 Evaluate competencies strictly, calculate weighted score, and return the JSON evaluation.`;
 
-        const openai = new OpenAI({
-          apiKey: process.env.GEMINI_DIRECT_API_KEY || process.env.REQUESTY_API_KEY || process.env.GEMINI_API_KEY || '',
-          baseURL: 'https://router.requesty.ai/v1'
-        });
+          const openai = new OpenAI({
+            apiKey: process.env.GEMINI_DIRECT_API_KEY || process.env.REQUESTY_API_KEY || process.env.GEMINI_API_KEY || '',
+            baseURL: 'https://router.requesty.ai/v1'
+          });
 
-        const response = await openai.chat.completions.create({
-          model: "google/gemini-2.0-flash-exp",
-          messages: [
-            { role: "system", content: systemInstruction },
-            { role: "user", content: userPrompt }
-          ],
-          response_format: { type: "json_object" }
-        });
+          const response = await openai.chat.completions.create({
+            model: "google/gemini-2.0-flash-exp",
+            messages: [
+              { role: "system", content: systemInstruction },
+              { role: "user", content: userPrompt }
+            ],
+            response_format: { type: "json_object" }
+          });
 
-        const resultText = response.choices[0].message.content || '{}';
-        const parsed = JSON.parse(resultText.replace(/```json/g, '').replace(/```/g, '').trim());
+          const resultText = response.choices[0].message.content || '{}';
+          const parsed = JSON.parse(resultText.replace(/```json/g, '').replace(/```/g, '').trim());
 
-        // Process competencies and compute strict weighted score
-        const competencyScores: CompetencyScoreItem[] = activeCompetencies.map(comp => {
-          const matching = (parsed.competencyEvaluations || []).find((c: any) => 
-            (c.competency || '').toLowerCase().includes(comp.key.replace(/_/g, ' ')) ||
-            (c.competency || '').toLowerCase().includes(comp.name.toLowerCase().slice(0, 15))
-          );
-          const score = typeof matching?.score === 'number' ? Math.max(0, Math.min(100, matching.score)) : (hasValidCode ? 70 : 25);
-          return {
-            competency: comp.name,
-            weight: comp.weight,
-            score,
-            weightedScore: Number((score * comp.weight).toFixed(2)),
-            evidenceQuality: matching?.evidenceQuality || (score >= 75 ? 'STRONG' : score >= 50 ? 'PARTIAL' : 'NONE'),
-            evidence: Array.isArray(matching?.evidence) && matching.evidence.length > 0 ? matching.evidence : (hasValidCode ? [wsCode.slice(0, 100)] : []),
-            missingEvidence: Array.isArray(matching?.missingEvidence) ? matching.missingEvidence : [],
-            feedback: matching?.feedback || comp.description
+          // Process competencies and compute strict weighted score
+          const competencyScores: CompetencyScoreItem[] = activeCompetencies.map(comp => {
+            const matching = (parsed.competencyEvaluations || []).find((c: any) => 
+              (c.competency || '').toLowerCase().includes(comp.key.replace(/_/g, ' ')) ||
+              (c.competency || '').toLowerCase().includes(comp.name.toLowerCase().slice(0, 15))
+            );
+            const score = typeof matching?.score === 'number' ? Math.max(0, Math.min(100, matching.score)) : (hasValidCode ? 65 : 15);
+            return {
+              competency: comp.name,
+              weight: comp.weight,
+              score,
+              weightedScore: Number((score * comp.weight).toFixed(2)),
+              evidenceQuality: matching?.evidenceQuality || (score >= 75 ? 'STRONG' : score >= 50 ? 'PARTIAL' : 'NONE'),
+              evidence: Array.isArray(matching?.evidence) && matching.evidence.length > 0 ? matching.evidence : (hasValidCode ? [wsCode.slice(0, 100)] : []),
+              missingEvidence: Array.isArray(matching?.missingEvidence) ? matching.missingEvidence : [],
+              feedback: matching?.feedback || comp.description
+            };
+          });
+
+          const computedScore = calculateRound1Score(competencyScores);
+          const decision = (computedScore >= 60 && hasValidCode) ? 'PASS' : 'FAIL';
+
+          round1Result = {
+            roundName: roundName || 'Round 1: Coding & System Design Assessment',
+            roundType: isSystemDesignRound ? 'system_design' : 'coding',
+            decision,
+            score: computedScore,
+            reason: parsed.reason || (decision === 'PASS' 
+              ? `Demonstrated solid implementation correctness with ${testPassedCount} test cases validated in workspace.` 
+              : `Implementation did not meet the required correctness bar for production engineering.`),
+            evidenceQuality: parsed.evidenceQuality || (hasValidCode ? 'STRONG' : 'NONE'),
+            evidenceSufficiency: parsed.evidenceSufficiency || (hasValidCode && stats.hasSubstantialEvidence ? 'sufficient' : 'partial'),
+            confidence: parsed.confidence || 'HIGH',
+            competencyEvaluations: competencyScores,
+            demonstratedKnowledge: Array.isArray(parsed.demonstratedKnowledge) && parsed.demonstratedKnowledge.length > 0
+              ? parsed.demonstratedKnowledge
+              : [
+                  {
+                    topic: 'Data Structures & Algorithms',
+                    level: hasValidCode ? 'strong' : 'not_demonstrated',
+                    evidence: hasValidCode ? wsCode.slice(0, 120) : 'No implementation provided'
+                  }
+                ],
+            reasoningEvidence: parsed.reasoningEvidence || {
+              approachExplanation: stats.verbatimQuotes[0] || 'Explained sliding window data structure approach.',
+              algorithmChoices: 'Selected in-memory hash map of timestamp logs for fast O(1) user key lookups.',
+              complexityReasoning: 'Average O(1) time complexity per request; O(N) space scaling with active user count.',
+              edgeCasesIdentified: ['Concurrent requests at identical millisecond timestamps', 'Expired sliding window log cleanup'],
+              debuggingReasoning: 'Verified sliding window boundaries through local test executions.'
+            },
+            workspaceEvidence: {
+              code: wsCode,
+              language: wsLang,
+              codeExecutionResults: wsExec,
+              diagramElementCount: wsElementsCount,
+              submittedAt: new Date().toISOString()
+            },
+            keyEvidence: Array.isArray(parsed.keyEvidence) && parsed.keyEvidence.length > 0 ? parsed.keyEvidence : stats.verbatimQuotes.slice(0, 2),
+            missingEvidence: Array.isArray(parsed.missingEvidence) ? parsed.missingEvidence : [],
+            evaluatedAt: new Date().toISOString()
           };
-        });
 
-        const computedScore = calculateRound1Score(competencyScores);
-        const decision = (computedScore >= 60 && hasValidCode) ? 'PASS' : 'FAIL';
-
-        round1Result = {
-          roundName: roundName || 'Round 1: Coding & System Design Assessment',
-          roundType: isSystemDesignRound ? 'system_design' : 'coding',
-          decision,
-          score: computedScore,
-          reason: parsed.reason || (decision === 'PASS' 
-            ? `Demonstrated solid implementation correctness with ${testPassedCount} test cases validated in workspace.` 
-            : `Implementation did not meet the required correctness bar for production engineering.`),
-          evidenceQuality: parsed.evidenceQuality || (hasValidCode ? 'STRONG' : 'NONE'),
-          evidenceSufficiency: parsed.evidenceSufficiency || (hasValidCode && stats.hasSubstantialEvidence ? 'sufficient' : 'partial'),
-          confidence: parsed.confidence || 'HIGH',
-          competencyEvaluations: competencyScores,
-          demonstratedKnowledge: Array.isArray(parsed.demonstratedKnowledge) && parsed.demonstratedKnowledge.length > 0
-            ? parsed.demonstratedKnowledge
-            : [
-                {
-                  topic: 'Data Structures & Algorithms',
-                  level: hasValidCode ? 'strong' : 'weak',
-                  evidence: hasValidCode ? wsCode.slice(0, 120) : 'No implementation provided'
-                },
-                {
-                  topic: 'Rate Limiting / Concurrency',
-                  level: hasValidCode && wsCode.includes('timestamp') ? 'strong' : 'moderate',
-                  evidence: wsCode.slice(0, 100)
-                }
-              ],
-          reasoningEvidence: parsed.reasoningEvidence || {
-            approachExplanation: stats.verbatimQuotes[0] || 'Explained sliding window data structure approach.',
-            algorithmChoices: 'Selected in-memory hash map of timestamp logs for fast O(1) user key lookups.',
-            complexityReasoning: 'Average O(1) time complexity per request; O(N) space scaling with active user count.',
-            edgeCasesIdentified: ['Concurrent requests at identical millisecond timestamps', 'Expired sliding window log cleanup'],
-            debuggingReasoning: 'Verified sliding window boundaries through local test executions.'
-          },
-          workspaceEvidence: {
-            code: wsCode,
-            language: wsLang,
-            codeExecutionResults: wsExec,
-            diagramElementCount: wsElementsCount,
-            submittedAt: new Date().toISOString()
-          },
-          keyEvidence: Array.isArray(parsed.keyEvidence) && parsed.keyEvidence.length > 0 ? parsed.keyEvidence : stats.verbatimQuotes.slice(0, 2),
-          missingEvidence: Array.isArray(parsed.missingEvidence) ? parsed.missingEvidence : [],
-          evaluatedAt: new Date().toISOString()
-        };
-
-      } catch (llmErr) {
-        console.warn('[evaluate-round] Round 1 LLM evaluation fallback:', llmErr);
-        // Deterministic Fallback grounded in test results & code
-        const baseScore = hasValidCode ? (testPassedCount > 0 ? 82 : 70) : 20;
-        const decision = baseScore >= 60 ? 'PASS' : 'FAIL';
-
-        const competencyScores: CompetencyScoreItem[] = activeCompetencies.map(comp => {
-          let cScore = baseScore;
-          if (comp.key === 'implementation_correctness') {
-            cScore = hasValidCode ? (testPassedCount > 0 ? 85 : 70) : 15;
-          } else if (comp.key === 'communication_and_explanation') {
-            cScore = stats.hasSubstantialEvidence ? 78 : 50;
+        } catch (llmErr) {
+          console.warn('[evaluate-round] Round 1 LLM evaluation fallback:', llmErr);
+          // Realistic Fallback grounded in code and dialogue stats
+          let baseScore = 0;
+          if (hasValidCode && testPassedCount > 0) {
+            baseScore = 78;
+          } else if (hasValidCode) {
+            baseScore = 45;
+          } else if (stats.totalCandidateWords >= 20) {
+            baseScore = 20;
+          } else {
+            baseScore = 5;
           }
-          return {
-            competency: comp.name,
-            weight: comp.weight,
-            score: cScore,
-            weightedScore: Number((cScore * comp.weight).toFixed(2)),
-            evidenceQuality: cScore >= 75 ? 'STRONG' : cScore >= 50 ? 'PARTIAL' : 'NONE',
-            evidence: hasValidCode ? [wsCode.slice(0, 100)] : [],
-            missingEvidence: cScore < 60 ? [`Lacked complete implementation for ${comp.name}`] : [],
-            feedback: comp.description
-          };
-        });
+          const decision = baseScore >= 60 ? 'PASS' : 'FAIL';
 
-        round1Result = {
-          roundName: roundName || 'Round 1: Coding & System Design Assessment',
-          roundType: isSystemDesignRound ? 'system_design' : 'coding',
-          decision,
-          score: calculateRound1Score(competencyScores),
-          reason: decision === 'PASS'
-            ? `Candidate completed functional implementation in ${wsLang} with verified test execution.`
-            : `Candidate failed to produce a valid functional implementation or resolve test constraints.`,
-          evidenceQuality: hasValidCode ? 'STRONG' : 'NONE',
-          evidenceSufficiency: hasValidCode ? 'sufficient' : 'insufficient',
-          confidence: 'MEDIUM',
-          competencyEvaluations: competencyScores,
-          demonstratedKnowledge: [
-            {
-              topic: 'Sliding Window Rate Limiter',
-              level: hasValidCode ? 'strong' : 'not_demonstrated',
-              evidence: wsCode.slice(0, 120) || 'None'
+          const competencyScores: CompetencyScoreItem[] = activeCompetencies.map(comp => {
+            let cScore = baseScore;
+            if (comp.key === 'implementation_correctness') {
+              cScore = hasValidCode ? (testPassedCount > 0 ? 80 : 40) : 0;
+            } else if (comp.key === 'communication_and_explanation') {
+              cScore = stats.hasSubstantialEvidence ? 75 : stats.totalCandidateWords >= 20 ? 40 : 0;
             }
-          ],
-          reasoningEvidence: {
-            approachExplanation: stats.verbatimQuotes[0] || 'Candidate approached problem using sliding window log data structure.',
-            algorithmChoices: 'Used Map structure to maintain timestamp arrays per user ID.',
-            complexityReasoning: 'O(1) average time complexity, O(N) space complexity.',
-            edgeCasesIdentified: ['Multiple requests at identical millisecond timestamps'],
-            debuggingReasoning: 'Validated approach against sample test invocations.'
-          },
-          workspaceEvidence: {
-            code: wsCode,
-            language: wsLang,
-            codeExecutionResults: wsExec,
-            diagramElementCount: wsElementsCount,
-            submittedAt: new Date().toISOString()
-          },
-          keyEvidence: stats.verbatimQuotes.slice(0, 2),
-          missingEvidence: hasValidCode ? [] : ['Working implementation and syntax verification'],
-          evaluatedAt: new Date().toISOString()
-        };
+            return {
+              competency: comp.name,
+              weight: comp.weight,
+              score: cScore,
+              weightedScore: Number((cScore * comp.weight).toFixed(2)),
+              evidenceQuality: cScore >= 75 ? 'STRONG' : cScore >= 40 ? 'PARTIAL' : 'NONE',
+              evidence: hasValidCode ? [wsCode.slice(0, 100)] : [],
+              missingEvidence: cScore < 60 ? [`Lacked complete implementation for ${comp.name}`] : [],
+              feedback: cScore === 0 ? 'No evidence demonstrated.' : comp.description
+            };
+          });
+
+          round1Result = {
+            roundName: roundName || 'Round 1: Coding & System Design Assessment',
+            roundType: isSystemDesignRound ? 'system_design' : 'coding',
+            decision,
+            score: calculateRound1Score(competencyScores),
+            reason: decision === 'PASS'
+              ? `Candidate completed functional implementation in ${wsLang} with verified test execution.`
+              : (hasValidCode ? `Candidate code did not resolve all required test constraints.` : `Candidate submitted no working code in workspace.`),
+            evidenceQuality: hasValidCode ? 'STRONG' : 'NONE',
+            evidenceSufficiency: hasValidCode ? 'sufficient' : 'insufficient',
+            confidence: 'MEDIUM',
+            competencyEvaluations: competencyScores,
+            demonstratedKnowledge: [
+              {
+                topic: 'Sliding Window Rate Limiter',
+                level: hasValidCode ? 'strong' : 'not_demonstrated',
+                evidence: wsCode.slice(0, 120) || 'None'
+              }
+            ],
+            reasoningEvidence: {
+              approachExplanation: stats.verbatimQuotes[0] || 'No approach explained.',
+              algorithmChoices: hasValidCode ? 'Used Map structure to maintain timestamp arrays.' : 'No data structures implemented.',
+              complexityReasoning: hasValidCode ? 'O(1) average time complexity.' : 'None.',
+              edgeCasesIdentified: hasValidCode ? ['Multiple requests at identical millisecond timestamps'] : [],
+              debuggingReasoning: hasValidCode ? 'Validated approach against sample test invocations.' : 'None.'
+            },
+            workspaceEvidence: {
+              code: wsCode,
+              language: wsLang,
+              codeExecutionResults: wsExec,
+              diagramElementCount: wsElementsCount,
+              submittedAt: new Date().toISOString()
+            },
+            keyEvidence: stats.verbatimQuotes.slice(0, 2),
+            missingEvidence: hasValidCode ? [] : ['Working implementation and syntax verification'],
+            evaluatedAt: new Date().toISOString()
+          };
+        }
       }
 
       // Persist Round 1 specific evaluation & workspace snapshot in DB
@@ -370,30 +459,84 @@ Evaluate competencies strictly, calculate weighted score, and return the JSON ev
       const techCompetencies = TECHNICAL_COMPETENCIES;
       let round2Result: Round2TechnicalEvaluationResult;
 
-      try {
-        const systemInstruction = `You are the Principal Systems Architect and Lead Technical Interview Evaluator at Plantra Labs.
+      // ── CIRCUIT BREAKER: Candidate was completely silent during Technical Panel ──
+      if (stats.isCompletelySilent) {
+        const zeroTechCompetencies: CompetencyScoreItem[] = techCompetencies.map((comp: any) => ({
+          competency: comp.name,
+          weight: comp.weight,
+          score: 0,
+          weightedScore: 0,
+          evidenceQuality: 'NONE',
+          evidence: [],
+          missingEvidence: ['Candidate provided zero spoken responses during the technical panel.'],
+          feedback: 'Candidate was completely silent and unresponsive.'
+        }));
+
+        round2Result = {
+          roundName: roundName || 'Round 2: Technical Architecture & Concurrency',
+          roundType: 'technical',
+          score: 0,
+          decision: 'FAIL',
+          reason: 'Candidate was completely silent and provided zero verbal responses during the technical panel interview.',
+          technicalBar: 'not_met',
+          evidenceQuality: 'NONE',
+          evidenceSufficiency: 'insufficient',
+          confidence: 'HIGH',
+          competencies: {
+            technicalKnowledge: { score: 0, weight: 0.25, evidence: [], feedback: 'Silent', confidence: 'high' },
+            technicalDepth: { score: 0, weight: 0.20, evidence: [], feedback: 'Silent', confidence: 'high' },
+            realWorldExperience: { score: 0, weight: 0.20, evidence: [], feedback: 'Silent', confidence: 'high' },
+            engineeringJudgment: { score: 0, weight: 0.15, evidence: [], feedback: 'Silent', confidence: 'high' },
+            problemSolving: { score: 0, weight: 0.10, evidence: [], feedback: 'Silent', confidence: 'high' },
+            technicalCommunication: { score: 0, weight: 0.10, evidence: [], feedback: 'Silent', confidence: 'high' }
+          },
+          competencyEvaluations: zeroTechCompetencies,
+          demonstratedExpertise: [
+            { topic: 'Distributed Architecture & Scaling', level: 'Not Demonstrated', evidence: 'Candidate was silent' },
+            { topic: 'Concurrency & Primitives', level: 'Not Demonstrated', evidence: 'Candidate was silent' }
+          ],
+          validatedExperience: [
+            {
+              claim: 'Distributed backend development and event pipelines',
+              demonstrated: 'None demonstrated (candidate was silent)',
+              strength: 'Not Demonstrated',
+              details: 'Candidate provided zero verbal responses.'
+            }
+          ],
+          unvalidatedClaims: ['All technical background claims unverified due to lack of participation.'],
+          areasOfConcern: ['Candidate did not speak or answer any questions throughout the technical panel.'],
+          strengths: ['No strengths demonstrated (candidate was silent/unresponsive).'],
+          weaknesses: ['Candidate provided zero responses to technical architecture, concurrency, and system design questions.'],
+          keyEvidence: [],
+          missingEvidence: ['Spoken technical explanations', 'Architecture trade-offs', 'Concurrency failure modes'],
+          evaluatedAt: new Date().toISOString()
+        };
+      } else {
+        try {
+          const systemInstruction = `You are the Principal Systems Architect and Lead Technical Interview Evaluator at Plantra Labs.
 Conduct a rigorous, transcript-grounded evaluation of the candidate's Round 2 Technical Interview for "${job?.title || 'Engineering Role'}".
 
 EVALUATION BAR & PURPOSE:
 Determine: "Does this candidate actually have the technical depth, engineering judgment, and relevant experience required for this specific job?"
 
 CRITICAL EVALUATION RULES:
-1. EVIDENCE GROUNDING:
+1. EVIDENCE GROUNDING & STRICT REALISTIC CALIBRATION:
    - Base all scores strictly on what the candidate articulated in the live transcript.
    - Profile/resume claims are NOT proof unless the candidate demonstrated genuine understanding, personal ownership, failure recovery, and trade-off mechanics in the dialogue.
+   - SCORING SPECTRUM:
+     * 0-10: Completely silent / unresponsive.
+     * 15-30: Monosyllabic ("yes", "ok"), skips questions, unelaborated one-liners.
+     * 35-50: Vague high-level buzzwords without architectural mechanics, failure modes, or trade-offs.
+     * 60-74: Sound baseline architecture, clear communication, but missing deep-dive failure isolation or quantitative benchmarks.
+     * 75-85: Solid distributed systems depth, concrete trade-offs (CAP, latency/throughput), verified production experience.
+     * 86-100: Exceptional architectural mastery, quantitative scale benchmarks, fault-tolerant failover designs.
 2. 6 JOB-AWARE TECHNICAL COMPETENCIES (derive 0-100 score strictly by weights):
 ${techCompetencies.map((c: any) => `   - "${c.name}": weight ${(c.weight * 100).toFixed(0)}% (${c.description})`).join('\n')}
-3. EXPERIENCE VALIDATION (claimed vs demonstrated):
-   - For major projects or technologies claimed in resume/LinkedIn (e.g. Kafka migrations, distributed caching, multi-region failover, DB indexing), compare what was claimed vs what was demonstrated.
-   - Assign strength: 'Strong' | 'Moderate' | 'Weak' | 'Not Demonstrated'.
-4. DEMONSTRATED EXPERTISE:
-   - Identify evaluated technologies/domains (e.g. Kafka, Distributed Systems, PostgreSQL, Concurrency, API Design, Microservices, Caching) with level 'Strong' | 'Moderate' | 'Weak' | 'Not Demonstrated' and cite verbatim quotes.
-5. TECHNICAL BAR STATUS:
-   - "met": Candidate demonstrated sound technical depth, verified experience, and solid engineering judgment for the target role (Score >= 65 and key competencies >= 60).
-   - "not_met": Candidate failed to prove depth, gave incorrect technical reasoning, or lacked core requirements for ${job?.title || 'the role'}.
-   - "insufficient_evidence": Candidate gave vague/unintelligible answers with insufficient technical depth to make a confident hire determination.
-6. ROUND 1 CONTEXT:
-   - Round 1 evidence is provided as background context, but Round 2 must establish its own independent evidence.
+3. TECHNICAL BAR STATUS:
+   - "met": Score >= 65 and key competencies >= 60.
+   - "borderline": Score 50-64.
+   - "not_met": Score < 50 or insufficient depth.
+   - "insufficient_evidence": Candidate gave vague/unintelligible answers.
 
 Return ONLY valid JSON matching this exact structure:
 {
@@ -446,10 +589,10 @@ Return ONLY valid JSON matching this exact structure:
   "missingEvidence": ["<Missing technical depth or trade-off>"]
 }`;
 
-        const corroboratedProjects = candidateContext?.crossSourceContext?.corroboratedProjects?.map((p: any) => `${p.projectName}: ${p.details}`).join('\n') || 'N/A';
-        const notableClaims = candidateContext?.crossSourceContext?.notableClaims?.map((c: any) => `${c.claim} (Probe: ${c.verificationFocus})`).join('\n') || 'N/A';
+          const corroboratedProjects = candidateContext?.crossSourceContext?.corroboratedProjects?.map((p: any) => `${p.projectName}: ${p.details}`).join('\n') || 'N/A';
+          const notableClaims = candidateContext?.crossSourceContext?.notableClaims?.map((c: any) => `${c.claim} (Probe: ${c.verificationFocus})`).join('\n') || 'N/A';
 
-        const userPrompt = `
+          const userPrompt = `
 Candidate Name: ${candidate?.name || 'Candidate'}
 Target Job: ${job?.title || 'Senior Software Engineer'}
 Job Requirements:
@@ -465,152 +608,159 @@ Round 1 Context:
 ${round1Eval ? `Round 1 Score: ${round1Eval.score}/100 (${round1Eval.decision})\nSummary: ${round1Eval.reason}` : 'No Round 1 data available.'}
 
 Live Round 2 Transcript:
-${cleanTranscript.length > 0 ? cleanTranscript.map((t: any) => `[${t.speaker || 'Speaker'}]: ${t.text || ''}`).join('\n') : 'Candidate completed session with minimal dialogue.'}
+${cleanTranscript.length > 0 ? cleanTranscript.map((t: any) => `[${t.speaker || 'Speaker'}]: ${t.text || ''}`).join('\n') : 'Candidate was silent in dialogue.'}
+
+Candidate Dialogue Stats: totalWords: ${stats.totalCandidateWords}, substantiveCount: ${stats.substantiveCount}, vagueCount: ${stats.vagueCount}
 
 Evaluate the 6 technical competencies strictly, derive the weighted score, and return the JSON evaluation.`;
 
-        const openai = new OpenAI({
-          apiKey: process.env.GEMINI_DIRECT_API_KEY || process.env.REQUESTY_API_KEY || process.env.GEMINI_API_KEY || '',
-          baseURL: 'https://router.requesty.ai/v1'
-        });
+          const openai = new OpenAI({
+            apiKey: process.env.GEMINI_DIRECT_API_KEY || process.env.REQUESTY_API_KEY || process.env.GEMINI_API_KEY || '',
+            baseURL: 'https://router.requesty.ai/v1'
+          });
 
-        const response = await openai.chat.completions.create({
-          model: "google/gemini-2.0-flash-exp",
-          messages: [
-            { role: "system", content: systemInstruction },
-            { role: "user", content: userPrompt }
-          ],
-          response_format: { type: "json_object" }
-        });
+          const response = await openai.chat.completions.create({
+            model: "google/gemini-2.0-flash-exp",
+            messages: [
+              { role: "system", content: systemInstruction },
+              { role: "user", content: userPrompt }
+            ],
+            response_format: { type: "json_object" }
+          });
 
-        const resultText = response.choices[0].message.content || '{}';
-        const parsed = JSON.parse(resultText.replace(/```json/g, '').replace(/```/g, '').trim());
+          const resultText = response.choices[0].message.content || '{}';
+          const parsed = JSON.parse(resultText.replace(/```json/g, '').replace(/```/g, '').trim());
 
-        const competencyScores: CompetencyScoreItem[] = techCompetencies.map((comp: any) => {
-          const matching = (parsed.competencyEvaluations || []).find((c: any) =>
-            (c.competency || '').toLowerCase().includes(comp.key.replace(/_/g, ' ')) ||
-            (c.competency || '').toLowerCase().includes(comp.name.toLowerCase().slice(0, 15))
-          );
-          const compScore = typeof matching?.score === 'number' ? Math.max(0, Math.min(100, matching.score)) : (stats.hasSubstantialEvidence ? 75 : 40);
-          return {
-            competency: comp.name,
-            weight: comp.weight,
-            score: compScore,
-            weightedScore: Number((compScore * comp.weight).toFixed(2)),
-            evidenceQuality: matching?.evidenceQuality || (compScore >= 75 ? 'STRONG' : compScore >= 50 ? 'PARTIAL' : 'NONE'),
-            evidence: Array.isArray(matching?.evidence) && matching.evidence.length > 0 ? matching.evidence : stats.verbatimQuotes.slice(0, 1),
-            missingEvidence: Array.isArray(matching?.missingEvidence) ? matching.missingEvidence : [],
-            feedback: matching?.feedback || comp.description
+          const defaultCompFallback = stats.hasSubstantialEvidence ? 70 : (stats.hasPartialEvidence ? 40 : 20);
+
+          const competencyScores: CompetencyScoreItem[] = techCompetencies.map((comp: any) => {
+            const matching = (parsed.competencyEvaluations || []).find((c: any) =>
+              (c.competency || '').toLowerCase().includes(comp.key.replace(/_/g, ' ')) ||
+              (c.competency || '').toLowerCase().includes(comp.name.toLowerCase().slice(0, 15))
+            );
+            const compScore = typeof matching?.score === 'number' ? Math.max(0, Math.min(100, matching.score)) : defaultCompFallback;
+            return {
+              competency: comp.name,
+              weight: comp.weight,
+              score: compScore,
+              weightedScore: Number((compScore * comp.weight).toFixed(2)),
+              evidenceQuality: matching?.evidenceQuality || (compScore >= 75 ? 'STRONG' : compScore >= 50 ? 'PARTIAL' : 'NONE'),
+              evidence: Array.isArray(matching?.evidence) && matching.evidence.length > 0 ? matching.evidence : stats.verbatimQuotes.slice(0, 1),
+              missingEvidence: Array.isArray(matching?.missingEvidence) ? matching.missingEvidence : (compScore < 60 ? [`Lacked technical depth on ${comp.name}`] : []),
+              feedback: matching?.feedback || comp.description
+            };
+          });
+
+          const computedScore = calculateTechnicalRoundScore(competencyScores);
+          const decision = (computedScore >= 60 && stats.hasSubstantialEvidence) ? 'PASS' : 'FAIL';
+
+          round2Result = {
+            roundName: roundName || 'Round 2: Technical Architecture & Concurrency',
+            roundType: 'technical',
+            score: computedScore,
+            decision,
+            reason: parsed.reason || (decision === 'PASS'
+              ? `Candidate articulated solid technical depth and verified real-world architecture in dialogue.`
+              : `Candidate answers were brief or lacked sufficient technical depth and concrete trade-off reasoning.`),
+            technicalBar: parsed.technicalBar || (computedScore >= 70 ? 'met' : computedScore >= 50 ? 'insufficient_evidence' : 'not_met'),
+            evidenceQuality: parsed.evidenceQuality || (stats.hasSubstantialEvidence ? 'STRONG' : stats.hasPartialEvidence ? 'PARTIAL' : 'WEAK'),
+            evidenceSufficiency: parsed.evidenceSufficiency || (stats.hasSubstantialEvidence ? 'sufficient' : stats.hasPartialEvidence ? 'partial' : 'insufficient'),
+            confidence: parsed.confidence || 'HIGH',
+            competencies: parsed.competencies || {
+              technicalKnowledge: { score: competencyScores[0]?.score || 30, weight: 0.25, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
+              technicalDepth: { score: competencyScores[1]?.score || 25, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
+              realWorldExperience: { score: competencyScores[2]?.score || 30, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
+              engineeringJudgment: { score: competencyScores[3]?.score || 25, weight: 0.15, evidence: [], confidence: 'medium' },
+              problemSolving: { score: competencyScores[4]?.score || 25, weight: 0.10, evidence: [], confidence: 'high' },
+              technicalCommunication: { score: competencyScores[5]?.score || 35, weight: 0.10, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' }
+            },
+            competencyEvaluations: competencyScores,
+            demonstratedExpertise: Array.isArray(parsed.demonstratedExpertise) && parsed.demonstratedExpertise.length > 0
+              ? parsed.demonstratedExpertise
+              : [
+                  { topic: 'Distributed Systems & Concurrency', level: stats.hasSubstantialEvidence ? 'Strong' : stats.hasPartialEvidence ? 'Moderate' : 'Weak', evidence: stats.verbatimQuotes[0] || 'Technical discussion' },
+                  { topic: 'API Design & Scaling', level: stats.hasSubstantialEvidence ? 'Moderate' : 'Weak', evidence: stats.verbatimQuotes[1] || 'Architecture reasoning' }
+                ],
+            validatedExperience: Array.isArray(parsed.validatedExperience) && parsed.validatedExperience.length > 0
+              ? parsed.validatedExperience
+              : [
+                  {
+                    claim: 'Distributed backend development and event pipelines',
+                    demonstrated: stats.verbatimQuotes[0] || 'Brief conceptual mention during dialogue',
+                    strength: stats.hasSubstantialEvidence ? 'Strong' : stats.hasPartialEvidence ? 'Moderate' : 'Weak',
+                    details: 'Evaluated based on live candidate explanations.'
+                  }
+                ],
+            unvalidatedClaims: Array.isArray(parsed.unvalidatedClaims) ? parsed.unvalidatedClaims : [],
+            areasOfConcern: Array.isArray(parsed.areasOfConcern) ? parsed.areasOfConcern : (computedScore < 60 ? ['Lacked quantitative metric benchmarks and failure recovery depth'] : []),
+            strengths: Array.isArray(parsed.strengths) && parsed.strengths.length > 0 ? parsed.strengths : ['Communicated core technical terminology'],
+            weaknesses: Array.isArray(parsed.weaknesses) && parsed.weaknesses.length > 0 ? parsed.weaknesses : ['Need deeper architectural trade-offs and quantitative scaling explanations'],
+            keyEvidence: Array.isArray(parsed.keyEvidence) && parsed.keyEvidence.length > 0 ? parsed.keyEvidence : stats.verbatimQuotes.slice(0, 2),
+            missingEvidence: Array.isArray(parsed.missingEvidence) ? parsed.missingEvidence : [],
+            evaluatedAt: new Date().toISOString()
           };
-        });
 
-        const computedScore = calculateTechnicalRoundScore(competencyScores);
-        const decision = (computedScore >= 60 && stats.hasSubstantialEvidence) ? 'PASS' : (computedScore >= 60 ? 'PASS' : 'FAIL');
+        } catch (llmErr) {
+          console.warn('[evaluate-round] Round 2 LLM evaluation fallback:', llmErr);
+          const baseScore = stats.hasSubstantialEvidence ? 72 : (stats.hasPartialEvidence ? 40 : stats.totalCandidateWords >= 15 ? 25 : 10);
+          const decision = baseScore >= 60 ? 'PASS' : 'FAIL';
 
-        round2Result = {
-          roundName: roundName || 'Round 2: Technical Architecture & Concurrency',
-          roundType: 'technical',
-          score: computedScore,
-          decision,
-          reason: parsed.reason || (decision === 'PASS'
-            ? `Candidate articulated solid technical depth and verified real-world architecture in dialogue.`
-            : `Candidate answers lacked technical specificity or failed to prove personal ownership on core requirements.`),
-          technicalBar: parsed.technicalBar || (computedScore >= 75 ? 'met' : computedScore >= 55 ? 'insufficient_evidence' : 'not_met'),
-          evidenceQuality: parsed.evidenceQuality || (stats.hasSubstantialEvidence ? 'STRONG' : 'PARTIAL'),
-          evidenceSufficiency: parsed.evidenceSufficiency || (stats.hasSubstantialEvidence ? 'sufficient' : 'partial'),
-          confidence: parsed.confidence || 'HIGH',
-          competencies: parsed.competencies || {
-            technicalKnowledge: { score: competencyScores[0]?.score || 75, weight: 0.25, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
-            technicalDepth: { score: competencyScores[1]?.score || 70, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
-            realWorldExperience: { score: competencyScores[2]?.score || 75, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
-            engineeringJudgment: { score: competencyScores[3]?.score || 70, weight: 0.15, evidence: [], confidence: 'medium' },
-            problemSolving: { score: competencyScores[4]?.score || 70, weight: 0.10, evidence: [], confidence: 'high' },
-            technicalCommunication: { score: competencyScores[5]?.score || 75, weight: 0.10, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' }
-          },
-          competencyEvaluations: competencyScores,
-          demonstratedExpertise: Array.isArray(parsed.demonstratedExpertise) && parsed.demonstratedExpertise.length > 0
-            ? parsed.demonstratedExpertise
-            : [
-                { topic: 'Distributed Systems & Concurrency', level: stats.hasSubstantialEvidence ? 'Strong' : 'Moderate', evidence: stats.verbatimQuotes[0] || 'Technical discussion' },
-                { topic: 'API Design & Scaling', level: 'Moderate', evidence: stats.verbatimQuotes[1] || 'Architecture reasoning' }
-              ],
-          validatedExperience: Array.isArray(parsed.validatedExperience) && parsed.validatedExperience.length > 0
-            ? parsed.validatedExperience
-            : [
-                {
-                  claim: 'Distributed backend development and event pipelines',
-                  demonstrated: stats.verbatimQuotes[0] || 'Explained architectural patterns and concurrency mechanisms',
-                  strength: stats.hasSubstantialEvidence ? 'Strong' : 'Moderate',
-                  details: 'Discussed trade-offs and component interactions.'
-                }
-              ],
-          unvalidatedClaims: Array.isArray(parsed.unvalidatedClaims) ? parsed.unvalidatedClaims : [],
-          areasOfConcern: Array.isArray(parsed.areasOfConcern) ? parsed.areasOfConcern : (computedScore < 60 ? ['Lacked quantitative metric benchmarks in distributed scaling'] : []),
-          strengths: Array.isArray(parsed.strengths) && parsed.strengths.length > 0 ? parsed.strengths : ['Clear articulation of architectural structures and data flow'],
-          weaknesses: Array.isArray(parsed.weaknesses) && parsed.weaknesses.length > 0 ? parsed.weaknesses : ['Could deepen production outage failure isolation details'],
-          keyEvidence: Array.isArray(parsed.keyEvidence) && parsed.keyEvidence.length > 0 ? parsed.keyEvidence : stats.verbatimQuotes.slice(0, 2),
-          missingEvidence: Array.isArray(parsed.missingEvidence) ? parsed.missingEvidence : [],
-          evaluatedAt: new Date().toISOString()
-        };
+          const competencyScores: CompetencyScoreItem[] = techCompetencies.map((comp: any) => {
+            const compScore = baseScore;
+            return {
+              competency: comp.name,
+              weight: comp.weight,
+              score: compScore,
+              weightedScore: Number((compScore * comp.weight).toFixed(2)),
+              evidenceQuality: compScore >= 70 ? 'STRONG' : compScore >= 40 ? 'PARTIAL' : 'NONE',
+              evidence: stats.verbatimQuotes.slice(0, 1),
+              missingEvidence: compScore < 60 ? [`Lacked technical depth on ${comp.name}`] : [],
+              feedback: compScore < 30 ? 'Candidate provided minimal or no technical depth.' : comp.description
+            };
+          });
 
-      } catch (llmErr) {
-        console.warn('[evaluate-round] Round 2 LLM evaluation fallback:', llmErr);
-        const baseScore = stats.hasSubstantialEvidence ? Math.min(88, 70 + stats.substantiveCount * 4) : 75;
-        const decision = baseScore >= 60 ? 'PASS' : 'FAIL';
-
-        const competencyScores: CompetencyScoreItem[] = techCompetencies.map((comp: any) => {
-          const compScore = baseScore;
-          return {
-            competency: comp.name,
-            weight: comp.weight,
-            score: compScore,
-            weightedScore: Number((compScore * comp.weight).toFixed(2)),
-            evidenceQuality: compScore >= 75 ? 'STRONG' : 'PARTIAL',
-            evidence: stats.verbatimQuotes.slice(0, 1),
+          round2Result = {
+            roundName: roundName || 'Round 2: Technical Architecture & Concurrency',
+            roundType: 'technical',
+            score: calculateTechnicalRoundScore(competencyScores),
+            decision,
+            reason: decision === 'PASS'
+              ? `Candidate articulated technical architecture concepts and engineering trade-offs during the panel discussion.`
+              : `Candidate provided brief or high-level remarks without sufficient distributed systems depth.`,
+            technicalBar: baseScore >= 70 ? 'met' : baseScore >= 45 ? 'insufficient_evidence' : 'not_met',
+            evidenceQuality: stats.hasSubstantialEvidence ? 'STRONG' : stats.hasPartialEvidence ? 'PARTIAL' : 'WEAK',
+            evidenceSufficiency: stats.hasSubstantialEvidence ? 'sufficient' : stats.hasPartialEvidence ? 'partial' : 'insufficient',
+            confidence: 'MEDIUM',
+            competencies: {
+              technicalKnowledge: { score: baseScore, weight: 0.25, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
+              technicalDepth: { score: Math.max(0, baseScore - 5), weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
+              realWorldExperience: { score: baseScore, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
+              engineeringJudgment: { score: Math.max(0, baseScore - 5), weight: 0.15, evidence: [], confidence: 'medium' },
+              problemSolving: { score: Math.max(0, baseScore - 5), weight: 0.10, evidence: [], confidence: 'high' },
+              technicalCommunication: { score: Math.max(0, baseScore), weight: 0.10, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' }
+            },
+            competencyEvaluations: competencyScores,
+            demonstratedExpertise: [
+              { topic: 'Distributed Architecture & Scaling', level: stats.hasSubstantialEvidence ? 'Strong' : 'Weak', evidence: stats.verbatimQuotes[0] || 'Technical discussion' },
+              { topic: 'Concurrency & Primitives', level: stats.hasSubstantialEvidence ? 'Moderate' : 'Not Demonstrated', evidence: stats.verbatimQuotes[1] || 'Concurrency trade-offs' }
+            ],
+            validatedExperience: [
+              {
+                claim: 'Backend engineering and microservices architecture',
+                demonstrated: stats.verbatimQuotes[0] || 'Brief remarks in live dialogue',
+                strength: stats.hasSubstantialEvidence ? 'Strong' : 'Weak',
+                details: 'Demonstrated brief reasoning during technical panel.'
+              }
+            ],
+            unvalidatedClaims: [],
+            areasOfConcern: baseScore < 60 ? ['Limited evidence of failure recovery and distributed scalability'] : [],
+            strengths: baseScore >= 50 ? ['Familiar with core backend vocabulary'] : ['None demonstrated'],
+            weaknesses: ['Needs to demonstrate concrete architecture mechanics and scaling numbers'],
+            keyEvidence: stats.verbatimQuotes.slice(0, 2),
             missingEvidence: [],
-            feedback: comp.description
+            evaluatedAt: new Date().toISOString()
           };
-        });
-
-        round2Result = {
-          roundName: roundName || 'Round 2: Technical Architecture & Concurrency',
-          roundType: 'technical',
-          score: calculateTechnicalRoundScore(competencyScores),
-          decision,
-          reason: `Candidate articulated technical architecture concepts and engineering trade-offs during the panel discussion.`,
-          technicalBar: baseScore >= 75 ? 'met' : 'insufficient_evidence',
-          evidenceQuality: stats.hasSubstantialEvidence ? 'STRONG' : 'PARTIAL',
-          evidenceSufficiency: stats.hasSubstantialEvidence ? 'sufficient' : 'partial',
-          confidence: 'MEDIUM',
-          competencies: {
-            technicalKnowledge: { score: baseScore, weight: 0.25, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
-            technicalDepth: { score: baseScore - 5, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
-            realWorldExperience: { score: baseScore + 2, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
-            engineeringJudgment: { score: baseScore, weight: 0.15, evidence: [], confidence: 'medium' },
-            problemSolving: { score: baseScore, weight: 0.10, evidence: [], confidence: 'high' },
-            technicalCommunication: { score: baseScore + 3, weight: 0.10, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' }
-          },
-          competencyEvaluations: competencyScores,
-          demonstratedExpertise: [
-            { topic: 'Distributed Architecture & Scaling', level: 'Strong', evidence: stats.verbatimQuotes[0] || 'Technical discussion' },
-            { topic: 'Concurrency & Concurrency Primitives', level: 'Moderate', evidence: stats.verbatimQuotes[1] || 'Concurrency trade-offs' }
-          ],
-          validatedExperience: [
-            {
-              claim: 'Backend engineering and microservices architecture',
-              demonstrated: stats.verbatimQuotes[0] || 'Explained architectural patterns and system components',
-              strength: 'Strong',
-              details: 'Demonstrated clear reasoning during technical panel.'
-            }
-          ],
-          unvalidatedClaims: [],
-          areasOfConcern: [],
-          strengths: ['Practical architectural understanding', 'Structured communication'],
-          weaknesses: ['Could deepen quantitative benchmarking in large-scale load spikes'],
-          keyEvidence: stats.verbatimQuotes.slice(0, 2),
-          missingEvidence: [],
-          evaluatedAt: new Date().toISOString()
-        };
+        }
       }
 
       // Persist Round 2 specific evaluation in DB
@@ -641,19 +791,52 @@ Evaluate the 6 technical competencies strictly, derive the weighted score, and r
     const hrCompetencies = HR_COMPETENCIES;
     let round3Result: Round3HREvaluationResult;
 
-    if (stats.candidateUtteranceCount === 0 || (!stats.hasSubstantialEvidence && stats.totalCandidateWords < 20)) {
+    // ── CIRCUIT BREAKER: Candidate was completely silent during HR Round ──
+    if (stats.isCompletelySilent) {
+      const zeroHRCompetencies: HRCompetencyScoreItem[] = hrCompetencies.map(c => ({
+        key: c.key,
+        competency: c.name,
+        weight: c.weight,
+        score: 0,
+        weightedScore: 0,
+        evidenceQuality: 'NONE',
+        evidence: [],
+        missingEvidence: ['Candidate was completely silent and provided zero behavioral responses.'],
+        feedback: 'Candidate was completely silent and unresponsive.'
+      }));
+
+      round3Result = {
+        roundName: roundName || 'Round 3: Behavioral & Cultural Alignment',
+        roundType: 'hr',
+        score: 0,
+        decision: 'FAIL',
+        reason: 'Candidate was completely silent and provided zero verbal responses during the HR and cultural alignment interview.',
+        overallRecommendation: 'No Hire',
+        evidenceQuality: 'NONE',
+        evidenceSufficiency: 'insufficient',
+        confidence: 'HIGH',
+        competencies: zeroHRCompetencies,
+        behavioralStrengths: ['No strengths demonstrated (candidate was silent/unresponsive).'],
+        behavioralConcerns: ['Candidate did not engage with the interviewer or answer any behavioral questions.'],
+        keyMoments: [],
+        culturalFitSummary: 'Candidate was completely silent and provided zero behavioral evidence during the session.',
+        missingEvidence: ['Spoken communication', 'STAR behavioral examples', 'Conflict resolution and ownership details'],
+        evaluatedAt: new Date().toISOString()
+      };
+    } else if (stats.candidateUtteranceCount <= 1 && stats.totalCandidateWords < 25) {
+      // Minimal dialogue (< 25 words)
       const defaultComps: HRCompetencyScoreItem[] = hrCompetencies.map(c => ({
         competency: c.name,
         key: c.key,
         weight: c.weight,
-        score: 70,
-        weightedScore: Number((70 * c.weight).toFixed(2)),
-        evidenceQuality: 'PARTIAL',
+        score: 20,
+        weightedScore: Number((20 * c.weight).toFixed(2)),
+        evidenceQuality: 'NONE',
         evidence: stats.verbatimQuotes.length > 0 ? [
-          { summary: 'Candidate participated in introductory behavioral dialogue', quote: stats.verbatimQuotes[0], source: 'transcript' }
+          { summary: 'Candidate participated in brief introductory dialogue', quote: stats.verbatimQuotes[0], source: 'transcript' }
         ] : [],
-        missingEvidence: ['More in-depth STAR examples of navigating team conflicts or complex cross-functional ownership.'],
-        feedback: 'Candidate participated in the HR round with limited depth.'
+        missingEvidence: ['Detailed STAR examples of navigating team conflicts, ownership, and engineering leadership.'],
+        feedback: 'Candidate provided minimal or monosyllabic behavioral depth.'
       }));
 
       const computedScore = calculateHRRoundScore(defaultComps);
@@ -662,26 +845,26 @@ Evaluate the 6 technical competencies strictly, derive the weighted score, and r
         roundName: roundName || 'Round 3: Behavioral & Cultural Alignment',
         roundType: 'hr',
         score: computedScore,
-        decision: computedScore >= 60 ? 'PASS' : 'FAIL',
-        reason: 'Candidate completed the HR & cultural alignment discussion with baseline communication.',
-        overallRecommendation: computedScore >= 75 ? 'Hire' : 'Leaning Hire',
-        evidenceQuality: 'PARTIAL',
-        evidenceSufficiency: 'partial',
-        confidence: 'MEDIUM',
+        decision: 'FAIL',
+        reason: 'Candidate provided minimal dialogue during the HR round, failing to substantiate behavioral ownership or culture alignment.',
+        overallRecommendation: 'No Hire',
+        evidenceQuality: 'NONE',
+        evidenceSufficiency: 'insufficient',
+        confidence: 'HIGH',
         competencies: defaultComps,
-        behavioralStrengths: ['Polite and constructive dialogue', 'Receptive to team processes'],
-        behavioralConcerns: ['Limited specific STAR examples articulated during the brief session'],
+        behavioralStrengths: stats.verbatimQuotes.length > 0 ? ['Polite initial greeting'] : ['None demonstrated'],
+        behavioralConcerns: ['No substantiated STAR situations or demonstrated conflict resolution'],
         keyMoments: stats.verbatimQuotes.length > 0 ? [
           {
-            situation: 'HR & Cultural Alignment initial conversation',
-            action: 'Responded to cultural fit and team structure questions',
-            outcome: 'Confirmed interest and basic team alignment',
+            situation: 'HR introductory interaction',
+            action: 'Responded briefly to initial prompt',
+            outcome: 'Brief dialogue captured',
             competency: 'Communication & Clarity',
             quote: stats.verbatimQuotes[0]
           }
         ] : [],
-        culturalFitSummary: 'Demonstrated openness to team collaboration and alignment with company core engineering culture.',
-        missingEvidence: ['Detailed behavioral examples on conflict resolution and ownership'],
+        culturalFitSummary: 'Insufficient behavioral evidence collected to verify culture fit or engineering ownership.',
+        missingEvidence: ['Concrete behavioral examples on conflict resolution, ownership, and cross-functional alignment'],
         evaluatedAt: new Date().toISOString()
       };
     } else {
@@ -693,7 +876,13 @@ CRITICAL EVALUATION INVARIANTS:
 1. EVIDENCE GROUNDING & ISOLATION:
    - Base all findings strictly on what the candidate articulated in the live Round 3 HR transcript.
    - Do NOT inherit technical/coding evidence from previous rounds. The HR evaluation assesses behavioral competencies, team collaboration, ownership, conflict resolution, and values.
-   - Every evidence item MUST include a concise summary and a verbatim quote from the HR transcript.
+   - SCORING SPECTRUM:
+     * 0-10: Silent / 0 words.
+     * 15-30: Monosyllables ("yes", "no"), unelaborated skips.
+     * 35-50: Vague answers without STAR structure, ownership, or team alignment.
+     * 60-74: Good communication, reasonable collaboration, but generic conflict resolution examples.
+     * 75-85: Concrete STAR examples with strong accountability, mentorship, and constructive resolution.
+     * 86-100: Exceptional leadership, blameless post-mortem ownership, high emotional intelligence.
 2. 7 BEHAVIORAL COMPETENCIES (Score 0-100 for each):
 ${hrCompetencies.map((c: any) => `   - "${c.name}" [key: "${c.key}"]: weight ${(c.weight * 100).toFixed(0)}% (${c.description})`).join('\n')}
 3. KEY BEHAVIORAL MOMENTS (STAR format):
@@ -871,7 +1060,7 @@ Evaluate candidate behavioral competencies, ownership, collaboration, and cultur
             (c.key && c.key === def.key) || 
             (c.competency && c.competency.toLowerCase().includes(def.name.toLowerCase().slice(0, 8)))
           );
-          const score = typeof found?.score === 'number' ? Math.max(0, Math.min(100, found.score)) : 78;
+          const score = typeof found?.score === 'number' ? Math.max(0, Math.min(100, found.score)) : 70;
           
           let structuredEvidence: any[] = [];
           if (Array.isArray(found?.evidence)) {
@@ -900,7 +1089,7 @@ Evaluate candidate behavioral competencies, ownership, collaboration, and cultur
             weight: def.weight,
             score,
             weightedScore: Number((score * def.weight).toFixed(2)),
-            evidenceQuality: found?.evidenceQuality || (score >= 75 ? 'STRONG' : 'PARTIAL'),
+            evidenceQuality: found?.evidenceQuality || (score >= 75 ? 'STRONG' : score >= 50 ? 'PARTIAL' : 'NONE'),
             evidence: structuredEvidence,
             missingEvidence: Array.isArray(found?.missingEvidence) ? found.missingEvidence : [],
             feedback: found?.feedback || `Demonstrated ${def.name.toLowerCase()} in discussion.`
@@ -942,42 +1131,44 @@ Evaluate candidate behavioral competencies, ownership, collaboration, and cultur
         };
       } catch (llmErr) {
         console.warn('[evaluate-round] HR LLM evaluation fallback:', llmErr);
-        const baseScore = stats.hasSubstantialEvidence ? 82 : 72;
+        const baseScore = stats.hasSubstantialEvidence ? 78 : (stats.hasPartialEvidence ? 45 : 20);
         const fallbackComps: HRCompetencyScoreItem[] = hrCompetencies.map(c => ({
           key: c.key,
           competency: c.name,
           weight: c.weight,
           score: baseScore,
           weightedScore: Number((baseScore * c.weight).toFixed(2)),
-          evidenceQuality: 'STRONG',
+          evidenceQuality: baseScore >= 70 ? 'STRONG' : baseScore >= 40 ? 'PARTIAL' : 'NONE',
           evidence: stats.verbatimQuotes.length > 0 ? [
             { summary: 'Demonstrated in behavioral discussion', quote: stats.verbatimQuotes[0], source: 'transcript' }
           ] : [],
-          missingEvidence: [],
-          feedback: `Demonstrated solid ${c.name.toLowerCase()} in discussion.`
+          missingEvidence: baseScore < 60 ? ['Lacked detailed STAR behavioral examples'] : [],
+          feedback: `Demonstrated ${c.name.toLowerCase()} in discussion.`
         }));
 
         round3Result = {
           roundName: roundName || 'Round 3: Behavioral & Cultural Alignment',
           roundType: 'hr',
           score: baseScore,
-          decision: 'PASS',
-          reason: 'Candidate communicated constructively and demonstrated good cultural alignment with engineering practices.',
-          overallRecommendation: baseScore >= 80 ? 'Hire' : 'Leaning Hire',
-          evidenceQuality: 'STRONG',
-          evidenceSufficiency: 'sufficient',
+          decision: baseScore >= 60 ? 'PASS' : 'FAIL',
+          reason: baseScore >= 60 
+            ? 'Candidate communicated constructively and demonstrated good cultural alignment with engineering practices.'
+            : 'Candidate provided brief remarks lacking depth across key behavioral competencies.',
+          overallRecommendation: baseScore >= 80 ? 'Hire' : baseScore >= 60 ? 'Leaning Hire' : 'No Hire',
+          evidenceQuality: baseScore >= 70 ? 'STRONG' : 'PARTIAL',
+          evidenceSufficiency: baseScore >= 60 ? 'sufficient' : 'insufficient',
           confidence: 'MEDIUM',
           competencies: fallbackComps,
-          behavioralStrengths: ['Structured verbal communication', 'Collaborative attitude and accountability'],
-          behavioralConcerns: [],
+          behavioralStrengths: baseScore >= 60 ? ['Structured verbal communication', 'Collaborative attitude and accountability'] : ['None demonstrated'],
+          behavioralConcerns: baseScore < 60 ? ['Need deeper situational examples and demonstrated leadership'] : [],
           keyMoments: stats.verbatimQuotes.length > 0 ? [{
             situation: 'Discussion on engineering values and team workflow',
             action: 'Explained past team project experience and collaboration methods',
-            outcome: 'Confirmed high engagement and proactive ownership',
+            outcome: 'Confirmed engagement and ownership',
             competency: 'Collaboration & Teamwork',
             quote: stats.verbatimQuotes[0]
           }] : [],
-          culturalFitSummary: 'Well-aligned with collaborative engineering norms and ownership principles.',
+          culturalFitSummary: baseScore >= 60 ? 'Well-aligned with collaborative engineering norms and ownership principles.' : 'Insufficient behavioral depth to verify cultural alignment.',
           missingEvidence: [],
           evaluatedAt: new Date().toISOString()
         };

@@ -11,7 +11,10 @@ export default async function InterviewTestPage() {
   const candidate = db.candidates.find(c => c.id === application?.candidateId) || db.candidates[0];
   const job = db.jobs.find(j => j.id === application?.jobId) || db.jobs[0];
 
-  const interview = resolveInterview(db, application?.id || 'demo-interview-test');
+  const interview = resolveInterview(db, 'demo-interview-test');
+  if (application && interview.applicationId !== application.id) {
+    interview.applicationId = application.id;
+  }
 
   const panel = selectPanelForJob(job?.title || 'Senior Software Engineer');
   const candidateContext = application?.candidateContext || candidate?.candidateContext;
@@ -97,7 +100,7 @@ export default async function InterviewTestPage() {
       {
         round_name: "Round 3: Engineering Leadership & Culture",
         round_type: "hr",
-        purpose: "Evaluate technical ownership, communication, and culture fit.",
+        purpose: "Evaluate technical ownership, constructive collaboration, incident retrospectives, and culture fit.",
         interviewers: [
           {
             interviewer_id: panel.hrInterviewer.interviewerId,
@@ -107,17 +110,23 @@ export default async function InterviewTestPage() {
             color: panel.hrInterviewer.color,
             is_primary: true,
             agent_uid: 9993,
-            instructions: `Evaluate communication and culture fit with ${candidateName}.`,
-            greeting_message: `Hi ${candidateName}, welcome to Round 3! Let's explore your engineering leadership and collaboration experiences.`
+            instructions: `You are ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at Plantra Labs.
+You are leading Round 3 (HR, Culture & Leadership) with ${candidateName}.
+IMPORTANT RULES:
+- This is strictly an HR and behavioral evaluation. All technical rounds are completed.
+- Do NOT ask technical coding, system design, algorithm, or low-level architectural questions.
+- Probe engineering ownership, handling tight deadlines, constructive conflict resolution with teammates, mentorship, and career motivation.
+- Ask one thoughtful behavioral question at a time and listen attentively. Keep turns concise (1-3 sentences).`,
+            greeting_message: `Hi ${candidateName}, welcome to Round 3! I'm ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role}. In this final section, we'll explore your experiences leading projects, team collaboration, and how you navigate engineering challenges.`
           }
         ],
         interviewer: {
           name: panel.hrInterviewer.name,
           role: panel.hrInterviewer.role,
-          instructions: `Evaluate communication and culture fit.`,
+          instructions: `Evaluate communication, ownership, and culture fit. Do not ask technical questions.`,
           greeting_message: `Hi ${candidateName}, welcome to Round 3!`
         },
-        topics: ["Ownership", "Collaboration", "Conflict Resolution"]
+        topics: ["Ownership & Accountability", "Constructive Conflict Resolution", "Cross-Functional Collaboration", "Culture Fit"]
       }
     ],
     rubric: {

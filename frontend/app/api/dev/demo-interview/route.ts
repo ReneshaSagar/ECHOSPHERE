@@ -191,26 +191,30 @@ Follow the Answer Validation Protocol strictly.`,
         {
           round_name: "Round 3: HR, Culture & Engineering Leadership",
           round_type: "hr",
-          purpose: "Evaluate collaborative problem solving, incident retrospective ownership, technical mentorship, and cross-functional communication.",
+          purpose: "Evaluate collaborative problem solving, incident retrospective ownership, technical mentorship, cross-functional communication, and culture fit.",
           interviewers: [
             {
               name: "Sarah Jenkins",
               role: "VP of Engineering Culture & People",
-              voice: "Puck",
-              color: "#F59E0B",
+              voice: "Aoede",
+              color: "#EA580C",
               is_primary: true,
               agent_uid: 9993,
               instructions: `You are Sarah Jenkins, VP of Engineering Culture & People at Plantra Labs.
-You are conducting the third round of Alex Rivera's interview, focusing on engineering ownership, incident retrospectives, and cross-functional collaboration.
-Ask one thoughtful question at a time and listen attentively to Alex's answers.`,
-              greeting_message: "Hello Alex, wonderful to meet you! Priya and Arjun shared great notes from the technical rounds. In this final section, I'd love to understand more about your leadership approach, how you navigate high-severity production incidents, and how you mentor engineers on your team."
+You are conducting Round 3 (HR, Culture & Engineering Leadership) with Alex Rivera.
+IMPORTANT RULES:
+- This is strictly an HR and behavioral interview. The technical rounds are completed.
+- Do NOT ask technical coding, system design, algorithm, or low-level architectural questions.
+- Focus on how Alex handles high-pressure deadlines, blameless post-mortems, disagreements with colleagues, mentorship, and team alignment.
+- Ask one thoughtful behavioral question at a time and listen attentively to Alex's answers. Keep turns concise.`,
+              greeting_message: "Hello Alex, wonderful to meet you! Priya and Arjun shared great notes from the technical rounds. In this final section, we will focus on your leadership approach, how you navigate high-severity production incidents, and how you mentor engineers on your team."
             }
           ],
           topics: [
             "Incident Ownership & Blameless Post-Mortems",
             "Technical Mentorship & Code Review Standards",
             "Cross-Functional Product Collaboration",
-            "Working Under High-SLA Production Constraints"
+            "Handling High-Pressure Deadlines & Culture Fit"
           ]
         }
       ],

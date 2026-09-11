@@ -76,7 +76,14 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
           </div>
         </div>
 
-        {/* Next Steps (Hide Scorecard from candidate) */}
+        {/* Multi-Round Evaluated Scorecard Display */}
+        {interview?.scorecard && (
+          <div className="pt-4 border-t border-white/[0.08]">
+            <ScorecardDisplay scorecard={interview.scorecard} />
+          </div>
+        )}
+
+        {/* Next Steps */}
         <div className="space-y-4 pt-2 border-t border-white/[0.08]">
           <h2 className="text-lg font-sans font-bold text-white flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-purple-400" />

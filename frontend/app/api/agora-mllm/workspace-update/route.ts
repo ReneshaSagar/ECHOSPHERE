@@ -34,13 +34,26 @@ export async function POST(req: NextRequest) {
         });
 
         const codeSnippet = metadata?.code || metadata?.fullCode || '';
-        const language = metadata?.language || 'code';
+        const language = metadata?.language || 'typescript';
+        const diagramSummary = metadata?.diagramSummary || metadata?.diagramText || '';
+        const isExcalidraw = source === 'excalidraw';
 
-        let formattedText = `[REAL-TIME WORKSPACE OBSERVATION] Candidate activity (${source || 'IDE'}): ${summary}`;
-        if (codeSnippet) {
-          formattedText += `\n\nCandidate Current IDE Source Code (${language}):\n\`\`\`${language}\n${codeSnippet.slice(0, 1500)}\n\`\`\``;
+        let formattedText = '';
+        if (isExcalidraw) {
+          formattedText = `[ACTIVE CANDIDATE SCREEN: SYSTEM DESIGN WHITEBOARD (EXCALIDRAW)]
+Candidate is CURRENTLY VIEWING AND WORKING ON THE WHITEBOARD.
+Activity: ${summary}
+${diagramSummary ? `\nLive Architecture Diagram Components & Relationships:\n${diagramSummary}` : '\n(Canvas is currently empty or in progress)'}
+
+[INTERVIEWER INSTRUCTION]: The candidate is on the System Design Whiteboard canvas. If the candidate asks what is on their screen, if you can see their diagram, or asks for architecture feedback, YOU MUST discuss the whiteboard components (e.g. API Gateway, Services, Queues, Databases, Caches) and their connections from the diagram above. DO NOT talk about writing code or code editor unless they switch to Coding view.`;
+        } else {
+          formattedText = `[ACTIVE CANDIDATE SCREEN: MONACO CODE EDITOR (${language.toUpperCase()})]
+Candidate is CURRENTLY VIEWING AND CODING IN THE IDE.
+Activity: ${summary}
+${codeSnippet ? `\nCandidate Current IDE Source Code (${language}):\n\`\`\`${language}\n${codeSnippet.slice(0, 1500)}\n\`\`\`` : '\n(Code editor is currently empty)'}
+
+[INTERVIEWER INSTRUCTION]: The candidate is on the Monaco Code Editor (${language}). If the candidate asks what is on their screen, what you see, or asks for code feedback, YOU MUST quote and reference their exact source code constructs, algorithms, and logic from the code snapshot above.`;
         }
-        formattedText += `\n\n[SYSTEM INSTRUCTION FOR INTERVIEWER]: The candidate's live IDE screen content above is updated in real-time. If the candidate asks what is on their screen, what you see, or asks for code feedback, YOU MUST QUOTE line numbers or code constructs from the source code above and discuss their specific implementation.`;
 
         await client.agentManagement.agentThink({
           appid: appId,
@@ -51,7 +64,7 @@ export async function POST(req: NextRequest) {
           on_speaking_action: 'append'
         });
 
-        console.log(`[WORKSPACE_SYNC_AGENT_THINK_SUCCESS] Successfully injected workspace update to agent ${agent_id}`);
+        console.log(`[WORKSPACE_SYNC_AGENT_THINK_SUCCESS] Successfully injected workspace update (${isExcalidraw ? 'Excalidraw' : 'Code'}) to agent ${agent_id}`);
       } catch (thinkErr: any) {
         console.warn(`[WORKSPACE_SYNC_AGENT_THINK_WARN] agentThink call failed:`, thinkErr?.message || thinkErr);
       }

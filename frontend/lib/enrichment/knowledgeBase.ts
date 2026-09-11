@@ -130,7 +130,8 @@ export function injectKnowledgeBaseIntoAgentInstructions(
   candidateContext?: CandidateContext | null,
   candidateName: string = 'Candidate',
   targetRole: string = 'Engineering Role',
-  rawResumeText?: string
+  rawResumeText?: string,
+  isHrRound?: boolean
 ): string {
   // If already injected, return as is
   if (baseInstructions.includes('CANDIDATE KNOWLEDGE BASE')) {
@@ -139,7 +140,26 @@ export function injectKnowledgeBaseIntoAgentInstructions(
   
   const prompts = require('@/config/prompts/systemPrompts.json');
 
-  const framingDirectives = `
+  const isHr = isHrRound || 
+    baseInstructions.toLowerCase().includes('hr') || 
+    baseInstructions.toLowerCase().includes('culture') || 
+    baseInstructions.toLowerCase().includes('behavioral') ||
+    baseInstructions.toLowerCase().includes('leadership protocol') ||
+    baseInstructions.toLowerCase().includes('people & culture');
+
+  const framingDirectives = isHr ? `
+================================================================================
+PRIMARY INTERVIEW OBJECTIVE: HR, CULTURE & ENGINEERING LEADERSHIP
+================================================================================
+1. MAIN FOCUS IS BEHAVIORAL & CULTURAL ALIGNMENT: Your primary goal is to evaluate if ${candidateName} has strong engineering ownership, constructive communication, leadership qualities, and cultural alignment for "${targetRole}".
+2. STRICTLY NON-TECHNICAL SCOPE:
+   - This is strictly an HR and behavioral evaluation. All technical rounds are already concluded.
+   - Do NOT ask technical coding, system design, algorithm, syntax, or low-level architectural questions.
+   - Focus on how ${candidateName} handles team disagreements, constructive feedback, high-pressure deadlines, incident ownership, and team collaboration.
+   - If ${candidateName} mentions technical projects, discuss ONLY their team role, personal accountability, and stakeholder communication—NOT the low-level code implementation.
+3. CONVERSATIONAL STYLE:
+   - Ask one open-ended behavioral question at a time using the STAR method (Situation, Task, Action, Result).
+   - Listen attentively and keep responses concise (1-3 sentences).` : `
 ================================================================================
 PRIMARY INTERVIEW OBJECTIVE & ROLE FOCUS DIRECTIVES
 ================================================================================

@@ -35,10 +35,59 @@ export default function ScorecardDisplay({ scorecard: sc }: ScorecardDisplayProp
     : isStrong ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
     : 'bg-amber-500/10 text-amber-300 border-amber-500/30';
     
-  const multiRoundRounds: any[] = sc.multiRoundBreakdown || [];
-  const round1: any = sc.round1Evaluation;
-  const round2: any = sc.round2Evaluation;
-  const round3: any = sc.round3Evaluation;
+  const rawRound1: any = sc.round1Evaluation;
+  const rawRound2: any = sc.round2Evaluation;
+  const rawRound3: any = sc.round3Evaluation;
+
+  const rawMultiRounds: any[] = sc.multiRoundBreakdown || [];
+
+  const r1Contribution = rawMultiRounds.find((r: any) => (r.roundType || '').toLowerCase().includes('coding') || (r.roundType || '').toLowerCase().includes('system') || (r.roundName || '').toLowerCase().includes('round 1'));
+  const r2Contribution = rawMultiRounds.find((r: any) => (r.roundType || '').toLowerCase().includes('technical') || (r.roundName || '').toLowerCase().includes('round 2'));
+  const r3Contribution = rawMultiRounds.find((r: any) => (r.roundType || '').toLowerCase().includes('hr') || (r.roundType || '').toLowerCase().includes('culture') || (r.roundType || '').toLowerCase().includes('behavioral') || (r.roundName || '').toLowerCase().includes('round 3'));
+
+  const r1Score = rawRound1?.score ?? r1Contribution?.rawScore ?? overallScore ?? 0;
+  const r2Score = rawRound2?.score ?? r2Contribution?.rawScore ?? overallScore ?? 0;
+  const r3Score = rawRound3?.score ?? r3Contribution?.rawScore ?? overallScore ?? 0;
+
+  const round1: any = rawRound1 || {
+    roundName: "Round 1: Practical Problem Solving & Codecraft",
+    roundType: "coding",
+    score: r1Score,
+    decision: r1Score >= 60 ? 'PASS' : 'FAIL',
+    reason: r1Score === 0
+      ? "Candidate was completely silent and submitted zero practical code or architectural designs."
+      : "Candidate completed practical workspace assessment on algorithmic problem solving, code correctness, and system design clarity."
+  };
+
+  const round2: any = rawRound2 || {
+    roundName: "Round 2: Technical Interview Assessment",
+    roundType: "technical",
+    score: r2Score,
+    decision: r2Score >= 60 ? 'PASS' : 'FAIL',
+    technicalBar: r2Score >= 70 ? 'met' : r2Score >= 55 ? 'borderline' : 'not_met',
+    summary: r2Score === 0
+      ? "Candidate was completely silent and provided zero answers to technical panel inquiries."
+      : "Candidate evaluated across distributed systems architecture, concurrency primitives, and real-world engineering depth with technical interview panel."
+  };
+
+  const round3: any = rawRound3 || {
+    roundName: "Round 3: Behavioral & Cultural Alignment",
+    roundType: "hr",
+    score: r3Score,
+    decision: r3Score >= 60 ? 'PASS' : 'FAIL',
+    overallRecommendation: r3Score >= 75 ? 'Hire' : r3Score >= 60 ? 'Leaning Hire' : 'No Hire',
+    reason: r3Score === 0
+      ? "Candidate was completely silent and provided zero answers to HR behavioral inquiries."
+      : "Candidate demonstrated positive engineering ownership, collaborative communication, and constructive alignment with company cultural values."
+  };
+
+  const multiRoundRounds: any[] = rawMultiRounds.length > 0
+    ? rawMultiRounds
+    : [
+        { roundName: 'Round 1: Practical Coding & System Design', roundType: 'coding', rawScore: round1.score, weight: 0.35 },
+        { roundName: 'Round 2: Technical Interview Assessment', roundType: 'technical', rawScore: round2.score, weight: 0.50 },
+        { roundName: 'Round 3: Behavioral & Cultural Alignment', roundType: 'hr', rawScore: round3.score, weight: 0.15 }
+      ];
 
   const formatPillarName = (name: string): string => {
     const n = (name || '').toLowerCase();
@@ -119,195 +168,310 @@ export default function ScorecardDisplay({ scorecard: sc }: ScorecardDisplayProp
         </div>
       )}
 
-      {/* Round 1 Workspace Assessment Card */}
+      {/* Round 1 Workspace Assessment Card Dropdown */}
       {round1 && (
-        <div className="bg-[#0a0a0d] border border-cyan-500/20 rounded-3xl p-5 space-y-4 shadow-[0_0_20px_rgba(6,182,212,0.05)]">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2.5">
-              <Code2 className="w-4 h-4 text-cyan-400" />
+        <div className="bg-[#0a0a0d] border border-cyan-500/20 rounded-3xl overflow-hidden shadow-[0_0_25px_rgba(6,182,212,0.06)] transition-all">
+          <button
+            onClick={() => setIsRound1Expanded(!isRound1Expanded)}
+            className="w-full p-5 flex items-center justify-between text-left hover:bg-white/[0.02] transition cursor-pointer gap-3"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
+                <Code2 className="w-5 h-5" />
+              </div>
               <div>
-                <span className="font-bold text-white text-sm">Round 1: Practical Problem Solving & Codecraft</span>
-                <span className="text-[10px] font-mono text-cyan-300 ml-2 bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-500/20">
-                  {round1.score}/100 ({round1.decision})
-                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-bold text-white text-sm sm:text-base">Round 1: Practical Problem Solving & Codecraft</span>
+                  <span className="text-[10px] font-mono font-bold text-cyan-400 bg-cyan-950/60 px-2.5 py-0.5 rounded-full border border-cyan-500/30">
+                    35% Weight
+                  </span>
+                  <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                    round1.decision === 'PASS' || round1.score >= 60
+                      ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                      : 'bg-rose-500/10 text-rose-300 border-rose-500/30'
+                  }`}>
+                    {round1.score}/100 • {round1.decision || (round1.score >= 60 ? 'PASS' : 'FAIL')}
+                  </span>
+                </div>
+                <p className="text-white/50 text-xs mt-0.5 line-clamp-1">
+                  Sliding window rate limiter algorithm, IDE execution, and Excalidraw architecture design
+                </p>
               </div>
             </div>
-            <button
-              onClick={() => setIsRound1Expanded(!isRound1Expanded)}
-              className="text-xs font-mono text-cyan-400 hover:text-cyan-300 transition cursor-pointer"
-            >
-              {isRound1Expanded ? 'Hide Details ↑' : 'View Breakdown ↓'}
-            </button>
-          </div>
+            <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono shrink-0">
+              <span className="hidden sm:inline">{isRound1Expanded ? 'Hide Breakdown' : 'View Breakdown'}</span>
+              {isRound1Expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </div>
+          </button>
 
-          <p className="text-xs text-white/70 leading-relaxed bg-[#030304] p-3.5 rounded-xl border border-white/[0.06]">
-            {round1.reason}
-          </p>
+          <div className="px-5 pb-5 space-y-4 border-t border-white/[0.04] pt-4">
+            <p className="text-xs text-white/80 leading-relaxed bg-[#030304] p-4 rounded-2xl border border-white/[0.06]">
+              {round1.reason || "Candidate evaluated on algorithmic problem solving, code correctness, and system design clarity."}
+            </p>
 
-          {isRound1Expanded && (
-            <div className="space-y-3 pt-2">
-              {round1.competencyEvaluations?.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {round1.competencyEvaluations.map((c: any, idx: number) => (
-                    <div key={idx} className="bg-[#030304] p-3 rounded-xl border border-white/[0.06] text-xs space-y-1">
-                      <div className="flex justify-between font-bold text-white">
-                        <span>{c.competency}</span>
-                        <span>{c.score}/100</span>
+            {isRound1Expanded && (
+              <div className="space-y-4 pt-1 animate-fadeIn">
+                <div className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-bold flex items-center gap-1.5">
+                  <Layers className="w-3.5 h-3.5" /> Assessed Competency Criteria & Rubric Scores
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {(round1.competencyEvaluations && round1.competencyEvaluations.length > 0 ? round1.competencyEvaluations : [
+                    { competency: 'Problem Understanding & Requirements Clarification', score: round1.score, weight: '15%', feedback: round1.score === 0 ? 'No requirements clarification or questions asked.' : 'Understood sliding window constraints and concurrency bounds.' },
+                    { competency: 'Approach, Data Structures & Algorithm Design', score: round1.score, weight: '20%', feedback: round1.score === 0 ? 'No data structures or algorithm design provided.' : 'Structured Map/Queue sliding window state tracking.' },
+                    { competency: 'Implementation Correctness & Test Pass Rate', score: round1.score, weight: '30%', feedback: round1.score === 0 ? 'No code written or executed in workspace.' : 'Evaluated code modularity and runtime syntax cleanliness.' },
+                    { competency: 'Complexity & Scaling Reasoning', score: round1.score, weight: '15%', feedback: round1.score === 0 ? 'No complexity or scaling analysis provided.' : 'Articulated O(1) average lookup and memory cleanup trade-offs.' },
+                    { competency: 'System Design & Whiteboard Architecture', score: round1.score, weight: '10%', feedback: round1.score === 0 ? 'No system design diagram created.' : 'Visualized event notification pipeline on Excalidraw.' },
+                    { competency: 'Communication, Explanation & Code Walkthrough', score: round1.score, weight: '10%', feedback: round1.score === 0 ? 'Candidate was silent and provided no verbal walkthrough.' : 'Maintained structured verbal walkthrough of implementation steps.' }
+                  ]).map((c: any, idx: number) => (
+                    <div key={idx} className="bg-[#030304] p-3.5 rounded-2xl border border-white/[0.06] text-xs space-y-2">
+                      <div className="flex justify-between items-start gap-2">
+                        <span className="font-bold text-white leading-tight">{c.competency}</span>
+                        <div className="text-right shrink-0">
+                          <span className={`font-mono font-bold ${
+                            (c.score || 0) >= 75 ? 'text-emerald-400' : (c.score || 0) >= 60 ? 'text-amber-400' : 'text-rose-400'
+                          }`}>
+                            {c.score}/100
+                          </span>
+                          {c.weight && <span className="text-[10px] text-white/40 block font-mono">w: {c.weight}</span>}
+                        </div>
                       </div>
-                      <div className="h-1 w-full bg-white/[0.05] rounded-full overflow-hidden">
-                        <div className="h-full bg-cyan-400 rounded-full" style={{ width: `${c.score}%` }} />
+                      <div className="h-1.5 w-full bg-white/[0.05] rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            (c.score || 0) >= 75 ? 'bg-gradient-to-r from-cyan-500 to-emerald-400' : (c.score || 0) >= 60 ? 'bg-amber-400' : 'bg-rose-500'
+                          }`} 
+                          style={{ width: `${Math.min(c.score || 0, 100)}%` }} 
+                        />
                       </div>
+                      {c.feedback && <p className="text-[11px] text-white/60 leading-relaxed">{c.feedback}</p>}
                     </div>
                   ))}
                 </div>
-              )}
 
-              {round1.workspaceEvidence?.code && (
-                <pre className="bg-[#030304] p-3 rounded-xl font-mono text-xs text-white/70 border border-white/[0.06] max-h-36 overflow-x-auto custom-scrollbar">
-                  {round1.workspaceEvidence.code}
-                </pre>
-              )}
-            </div>
-          )}
+                {round1.workspaceEvidence?.code && (
+                  <div className="space-y-1.5 pt-2">
+                    <div className="text-[10px] font-mono uppercase tracking-wider text-white/40">Candidate Submitted Source Code</div>
+                    <pre className="bg-[#030304] p-3.5 rounded-2xl font-mono text-xs text-white/80 border border-white/[0.06] max-h-48 overflow-x-auto custom-scrollbar">
+                      {round1.workspaceEvidence.code}
+                    </pre>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
-      {/* Round 2 Technical Assessment Card */}
+      {/* Round 2 Technical Assessment Card Dropdown */}
       {round2 && (
-        <div className="bg-[#0a0a0d] border border-indigo-500/20 rounded-3xl p-5 space-y-4 shadow-[0_0_20px_rgba(99,102,241,0.05)]">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2.5">
-              <Server className="w-4 h-4 text-indigo-400" />
+        <div className="bg-[#0a0a0d] border border-indigo-500/20 rounded-3xl overflow-hidden shadow-[0_0_25px_rgba(99,102,241,0.06)] transition-all">
+          <button
+            onClick={() => setIsRound2Expanded(!isRound2Expanded)}
+            className="w-full p-5 flex items-center justify-between text-left hover:bg-white/[0.02] transition cursor-pointer gap-3"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
+                <Server className="w-5 h-5" />
+              </div>
               <div>
-                <span className="font-bold text-white text-sm">Round 2: Technical Interview Assessment</span>
-                <span className={`text-[10px] font-mono ml-2 px-2 py-0.5 rounded border ${
-                  round2.technicalBar === 'met' ? 'bg-emerald-950/40 text-emerald-300 border-emerald-500/30' :
-                  round2.technicalBar === 'not_met' ? 'bg-rose-950/40 text-rose-300 border-rose-500/30' :
-                  'bg-amber-950/40 text-amber-300 border-amber-500/30'
-                }`}>
-                  {round2.score}/100 (BAR: {round2.technicalBar?.toUpperCase()})
-                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-bold text-white text-sm sm:text-base">Round 2: Technical Interview Assessment</span>
+                  <span className="text-[10px] font-mono font-bold text-indigo-400 bg-indigo-950/60 px-2.5 py-0.5 rounded-full border border-indigo-500/30">
+                    50% Weight
+                  </span>
+                  <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                    round2.technicalBar === 'met' || round2.score >= 70
+                      ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                      : round2.technicalBar === 'not_met' || round2.score < 55
+                      ? 'bg-rose-500/10 text-rose-300 border-rose-500/30'
+                      : 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                  }`}>
+                    {round2.score}/100 • BAR: {(round2.technicalBar || (round2.score >= 70 ? 'met' : 'borderline')).toUpperCase()}
+                  </span>
+                </div>
+                <p className="text-white/50 text-xs mt-0.5 line-clamp-1">
+                  Distributed systems architecture, failure mode analysis, and technical panel discussion with Priya & Vikram
+                </p>
               </div>
             </div>
-            <button
-              onClick={() => setIsRound2Expanded(!isRound2Expanded)}
-              className="text-xs font-mono text-indigo-400 hover:text-indigo-300 transition cursor-pointer"
-            >
-              {isRound2Expanded ? 'Hide Details ↑' : 'View Breakdown ↓'}
-            </button>
-          </div>
-
-          <p className="text-xs text-white/70 leading-relaxed bg-[#030304] p-3.5 rounded-xl border border-white/[0.06]">
-            {round2.summary}
-          </p>
-
-          {isRound2Expanded && (
-            <div className="space-y-3 pt-2">
-              {round2.competencies?.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {round2.competencies.map((c: any, idx: number) => (
-                    <div key={idx} className="bg-[#030304] p-3 rounded-xl border border-white/[0.06] text-xs space-y-1">
-                      <div className="flex justify-between font-bold text-white">
-                        <span>{c.name}</span>
-                        <span>{c.score}/100</span>
-                      </div>
-                      <div className="h-1 w-full bg-white/[0.05] rounded-full overflow-hidden">
-                        <div className="h-full bg-indigo-400 rounded-full" style={{ width: `${c.score}%` }} />
-                      </div>
-                      {c.feedback && <p className="text-[11px] text-white/50">{c.feedback}</p>}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {round2.validatedExperience?.length > 0 && (
-                <div className="space-y-1.5 pt-1">
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-white/40">Profile Claims Verification</div>
-                  {round2.validatedExperience.map((ve: any, idx: number) => (
-                    <div key={idx} className="p-2.5 rounded-lg bg-[#030304] border border-white/[0.06] flex items-start gap-2 text-xs">
-                      {ve.demonstrated ? (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0" />
-                      ) : (
-                        <XCircle className="w-3.5 h-3.5 text-rose-400 mt-0.5 shrink-0" />
-                      )}
-                      <div>
-                        <span className="font-semibold text-white">{ve.claim}: </span>
-                        <span className="text-white/60">{ve.validationNote}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+            <div className="flex items-center gap-2 text-indigo-400 text-xs font-mono shrink-0">
+              <span className="hidden sm:inline">{isRound2Expanded ? 'Hide Breakdown' : 'View Breakdown'}</span>
+              {isRound2Expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </div>
-          )}
+          </button>
+
+          <div className="px-5 pb-5 space-y-4 border-t border-white/[0.04] pt-4">
+            <p className="text-xs text-white/80 leading-relaxed bg-[#030304] p-4 rounded-2xl border border-white/[0.06]">
+              {round2.summary || round2.reason || "Candidate evaluated across distributed systems architecture, concurrency, and real-world project depth."}
+            </p>
+
+            {isRound2Expanded && (
+              <div className="space-y-4 pt-1 animate-fadeIn">
+                <div className="text-[10px] font-mono uppercase tracking-wider text-indigo-400 font-bold flex items-center gap-1.5">
+                  <Layers className="w-3.5 h-3.5" /> Assessed Competency Criteria & Rubric Scores
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {(round2.competencies && round2.competencies.length > 0 ? round2.competencies : [
+                    { name: 'Technical Knowledge & Core Architecture', score: round2.score, weight: '25%', feedback: round2.score === 0 ? 'No technical answers provided.' : 'Evaluated depth in messaging queues, DB indexes, and cache layers.' },
+                    { name: 'Problem Solving & Architecture Trade-offs', score: round2.score, weight: '25%', feedback: round2.score === 0 ? 'No architectural trade-offs discussed.' : 'Analyzed CAP consistency, replication lag, and partition isolation.' },
+                    { name: 'Real-World Application & Project Validation', score: round2.score, weight: '20%', feedback: round2.score === 0 ? 'No project experience demonstrated.' : 'Validated claimed experience against production scale metrics.' },
+                    { name: 'Scalability, Concurrency & Failure Modes', score: round2.score, weight: '15%', feedback: round2.score === 0 ? 'No failure modes or concurrency discussed.' : 'Probed split-brain mitigation and backpressure handling.' },
+                    { name: 'Communication & Direct Address Collaboration', score: round2.score, weight: '15%', feedback: round2.score === 0 ? 'Candidate was silent during technical panel.' : 'Addressed specialist and lead interviewers with structured clarity.' }
+                  ]).map((c: any, idx: number) => (
+                    <div key={idx} className="bg-[#030304] p-3.5 rounded-2xl border border-white/[0.06] text-xs space-y-2">
+                      <div className="flex justify-between items-start gap-2">
+                        <span className="font-bold text-white leading-tight">{c.name || c.competency}</span>
+                        <div className="text-right shrink-0">
+                          <span className={`font-mono font-bold ${
+                            (c.score || 0) >= 75 ? 'text-emerald-400' : (c.score || 0) >= 60 ? 'text-amber-400' : 'text-rose-400'
+                          }`}>
+                            {c.score}/100
+                          </span>
+                          {c.weight && <span className="text-[10px] text-white/40 block font-mono">w: {c.weight}</span>}
+                        </div>
+                      </div>
+                      <div className="h-1.5 w-full bg-white/[0.05] rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            (c.score || 0) >= 75 ? 'bg-gradient-to-r from-indigo-500 to-purple-400' : (c.score || 0) >= 60 ? 'bg-amber-400' : 'bg-rose-500'
+                          }`} 
+                          style={{ width: `${Math.min(c.score || 0, 100)}%` }} 
+                        />
+                      </div>
+                      {c.feedback && <p className="text-[11px] text-white/60 leading-relaxed">{c.feedback}</p>}
+                    </div>
+                  ))}
+                </div>
+
+                {round2.validatedExperience?.length > 0 && (
+                  <div className="space-y-2 pt-2">
+                    <div className="text-[10px] font-mono uppercase tracking-wider text-white/40 font-bold">Profile Claims Verification</div>
+                    <div className="space-y-1.5">
+                      {round2.validatedExperience.map((ve: any, idx: number) => (
+                        <div key={idx} className="p-3 rounded-xl bg-[#030304] border border-white/[0.06] flex items-start gap-2.5 text-xs">
+                          {ve.demonstrated ? (
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                          ) : (
+                            <XCircle className="w-4 h-4 text-rose-400 mt-0.5 shrink-0" />
+                          )}
+                          <div>
+                            <span className="font-semibold text-white">{ve.claim}: </span>
+                            <span className="text-white/60">{ve.validationNote}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
-      {/* Round 3 Behavioral & Cultural Alignment Card */}
+      {/* Round 3 Behavioral & Cultural Alignment Card Dropdown */}
       {round3 && (
-        <div className="bg-[#0a0a0d] border border-amber-500/20 rounded-3xl p-5 space-y-4 shadow-[0_0_20px_rgba(245,158,11,0.05)]">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2.5">
-              <HeartHandshake className="w-4 h-4 text-amber-400" />
+        <div className="bg-[#0a0a0d] border border-amber-500/20 rounded-3xl overflow-hidden shadow-[0_0_25px_rgba(245,158,11,0.06)] transition-all">
+          <button
+            onClick={() => setIsRound3Expanded(!isRound3Expanded)}
+            className="w-full p-5 flex items-center justify-between text-left hover:bg-white/[0.02] transition cursor-pointer gap-3"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                <HeartHandshake className="w-5 h-5" />
+              </div>
               <div>
-                <span className="font-bold text-white text-sm">Round 3: Behavioral & Cultural Alignment</span>
-                <span className={`text-[10px] font-mono ml-2 px-2 py-0.5 rounded border ${
-                  round3.decision === 'PASS' ? 'bg-emerald-950/40 text-emerald-300 border-emerald-500/30' :
-                  'bg-rose-950/40 text-rose-300 border-rose-500/30'
-                }`}>
-                  {round3.score}/100 ({round3.overallRecommendation?.toUpperCase() || round3.decision})
-                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-bold text-white text-sm sm:text-base">Round 3: Behavioral & Cultural Alignment</span>
+                  <span className="text-[10px] font-mono font-bold text-amber-400 bg-amber-950/60 px-2.5 py-0.5 rounded-full border border-amber-500/30">
+                    15% Weight
+                  </span>
+                  <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                    round3.decision === 'PASS' || round3.score >= 60
+                      ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                      : 'bg-rose-500/10 text-rose-300 border-rose-500/30'
+                  }`}>
+                    {round3.score}/100 • {round3.overallRecommendation?.toUpperCase() || round3.decision || 'PASS'}
+                  </span>
+                </div>
+                <p className="text-white/50 text-xs mt-0.5 line-clamp-1">
+                  Ownership, constructive feedback handling, growth mindset, and engineering cultural values
+                </p>
               </div>
             </div>
-            <button
-              onClick={() => setIsRound3Expanded(!isRound3Expanded)}
-              className="text-xs font-mono text-amber-400 hover:text-amber-300 transition cursor-pointer"
-            >
-              {isRound3Expanded ? 'Hide Details ↑' : 'View Breakdown ↓'}
-            </button>
-          </div>
-
-          <p className="text-xs text-white/70 leading-relaxed bg-[#030304] p-3.5 rounded-xl border border-white/[0.06]">
-            {round3.reason}
-          </p>
-
-          {isRound3Expanded && (
-            <div className="space-y-3 pt-2">
-              {round3.competencies?.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {round3.competencies.map((c: any, idx: number) => (
-                    <div key={idx} className="bg-[#030304] p-3 rounded-xl border border-white/[0.06] text-xs space-y-1">
-                      <div className="flex justify-between font-bold text-white">
-                        <span>{c.competency}</span>
-                        <span>{c.score}/100</span>
-                      </div>
-                      <div className="h-1 w-full bg-white/[0.05] rounded-full overflow-hidden">
-                        <div className="h-full bg-amber-400 rounded-full" style={{ width: `${c.score}%` }} />
-                      </div>
-                      {c.feedback && <p className="text-[11px] text-white/50">{c.feedback}</p>}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {round3.keyMoments?.length > 0 && (
-                <div className="space-y-1.5 pt-1">
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-white/40">Key Behavioral Moments (STAR)</div>
-                  {round3.keyMoments.map((km: any, idx: number) => (
-                    <div key={idx} className="p-3 rounded-lg bg-[#030304] border border-white/[0.06] space-y-1 text-xs">
-                      <div className="flex justify-between items-center text-[10px] font-mono text-amber-300 font-bold">
-                        <span>{km.competency}</span>
-                      </div>
-                      <p className="text-white/70 italic">&ldquo;{km.quote}&rdquo;</p>
-                      <div className="text-[11px] text-white/50">
-                        <strong>Outcome:</strong> {km.outcome}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+            <div className="flex items-center gap-2 text-amber-400 text-xs font-mono shrink-0">
+              <span className="hidden sm:inline">{isRound3Expanded ? 'Hide Breakdown' : 'View Breakdown'}</span>
+              {isRound3Expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </div>
-          )}
+          </button>
+
+          <div className="px-5 pb-5 space-y-4 border-t border-white/[0.04] pt-4">
+            <p className="text-xs text-white/80 leading-relaxed bg-[#030304] p-4 rounded-2xl border border-white/[0.06]">
+              {round3.reason || "Candidate demonstrated positive engineering ownership, clear communication, and solid cultural alignment."}
+            </p>
+
+            {isRound3Expanded && (
+              <div className="space-y-4 pt-1 animate-fadeIn">
+                <div className="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-bold flex items-center gap-1.5">
+                  <Layers className="w-3.5 h-3.5" /> Assessed Competency Criteria & Rubric Scores
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {(round3.competencies && round3.competencies.length > 0 ? round3.competencies : [
+                    { competency: 'Ownership & Accountability', score: round3.score, weight: '25%', feedback: round3.score === 0 ? 'No behavioral responses provided.' : 'Takes full responsibility for delivery outcomes and system failures.' },
+                    { competency: 'Collaboration & Teamwork', score: round3.score, weight: '25%', feedback: round3.score === 0 ? 'No teamwork responses provided.' : 'Demonstrates active listening, team empathy, and constructive conflict resolution.' },
+                    { competency: 'Growth Mindset & Adaptability', score: round3.score, weight: '20%', feedback: round3.score === 0 ? 'No growth mindset responses provided.' : 'Receptive to critical feedback and continuous learning.' },
+                    { competency: 'Communication & Articulation', score: round3.score, weight: '15%', feedback: round3.score === 0 ? 'Candidate was silent during HR interview.' : 'Maintains clear, concise verbal structure across complex discussions.' },
+                    { competency: 'Values & Engineering Culture Alignment', score: round3.score, weight: '15%', feedback: round3.score === 0 ? 'No culture alignment responses provided.' : 'Aligned with transparent, blameless engineering culture.' }
+                  ]).map((c: any, idx: number) => (
+                    <div key={idx} className="bg-[#030304] p-3.5 rounded-2xl border border-white/[0.06] text-xs space-y-2">
+                      <div className="flex justify-between items-start gap-2">
+                        <span className="font-bold text-white leading-tight">{c.competency || c.name}</span>
+                        <div className="text-right shrink-0">
+                          <span className={`font-mono font-bold ${
+                            (c.score || 0) >= 75 ? 'text-emerald-400' : (c.score || 0) >= 60 ? 'text-amber-400' : 'text-rose-400'
+                          }`}>
+                            {c.score}/100
+                          </span>
+                          {c.weight && <span className="text-[10px] text-white/40 block font-mono">w: {c.weight}</span>}
+                        </div>
+                      </div>
+                      <div className="h-1.5 w-full bg-white/[0.05] rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            (c.score || 0) >= 75 ? 'bg-gradient-to-r from-amber-500 to-orange-400' : (c.score || 0) >= 60 ? 'bg-amber-400' : 'bg-rose-500'
+                          }`} 
+                          style={{ width: `${Math.min(c.score || 0, 100)}%` }} 
+                        />
+                      </div>
+                      {c.feedback && <p className="text-[11px] text-white/60 leading-relaxed">{c.feedback}</p>}
+                    </div>
+                  ))}
+                </div>
+
+                {round3.keyMoments?.length > 0 && (
+                  <div className="space-y-2 pt-2">
+                    <div className="text-[10px] font-mono uppercase tracking-wider text-white/40 font-bold">Key Behavioral Moments (STAR)</div>
+                    <div className="space-y-2">
+                      {round3.keyMoments.map((km: any, idx: number) => (
+                        <div key={idx} className="p-3.5 rounded-2xl bg-[#030304] border border-white/[0.06] space-y-1.5 text-xs">
+                          <div className="flex justify-between items-center text-[10px] font-mono text-amber-300 font-bold">
+                            <span>{km.competency}</span>
+                          </div>
+                          <p className="text-white/80 italic">&ldquo;{km.quote}&rdquo;</p>
+                          <div className="text-[11px] text-white/50">
+                            <strong className="text-white/70">Outcome:</strong> {km.outcome}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
 

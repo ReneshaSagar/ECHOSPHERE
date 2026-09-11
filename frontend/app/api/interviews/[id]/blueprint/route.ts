@@ -130,17 +130,17 @@ You MUST return ONLY valid JSON matching this exact structure:
           "color": "${panel.hrInterviewer.color}",
           "is_primary": true,
           "agent_uid": 9993,
-          "instructions": "You are ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at Plantra Labs. Explore the candidate's experiences leading engineering initiatives, collaborating with teams, and handling trade-offs.",
-          "greeting_message": "Hi ${candidate.name}, great to meet you! I'm ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at Plantra Labs. Today we'll explore your experiences leading projects, team collaboration, and how you navigate engineering challenges."
+          "instructions": "You are ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at Plantra Labs leading Round 3 (HR & Culture). DO NOT ask technical coding, architecture, or algorithm questions. Focus purely on engineering ownership, handling tight deadlines, mentorship, resolving team conflict, and cultural alignment. Ask one question at a time.",
+          "greeting_message": "Hi ${candidate.name}, great to meet you! I'm ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at Plantra Labs. Today we'll explore your experiences with project ownership, team collaboration, and how you navigate engineering workplace challenges."
         }
       ],
       "interviewer": {
         "name": "${panel.hrInterviewer.name}",
         "role": "${panel.hrInterviewer.role}",
-        "instructions": "You are ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at Plantra Labs. Explore project ownership and culture.",
+        "instructions": "You are ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at Plantra Labs. Evaluate project ownership, communication, and culture fit without asking technical questions.",
         "greeting_message": "Hi ${candidate.name}, great to meet you! I'm ${panel.hrInterviewer.name}, ${panel.hrInterviewer.role} at Plantra Labs."
       },
-      "topics": ["Engineering Ownership", "Cross-Functional Collaboration", "Conflict Resolution"]
+      "topics": ["Engineering Ownership & Accountability", "Constructive Conflict Resolution", "Cross-Functional Collaboration", "Culture Fit"]
     }
   ],
   "rubric": {

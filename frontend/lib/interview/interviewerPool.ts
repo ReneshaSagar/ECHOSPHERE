@@ -222,7 +222,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
       name: 'Rohan Sen',
       role: 'Senior Product Manager',
       department: 'Product Management',
-      voice: 'Aoede',
+      voice: 'Fenrir',
       color: '#3B82F6',
       persona: {
         style: 'user-centric, strategic, metrics-driven',
@@ -240,7 +240,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
       name: 'Nisha Mehra',
       role: 'Group Product Manager / Strategy Lead',
       department: 'Product Leadership',
-      voice: 'Charon',
+      voice: 'Aoede',
       color: '#8B5CF6',
       persona: {
         style: 'rigorous, business-focused, challenger',
@@ -315,7 +315,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
       name: 'Sunita Shenoy',
       role: 'Principal Analytics Architect',
       department: 'Data Platform',
-      voice: 'Charon',
+      voice: 'Kore',
       color: '#6366F1',
       persona: {
         style: 'systems-scale, critical, data-driven',
@@ -389,7 +389,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
       name: 'Natasha Roy',
       role: 'Head of Solutions Engineering',
       department: 'Sales Engineering',
-      voice: 'Charon',
+      voice: 'Aoede',
       color: '#7C3AED',
       persona: {
         style: 'technical, consultative, rigorous',
@@ -426,7 +426,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
       name: 'Swati Gupta',
       role: 'VP Finance & Operations',
       department: 'Finance & Strategy',
-      voice: 'Charon',
+      voice: 'Kore',
       color: '#475569',
       persona: {
         style: 'analytical, strategic, governance-first',
@@ -446,7 +446,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
       name: 'Siddharth Roy',
       role: 'Senior Domain Lead',
       department: 'Leadership Panel',
-      voice: 'Aoede',
+      voice: 'Fenrir',
       color: '#3B82F6',
       persona: {
         style: 'conversational, structured, supportive',
@@ -463,7 +463,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
       name: 'Tanvi Sethi',
       role: 'Staff Domain Specialist',
       department: 'Strategy & Execution',
-      voice: 'Charon',
+      voice: 'Aoede',
       color: '#8B5CF6',
       persona: {
         style: 'probing, analytical, challenger',
@@ -480,8 +480,8 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
   hr: [
     {
       interviewerId: 'hr_01',
-      name: 'Tara Sharma',
-      role: 'Head of People & Culture',
+      name: 'Sarah Jenkins',
+      role: 'VP of Engineering Culture & People',
       department: 'People & Talent',
       voice: 'Aoede',
       color: '#EA580C', // Deep Orange
@@ -490,7 +490,24 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
         seniority: 'lead',
         focusAreas: ['Engineering Ownership', 'Cross-Functional Collaboration', 'Handling Conflict', 'Growth Mindset & Motivation'],
         behavior: [
-          'references specific candidate achievements discovered in the technical round',
+          'probes how the candidate handles disagreements between team members',
+          'evaluates communication clarity, empathy, and team alignment',
+          'creates an encouraging, transparent conversation focused on behavioral stories and ownership'
+        ]
+      }
+    },
+    {
+      interviewerId: 'hr_02',
+      name: 'Tara Sharma',
+      role: 'Head of People & Culture',
+      department: 'People & Talent',
+      voice: 'Aoede',
+      color: '#EA580C',
+      persona: {
+        style: 'warm, perceptive, structured, culture-centric',
+        seniority: 'lead',
+        focusAreas: ['Engineering Ownership', 'Cross-Functional Collaboration', 'Handling Conflict', 'Growth Mindset & Motivation'],
+        behavior: [
           'probes how the candidate handles disagreements between team members',
           'evaluates communication clarity, empathy, and team alignment',
           'creates an encouraging, transparent conversation'
@@ -498,7 +515,7 @@ export const DEFAULT_COMPANY_INTERVIEWER_POOL: CompanyInterviewerPool = {
       }
     },
     {
-      interviewerId: 'hr_02',
+      interviewerId: 'hr_03',
       name: 'Ritu Deshmukh',
       role: 'Senior Talent Partner',
       department: 'People & Talent',
@@ -522,6 +539,52 @@ export interface SelectedPanel {
   technicalPrimary: InterviewerProfile;
   technicalChallenger: InterviewerProfile;
   hrInterviewer: InterviewerProfile;
+}
+
+/**
+ * Automatically ensures male names get male voices and female names get female voices.
+ */
+export function getGenderAwareVoice(name: string, preferredVoice?: string): string {
+  const nameLower = (name || '').toLowerCase().trim();
+  const firstName = nameLower.split(' ')[0] || '';
+
+  const femaleNames = [
+    'priya', 'sarah', 'neha', 'ananya', 'meera', 'maya', 'nisha', 'sunita',
+    'pooja', 'natasha', 'swati', 'tanvi', 'tara', 'ritu', 'elena', 'chloe',
+    'sophia', 'emily', 'olivia', 'emma', 'ava', 'isabella', 'mia', 'charlotte',
+    'amelia', 'harper', 'evelyn', 'abigail', 'mila', 'ella', 'avery', 'sofia',
+    'camila', 'aria', 'scarlett', 'victoria', 'madison', 'luna', 'grace', 'penelope',
+    'layla', 'riley', 'zoey', 'nora', 'lily', 'eleanor', 'hannah', 'lillian',
+    'claire', 'lucy', 'anna', 'caroline', 'emilia', 'samantha', 'alice', 'eva'
+  ];
+
+  const maleNames = [
+    'arjun', 'vikram', 'karan', 'aditya', 'kabir', 'dev', 'rohan', 'aarav',
+    'sameer', 'zayn', 'varun', 'alok', 'siddharth', 'david', 'marcus', 'alex',
+    'michael', 'john', 'james', 'robert', 'william', 'joseph', 'thomas', 'charles',
+    'christopher', 'daniel', 'matthew', 'anthony', 'mark', 'paul', 'steven', 'andrew',
+    'joshua', 'kevin', 'brian', 'george', 'edward', 'jason', 'ryan', 'jacob', 'eric',
+    'jonathan', 'stephen', 'justin', 'scott', 'brandon', 'benjamin', 'samuel', 'patrick'
+  ];
+
+  const femaleVoices = ['Aoede', 'Kore', 'Leda', 'Zephyr'];
+  const maleVoices = ['Charon', 'Fenrir', 'Puck', 'Orus'];
+
+  const isFemale = femaleNames.some(fn => firstName === fn || nameLower.includes(fn));
+  const isMale = maleNames.some(mn => firstName === mn || nameLower.includes(mn));
+
+  if (isFemale) {
+    if (preferredVoice && femaleVoices.includes(preferredVoice)) return preferredVoice;
+    return 'Aoede';
+  }
+
+  if (isMale) {
+    if (preferredVoice && maleVoices.includes(preferredVoice)) return preferredVoice;
+    return 'Charon';
+  }
+
+  if (preferredVoice) return preferredVoice;
+  return 'Aoede';
 }
 
 /**
@@ -586,7 +649,7 @@ export function selectPanelForJob(jobTitle: string = ''): SelectedPanel {
     challenger = pool.general[1];
   }
 
-  const hr = pool.hr[0]; // Tara Sharma (Head of People & Culture)
+  const hr = pool.hr[0]; // Sarah Jenkins (VP of Engineering Culture & People)
 
   return {
     category,

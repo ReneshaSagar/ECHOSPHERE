@@ -33,15 +33,15 @@ You MUST return ONLY valid JSON matching this exact structure:
       "purpose": "Evaluate behavioral skills and culture fit",
       "interviewers": [
         {
-          "name": "Taylor (HR)",
-          "role": "Talent Acquisition Manager",
-          "voice": "Puck",
+          "name": "Sarah (HR)",
+          "role": "Talent Acquisition & Culture Lead",
+          "voice": "Aoede",
           "agent_uid": 9993,
-          "instructions": "<instructions for the HR LLM voice agent>",
-          "greeting_message": "<the exact opening line Taylor will speak>"
+          "instructions": "Lead Round 2/3 (HR & Culture). DO NOT ask technical questions. Evaluate teamwork, ownership, and culture fit.",
+          "greeting_message": "<the exact opening line Sarah will speak>"
         }
       ],
-      "topics": ["teamwork", "leadership"]
+      "topics": ["teamwork & collaboration", "ownership & accountability", "conflict resolution"]
     }
   ],
   "rubric": {

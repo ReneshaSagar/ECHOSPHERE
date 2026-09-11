@@ -212,31 +212,47 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
     return <div className="p-10 text-center text-rose-400 font-mono">Failed to parse blueprint JSON.</div>;
   }
 
+    const candidateInitials = candidate.name
+    ? candidate.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase()
+    : 'C';
+
   return (
-    <div className="h-screen bg-[#030304] text-[#f5f5f7] flex flex-col font-sans">
-      <header className="sticky top-0 z-40 bg-[#030304]/80 backdrop-blur-xl border-b border-white/[0.06] py-3.5 px-6 flex justify-between items-center shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 flex items-center justify-center text-xs font-bold text-white shadow-[0_0_15px_rgba(168,85,247,0.15)]">
-            O
+    <div className="h-screen bg-[#030304] text-[#f4f4f5] flex flex-col font-sans selection:bg-purple-500/30 selection:text-white">
+      <header className="sticky top-0 z-40 bg-[#030304]/80 backdrop-blur-xl border-b border-white/[0.06] py-3.5 px-6 sm:px-8 flex justify-between items-center shrink-0">
+        <div className="flex items-center gap-3.5">
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-medium tracking-tight font-sans lowercase text-white">
+              plantra
+            </span>
+            <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-purple-400 to-pink-400"></span>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-sans font-bold text-white tracking-tight">OMNIPANEL</span>
-            </div>
-            <p className="text-xs font-mono text-white/40">Plantra Labs · {job.title}</p>
+
+          <span className="text-white/20 font-light hidden sm:inline">/</span>
+
+          <div className="hidden sm:flex items-center gap-2">
+            <span className="text-xs font-medium text-white/90">Meet</span>
+            <span className="text-white/20 font-light">·</span>
+            <span className="text-xs font-mono text-zinc-400 bg-white/[0.03] border border-white/[0.06] px-2.5 py-0.5 rounded-md truncate max-w-xs md:max-w-md">
+              {job.title}
+            </span>
           </div>
         </div>
 
-        <div className="text-right">
-          <div className="text-xs sm:text-sm font-sans font-bold text-white">{candidate.name}</div>
-          <div className="text-xs font-mono text-emerald-400 flex items-center justify-end gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>session ready</span>
+        <div className="flex items-center gap-3">
+          <div className="text-right">
+            <div className="text-xs font-medium text-white">{candidate.name}</div>
+            <div className="text-[11px] font-mono text-emerald-400 flex items-center justify-end gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <span>Session Ready</span>
+            </div>
+          </div>
+          <div className="w-8 h-8 rounded-full bg-white/[0.06] border border-white/[0.12] flex items-center justify-center text-xs font-mono font-medium text-white/80">
+            {candidateInitials}
           </div>
         </div>
       </header>
       
-      <main className="flex-1 flex flex-col overflow-hidden relative z-10">
+      <main className="flex-1 flex flex-col overflow-y-auto relative z-10">
         <InterviewLobbyWrapper 
           blueprint={parsedBlueprint} 
           interviewId={interview.id} 

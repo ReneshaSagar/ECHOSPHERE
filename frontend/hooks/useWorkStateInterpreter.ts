@@ -60,7 +60,7 @@ export function useWorkStateInterpreter({
         onWorkStateEvent(event);
       }
       lastDiagramRef.current = diagramElements;
-    }, 1500);
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, [diagramElements, mode, enabled, onWorkStateEvent]);

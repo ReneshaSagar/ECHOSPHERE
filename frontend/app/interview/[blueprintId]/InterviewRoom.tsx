@@ -6,14 +6,15 @@ import Link from 'next/link';
 import ProctorEngine from './ProctorEngine';
 import { injectKnowledgeBaseIntoAgentInstructions } from '@/lib/enrichment/knowledgeBase';
 import { isClosingUtterance } from '@/lib/interview/interviewState';
-import { Users, Shield, Zap, Sparkles, Mic, MicOff, Volume2, VolumeX, UserCheck, AlertCircle, Clock, ChevronUp, ChevronDown, Video, CheckCircle, Code2, Layers } from 'lucide-react';
+import { getGenderAwareVoice } from '@/lib/interview/interviewerPool';
+import { Users, Shield, Zap, Sparkles, Mic, MicOff, Volume2, VolumeX, UserCheck, AlertCircle, Clock, ChevronUp, ChevronDown, Video, VideoOff, ArrowRight, CheckCircle, Code2, Layers, PhoneOff } from 'lucide-react';
 import ParticleTalkingOrb from '@/components/room/ParticleTalkingOrb';
 import AgentPanel from './components/AgentPanel';
 import SystemTelemetry from './components/SystemTelemetry';
 import CodingWorkspace from '@/components/workspace/CodingWorkspace';
 import SystemDesignWorkspace from '@/components/workspace/SystemDesignWorkspace';
 import { useWorkStateInterpreter } from '@/hooks/useWorkStateInterpreter';
-import { WorkStateEvent } from '@/lib/interview/workStateInterpreter';
+import { WorkStateEvent, serializeDiagramElements } from '@/lib/interview/workStateInterpreter';
 
 type InterviewerInfo = {
   interviewer_id?: string;
@@ -88,6 +89,11 @@ export default function InterviewRoom({
   const [micVolume, setMicVolume] = useState(0);
   const [floorOwner, setFloorOwner] = useState<'PRIMARY_AI' | 'CHALLENGER_AI' | 'HR_AI' | 'CANDIDATE' | 'NONE' | 'CROSSTALK'>('NONE');
   const [currentRound, setCurrentRound] = useState(0);
+  const currentRoundRef = useRef(0);
+  useEffect(() => {
+    currentRoundRef.current = currentRound;
+  }, [currentRound]);
+  const isFinishingRoundRef = useRef<boolean>(false);
   const [activePanelAgents, setActivePanelAgents] = useState<RunningAgent[]>([]);
   const activePanelAgentsRef = useRef<RunningAgent[]>([]);
   useEffect(() => {
@@ -117,6 +123,7 @@ export default function InterviewRoom({
   const dataStreamIdRef = useRef<number | null>(null);
   const codeRef = useRef<string>('');
   const languageRef = useRef<string>('typescript');
+  const diagramElementsRef = useRef<any[]>([]);
 
   const handleWorkStateEvent = (event: WorkStateEvent) => {
     const componentName = event.type === 'STUCK_SIGNAL' ? 'Stuck Detector' : 'Work Interpreter';
@@ -133,12 +140,20 @@ export default function InterviewRoom({
 
     const currentCode = codeRef.current;
     const currentLang = languageRef.current;
+    const currentDiagramElements = event.metadata?.elements || diagramElementsRef.current || [];
+    const diagramSummary = serializeDiagramElements(currentDiagramElements);
 
     // 1. Broadcast Workspace Event to AI Agent via Agora RTC Data Stream
     if (clientRef.current && (clientRef.current as any).connectionState === 'CONNECTED') {
       try {
-        const fullCode = (event.source === 'coding' && currentCode) ? currentCode.slice(0, 1200) : (event.metadata?.code || '');
-        const formattedText = `[SILENT CONTEXT ONLY - DO NOT READ ALOUD - INTERVIEWER OBSERVATION: Candidate workspace activity (${event.source}): ${event.summary}${fullCode ? `\n\nCandidate Current IDE Source Code (${currentLang}):\n\`\`\`${currentLang}\n${fullCode}\n\`\`\`` : ''}]`;
+        let formattedText = '';
+        if (event.source === 'excalidraw') {
+          formattedText = `[SILENT CONTEXT ONLY - DO NOT READ ALOUD - INTERVIEWER OBSERVATION: Candidate workspace activity (whiteboard): ${event.summary}\n\nCandidate Current Whiteboard Architecture Diagram:\n${diagramSummary}]`;
+        } else {
+          const fullCode = currentCode ? currentCode.slice(0, 1200) : (event.metadata?.code || '');
+          formattedText = `[SILENT CONTEXT ONLY - DO NOT READ ALOUD - INTERVIEWER OBSERVATION: Candidate workspace activity (coding): ${event.summary}${fullCode ? `\n\nCandidate Current IDE Source Code (${currentLang}):\n\`\`\`${currentLang}\n${fullCode}\n\`\`\`` : ''}]`;
+        }
+
         const payload = new TextEncoder().encode(JSON.stringify({
           text: formattedText,
           is_final: true,
@@ -175,7 +190,12 @@ export default function InterviewRoom({
         event_type: event.type,
         summary: event.summary,
         source: event.source,
-        metadata: { ...(event.metadata || {}), code: currentCode ? currentCode.slice(0, 1200) : '', language: currentLang },
+        metadata: {
+          ...(event.metadata || {}),
+          code: event.source === 'coding' ? (currentCode ? currentCode.slice(0, 1200) : '') : '',
+          language: currentLang,
+          diagramSummary: event.source === 'excalidraw' ? diagramSummary : ''
+        },
         timestamp: Date.now()
       })
     }).catch(err => console.warn('[WorkspaceSync] Backend sync error:', err));
@@ -210,54 +230,147 @@ export default function InterviewRoom({
     languageRef.current = language;
   }, [language]);
 
-  // Periodic Live Code Stream Sync to Gemini Agent (Every 4 seconds)
-  const lastSyncedCodeRef = useRef<string>('');
   useEffect(() => {
-    if (testState !== 'RUNNING' || !isRound1WorkspaceActive || workspaceMode !== 'coding' || !code) return;
+    diagramElementsRef.current = diagramElements;
+  }, [diagramElements]);
+
+  // Switch Workspace View & Notify AI Agent with Current Workspace State
+  const switchWorkspaceMode = (newMode: 'coding' | 'excalidraw') => {
+    if (newMode === workspaceMode) return;
+    setWorkspaceMode(newMode);
+    addLog('Workspace', `Switched active workspace to ${newMode === 'coding' ? 'Coding IDE (Monaco)' : 'System Design Whiteboard (Excalidraw)'}`);
+
+    const activeAgent = activePanelAgentsRef.current[0];
+    const modeLabel = newMode === 'coding' ? 'Coding / DSA (Monaco Code Editor)' : 'System Design (Excalidraw Whiteboard)';
+    const snapshotDetails = newMode === 'coding'
+      ? (codeRef.current ? `Current Code (${languageRef.current}):\n\`\`\`${languageRef.current}\n${codeRef.current.slice(0, 800)}\n\`\`\`` : 'Editor is currently empty.')
+      : serializeDiagramElements(diagramElementsRef.current);
+
+    const broadcastText = `[SYSTEM WORKSPACE NOTICE] Candidate has switched their active view to: ${modeLabel}.\n\nLive Snapshot:\n${snapshotDetails}`;
+
+    if (clientRef.current && (clientRef.current as any).connectionState === 'CONNECTED') {
+      try {
+        const payload = new TextEncoder().encode(JSON.stringify({
+          text: broadcastText,
+          is_final: true,
+          uid: candidateUidRef.current
+        }));
+        if (dataStreamIdRef.current !== null) {
+          (clientRef.current as any).sendStreamMessage(dataStreamIdRef.current, payload);
+        }
+      } catch (e) {}
+    }
+
+    fetch('/api/agora-mllm/workspace-update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        session_id: interviewId,
+        candidate_uid: candidateUidRef.current,
+        agent_uid: activeAgent?.agentUid || 9993,
+        agent_id: activeAgent?.agentId || '',
+        event_type: 'WORKSPACE_MODE_SWITCH',
+        summary: `Switched view to ${modeLabel}`,
+        source: newMode,
+        metadata: {
+          code: newMode === 'coding' ? (codeRef.current ? codeRef.current.slice(0, 1200) : '') : '',
+          language: languageRef.current,
+          diagramSummary: newMode === 'excalidraw' ? serializeDiagramElements(diagramElementsRef.current) : ''
+        },
+        timestamp: Date.now()
+      })
+    }).catch(err => console.warn('[WorkspaceSync] Mode switch sync error:', err));
+  };
+
+  // Periodic Live Stream Sync to Gemini Agent (Both Code and Whiteboard)
+  const lastSyncedCodeRef = useRef<string>('');
+  const lastSyncedDiagramRef = useRef<string>('');
+  useEffect(() => {
+    if (testState !== 'RUNNING' || !isRound1WorkspaceActive) return;
 
     const syncInterval = setInterval(() => {
-      if (code === lastSyncedCodeRef.current) return;
-      lastSyncedCodeRef.current = code;
-
       const activeAgent = activePanelAgentsRef.current[0];
 
-      // 1. Broadcast via Agora RTC Data Stream
-      if (clientRef.current && (clientRef.current as any).connectionState === 'CONNECTED') {
-        try {
-          const payloadText = `[SYSTEM LIVE CODE SNAPSHOT] Candidate current live code in IDE (${language}):\n\`\`\`${language}\n${code.slice(0, 1200)}\n\`\`\``;
-          const payload = new TextEncoder().encode(JSON.stringify({
-            text: payloadText,
-            is_final: true,
-            uid: candidateUidRef.current
-          }));
-          if (dataStreamIdRef.current !== null) {
-            (clientRef.current as any).sendStreamMessage(dataStreamIdRef.current, payload);
-          }
-        } catch (e) {}
-      }
+      if (workspaceMode === 'coding' && code) {
+        if (code === lastSyncedCodeRef.current) return;
+        lastSyncedCodeRef.current = code;
 
-      // 2. Sync via Backend agentThink HTTP API
-      if (activeAgent?.agentId) {
-        fetch('/api/agora-mllm/workspace-update', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            session_id: interviewId,
-            candidate_uid: candidateUidRef.current,
-            agent_uid: activeAgent.agentUid,
-            agent_id: activeAgent.agentId,
-            event_type: 'WORK_STATE_UPDATE',
-            summary: 'Live IDE snapshot update',
-            source: workspaceMode,
-            metadata: { code: code.slice(0, 1200), language },
-            timestamp: Date.now()
-          })
-        }).catch(err => console.warn('[WorkspaceSync] Code snapshot sync error:', err));
+        // 1. Broadcast via Agora RTC Data Stream
+        if (clientRef.current && (clientRef.current as any).connectionState === 'CONNECTED') {
+          try {
+            const payloadText = `[SYSTEM LIVE CODE SNAPSHOT] Candidate current live code in IDE (${language}):\n\`\`\`${language}\n${code.slice(0, 1200)}\n\`\`\``;
+            const payload = new TextEncoder().encode(JSON.stringify({
+              text: payloadText,
+              is_final: true,
+              uid: candidateUidRef.current
+            }));
+            if (dataStreamIdRef.current !== null) {
+              (clientRef.current as any).sendStreamMessage(dataStreamIdRef.current, payload);
+            }
+          } catch (e) {}
+        }
+
+        // 2. Sync via Backend agentThink HTTP API
+        if (activeAgent?.agentId) {
+          fetch('/api/agora-mllm/workspace-update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              session_id: interviewId,
+              candidate_uid: candidateUidRef.current,
+              agent_uid: activeAgent.agentUid,
+              agent_id: activeAgent.agentId,
+              event_type: 'WORK_STATE_UPDATE',
+              summary: 'Live IDE snapshot update',
+              source: 'coding',
+              metadata: { code: code.slice(0, 1200), language },
+              timestamp: Date.now()
+            })
+          }).catch(err => console.warn('[WorkspaceSync] Code snapshot sync error:', err));
+        }
+      } else if (workspaceMode === 'excalidraw' && diagramElements && diagramElements.length > 0) {
+        const currentDiagramSummary = serializeDiagramElements(diagramElements);
+        if (currentDiagramSummary === lastSyncedDiagramRef.current) return;
+        lastSyncedDiagramRef.current = currentDiagramSummary;
+
+        // 1. Broadcast via Agora RTC Data Stream
+        if (clientRef.current && (clientRef.current as any).connectionState === 'CONNECTED') {
+          try {
+            const payloadText = `[SYSTEM LIVE WHITEBOARD SNAPSHOT] Candidate current whiteboard architecture diagram:\n${currentDiagramSummary}`;
+            const payload = new TextEncoder().encode(JSON.stringify({
+              text: payloadText,
+              is_final: true,
+              uid: candidateUidRef.current
+            }));
+            if (dataStreamIdRef.current !== null) {
+              (clientRef.current as any).sendStreamMessage(dataStreamIdRef.current, payload);
+            }
+          } catch (e) {}
+        }
+
+        // 2. Sync via Backend agentThink HTTP API
+        if (activeAgent?.agentId) {
+          fetch('/api/agora-mllm/workspace-update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              session_id: interviewId,
+              candidate_uid: candidateUidRef.current,
+              agent_uid: activeAgent.agentUid,
+              agent_id: activeAgent.agentId,
+              event_type: 'WORK_STATE_UPDATE',
+              summary: 'Live Whiteboard snapshot update',
+              source: 'excalidraw',
+              metadata: { diagramSummary: currentDiagramSummary },
+              timestamp: Date.now()
+            })
+          }).catch(err => console.warn('[WorkspaceSync] Diagram snapshot sync error:', err));
+        }
       }
-    }, 4000);
+    }, 3500);
 
     return () => clearInterval(syncInterval);
-  }, [testState, isRound1WorkspaceActive, workspaceMode, code, language, interviewId]);
+  }, [testState, isRound1WorkspaceActive, workspaceMode, code, language, diagramElements, interviewId]);
 
   const [deviceCheckStatus, setDeviceCheckStatus] = useState<{
     camera: 'checking' | 'active' | 'blocked';
@@ -323,6 +436,76 @@ export default function InterviewRoom({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Synchronize localStream with localVideoRef whenever either changes
+  useEffect(() => {
+    if (localVideoRef.current && localStream) {
+      if (localVideoRef.current.srcObject !== localStream) {
+        localVideoRef.current.srcObject = localStream;
+      }
+      localVideoRef.current.play().catch(() => {});
+    }
+  }, [localStream, testState]);
+
+  // Live Audio Level Analyzer for Pre-Flight / Green Room
+  useEffect(() => {
+    if (!localStream || testState === 'RUNNING') return;
+
+    const audioTracks = localStream.getAudioTracks();
+    if (audioTracks.length === 0) return;
+
+    let audioContext: AudioContext | null = null;
+    let rafId: number | null = null;
+
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      audioContext = new AudioContextClass();
+      const analyser = audioContext.createAnalyser();
+      const microphone = audioContext.createMediaStreamSource(localStream);
+      microphone.connect(analyser);
+
+      analyser.fftSize = 256;
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      let smoothedVolume = 0;
+
+      const checkVolume = () => {
+        if (isMuted) {
+          setMicVolume(0);
+          rafId = requestAnimationFrame(checkVolume);
+          return;
+        }
+
+        analyser.getByteTimeDomainData(dataArray);
+        let max = 0;
+        for (let i = 0; i < analyser.frequencyBinCount; i++) {
+          const val = Math.abs(dataArray[i] - 128);
+          if (val > max) max = val;
+        }
+
+        // Scale so normal speaking registers nicely (0-100)
+        const currentVol = Math.min(100, (max / 45) * 100);
+        if (currentVol > smoothedVolume) {
+          smoothedVolume = currentVol;
+        } else {
+          smoothedVolume = smoothedVolume * 0.82 + currentVol * 0.18;
+        }
+
+        setMicVolume(Math.round(smoothedVolume));
+        rafId = requestAnimationFrame(checkVolume);
+      };
+
+      checkVolume();
+    } catch (err) {
+      console.warn('[AudioContext] Green room mic analyzer initialization warning:', err);
+    }
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      if (audioContext && audioContext.state !== 'closed') {
+        audioContext.close().catch(() => {});
+      }
+    };
+  }, [localStream, testState, isMuted]);
+
   const [isVideoOff, setIsVideoOff] = useState(false);
 
   const toggleCamera = () => {
@@ -333,20 +516,30 @@ export default function InterviewRoom({
       });
     }
     setIsVideoOff(nextState);
+    if (!nextState && localVideoRef.current && localStream) {
+      if (localVideoRef.current.srcObject !== localStream) {
+        localVideoRef.current.srcObject = localStream;
+      }
+      localVideoRef.current.play().catch(() => {});
+    }
   };
 
   const toggleMute = () => {
+    const nextMuted = !isMuted;
     // Standard stream
     if (localStream) {
       localStream.getAudioTracks().forEach(track => {
-        track.enabled = !track.enabled;
+        track.enabled = !nextMuted;
       });
     }
-    // Agora track
+    // Agora track - use setEnabled consistently to prevent setEnabled/setMuted collisions
     if (localAudioTrackRef.current) {
-      localAudioTrackRef.current.setMuted(!isMuted);
+      try {
+        localAudioTrackRef.current.setEnabled(!nextMuted);
+      } catch (e) {}
     }
-    setIsMuted(!isMuted);
+    setIsMuted(nextMuted);
+    if (nextMuted) setMicVolume(0);
   };
 
   const toggleDeafen = () => {
@@ -404,7 +597,11 @@ export default function InterviewRoom({
   useEffect(() => {
     if (testState === 'ENDED') {
       const timer = setTimeout(() => {
-        router.push(`/interview/${interviewId}/completed`);
+        if (interviewId === 'demo-interview-test' || (typeof window !== 'undefined' && window.location.pathname.includes('interview-test'))) {
+          router.push('/interview-test-result');
+        } else {
+          router.push(`/interview/${interviewId}/completed`);
+        }
       }, 2000);
       return () => clearTimeout(timer);
     }
@@ -414,9 +611,24 @@ export default function InterviewRoom({
   useEffect(() => {
     if (testState === 'ROUND_TRANSITION') {
       const nextRoundIdx = currentRound;
+      const totalRounds = blueprint.interview_rounds.length;
+
+      if (nextRoundIdx >= totalRounds) {
+        // Out of bounds - finalize interview immediately
+        setTestState('INTERVIEW_COMPLETE');
+        fetch(`/api/interviews/${interviewId}/evaluate-final`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ transcript })
+        }).finally(() => {
+          setTestState('ENDED');
+        });
+        return;
+      }
+
       const nextRoundObj = blueprint.interview_rounds[nextRoundIdx];
       const timer = setTimeout(() => {
-        addLog('System', `Auto-starting Round ${nextRoundIdx + 1} (${nextRoundObj?.round_name || 'Technical Round'})...`);
+        addLog('System', `Auto-starting Round ${nextRoundIdx + 1} of ${totalRounds} (${nextRoundObj?.round_name || 'Technical Round'})...`);
         startTest(nextRoundIdx);
       }, 3500);
       return () => clearTimeout(timer);
@@ -780,15 +992,33 @@ export default function InterviewRoom({
   };
 
   const startTest = async (roundIdx?: number) => {
-    if (isStartingRef.current || testState === 'RUNNING' || testState === 'STARTING') return;
+    if (isStartingRef.current || testStateRef.current === 'RUNNING' || testStateRef.current === 'STARTING') return;
+    
+    const totalRounds = blueprint.interview_rounds.length;
+    const targetRound = roundIdx !== undefined ? roundIdx : currentRoundRef.current;
+    
+    if (targetRound >= totalRounds) {
+      // Out of bounds - interview is fully concluded
+      setTestState('INTERVIEW_COMPLETE');
+      try {
+        await fetch(`/api/interviews/${interviewId}/evaluate-final`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ transcript })
+        });
+      } catch (e) {}
+      setTestState('ENDED');
+      return;
+    }
+
     isStartingRef.current = true;
+    isFinishingRoundRef.current = false;
     setTestState('STARTING');
     setLogs([]);
     autoFinishTriggeredRef.current = false;
     currentFloorRef.current = 'PRIMARY_AI';
     
-    const targetRound = roundIdx !== undefined ? roundIdx : currentRound;
-    const round = blueprint.interview_rounds[targetRound] || blueprint.interview_rounds[0];
+    const round = blueprint.interview_rounds[targetRound];
     const isTechnicalRound = round.round_type === 'technical';
     const roundInterviewers: InterviewerInfo[] = round.interviewers && round.interviewers.length > 0
       ? round.interviewers
@@ -910,8 +1140,9 @@ CRITICAL INVARIANTS:
           resumeText
         );
 
-        // 1. Spawn Primary Agent (UID 9991, Voice e.g. Aoede)
-        addLog('Backend', `Spawning Primary Interviewer (${primary.name}, Voice: ${primary.voice || 'Aoede'})...`);
+        // 1. Spawn Primary Agent (UID 9991)
+        const primaryVoice = getGenderAwareVoice(primary.name, primary.voice);
+        addLog('Backend', `Spawning Primary Interviewer (${primary.name}, Voice: ${primaryVoice})...`);
         const primaryRes = await fetch(`/api/agora-mllm/start-dynamic-mllm`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -919,7 +1150,7 @@ CRITICAL INVARIANTS:
             session_id: sessionId, 
             candidate_uid: candidateUid,
             agent_uid: primary.agent_uid || 9991,
-            voice: primary.voice || 'Aoede',
+            voice: primaryVoice,
             instructions: primaryInstructions,
             greeting_message: primary.greeting_message
           })
@@ -935,21 +1166,21 @@ CRITICAL INVARIANTS:
           agentUid: primary.agent_uid || 9991,
           name: primary.name,
           role: primary.role,
-          voice: primary.voice || 'Aoede',
+          voice: primaryVoice,
           color: primary.color || '#3B82F6',
           isPrimary: true,
           hasFloor: true,
           intervening: false
         });
 
-        // 2. Register Challenger Agent (UID 9992, Voice e.g. Charon) into active panel
-        // Spawning will be executed with natural Gemini Live greeting after Primary completes opening greeting
+        // 2. Register Challenger Agent (UID 9992) into active panel
+        const challengerVoice = getGenderAwareVoice(challenger.name, challenger.voice);
         runningAgents.push({
           agentId: 'pending_mllm_init',
           agentUid: challenger.agent_uid || 9992,
           name: challenger.name,
           role: challenger.role,
-          voice: challenger.voice || 'Charon',
+          voice: challengerVoice,
           color: challenger.color || '#8B5CF6',
           isPrimary: false,
           hasFloor: false,
@@ -959,7 +1190,11 @@ CRITICAL INVARIANTS:
       } else {
         // Single Agent Round (Round 1 Coding/System Design OR Round 3 HR)
         const solo = roundInterviewers[0];
-        addLog('Orchestrator', `Starting Single Agent Round: ${solo.name}`);
+        const isHrRound = round.round_type === 'hr' || 
+          Boolean(round.round_name && (round.round_name.toLowerCase().includes('hr') || round.round_name.toLowerCase().includes('culture') || round.round_name.toLowerCase().includes('leadership') || round.round_name.toLowerCase().includes('behavioral'))) ||
+          targetRound === 2;
+
+        addLog('Orchestrator', `Starting Single Agent Round: ${solo.name} (${isHrRound ? 'HR & Culture' : 'Coding Workspace'})`);
 
         let contextPreamble = '';
         let greetingMsg = solo.greeting_message;
@@ -996,28 +1231,62 @@ PRE-ASSIGNED WORKSPACE PROBLEMS FOR THIS INTERVIEW:
    - Description: ${systemProb.description}
 
 CRITICAL BEHAVIORAL INVARIANTS:
-- YOU HAVE DIRECT REAL-TIME VISIBILITY INTO THE CANDIDATE'S IDE AND SCREEN. You will continuously receive live data stream updates containing the exact code typed by ${candidateName}.
-- When ${candidateName} asks "what do you see on my screen?", "read my code", or "what have I written so far?", YOU MUST QUOTE AND EXPLAIN THE EXACT SOURCE CODE FROM THE LATEST SYSTEM LIVE CODE SNAPSHOT. NEVER claim you cannot see their screen or make up non-existent code.
-- CRITICAL INVARIANT: NEVER read system observations, bracketed cues, stuck signals, or "[SYSTEM WORKSPACE OBSERVATION]" out loud. System observations are silent background telemetry for your awareness only. If ${candidateName} has paused typing, ask naturally in your own human voice: "${candidateName}, how is your approach shaping up? Feel free to talk through your initial thoughts." NEVER say "the candidate hasn't written anything in 20 seconds" or quote system instructions.
+- YOU HAVE DIRECT REAL-TIME VISIBILITY INTO BOTH THE CANDIDATE'S IDE (CODE EDITOR) AND WHITEBOARD (EXCALIDRAW SYSTEM DESIGN CANVAS). You continuously receive live telemetry containing the exact code typed and the architecture diagram elements drawn by ${candidateName}.
+- When ${candidateName} asks "what do you see on my screen?", "read my code", "can you see my diagram?", or "what have I drawn so far?", YOU MUST DIRECTLY QUOTE AND EXPLAIN:
+  * If they are on the Code Editor: Quote and discuss their exact source code constructs, algorithms, and line logic from the latest code snapshot.
+  * If they are on the System Design Whiteboard: Quote their exact whiteboard components (e.g. API Gateway, Message Queue, Cache, Database, Worker services) and discuss their data flows, scaling, and architectural trade-offs.
+  * NEVER claim you cannot see their screen or canvas. You have full real-time visual telemetry.
+- CRITICAL INVARIANT: NEVER read system observations, bracketed cues, stuck signals, or "[SYSTEM WORKSPACE OBSERVATION]" out loud. System observations are silent background telemetry for your awareness only. If ${candidateName} has paused typing or drawing, ask naturally in your own human voice: "${candidateName}, how is your approach shaping up? Feel free to talk through your initial thoughts." NEVER say "the candidate hasn't written anything in 20 seconds" or quote system instructions.
 - DO NOT ask general conceptual technical interview questions (e.g. "What is binary search?", "What is garbage collection?", "Explain dependency injection"). Conceptual technical interview questions will be covered separately in Round 2 (Technical Panel).
-- Your 100% EXCLUSIVE focus in Round 1 is presenting, observing, and evaluating ${candidateName}'s progress on the assigned workspace problem ("${codingProb.title}").
-- Keep all spoken responses concise (1-3 sentences maximum) so the candidate can focus on coding and explaining their work.
+- Your 100% EXCLUSIVE focus in Round 1 is presenting, observing, and evaluating ${candidateName}'s progress on the assigned workspace problems ("${codingProb.title}" and "${systemProb.title}").
+- Keep all spoken responses concise (1-3 sentences maximum) so the candidate can focus on coding, designing, and explaining their work.
 ================================================================================
 `;
           if (!greetingMsg || greetingMsg.length < 10) {
-            greetingMsg = `Hello ${candidateName}, welcome! I'm ${solo.name}, ${solo.role}. In this first round, we will focus on practical problem solving in your workspace. Your assigned coding problem is '${codingProb.title}'. Take a look at the workspace editor, and walk me through your initial thoughts when you're ready!`;
+            greetingMsg = `Hello ${candidateName}, welcome! I'm ${solo.name}, ${solo.role}. In this first round, we will focus on practical problem solving in your workspace. You have access to both a Coding IDE and a System Design whiteboard. Your assigned coding problem is '${codingProb.title}'. Take a look at the workspace, and walk me through your initial thoughts when you're ready!`;
           }
-        } else if (currentRound > 0 && technicalSummaryRef.current) {
+        } else if (isHrRound) {
           const ts = technicalSummaryRef.current;
-          contextPreamble = `\n\nIMPORTANT CONTEXT: The candidate (${candidateName}) has already completed the Technical Panel Interview. Technical Score: ${ts.score}/100. Panel assessment: "${ts.reason}". The technical round is COMPLETE — do NOT re-ask technical questions. You are now conducting the HR & Culture round. Begin with a warm, natural greeting and focus on behavioral fit, teamwork, and career goals.\n`;
+          const techNotes = ts ? ` Technical Panel Score: ${ts.score}/100. Notes: "${ts.reason}".` : '';
+
+          contextPreamble = `
+================================================================================
+ROUND 3: HR, CULTURE & ENGINEERING LEADERSHIP PROTOCOL (STRICTLY NON-TECHNICAL)
+================================================================================
+You are "${solo.name}" (${solo.role}) at Plantra Labs, conducting Round 3 (HR, Culture & Engineering Leadership) with "${candidateName}" for the position of ${jobTitle || 'Engineer'}.${techNotes}
+
+CRITICAL RULES & SCOPE:
+1. STRICT NON-TECHNICAL INVARIANT:
+   - This is strictly an HR and behavioral evaluation. All technical coding and architecture rounds are ALREADY FINISHED and graded.
+   - DO NOT ask technical coding, system design, algorithm, concurrency, database indexing, or syntax questions.
+   - DO NOT test technical trivia or quiz the candidate on technical concepts.
+   - If ${candidateName} brings up a past engineering project, focus ONLY on the team dynamics, personal ownership, managing deadlines, handling trade-offs, and communication with stakeholders—NOT the low-level code implementation.
+
+2. CORE EVALUATION PILLARS (Use the STAR Method: Situation, Task, Action, Result):
+   - Engineering Ownership & Accountability: Taking responsibility when production bugs or outages occur, delivering under pressure, learning from mistakes.
+   - Constructive Conflict & Collaboration: Navigating disagreements on architecture or priorities with peers, product managers, or tech leads.
+   - Mentorship & Knowledge Sharing: Helping teammates grow, conducting constructive code reviews.
+   - Adaptability & Work Values: Dealing with shifting requirements, ambiguity, and why they want to join Plantra Labs.
+
+3. CONVERSATIONAL STYLE:
+   - Warm, welcoming, insightful, and professional.
+   - Ask ONE question at a time and listen patiently to the candidate's answer.
+   - Keep your turns concise (1-3 sentences).
+================================================================================
+`;
+          if (!greetingMsg || greetingMsg.length < 10) {
+            greetingMsg = `Hello ${candidateName}, welcome to Round 3! I'm ${solo.name}, ${solo.role} at Plantra Labs. The team shared great notes from the technical rounds. In this final section, we'll focus on your engineering ownership, how you collaborate with teammates, and your career goals. To start off: could you share a time when you had to take ownership of a tough engineering challenge or production issue and how you handled it?`;
+          }
         }
 
+        const soloVoice = getGenderAwareVoice(solo.name, solo.voice);
         const soloInstructions = injectKnowledgeBaseIntoAgentInstructions(
           (solo.instructions || '') + contextPreamble,
           candidateContext,
           candidateName,
           jobTitle || 'Engineering Role',
-          resumeText
+          resumeText,
+          isHrRound
         );
 
         const soloRes = await fetch(`/api/agora-mllm/start-dynamic-mllm`, {
@@ -1027,7 +1296,7 @@ CRITICAL BEHAVIORAL INVARIANTS:
             session_id: sessionId, 
             candidate_uid: candidateUid,
             agent_uid: solo.agent_uid || 9993,
-            voice: solo.voice || 'Aoede',
+            voice: soloVoice,
             instructions: soloInstructions,
             greeting_message: greetingMsg
           })
@@ -1043,7 +1312,7 @@ CRITICAL BEHAVIORAL INVARIANTS:
           agentUid: solo.agent_uid || 9993,
           name: solo.name,
           role: solo.role,
-          voice: solo.voice || 'Aoede',
+          voice: soloVoice,
           color: solo.color || '#EA580C',
           isPrimary: true,
           hasFloor: true,
@@ -1091,7 +1360,7 @@ CRITICAL BEHAVIORAL INVARIANTS:
 
         // Unmute candidate local audio track so candidate can speak
         if (localAudioTrackRef.current) {
-          try { localAudioTrackRef.current.setEnabled(true); } catch (e) {}
+          try { localAudioTrackRef.current.setEnabled(!isMuted); } catch (e) {}
         }
 
         // Activate echo-gated candidate speech recognition
@@ -1307,18 +1576,26 @@ CRITICAL BEHAVIORAL INVARIANTS:
       // Turn Arbiter (Autonomous Floor Control & Dynamic Track Gating)
       clientRef.current.enableAudioVolumeIndicator();
       clientRef.current.on("volume-indicator", (volumes: any[]) => {
-        const candVol = volumes.find(v => v.uid === candidateUid)?.level || 0;
+        const candEntry = volumes.find(v => v.uid === candidateUid || v.uid === 0 || Number(v.uid) === candidateUidRef.current);
+        const candVol = candEntry?.level || 0;
         setMicVolume(candVol);
 
         let primarySpeaking = false;
         let challengerSpeaking = false;
         let hrSpeaking = false;
-        let candidateSpeaking = candVol > 15;
+        let candidateSpeaking = candVol > 12;
 
         volumes.forEach((vol) => {
-          if ((vol.uid === 9991 || vol.uid === 9999) && vol.level > 10) primarySpeaking = true;
-          if (vol.uid === 9992 && vol.level > 10) challengerSpeaking = true;
-          if (vol.uid === 9993 && vol.level > 10) hrSpeaking = true;
+          const numUid = Number(vol.uid);
+          if (numUid === candidateUid || numUid === 0 || numUid === candidateUidRef.current) return;
+          if ((numUid === 9991 || numUid === 9999) && vol.level > 10) primarySpeaking = true;
+          if (numUid === 9992 && vol.level > 10) challengerSpeaking = true;
+          if (numUid === 9993 && vol.level > 10) hrSpeaking = true;
+          // Also check any registered active panel agent
+          const isAgent = runningAgentsRef.current.some(a => a.agentUid === numUid);
+          if (isAgent && vol.level > 10) {
+            primarySpeaking = true;
+          }
         });
 
         primarySpeakingRef.current = primarySpeaking;
@@ -1391,8 +1668,20 @@ CRITICAL BEHAVIORAL INVARIANTS:
           return;
         }
 
-        // INTERVIEW_RUNNING Phase: Peer Multi-Agent Turn Arbitration
-        // ── STRICT FLOOR GATING (One-Speaker Invariant) ──────────────────────────
+        // INTERVIEW_RUNNING Phase: Single-Agent vs Peer Multi-Agent Turn Arbitration
+        const isMultiAgent = runningAgentsRef.current.length >= 2;
+        if (!isMultiAgent) {
+          // Single-Agent Round (Round 1 Workspace or Round 3 HR): Solo interviewer is ALWAYS 100% audible
+          const soloAgent = runningAgentsRef.current[0];
+          if (soloAgent) {
+            remoteAudioTracksRef.current.get(soloAgent.agentUid)?.setVolume(100);
+          }
+          const soloSpeaking = primarySpeaking || hrSpeaking;
+          setFloorOwner(candidateSpeaking ? 'CANDIDATE' : (soloSpeaking ? 'PRIMARY_AI' : 'NONE'));
+          return; // Strict early return for single-agent rounds — Round 2 multi-agent code below is untouched!
+        }
+
+        // ── STRICT FLOOR GATING (One-Speaker Invariant for Round 2 Multi-Agent) ──────────────────────────
         // IMPORTANT: Agora's volume-indicator reports RAW STREAM LEVEL regardless of setVolume().
         // A track at setVolume(0) can still show vol.level > 10 because the cloud model is generating audio.
         // Therefore: we NEVER auto-flip currentFloorRef based on raw audio level alone.
@@ -1489,10 +1778,17 @@ CRITICAL BEHAVIORAL INVARIANTS:
         ANS: true,
         AGC: true
       });
-      // During initial greeting phase, keep local audio muted to eliminate speaker-to-mic bleed that causes Gemini Live barge-in
-      localAudioTrackRef.current.setEnabled(false);
-      await clientRef.current.publish([localAudioTrackRef.current]);
-      addLog('RTC', 'Local microphone published (Echo-gated during introduction).');
+      if (isMultiAgentPanel) {
+        // During initial greeting phase in Multi-Agent panel (Round 2), keep local audio muted to eliminate speaker-to-mic bleed
+        localAudioTrackRef.current.setEnabled(false);
+        await clientRef.current.publish([localAudioTrackRef.current]);
+        addLog('RTC', 'Local microphone published (Echo-gated during panel introduction).');
+      } else {
+        // Single-Agent (Round 1 Workspace & Round 3 HR): Enable mic immediately so candidate can speak freely
+        await localAudioTrackRef.current.setEnabled(!isMuted);
+        await clientRef.current.publish([localAudioTrackRef.current]);
+        addLog('RTC', 'Local microphone published & active for candidate.');
+      }
 
       setTestState('RUNNING');
       addLog('System', `Round ${currentRound + 1} is running with active panel.`);
@@ -1505,12 +1801,6 @@ CRITICAL BEHAVIORAL INVARIANTS:
             triggerChallengerIntro();
           }
         }, 16000);
-      } else {
-        setTimeout(() => {
-          if (introPhaseRef.current === 'SOLO_GREETING' && testStateRef.current === 'RUNNING') {
-            activateCandidateFloor('Solo intro window elapsed (~12s)');
-          }
-        }, 12000);
       }
 
     } catch (e: any) {
@@ -1524,12 +1814,24 @@ CRITICAL BEHAVIORAL INVARIANTS:
   };
 
   const finishRound = async (triggerReason: string = 'NATURAL_COMPLETION') => {
-    const round = blueprint.interview_rounds[currentRound];
+    // 0. Concurrency Mutex Guard: Prevent multi-click spam & re-entrancy race conditions
+    if (isFinishingRoundRef.current || (testStateRef.current !== 'RUNNING' && testStateRef.current !== 'STARTING')) {
+      console.warn(`[InterviewRoom] finishRound ignored — already finishing or invalid testState (${testStateRef.current}) [Trigger: ${triggerReason}]`);
+      return;
+    }
+    isFinishingRoundRef.current = true;
+
+    const totalRounds = blueprint.interview_rounds.length;
+    const activeRoundIdx = Math.min(Math.max(currentRoundRef.current, 0), totalRounds - 1);
+    const round = blueprint.interview_rounds[activeRoundIdx];
     const isRound1 = round?.round_type === 'coding' || round?.round_type === 'system_design';
     const isTechnicalRound = round?.round_type === 'technical';
-    const isLastRound = currentRound + 1 >= blueprint.interview_rounds.length;
+    
+    // Explicit user end actions (End meeting button or manual end) immediately finalize the entire interview
+    const isExplicitInterviewEnd = triggerReason === 'USER_ENDED' || triggerReason === 'MANUAL_END';
+    const isLastRound = isExplicitInterviewEnd || (activeRoundIdx + 1 >= totalRounds);
 
-    addLog('Orchestrator', `Concluding ${isRound1 ? 'Round 1 (Workspace Assessment)' : isTechnicalRound ? 'Technical' : 'HR'} round [Trigger: ${triggerReason}]...`);
+    addLog('Orchestrator', `Concluding ${isRound1 ? 'Round 1 (Workspace Assessment)' : isTechnicalRound ? 'Technical' : 'HR'} round [Trigger: ${triggerReason}] (Round ${activeRoundIdx + 1} of ${totalRounds})...`);
 
     // ── Phase 1: Closing State ─────────────────────────────────────────────
     if (isRound1) {
@@ -1555,13 +1857,13 @@ CRITICAL BEHAVIORAL INVARIANTS:
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ session_id: sessionInfo.sessionId, agent_id: challengerAgentId })
-          });
+          }).catch(err => console.warn('Stop challenger error:', err));
           addLog('System', 'Challenger agent stopped.');
         }
 
         // Wait for Primary to finish speaking by polling volume levels
         addLog('System', 'Waiting for primary interviewer to finish speaking...');
-        await waitForAgentSilence(9991, 6000);
+        await waitForAgentSilence(9991, 4000);
 
         // Now stop the Primary agent
         const primaryAgentId = activePanelAgents.find(a => a.isPrimary)?.agentId;
@@ -1570,21 +1872,21 @@ CRITICAL BEHAVIORAL INVARIANTS:
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ session_id: sessionInfo.sessionId, agent_id: primaryAgentId })
-          });
+          }).catch(err => console.warn('Stop primary error:', err));
           addLog('System', 'Primary agent stopped.');
         }
       } else {
         // Single agent round (Round 1 Coding or Round 3 HR): wait for agent to finish speaking, then stop
         addLog('System', 'Waiting for interviewer to finish speaking...');
         const soloUid = activePanelAgents[0]?.agentUid || 9993;
-        await waitForAgentSilence(soloUid, 6000);
+        await waitForAgentSilence(soloUid, 4000);
 
         if (sessionInfo?.agentIds && sessionInfo.agentIds.length > 0) {
           await fetch('/api/agora-mllm/stop-mllm', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ session_id: sessionInfo.sessionId, agent_ids: sessionInfo.agentIds })
-          });
+          }).catch(err => console.warn('Stop agents error:', err));
           addLog('System', `Stopped ${sessionInfo.agentIds.length} agent(s).`);
         }
       }
@@ -1611,7 +1913,7 @@ CRITICAL BEHAVIORAL INVARIANTS:
       setTestState('EVALUATING');
       addLog('Arbiter', `Evaluating ${isRound1 ? 'Round 1 workspace & code' : 'round'} evidence via Decision Gate...`);
       
-      const roundName = round.round_name;
+      const roundName = round?.round_name || `Round ${activeRoundIdx + 1}`;
       const roundTranscript = transcript.filter(t => (t as any).round === roundName);
 
       const wsEvidence = isRound1 ? {
@@ -1634,7 +1936,7 @@ CRITICAL BEHAVIORAL INVARIANTS:
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
             roundName, 
-            roundType: round.round_type || (currentRound === 0 ? 'coding' : 'technical'),
+            roundType: round?.round_type || (activeRoundIdx === 0 ? 'coding' : 'technical'),
             transcript: roundTranscript, 
             rubric: blueprint.rubric,
             workspaceEvidence: wsEvidence
@@ -1652,15 +1954,39 @@ CRITICAL BEHAVIORAL INVARIANTS:
       
       // Fallback deterministic evaluation if backend LLM evaluation didn't respond
       if (!evalData?.evaluation) {
+        const candidateUtts = transcript.filter(t => {
+          const sp = ((t as any).speaker || '').toLowerCase();
+          return !sp.includes('priya') && 
+                 !sp.includes('arjun') && 
+                 !sp.includes('sarah') && 
+                 !sp.includes('vikram') && 
+                 !sp.includes('marcus') && 
+                 !sp.includes('elena') && 
+                 !sp.includes('interviewer') && 
+                 !sp.includes('ai') && 
+                 !sp.includes('system') && 
+                 !sp.includes('specialist') && 
+                 !sp.includes('lead') && 
+                 !sp.includes('hr') && 
+                 !sp.includes('panel');
+        });
+        const candidateWords = candidateUtts.reduce((acc, t) => acc + ((t as any).text || '').split(/\s+/).filter(Boolean).length, 0);
         const hasCode = isRound1 && (codeRef.current.trim().length > 30);
+        const isCandidateSilent = candidateWords === 0 && !hasCode;
+
+        const fallbackScore = isCandidateSilent ? 0 : hasCode ? 80 : candidateWords >= 30 ? 65 : 25;
+        const fallbackDecision = fallbackScore >= 60 ? 'PASS' : 'FAIL';
+
         evalData = {
           success: true,
           evaluation: {
-            decision: 'PASS',
-            score: hasCode ? 85 : 75,
-            reason: isRound1 
-              ? 'Candidate completed practical workspace implementation with code snapshot captured.' 
-              : 'Candidate completed discussion across core technical competencies.'
+            decision: fallbackDecision,
+            score: fallbackScore,
+            reason: isCandidateSilent
+              ? 'Candidate was completely silent and provided zero answers or code.'
+              : isRound1 
+                ? 'Candidate completed practical workspace implementation with code snapshot captured.' 
+                : 'Candidate completed discussion across core competencies.'
           }
         };
       }
@@ -1669,9 +1995,10 @@ CRITICAL BEHAVIORAL INVARIANTS:
       setTestState('DECISION_GATE');
 
       // ── Phase 5: Transition Logic (Supports Round 1 -> Round 2 -> Round 3) ──
-      if (!isLastRound) {
-        const nextRoundObj = blueprint.interview_rounds[currentRound + 1];
-        addLog('System', `Round ${currentRound + 1} Concluded (Score: ${evalData.evaluation.score}/100). Transitioning to Round ${currentRound + 2} (${nextRoundObj?.round_name || 'Next Round'})...`);
+      if (!isLastRound && (activeRoundIdx + 1 < totalRounds)) {
+        const nextRoundIdx = activeRoundIdx + 1;
+        const nextRoundObj = blueprint.interview_rounds[nextRoundIdx];
+        addLog('System', `Round ${activeRoundIdx + 1} Concluded (Score: ${evalData.evaluation.score}/100). Transitioning to Round ${nextRoundIdx + 1} of ${totalRounds} (${nextRoundObj?.round_name || 'Next Round'})...`);
 
         // Transition state backend
         await fetch(`/api/interviews/${interviewId}/state`, {
@@ -1684,12 +2011,17 @@ CRITICAL BEHAVIORAL INVARIANTS:
           })
         }).catch(err => console.error('State transition error:', err));
 
+        // Update state safely
+        setCurrentRound(nextRoundIdx);
+        currentRoundRef.current = nextRoundIdx;
         setTestState('ROUND_TRANSITION');
-        setCurrentRound(prev => prev + 1);
+        isFinishingRoundRef.current = false;
       } else {
-        // Final round (HR or sole round) completed — synthesize final composite scorecard
+        // Final round or explicitly ended by user — synthesize final composite scorecard
         setTestState('INTERVIEW_COMPLETE');
-        addLog('System', 'Interview panel concluded. Synthesizing final composite scorecard across all rounds...');
+        addLog('System', isExplicitInterviewEnd
+          ? 'Meeting ended by user. Synthesizing final composite scorecard across completed rounds...'
+          : 'Interview panel concluded (all 3 rounds completed). Synthesizing final composite scorecard across all rounds...');
         
         try {
           await fetch(`/api/interviews/${interviewId}/evaluate-final`, {
@@ -1702,11 +2034,13 @@ CRITICAL BEHAVIORAL INVARIANTS:
         }
         
         setTestState('ENDED');
+        isFinishingRoundRef.current = false;
       }
 
     } catch (e: any) {
       setTestState('ERROR');
       addLog('Error', `Round completion failed: ${e.message}`);
+      isFinishingRoundRef.current = false;
     }
   };
 
@@ -1756,36 +2090,242 @@ CRITICAL BEHAVIORAL INVARIANTS:
   const challengerAgent = activePanelAgents.find(a => !a.isPrimary);
 
   return (
-    <div className="absolute inset-0 w-full h-full bg-[#202124] flex flex-col overflow-hidden text-white font-sans">
+    <div className="absolute inset-0 w-full h-full bg-[#030304] flex flex-col overflow-hidden text-white font-sans selection:bg-purple-500/30 selection:text-white">
       <ProctorEngine 
         interviewId={interviewId} 
         isRunning={testState === 'RUNNING'} 
         candidateName={candidateName}
       />
-      
-      {/* Middle Section (Grid + Telemetry) */}
-      <div className="flex-1 flex overflow-hidden relative p-4">
-        
-        {/* Main Content Area (Video Grid) */}
-        <div className="flex-1 flex flex-col relative bg-transparent rounded-2xl overflow-hidden">
+
+      {/* Background Atmosphere */}
+      <div className="pointer-events-none absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-gradient-to-b from-purple-900/10 via-pink-900/5 to-transparent blur-[160px] opacity-70" />
+      <div className="pointer-events-none absolute inset-0 dot-grid-fine opacity-10" />
+
+      {/* ── 1. PRE-START GREEN ROOM (MIC & CAMERA READINESS CHECK) ── */}
+      {testState === 'IDLE' ? (
+        <div className="relative z-20 flex-1 flex flex-col justify-center items-center p-6 sm:p-10 max-w-5xl mx-auto w-full animate-in fade-in duration-300">
           
-          {/* Top Panel Bar: Round Info (floating overlay - hidden during active workspace to prevent overlap) */}
+          {/* Top Session Breadcrumb */}
+          <div className="text-center mb-8 space-y-2">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-zinc-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+              <span>Plantra Meet · Pre-Flight Green Room</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-sans font-semibold text-white tracking-tight">
+              Ready to meet the evaluation panel?
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-400 max-w-md mx-auto">
+              Verify your camera and audio input before entering the live session.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 w-full items-center">
+            
+            {/* Left Column: Live Camera Mirror Feed */}
+            <div className="lg:col-span-7 flex flex-col gap-3">
+              <div className="relative aspect-video rounded-3xl bg-[#09090d]/90 border border-white/[0.08] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.6)] flex items-center justify-center">
+                {/* Persistent Video Element */}
+                <video 
+                  ref={(node) => {
+                    localVideoRef.current = node;
+                    if (node && localStream) {
+                      if (node.srcObject !== localStream) {
+                        node.srcObject = localStream;
+                      }
+                      node.play().catch(() => {});
+                    }
+                  }}
+                  autoPlay 
+                  playsInline 
+                  muted 
+                  className={isVideoOff ? 'hidden' : 'w-full h-full object-cover transform -scale-x-100'}
+                />
+
+                {/* Camera Off Placeholder */}
+                {isVideoOff && (
+                  <div className="flex flex-col items-center justify-center text-zinc-500 gap-3 p-6 text-center">
+                    <div className="w-14 h-14 rounded-full bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-zinc-400">
+                      <VideoOff className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-zinc-300 block">Camera Switched Off</span>
+                      <span className="text-xs text-zinc-500 font-mono mt-0.5">Click camera button to enable video</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Candidate Name Tag */}
+                <div className="absolute bottom-4 left-4 z-20 bg-[#030304]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/[0.08] text-white text-xs font-medium flex items-center gap-2">
+                  <div className={`w-2 h-2 rounded-full ${deviceCheckStatus.camera === 'active' && !isVideoOff ? 'bg-emerald-400' : 'bg-zinc-500'}`}></div>
+                  <span>{candidateName || 'You'}</span>
+                  <span className="text-zinc-400 text-[10px] font-mono">(Candidate)</span>
+                </div>
+
+                {/* In-Tile Quick Controls */}
+                <div className="absolute bottom-4 right-4 z-20 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={toggleCamera}
+                    className={`p-2 rounded-full transition-all backdrop-blur-md border cursor-pointer ${
+                      isVideoOff 
+                        ? 'bg-rose-500/20 hover:bg-rose-500/30 border-rose-500/40 text-rose-300' 
+                        : 'bg-[#030304]/80 hover:bg-white/[0.1] border-white/[0.1] text-zinc-300 hover:text-white'
+                    }`}
+                    title={isVideoOff ? "Turn Camera On" : "Turn Camera Off"}
+                  >
+                    {isVideoOff ? <VideoOff className="w-4 h-4" /> : <Video className="w-4 h-4" />}
+                  </button>
+                  
+                  <button
+                    type="button"
+                    onClick={toggleMute}
+                    className={`p-2 rounded-full transition-all backdrop-blur-md border cursor-pointer ${
+                      isMuted 
+                        ? 'bg-rose-500/20 hover:bg-rose-500/30 border-rose-500/40 text-rose-300' 
+                        : 'bg-[#030304]/80 hover:bg-white/[0.1] border-white/[0.1] text-zinc-300 hover:text-white'
+                    }`}
+                    title={isMuted ? "Unmute Mic" : "Mute Mic"}
+                  >
+                    {isMuted ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Hardware Diagnostics & Join Action */}
+            <div className="lg:col-span-5 bg-[#09090d]/90 backdrop-blur-2xl rounded-3xl border border-white/[0.08] p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.6)] space-y-6">
+              
+              {/* Round Details */}
+              <div className="space-y-1.5 pb-5 border-b border-white/[0.06]">
+                <div className="inline-flex items-center gap-1.5 text-[11px] font-mono text-purple-400 uppercase tracking-wider">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Round {currentRound + 1} of {blueprint.interview_rounds.length}</span>
+                </div>
+                <h3 className="text-base sm:text-lg font-sans font-semibold text-white">
+                  {blueprint.interview_rounds[currentRound]?.round_name}
+                </h3>
+                <p className="text-xs text-zinc-400 leading-relaxed font-sans line-clamp-2">
+                  {blueprint.interview_rounds[currentRound]?.purpose}
+                </p>
+              </div>
+
+              {/* Hardware Device Diagnostics */}
+              <div className="space-y-3">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-500 block">
+                  Device Readiness
+                </span>
+
+                {/* Camera Status */}
+                <div className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/[0.06] text-xs">
+                  <div className="flex items-center gap-2.5 text-zinc-200">
+                    <Video className="w-4 h-4 text-zinc-400" />
+                    <span className="font-medium">Camera Feed</span>
+                  </div>
+                  {deviceCheckStatus.camera === 'checking' && <span className="text-amber-400 animate-pulse font-mono text-[11px]">Testing...</span>}
+                  {deviceCheckStatus.camera === 'active' && <span className="text-emerald-400 font-medium flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> Ready</span>}
+                  {deviceCheckStatus.camera === 'blocked' && <span className="text-rose-400 font-medium flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> Blocked</span>}
+                </div>
+
+                {/* Microphone Status with Live Meter */}
+                <div className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2.5 text-zinc-200">
+                      <Mic className="w-4 h-4 text-zinc-400" />
+                      <span className="font-medium">Microphone</span>
+                    </div>
+                    {deviceCheckStatus.mic === 'checking' && <span className="text-amber-400 animate-pulse font-mono text-[11px]">Testing...</span>}
+                    {deviceCheckStatus.mic === 'active' && <span className="text-emerald-400 font-medium flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> Ready</span>}
+                    {deviceCheckStatus.mic === 'blocked' && <span className="text-rose-400 font-medium flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> Blocked</span>}
+                  </div>
+
+                  {/* Audio Level Visualizer Bar */}
+                  {deviceCheckStatus.mic === 'active' && (
+                    <div className="flex items-center gap-2 pt-1">
+                      <span className="text-[10px] font-mono text-zinc-500">Input:</span>
+                      <div className="flex-1 h-2 bg-white/[0.05] rounded-full overflow-hidden p-0.5 border border-white/[0.06] flex items-center">
+                        <div 
+                          className={`h-full transition-all duration-75 rounded-full ${
+                            isMuted 
+                              ? 'w-0' 
+                              : micVolume > 50 
+                                ? 'bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-500' 
+                                : micVolume > 15 
+                                  ? 'bg-gradient-to-r from-emerald-400 via-purple-400 to-cyan-400' 
+                                  : 'bg-emerald-400/80'
+                          }`} 
+                          style={{ width: `${isMuted ? 0 : Math.min(100, Math.max(6, micVolume * 2.2))}%` }}
+                        />
+                      </div>
+                      <span className="text-[10px] font-mono text-zinc-400 w-10 text-right">
+                        {isMuted ? 'Muted' : `${micVolume}%`}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Diagnostic Alert if Blocked */}
+                {(deviceCheckStatus.camera === 'blocked' || deviceCheckStatus.mic === 'blocked') && (
+                  <div className="bg-rose-500/10 border border-rose-500/20 p-3.5 rounded-xl text-rose-300 text-xs space-y-2 font-sans">
+                    <p className="leading-relaxed">{deviceCheckStatus.errorMsg || 'Camera and Microphone permissions are required to enter the evaluation.'}</p>
+                    <button 
+                      type="button"
+                      onClick={checkDevices}
+                      className="text-xs font-mono text-rose-200 hover:text-white underline transition cursor-pointer inline-flex items-center gap-1"
+                    >
+                      ↻ Re-test hardware permissions
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Enter Live Meeting CTA */}
+              <div className="pt-2">
+                <button 
+                  type="button"
+                  onClick={() => startTest()} 
+                  disabled={deviceCheckStatus.camera !== 'active' || deviceCheckStatus.mic !== 'active'}
+                  className={`w-full py-3.5 px-6 font-semibold text-sm rounded-xl transition-all flex items-center justify-center gap-2 ${
+                    deviceCheckStatus.camera === 'active' && deviceCheckStatus.mic === 'active'
+                      ? 'bg-white hover:bg-zinc-200 text-black shadow-[0_0_25px_rgba(255,255,255,0.2)] cursor-pointer'
+                      : 'bg-white/[0.04] border border-white/[0.08] text-zinc-500 cursor-not-allowed'
+                  }`}
+                >
+                  {deviceCheckStatus.camera === 'active' && deviceCheckStatus.mic === 'active' ? (
+                    <>
+                      <span>Join Round {currentRound + 1} Now</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  ) : (
+                    <span>Camera & Mic Required to Join</span>
+                  )}
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      ) : (
+        /* ── 2. IN-MEETING STAGE & VIDEO GRID ── */
+        <div className="flex-1 flex flex-col relative z-20 overflow-hidden">
+          
+          {/* Top Panel Bar: Round Info Header */}
           {!isRound1WorkspaceActive && (
-            <div className="absolute top-4 left-4 right-4 z-20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pointer-events-none">
-              <div className="flex items-center gap-2.5 flex-wrap pointer-events-auto">
-                <div className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
-                  <Users className="w-3.5 h-3.5 text-blue-400" />
+            <div className="px-6 py-3 border-b border-white/[0.06] bg-[#030304]/80 backdrop-blur-xl flex items-center justify-between gap-3 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 font-mono text-xs font-medium flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5 text-purple-400" />
                   <span>Round {currentRound + 1}: {blueprint.interview_rounds[currentRound]?.round_name}</span>
                 </div>
 
                 {testState === 'RUNNING' && (
-                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/90 text-gray-300 font-mono text-xs border border-gray-700 shadow-xs">
-                    <Clock className="w-3.5 h-3.5 text-blue-400 animate-pulse" />
-                    <span className="font-bold text-white">
+                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.03] text-zinc-300 font-mono text-xs border border-white/[0.06]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse"></span>
+                    <span className="font-semibold text-white">
                       {Math.floor(roundElapsedSeconds / 60)}:{String(roundElapsedSeconds % 60).padStart(2, '0')}
                     </span>
-                    <span className="text-gray-500">/</span>
-                    <span className="text-gray-400">
+                    <span className="text-zinc-600">/</span>
+                    <span className="text-zinc-400">
                       {Math.floor(ROUND_TARGET_SECONDS / 60)}:00
                     </span>
                   </div>
@@ -1793,302 +2333,251 @@ CRITICAL BEHAVIORAL INVARIANTS:
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-400 font-medium hidden sm:inline">Panel:</span>
-                <span className="text-xs px-2 py-0.5 rounded bg-gray-800 text-gray-300 font-mono">
-                  {blueprint.interview_rounds[currentRound]?.round_type === 'coding' ? '1 Coding Agent' : blueprint.interview_rounds[currentRound]?.round_type === 'technical' ? '2 Technical Agents' : '1 HR Agent'}
+                <span className="text-xs text-zinc-500 font-mono hidden sm:inline">Panel:</span>
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-white/[0.03] border border-white/[0.06] text-zinc-300 font-mono">
+                  {blueprint.interview_rounds[currentRound]?.round_type === 'coding' ? '1 Coding Agent' : blueprint.interview_rounds[currentRound]?.round_type === 'technical' ? '2 Technical Agents' : '1 HR Evaluator'}
                 </span>
               </div>
             </div>
           )}
 
-          {/* Developer / Sandbox Testing Fast-Forward Toolbar */}
-          {(interviewId.includes('demo') || (typeof window !== 'undefined' && window.location.pathname.includes('demo'))) && (
-            <div className="absolute top-16 left-4 right-4 z-20 mt-3 mb-2 p-3 rounded-xl bg-purple-950/40 border border-purple-500/40 flex flex-wrap items-center justify-between gap-3 text-xs font-mono animate-in fade-in pointer-events-auto">
-              <div className="flex items-center gap-2 text-purple-300">
-                <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
-                <span className="font-bold">DEV TEST CONTROLS // ISOLATED SANDBOX</span>
-              </div>
-              
-              <div className="flex items-center gap-2 flex-wrap">
-                {testState === 'RUNNING' && (
-                  <>
-                    <button
-                      onClick={() => {
-                        setRoundElapsedSeconds(ROUND_TARGET_SECONDS - 10);
-                        setWrapUpWarning(true);
-                        addLog('DevControl', '⏱️ Fast-forwarded timer to 4:50 wrap-up alert mark');
-                      }}
-                      className="px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 transition cursor-pointer"
-                    >
-                      ⏱️ Jump to 4:50 (Wrap-Up Notice)
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        addLog('DevControl', '⏭️ Triggered immediate round conclusion & handoff');
-                        finishRound('DEV_FAST_FORWARD');
-                      }}
-                      className="px-2.5 py-1 rounded bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border border-blue-500/40 transition cursor-pointer"
-                    >
-                      ⏭️ Advance Round Handoff
-                    </button>
-                  </>
-                )}
-
-                <Link
-                  href="/admin/applications/demo-app-test"
-                  target="_blank"
-                  className="px-2.5 py-1 rounded bg-white/10 hover:bg-white/20 text-white border border-white/20 transition flex items-center gap-1"
-                >
-                  <span>📊 Admin Scorecard</span>
-                  <span className="text-[10px]">↗</span>
-                </Link>
-              </div>
-            </div>
-          )}
-
-          {isRound1WorkspaceActive && (testState === 'RUNNING' || testState === 'STARTING') ? (
-            <div className="flex-1 flex flex-col lg:flex-row gap-4 p-2 overflow-hidden h-full">
-              {/* Workspace Column (Left 65%) */}
-              <div className="flex-1 lg:w-[65%] h-full flex flex-col min-h-0">
-                {/* Workspace Mode Switcher Header */}
-                <div className="flex items-center justify-between px-3 py-1.5 bg-[#252526] border border-gray-800 rounded-t-xl text-xs mb-1">
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setWorkspaceMode('coding')}
-                      className={`px-3 py-1 rounded-lg font-medium transition flex items-center gap-1.5 cursor-pointer ${
-                        workspaceMode === 'coding' ? 'bg-blue-600 text-white' : 'bg-[#1e1e1e] text-gray-400 hover:text-white'
-                      }`}
-                    >
-                      <Code2 className="w-3.5 h-3.5" />
-                      <span>Coding / DSA (Monaco)</span>
-                    </button>
-                    <button
-                      onClick={() => setWorkspaceMode('excalidraw')}
-                      className={`px-3 py-1 rounded-lg font-medium transition flex items-center gap-1.5 cursor-pointer ${
-                        workspaceMode === 'excalidraw' ? 'bg-blue-600 text-white' : 'bg-[#1e1e1e] text-gray-400 hover:text-white'
-                      }`}
-                    >
-                      <Layers className="w-3.5 h-3.5" />
-                      <span>System Design (Excalidraw)</span>
-                    </button>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-500/20 px-2 py-0.5 rounded hidden sm:inline flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                      AI Workspace Sync Active
-                    </span>
-                    <div className="px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 font-mono text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
-                      <span>Round 1: Coding & System Design</span>
+          {/* Main Stage Grid Area */}
+          <div className="flex-1 flex overflow-hidden p-3 sm:p-4">
+            {isRound1WorkspaceActive && (testState === 'RUNNING' || testState === 'STARTING') ? (
+              <div className="flex-1 flex flex-col lg:flex-row gap-4 overflow-hidden h-full">
+                
+                {/* Workspace Column (Left 65%) */}
+                <div className="flex-1 lg:w-[65%] h-full flex flex-col min-h-0">
+                  {/* Workspace Mode Switcher Header */}
+                  <div className="flex items-center justify-between px-3.5 py-2 bg-[#09090d] border border-white/[0.08] rounded-t-2xl text-xs mb-1">
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => switchWorkspaceMode('coding')}
+                        className={`px-3 py-1.5 rounded-xl font-medium transition-all flex items-center gap-1.5 cursor-pointer ${
+                          workspaceMode === 'coding' 
+                            ? 'bg-white text-black font-semibold shadow-sm' 
+                            : 'bg-white/[0.03] text-zinc-400 hover:text-white border border-white/[0.06]'
+                        }`}
+                      >
+                        <Code2 className="w-3.5 h-3.5" />
+                        <span>Coding (Monaco)</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => switchWorkspaceMode('excalidraw')}
+                        className={`px-3 py-1.5 rounded-xl font-medium transition-all flex items-center gap-1.5 cursor-pointer ${
+                          workspaceMode === 'excalidraw' 
+                            ? 'bg-white text-black font-semibold shadow-sm' 
+                            : 'bg-white/[0.03] text-zinc-400 hover:text-white border border-white/[0.06]'
+                        }`}
+                      >
+                        <Layers className="w-3.5 h-3.5" />
+                        <span>System Design (Canvas)</span>
+                      </button>
                     </div>
-                    {testState === 'RUNNING' && (
-                      <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gray-800 text-gray-300 font-mono text-xs border border-gray-700">
-                        <Clock className="w-3 h-3 text-blue-400 animate-pulse" />
-                        <span className="font-bold text-white">
-                          {Math.floor(roundElapsedSeconds / 60)}:{String(roundElapsedSeconds % 60).padStart(2, '0')}
-                        </span>
-                      </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full hidden sm:inline-flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        AI Real-Time Sync
+                      </span>
+                      {testState === 'RUNNING' && (
+                        <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/[0.03] text-zinc-300 font-mono text-xs border border-white/[0.06]">
+                          <Clock className="w-3 h-3 text-purple-400 animate-pulse" />
+                          <span className="font-semibold text-white">
+                            {Math.floor(roundElapsedSeconds / 60)}:{String(roundElapsedSeconds % 60).padStart(2, '0')}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Active Workspace Container */}
+                  <div className="flex-1 min-h-0 rounded-b-2xl overflow-hidden border border-white/[0.08] bg-[#09090d]">
+                    {workspaceMode === 'coding' ? (
+                      <CodingWorkspace
+                        code={code}
+                        setCode={setCode}
+                        language={language}
+                        setLanguage={setLanguage}
+                        onRunCode={onWorkspaceCodeRun}
+                        onSubmit={() => finishRound('CANDIDATE_SUBMITTED_ROUND_1')}
+                        problem={blueprint.interview_rounds[0]?.coding_problem || {
+                          title: "1. High-Throughput Rate Limiter & Event Throttler",
+                          difficulty: "Medium",
+                          description: "Implement a sliding window rate limiter class that tracks incoming user requests and enforces a maximum threshold of requests per sliding window in TypeScript or Python. The implementation must support high concurrency and handle edge cases where multiple requests arrive at identical millisecond timestamps.",
+                          constraints: [
+                            "allowRequest(userId, timestampMs) should run in O(1) or O(log N) average time complexity.",
+                            "Space complexity should scale with the number of unique active user IDs.",
+                            "Handle concurrent burst traffic and sliding window cleanup cleanly."
+                          ]
+                        }}
+                      />
+                    ) : (
+                      <SystemDesignWorkspace
+                        diagramElements={diagramElements}
+                        setDiagramElements={setDiagramElements}
+                        onSubmit={() => finishRound('CANDIDATE_SUBMITTED_ROUND_1')}
+                      />
                     )}
                   </div>
                 </div>
 
-                {/* Active Workspace */}
-                <div className="flex-1 min-h-0">
-                  {workspaceMode === 'coding' ? (
-                    <CodingWorkspace
-                      code={code}
-                      setCode={setCode}
-                      language={language}
-                      setLanguage={setLanguage}
-                      onRunCode={onWorkspaceCodeRun}
-                      onSubmit={() => finishRound('CANDIDATE_SUBMITTED_ROUND_1')}
-                      problem={blueprint.interview_rounds[0]?.coding_problem || {
-                        title: "1. High-Throughput Rate Limiter & Event Throttler",
-                        difficulty: "Medium",
-                        description: "Implement a sliding window rate limiter class that tracks incoming user requests and enforces a maximum threshold of requests per sliding window in TypeScript or Python. The implementation must support high concurrency and handle edge cases where multiple requests arrive at identical millisecond timestamps.",
-                        constraints: [
-                          "allowRequest(userId, timestampMs) should run in O(1) or O(log N) average time complexity.",
-                          "Space complexity should scale with the number of unique active user IDs.",
-                          "Handle concurrent burst traffic and sliding window cleanup cleanly."
-                        ]
-                      }}
-                    />
-                  ) : (
-                    <SystemDesignWorkspace
-                      diagramElements={diagramElements}
-                      setDiagramElements={setDiagramElements}
-                      onSubmit={() => finishRound('CANDIDATE_SUBMITTED_ROUND_1')}
-                    />
-                  )}
+                {/* Video Grid Column (Right 35%) */}
+                <div className="w-full lg:w-[35%] h-full flex flex-col min-h-0">
+                  <AgentPanel
+                    testState={testState}
+                    wrapUpWarning={wrapUpWarning}
+                    activePanelAgents={activePanelAgents}
+                    floorOwner={floorOwner}
+                    primaryAgent={primaryAgent}
+                    challengerAgent={challengerAgent}
+                    currentRound={currentRound}
+                    blueprint={blueprint}
+                    pendingFloorNotice={pendingFloorNotice}
+                    interviewId={interviewId}
+                    micVolume={micVolume}
+                    finishRound={finishRound}
+                    localVideoRef={localVideoRef}
+                    candidateName={candidateName}
+                    localStream={localStream}
+                    isVideoOff={isVideoOff}
+                    toggleCamera={toggleCamera}
+                    isMuted={isMuted}
+                    toggleMute={toggleMute}
+                    isDeafened={isDeafened}
+                    toggleDeafen={toggleDeafen}
+                    isSidebar={true}
+                  />
                 </div>
               </div>
+            ) : (
+              <AgentPanel
+                testState={testState}
+                wrapUpWarning={wrapUpWarning}
+                activePanelAgents={activePanelAgents}
+                floorOwner={floorOwner}
+                primaryAgent={primaryAgent}
+                challengerAgent={challengerAgent}
+                currentRound={currentRound}
+                blueprint={blueprint}
+                pendingFloorNotice={pendingFloorNotice}
+                interviewId={interviewId}
+                micVolume={micVolume}
+                finishRound={finishRound}
+                localVideoRef={localVideoRef}
+                candidateName={candidateName}
+                localStream={localStream}
+                isVideoOff={isVideoOff}
+                toggleCamera={toggleCamera}
+                isMuted={isMuted}
+                toggleMute={toggleMute}
+                isDeafened={isDeafened}
+                toggleDeafen={toggleDeafen}
+                isSidebar={false}
+              />
+            )}
+          </div>
 
-              {/* Video Grid Column (Right 35%) */}
-              <div className="w-full lg:w-[35%] h-full flex flex-col min-h-0">
-                <AgentPanel
-                  testState={testState}
-                  wrapUpWarning={wrapUpWarning}
-                  activePanelAgents={activePanelAgents}
-                  floorOwner={floorOwner}
-                  primaryAgent={primaryAgent}
-                  challengerAgent={challengerAgent}
-                  currentRound={currentRound}
-                  blueprint={blueprint}
-                  pendingFloorNotice={pendingFloorNotice}
-                  interviewId={interviewId}
-                  micVolume={micVolume}
-                  finishRound={finishRound}
-                  localVideoRef={localVideoRef}
-                  candidateName={candidateName}
-                  localStream={localStream}
-                  isVideoOff={isVideoOff}
-                  toggleCamera={toggleCamera}
-                  isMuted={isMuted}
-                  toggleMute={toggleMute}
-                  isDeafened={isDeafened}
-                  toggleDeafen={toggleDeafen}
-                />
-              </div>
+          {/* Bottom Drawer: Collapsible SystemTelemetry */}
+          <div className={`transition-all duration-300 ease-in-out bg-[#09090d] border-t border-white/[0.08] ${isTelemetryOpen ? 'h-64 opacity-100' : 'h-0 opacity-0 overflow-hidden'}`}>
+            <SystemTelemetry logs={logs} />
+          </div>
+
+          {/* Master Bottom Control Bar */}
+          <div className="h-[72px] bg-[#09090d]/90 backdrop-blur-2xl border-t border-white/[0.08] flex items-center justify-between px-6 shrink-0 relative z-40">
+            {/* Left: Meeting Metadata */}
+            <div className="flex items-center gap-3 w-1/3">
+              {testState === 'RUNNING' && (
+                <div className="inline-flex items-center gap-2 text-xs font-mono text-zinc-300">
+                  <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span>
+                  <span className="font-semibold text-white">
+                    {Math.floor(roundElapsedSeconds / 60)}:{String(roundElapsedSeconds % 60).padStart(2, '0')}
+                  </span>
+                </div>
+              )}
+              <span className="text-zinc-500 font-mono text-xs hidden md:inline border-l border-white/[0.08] pl-3">
+                Plantra Meet · Live Panel
+              </span>
             </div>
-          ) : (
-            <AgentPanel
-              testState={testState}
-              wrapUpWarning={wrapUpWarning}
-              activePanelAgents={activePanelAgents}
-              floorOwner={floorOwner}
-              primaryAgent={primaryAgent}
-              challengerAgent={challengerAgent}
-              currentRound={currentRound}
-              blueprint={blueprint}
-              pendingFloorNotice={pendingFloorNotice}
-              interviewId={interviewId}
-              micVolume={micVolume}
-              finishRound={finishRound}
-              localVideoRef={localVideoRef}
-              candidateName={candidateName}
-              localStream={localStream}
-              isVideoOff={isVideoOff}
-              toggleCamera={toggleCamera}
-              isMuted={isMuted}
-              toggleMute={toggleMute}
-              isDeafened={isDeafened}
-              toggleDeafen={toggleDeafen}
-            />
-          )}
-        </div>
-
-        {/* Pre-start Round Banner with Mandatory Hardware Verification */}
-        {testState === 'IDLE' && (
-          <div className="absolute inset-0 bg-[#202124]/95 backdrop-blur-md z-30 flex items-center justify-center p-6">
-            <div className="bg-[#2b2d31] p-6 sm:p-8 rounded-3xl text-center shadow-2xl max-w-md w-full border border-gray-700/50">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 font-medium text-xs mb-3">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Round {currentRound + 1} of {blueprint.interview_rounds.length} • Readiness Check</span>
-              </div>
-              <h3 className="text-xl sm:text-2xl font-normal text-white mb-1">{blueprint.interview_rounds[currentRound]?.round_name}</h3>
-              <p className="text-gray-400 text-xs mb-6 leading-relaxed">{blueprint.interview_rounds[currentRound]?.purpose}</p>
-
-              {/* Hardware Device Checklist */}
-              <div className="bg-[#1e2023] rounded-2xl p-4 mb-6 border border-gray-800 text-left space-y-3">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-gray-400 block mb-1">Hardware & Permission Verification</span>
-                
-                {/* Camera Check */}
-                <div className="flex items-center justify-between text-xs p-3 rounded-xl bg-[#2b2d31] border border-gray-700/40">
-                  <div className="flex items-center gap-2.5 text-white">
-                    <Video className="w-4 h-4 text-gray-400" />
-                    <span className="font-medium">Camera</span>
-                  </div>
-                  {deviceCheckStatus.camera === 'checking' && <span className="text-amber-400 animate-pulse font-mono text-[11px]">Checking...</span>}
-                  {deviceCheckStatus.camera === 'active' && <span className="text-emerald-400 font-medium flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> Ready</span>}
-                  {deviceCheckStatus.camera === 'blocked' && <span className="text-rose-400 font-medium flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> Blocked / Off</span>}
-                </div>
-
-                {/* Mic Check */}
-                <div className="flex items-center justify-between text-xs p-3 rounded-xl bg-[#2b2d31] border border-gray-700/40">
-                  <div className="flex items-center gap-2.5 text-white">
-                    <Mic className="w-4 h-4 text-gray-400" />
-                    <span className="font-medium">Microphone</span>
-                  </div>
-                  {deviceCheckStatus.mic === 'checking' && <span className="text-amber-400 animate-pulse font-mono text-[11px]">Checking...</span>}
-                  {deviceCheckStatus.mic === 'active' && <span className="text-emerald-400 font-medium flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> Ready</span>}
-                  {deviceCheckStatus.mic === 'blocked' && <span className="text-rose-400 font-medium flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> Blocked / Off</span>}
-                </div>
-
-                {/* Error Banner if blocked */}
-                {(deviceCheckStatus.camera === 'blocked' || deviceCheckStatus.mic === 'blocked') && (
-                  <div className="bg-rose-500/10 border border-rose-500/20 p-3 rounded-xl text-rose-300 text-xs text-left space-y-2">
-                    <p className="leading-normal">{deviceCheckStatus.errorMsg || 'Camera and Microphone permissions are required to join the meeting.'}</p>
-                    <button 
-                      onClick={checkDevices}
-                      className="text-[11px] font-medium text-rose-200 underline hover:text-white transition cursor-pointer"
-                    >
-                      ↻ Retry Device Check
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Join Button (Gated by hardware verification) */}
+            
+            {/* Center: Primary Media Controls */}
+            <div className="flex items-center justify-center gap-3 w-1/3">
               <button 
-                onClick={() => startTest()} 
-                disabled={deviceCheckStatus.camera !== 'active' || deviceCheckStatus.mic !== 'active'}
-                className={`w-full py-3.5 font-medium text-sm rounded-full shadow-lg transition-all flex items-center justify-center gap-2 ${
-                  deviceCheckStatus.camera === 'active' && deviceCheckStatus.mic === 'active'
-                    ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
-                    : 'bg-gray-700 text-gray-400 cursor-not-allowed opacity-60'
+                type="button"
+                onClick={toggleMute} 
+                className={`w-11 h-11 rounded-full flex items-center justify-center transition-all cursor-pointer border ${
+                  isMuted 
+                    ? 'bg-rose-500/20 border-rose-500/40 text-rose-300 shadow-[0_0_15px_rgba(244,63,94,0.3)]' 
+                    : 'bg-white/[0.06] hover:bg-white/[0.12] border-white/[0.1] text-white'
                 }`}
+                title={isMuted ? "Unmute Microphone" : "Mute Microphone"}
               >
-                {deviceCheckStatus.camera === 'active' && deviceCheckStatus.mic === 'active' ? (
-                  <>
-                    <span>Join meeting now</span>
-                    <Sparkles className="w-4 h-4" />
-                  </>
-                ) : (
-                  <span>Camera & Mic required to join</span>
-                )}
+                {isMuted ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+              </button>
+
+              <button 
+                type="button"
+                onClick={toggleCamera} 
+                className={`w-11 h-11 rounded-full flex items-center justify-center transition-all cursor-pointer border ${
+                  isVideoOff 
+                    ? 'bg-rose-500/20 border-rose-500/40 text-rose-300 shadow-[0_0_15px_rgba(244,63,94,0.3)]' 
+                    : 'bg-white/[0.06] hover:bg-white/[0.12] border-white/[0.1] text-white'
+                }`}
+                title={isVideoOff ? "Turn Camera On" : "Turn Camera Off"}
+              >
+                {isVideoOff ? <VideoOff className="w-4 h-4" /> : <Video className="w-4 h-4" />}
+              </button>
+
+              <button 
+                type="button"
+                onClick={toggleDeafen} 
+                className={`w-11 h-11 rounded-full flex items-center justify-center transition-all cursor-pointer border ${
+                  isDeafened 
+                    ? 'bg-rose-500/20 border-rose-500/40 text-rose-300 shadow-[0_0_15px_rgba(244,63,94,0.3)]' 
+                    : 'bg-white/[0.06] hover:bg-white/[0.12] border-white/[0.1] text-white'
+                }`}
+                title={isDeafened ? "Turn Audio On" : "Mute Speaker Audio"}
+              >
+                {isDeafened ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+              </button>
+
+              <button 
+                type="button"
+                onClick={() => finishRound('USER_ENDED')} 
+                disabled={testState !== 'RUNNING' && testState !== 'STARTING'}
+                className={`px-5 h-11 rounded-full font-semibold text-xs flex items-center gap-2 transition-all ${
+                  testState !== 'RUNNING' && testState !== 'STARTING'
+                    ? 'bg-white/[0.03] text-zinc-600 border border-white/[0.04] cursor-not-allowed'
+                    : 'bg-rose-600/90 hover:bg-rose-600 text-white cursor-pointer shadow-[0_0_20px_rgba(225,29,72,0.3)]'
+                }`}
+                title="End Meeting"
+              >
+                <PhoneOff className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">End Call</span>
+              </button>
+            </div>
+
+            {/* Right: Telemetry / System Drawer Toggle */}
+            <div className="flex items-center justify-end gap-3 w-1/3">
+              <button 
+                type="button"
+                onClick={() => setIsTelemetryOpen(!isTelemetryOpen)} 
+                className={`px-3.5 py-1.5 rounded-full flex items-center justify-center transition-all cursor-pointer gap-2 border text-xs font-mono ${
+                  isTelemetryOpen 
+                    ? 'bg-white text-black font-semibold border-white' 
+                    : 'bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.08] text-zinc-400 hover:text-white'
+                }`} 
+                title="Toggle System Telemetry"
+              >
+                {isTelemetryOpen ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
+                <span>Logs</span>
               </button>
             </div>
           </div>
-        )}
-
-      </div>
-
-      {/* Bottom Drawer: Collapsible SystemTelemetry */}
-      <div className={`transition-all duration-300 ease-in-out bg-[#1e1e1e] border-t border-gray-800 ${isTelemetryOpen ? 'h-64 opacity-100' : 'h-0 opacity-0 overflow-hidden'}`}>
-        <SystemTelemetry logs={logs} />
-      </div>
-
-      {/* Bottom Control Bar */}
-      <div className="h-[80px] bg-[#202124] border-t border-gray-800 flex items-center justify-between px-6 shrink-0 relative z-40">
-         <div className="text-white text-base font-medium flex items-center gap-4 w-1/3">
-            {testState === 'RUNNING' && (
-              <span className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                {Math.floor(roundElapsedSeconds / 60)}:{String(roundElapsedSeconds % 60).padStart(2, '0')}
-              </span>
-            )}
-            <span className="text-gray-400 border-l border-gray-700 pl-4 hidden sm:block">Plantra Interview Panel</span>
-         </div>
-         
-         <div className="flex items-center justify-center gap-3 w-1/3">
-            <button onClick={toggleMute} className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors cursor-pointer ${isMuted ? 'bg-[#ea4335] hover:bg-[#d93025] text-white shadow-[0_0_15px_rgba(234,67,53,0.4)]' : 'bg-[#3c4043] hover:bg-[#4d5156] text-white'}`}>
-               {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-            </button>
-            <button onClick={toggleDeafen} className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors cursor-pointer ${isDeafened ? 'bg-[#ea4335] hover:bg-[#d93025] text-white shadow-[0_0_15px_rgba(234,67,53,0.4)]' : 'bg-[#3c4043] hover:bg-[#4d5156] text-white'}`}>
-               {isDeafened ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-            </button>
-            <button onClick={() => finishRound('USER_ENDED')} className="px-6 h-12 rounded-full bg-[#ea4335] hover:bg-[#d93025] text-white font-medium flex items-center gap-2 cursor-pointer transition-colors shadow-[0_0_15px_rgba(234,67,53,0.4)]">
-               End meeting
-            </button>
-         </div>
-
-         <div className="flex items-center justify-end gap-3 w-1/3">
-            <button onClick={() => setIsTelemetryOpen(!isTelemetryOpen)} className={`px-4 h-10 rounded-full flex items-center justify-center transition-colors cursor-pointer gap-2 ${isTelemetryOpen ? 'bg-blue-200 text-blue-900' : 'bg-transparent hover:bg-gray-800 text-white'}`} title="Show system logs">
-               {isTelemetryOpen ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
-               <span className="text-sm font-medium">Logs</span>
-            </button>
-         </div>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
