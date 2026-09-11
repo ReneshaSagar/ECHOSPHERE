@@ -69,15 +69,15 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
               color: panel.technicalPrimary.color,
               is_primary: true,
               agent_uid: 9991,
-              instructions: `Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}. Observe their code/diagram changes as structured work events. Prompt them conversationally to explain their approach, complexity, and trade-offs in ${topProjects}.`,
-              greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. In this first round, we will evaluate your practical problem-solving. You can choose between the Coding editor or System Design canvas in your workspace. Take a look at the problem and walk me through your initial thoughts!`
+              instructions: `Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}. You are the very first interviewer. Open with a warm, formal welcome thanking them for applying to Plantra Labs and taking the time to meet today. Observe their code/diagram changes as structured work events. Prompt them conversationally to explain their approach, complexity, and trade-offs in ${topProjects}.`,
+              greeting_message: `Hello ${candidate.name}, thank you for applying to Plantra Labs and taking the time to meet with us today! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. In this first round, we will focus on practical problem solving in your interactive workspace. You'll find your assigned problem right in your editor. Take a look, take your time, and walk me through your initial thoughts whenever you're ready!`
             }
           ],
           interviewer: {
             name: panel.technicalPrimary.name,
             role: panel.technicalPrimary.role,
             instructions: `Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}.`,
-            greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}.`
+            greeting_message: `Hello ${candidate.name}, thank you for applying to Plantra Labs and taking the time to meet with us today! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}.`
           },
           topics: ["Problem Solving", "Algorithm Selection", "System Architecture", "Complexity Trade-offs"]
         },
@@ -94,15 +94,26 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
               color: panel.technicalPrimary.color,
               is_primary: true,
               agent_uid: 9991,
-              instructions: `Speak naturally and concisely with ${candidate.name}. Explore their codecraft and system design depth in ${topProjects}.`,
-              greeting_message: `Welcome to Round 2, ${candidate.name}! In this round, we'll dive deeper into high-scale distributed systems and concurrency.`
+              instructions: `You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at Plantra Labs leading this panel interview with your co-interviewer ${panel.technicalChallenger.name} (${panel.technicalChallenger.role}). You already conducted Round 1 with candidate ${candidate.name}. DO NOT introduce yourself from scratch or say 'welcome to Plantra Labs'. Greet them warmly as a returning candidate ('Nice to see you again!'), introduce ${panel.technicalChallenger.name}, and lead the technical architecture discussion. Both you and ${panel.technicalChallenger.name} can hear each other and the candidate in real-time. Keep responses concise (1-3 sentences).`,
+              greeting_message: `Nice to see you again, ${candidate.name}! Hope Round 1 went smoothly. Joining me for this second round is ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}. Together, we're excited to dive into your systems architecture and concurrency experience today. To get started, could you walk us through a recent project you built?`
+            },
+            {
+              interviewer_id: panel.technicalChallenger.interviewerId,
+              name: panel.technicalChallenger.name,
+              role: panel.technicalChallenger.role,
+              voice: panel.technicalChallenger.voice,
+              color: panel.technicalChallenger.color,
+              is_primary: false,
+              agent_uid: 9992,
+              instructions: `You are ${panel.technicalChallenger.name}, ${panel.technicalChallenger.role} at Plantra Labs, co-interviewing with ${panel.technicalPrimary.name} (${panel.technicalPrimary.role}). You can hear both ${panel.technicalPrimary.name} and the candidate. DO NOT speak during the opening greeting—let ${panel.technicalPrimary.name} welcome the candidate. You are the Deep-Dive Specialist. When the candidate explains system architecture, scalability, concurrency, distributed systems, or when ${panel.technicalPrimary.name} invites you, step in naturally: 'Thanks ${panel.technicalPrimary.name}. ${candidate.name}, diving into that...'. Ask 1 sharp follow-up question. After the candidate answers, conclude your follow-up and hand the floor back to ${panel.technicalPrimary.name}: 'Makes sense, back to you ${panel.technicalPrimary.name}.' NEVER speak over ${panel.technicalPrimary.name}. Wait for natural pauses.`,
+              greeting_message: ""
             }
           ],
           interviewer: {
             name: panel.technicalPrimary.name,
             role: panel.technicalPrimary.role,
             instructions: `Speak naturally and concisely with ${candidate.name}. Explore their codecraft and system design depth in ${topProjects}.`,
-            greeting_message: `Welcome to Round 2, ${candidate.name}!`
+            greeting_message: `Nice to see you again, ${candidate.name}! Hope Round 1 went smoothly. Joining me for this second round is ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}.`
           },
           topics: ["Core Architecture", "Data Structures", "System Scale", "Engineering Trade-offs"]
         },
@@ -193,19 +204,75 @@ export default async function InterviewPage({ params }: { params: Promise<{ blue
               color: panel.technicalPrimary.color,
               is_primary: true,
               agent_uid: 9991,
-              instructions: `Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}. Observe their code/diagram changes as structured work events. Prompt them conversationally to explain their approach, complexity, and trade-offs.`,
-              greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. In this first round, we will evaluate your practical problem-solving in our interactive workspace. Take a look at the problem in your workspace editor and walk me through your initial thoughts!`
+              instructions: `Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}. You are the very first interviewer. Open with a warm, formal welcome thanking them for applying to Plantra Labs and taking the time to meet today. Observe their code/diagram changes as structured work events. Prompt them conversationally to explain their approach, complexity, and trade-offs.`,
+              greeting_message: `Hello ${candidate.name}, thank you for applying to Plantra Labs and taking the time to meet with us today! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. In this first round, we will focus on practical problem solving in your interactive workspace. You'll find your assigned problem right in your editor. Take a look, take your time, and walk me through your initial thoughts whenever you're ready!`
             }
           ],
           interviewer: {
             name: panel.technicalPrimary.name,
             role: panel.technicalPrimary.role,
             instructions: `Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}.`,
-            greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}.`
+            greeting_message: `Hello ${candidate.name}, thank you for applying to Plantra Labs and taking the time to meet with us today! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}.`
           },
           topics: ["Problem Solving", "Algorithm Selection", "System Architecture", "Complexity Trade-offs"]
         };
         parsedBlueprint.interview_rounds.unshift(codingRound);
+      }
+
+      // Ensure panel integrity across all loaded rounds
+      const panel = selectPanelForJob(job.title);
+      const r1 = parsedBlueprint.interview_rounds[0];
+      const r2 = parsedBlueprint.interview_rounds[1];
+
+      // Round 1 warm welcome normalization
+      if (r1) {
+        const r1Interviewer = r1.interviewers?.[0] || r1.interviewer;
+        if (r1Interviewer && (!r1Interviewer.greeting_message || r1Interviewer.greeting_message.includes("welcome! I'm") || !r1Interviewer.greeting_message.toLowerCase().includes('thank you for applying'))) {
+          const warmR1Greeting = `Hello ${candidate.name}, thank you for applying to Plantra Labs and taking the time to meet with us today! I'm ${r1Interviewer.name}, ${r1Interviewer.role}. In this first round, we will focus on practical problem solving in your interactive workspace. You'll find your assigned problem right in your editor. Take a look, take your time, and walk me through your initial thoughts whenever you're ready!`;
+          if (r1.interviewers?.[0]) r1.interviewers[0].greeting_message = warmR1Greeting;
+          if (r1.interviewer) r1.interviewer.greeting_message = warmR1Greeting;
+        }
+      }
+
+      // Round 2 dual-interviewer and returning continuity normalization
+      if (r2) {
+        if (!r2.interviewers || r2.interviewers.length < 2) {
+          r2.interviewers = [
+            r2.interviewers?.[0] || r2.interviewer || {
+              interviewer_id: panel.technicalPrimary.interviewerId,
+              name: panel.technicalPrimary.name,
+              role: panel.technicalPrimary.role,
+              voice: panel.technicalPrimary.voice,
+              color: panel.technicalPrimary.color,
+              is_primary: true,
+              agent_uid: 9991
+            },
+            {
+              interviewer_id: panel.technicalChallenger.interviewerId,
+              name: panel.technicalChallenger.name,
+              role: panel.technicalChallenger.role,
+              voice: panel.technicalChallenger.voice,
+              color: panel.technicalChallenger.color,
+              is_primary: false,
+              agent_uid: 9992,
+              instructions: `You are ${panel.technicalChallenger.name}, ${panel.technicalChallenger.role} at Plantra Labs, co-interviewing with ${panel.technicalPrimary.name} (${panel.technicalPrimary.role}). You can hear both ${panel.technicalPrimary.name} and the candidate. DO NOT speak during the opening greeting—let ${panel.technicalPrimary.name} welcome the candidate. You are the Deep-Dive Specialist. When the candidate explains system architecture, scalability, concurrency, distributed systems, or when ${panel.technicalPrimary.name} invites you, step in naturally.`,
+              greeting_message: ""
+            }
+          ];
+        }
+
+        const r1InterviewerName = (r1?.interviewers?.[0]?.name || r1?.interviewer?.name || '').trim().toLowerCase();
+        const r2Primary = r2.interviewers[0];
+        const r2PrimaryName = (r2Primary?.name || '').trim().toLowerCase();
+        const challenger = r2.interviewers[1] || panel.technicalChallenger;
+
+        // If Round 1 and Round 2 share the same interviewer, enforce returning continuity greeting
+        if (r1InterviewerName && r2PrimaryName && (r1InterviewerName === r2PrimaryName || r1InterviewerName.includes(r2PrimaryName) || r2PrimaryName.includes(r1InterviewerName))) {
+          const returningGreeting = `Nice to see you again, ${candidate.name}! Hope Round 1 went smoothly. Joining me for this second round is ${challenger.name}, our ${challenger.role}. Together, we're excited to dive into your systems architecture and concurrency experience today. To get started, could you walk us through a recent project you built?`;
+          r2Primary.greeting_message = returningGreeting;
+          if (r2.interviewer) r2.interviewer.greeting_message = returningGreeting;
+          r2Primary.instructions = `You are ${r2Primary.name}, ${r2Primary.role} at Plantra Labs leading this panel interview with your co-interviewer ${challenger.name} (${challenger.role}). You already conducted Round 1 with candidate ${candidate.name}. DO NOT introduce yourself from scratch or say 'welcome to Plantra Labs'. Greet them warmly as a returning candidate ('Nice to see you again!'), introduce ${challenger.name}, and lead the technical architecture discussion. Both you and ${challenger.name} can hear each other and the candidate in real-time. Keep responses concise (1-3 sentences).`;
+        }
       }
     }
   } catch (e) {

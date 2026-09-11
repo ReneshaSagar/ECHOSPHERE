@@ -183,6 +183,10 @@ export default function InterviewRoom({
     }
 
     // 2. Sync Real-Time Workspace Update with Backend Real-Time Agent Endpoint via agentThink
+    // Suppress during initial greeting so background injections never disrupt agent speech tokens
+    if (introPhaseRef.current !== 'INTERVIEW_RUNNING') {
+      return;
+    }
     const activeAgent = activePanelAgentsRef.current[0];
     fetch('/api/agora-mllm/workspace-update', {
       method: 'POST',
@@ -266,6 +270,10 @@ export default function InterviewRoom({
       } catch (e) {}
     }
 
+    if (introPhaseRef.current !== 'INTERVIEW_RUNNING') {
+      return;
+    }
+
     fetch('/api/agora-mllm/workspace-update', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -294,6 +302,7 @@ export default function InterviewRoom({
     if (testState !== 'RUNNING' || !isRound1WorkspaceActive) return;
 
     const syncInterval = setInterval(() => {
+      if (introPhaseRef.current !== 'INTERVIEW_RUNNING') return;
       const activeAgent = activePanelAgentsRef.current[0];
 
       if (workspaceMode === 'coding' && code) {
@@ -388,6 +397,9 @@ export default function InterviewRoom({
 
   const stopAllMediaTracks = useCallback(() => {
     try {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('plantra-stop-all-media'));
+      }
       if (localStreamRef.current) {
         localStreamRef.current.getTracks().forEach(track => {
           try {
@@ -406,6 +418,13 @@ export default function InterviewRoom({
       setLocalStream(null);
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = null;
+      }
+      if (localAudioTrackRef.current) {
+        try {
+          localAudioTrackRef.current.stop();
+          localAudioTrackRef.current.close();
+        } catch (e) {}
+        localAudioTrackRef.current = null;
       }
     } catch (e) {
       console.warn('[InterviewRoom] Error stopping media tracks:', e);
@@ -681,7 +700,11 @@ export default function InterviewRoom({
         addLog('System', `Auto-starting Round ${nextRoundIdx + 1} of ${totalRounds} (${nextRoundObj?.round_name || 'Technical Round'})...`);
         startTest(nextRoundIdx);
       }, 3500);
-      return () => clearTimeout(timer);
+      transitionTimerRef.current = timer;
+      return () => {
+        clearTimeout(timer);
+        transitionTimerRef.current = null;
+      };
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [testState, currentRound]);
@@ -708,6 +731,7 @@ export default function InterviewRoom({
   const challengerIntroTextRef = useRef<string>('');
   const primaryIntroTextRef = useRef<string>('');
   const introTimerRef = useRef<any>(null);
+  const transitionTimerRef = useRef<any>(null);
   const primaryIntroFinishedRef = useRef<boolean>(false);
   const challengerIntroFinishedRef = useRef<boolean>(false);
   const soloHasSpokenRef = useRef<boolean>(false);
@@ -1071,11 +1095,26 @@ export default function InterviewRoom({
     const round = blueprint.interview_rounds[targetRound];
     const isTechnicalRound = round.round_type === 'technical';
     const roundInterviewers: InterviewerInfo[] = round.interviewers && round.interviewers.length > 0
-      ? round.interviewers
+      ? [...round.interviewers]
       : [round.interviewer];
+
+    if (isTechnicalRound && roundInterviewers.length < 2) {
+      roundInterviewers.push({
+        interviewer_id: 'challenger_specialist',
+        name: 'Arjun Mehta',
+        role: 'Senior Staff Infrastructure Engineer',
+        voice: 'Charon',
+        color: '#8B5CF6',
+        is_primary: false,
+        agent_uid: 9992,
+        instructions: 'Lead deep-dive technical probes on scalability, architecture, and edge cases.',
+        greeting_message: ''
+      } as any);
+    }
+
     const isMultiAgentPanel = isTechnicalRound && roundInterviewers.length >= 2;
 
-    introPhaseRef.current = isMultiAgentPanel ? 'PRIMARY_GREETING' : 'INTERVIEW_RUNNING';
+    introPhaseRef.current = isMultiAgentPanel ? 'PRIMARY_GREETING' : 'SOLO_GREETING';
     challengerSpawnedRef.current = false;
     primaryIntroTextRef.current = '';
     challengerIntroTextRef.current = '';
@@ -1124,7 +1163,17 @@ export default function InterviewRoom({
         
         addLog('Orchestrator', `Starting Multi-Agent Technical Panel: ${primary.name} (Primary) & ${challenger.name} (Challenger)`);
 
-        // Inject authoritative panel rules dynamically into both agents
+        // Check if primary interviewer conducted Round 1 with candidate
+        const r1Obj = blueprint.interview_rounds[0];
+        const r1InterviewerName = (r1Obj?.interviewers?.[0]?.name || r1Obj?.interviewer?.name || '').trim().toLowerCase();
+        const primaryNameLower = primary.name.trim().toLowerCase();
+        const isReturningInterviewer = Boolean(r1InterviewerName && (r1InterviewerName === primaryNameLower || r1InterviewerName.includes(primaryNameLower) || primaryNameLower.includes(r1InterviewerName)));
+
+        let primaryGreeting = primary.greeting_message;
+        if (isReturningInterviewer || !primaryGreeting || primaryGreeting.includes("welcome to Plantra Labs! I'm")) {
+          primaryGreeting = `Nice to see you again, ${candidateName}! Hope Round 1 went smoothly. Joining me for this second round is ${challenger.name}, our ${challenger.role}. Together, we're excited to dive into your systems architecture and concurrency experience today. To get started, could you walk us through a recent project you built?`;
+        }
+
         // Inject authoritative peer panel rules dynamically into both agents
         const primaryStrictRule = `
 ================================================================================
@@ -1138,6 +1187,7 @@ ORCHESTRATION & PEER ROLES:
 - You lead questions on core architectural design, data pipelines, and implementation correctness.
 - You lead Question 1: acknowledge "${candidateName}"'s self-introduction and guide the opening discussion.
 - "${challenger.name}" specializes in failure modes, edge cases, scalability boundaries, and architectural trade-offs.
+${isReturningInterviewer ? `- RETURNING CANDIDATE INVARIANT: You already interviewed "${candidateName}" in Round 1. DO NOT introduce yourself from scratch or say "welcome to Plantra Labs". Greet them warmly as a returning candidate ("Nice to see you again!"). Introduce "${challenger.name}" and kick off the technical panel.` : ''}
 
 CRITICAL INVARIANTS:
 - NEVER claim "${challenger.name}" is "observing", "in standby", or "will speak when needed". "${challenger.name}" is an active, equal peer interviewer.
@@ -1192,6 +1242,8 @@ CRITICAL INVARIANTS:
 
         // 1. Spawn Primary Agent (UID 9991)
         const primaryVoice = getGenderAwareVoice(primary.name, primary.voice);
+        const challengerVoice = getGenderAwareVoice(challenger.name, challenger.voice);
+
         addLog('Backend', `Spawning Primary Interviewer (${primary.name}, Voice: ${primaryVoice})...`);
         const primaryRes = await fetch(`/api/agora-mllm/start-dynamic-mllm`, {
           method: 'POST',
@@ -1202,7 +1254,7 @@ CRITICAL INVARIANTS:
             agent_uid: primary.agent_uid || 9991,
             voice: primaryVoice,
             instructions: primaryInstructions,
-            greeting_message: primary.greeting_message
+            greeting_message: primaryGreeting
           })
         });
         const primaryData = await primaryRes.json();
@@ -1223,19 +1275,43 @@ CRITICAL INVARIANTS:
           intervening: false
         });
 
-        // 2. Register Challenger Agent (UID 9992) into active panel
-        const challengerVoice = getGenderAwareVoice(challenger.name, challenger.voice);
-        runningAgents.push({
-          agentId: 'pending_mllm_init',
-          agentUid: challenger.agent_uid || 9992,
-          name: challenger.name,
-          role: challenger.role,
-          voice: challengerVoice,
-          color: challenger.color || '#8B5CF6',
-          isPrimary: false,
-          hasFloor: false,
-          intervening: false
-        });
+        // 2. Concurrently Spawn Challenger Agent (UID 9992) into the same channel
+        addLog('Backend', `Spawning Challenger Interviewer (${challenger.name}, Voice: ${challengerVoice})...`);
+        try {
+          const challengerRes = await fetch(`/api/agora-mllm/start-dynamic-mllm`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              session_id: sessionId, 
+              candidate_uid: candidateUid,
+              agent_uid: challenger.agent_uid || 9992,
+              voice: challengerVoice,
+              instructions: challengerInstructions,
+              greeting_message: "",
+              channel_name: channelName
+            })
+          });
+          const challengerData = await challengerRes.json();
+          if (challengerRes.ok && challengerData.agent_id) {
+            runningAgents.push({
+              agentId: challengerData.agent_id,
+              agentUid: challenger.agent_uid || 9992,
+              name: challenger.name,
+              role: challenger.role,
+              voice: challengerVoice,
+              color: challenger.color || '#8B5CF6',
+              isPrimary: false,
+              hasFloor: false,
+              intervening: false
+            });
+            challengerSpawnedRef.current = true;
+            addLog('Backend', `Challenger Interviewer active in channel: ${challenger.name} (UID: 9992)`);
+          } else {
+            console.warn('[InterviewRoom] Challenger start error:', challengerData);
+          }
+        } catch (challengerErr) {
+          console.warn('[InterviewRoom] Failed to start challenger:', challengerErr);
+        }
 
       } else {
         // Single Agent Round (Round 1 Coding/System Design OR Round 3 HR)
@@ -1292,8 +1368,8 @@ CRITICAL BEHAVIORAL INVARIANTS:
 - Keep all spoken responses concise (1-3 sentences maximum) so the candidate can focus on coding, designing, and explaining their work.
 ================================================================================
 `;
-          if (!greetingMsg || greetingMsg.length < 10) {
-            greetingMsg = `Hello ${candidateName}, welcome! I'm ${solo.name}, ${solo.role}. In this first round, we will focus on practical problem solving in your workspace. You have access to both a Coding IDE and a System Design whiteboard. Your assigned coding problem is '${codingProb.title}'. Take a look at the workspace, and walk me through your initial thoughts when you're ready!`;
+          if (!greetingMsg || greetingMsg.includes("welcome! I'm") || !greetingMsg.toLowerCase().includes('thank you for applying')) {
+            greetingMsg = `Hello ${candidateName}, thank you for applying to Plantra Labs and taking the time to meet with us today! I'm ${solo.name}, ${solo.role}. In this first round, we will focus on practical problem solving in your interactive workspace. You'll find your assigned problem right in your editor. Take a look, take your time, and walk me through your initial thoughts whenever you're ready!`;
           }
         } else if (isHrRound) {
           const ts = technicalSummaryRef.current;
@@ -1418,80 +1494,15 @@ CRITICAL RULES & SCOPE:
         addLog('Turn Arbiter', `Introduction concluded (${reason}). Floor active for candidate.`);
       };
 
-      const triggerChallengerIntro = async () => {
-        if (challengerSpawnedRef.current || introPhaseRef.current !== 'PRIMARY_GREETING' || testStateRef.current !== 'RUNNING') return;
-        challengerSpawnedRef.current = true;
-        introPhaseRef.current = 'CHALLENGER_GREETING';
-        challengerIntroTextRef.current = '';
+      const triggerChallengerIntro = () => {
+        if (introPhaseRef.current !== 'PRIMARY_GREETING' || testStateRef.current !== 'RUNNING') return;
+        
+        // Both Primary and Challenger are live in channel: ensure full playback volume
+        remoteAudioTracksRef.current.get(9991)?.setVolume(100);
+        remoteAudioTracksRef.current.get(9992)?.setVolume(100);
 
-        const challengerInfo = runningAgents.find(a => !a.isPrimary) || runningAgents[1];
-        const primaryInfo = runningAgents.find(a => a.isPrimary) || runningAgents[0];
-        const challengerGreetingText = (roundInterviewers[1] as any)?.greeting_message || 
-          `Hi ${candidateName}, great to meet you! As ${primaryInfo?.name || 'Priya'} mentioned, I focus on distributed architecture, failure resilience, and scaling limits here at Plantra. Back to you ${primaryInfo?.name || 'Priya'}, let's dive into the questions!`;
-
-        addLog('Backend', `Spawning Specialist / Challenger (${challengerInfo?.name || 'Specialist'}, Voice: ${challengerInfo?.voice || 'Charon'}) for natural introduction...`);
-
-        try {
-          // Gently mute Primary after a short 300ms buffer so Priya's last syllable is never clipped
-          setTimeout(() => {
-            if (introPhaseRef.current === 'CHALLENGER_GREETING') {
-              remoteAudioTracksRef.current.get(9991)?.setVolume(0);
-            }
-          }, 300);
-          setFloorOwner('CHALLENGER_AI');
-          currentFloorRef.current = 'CHALLENGER_AI';
-
-          const challengerRes = await fetch(`/api/agora-mllm/start-dynamic-mllm`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-              session_id: sessionId, 
-              candidate_uid: candidateUid,
-              agent_uid: challengerInfo?.agentUid || 9992,
-              voice: challengerInfo?.voice || 'Charon',
-              instructions: challengerInstructions,
-              greeting_message: challengerGreetingText,
-              channel_name: channelName
-            })
-          });
-          const challengerData = await challengerRes.json();
-          if (challengerRes.ok) {
-            const challengerAgentObj: RunningAgent = {
-              agentId: challengerData.agent_id,
-              agentUid: challengerInfo?.agentUid || 9992,
-              name: challengerInfo?.name || 'Specialist',
-              role: challengerInfo?.role || 'Technical Specialist',
-              voice: challengerInfo?.voice || 'Charon',
-              color: challengerInfo?.color || '#8B5CF6',
-              isPrimary: false,
-              hasFloor: true,
-              intervening: true
-            };
-
-            runningAgentsRef.current = [...runningAgentsRef.current.filter(a => a.agentUid !== 9992), challengerAgentObj];
-            if (sessionInfoRef.current) {
-              sessionInfoRef.current.agentIds = [...sessionInfoRef.current.agentIds.filter(id => id !== challengerData.agent_id && id !== 'pending_mllm_init'), challengerData.agent_id];
-            }
-            setActivePanelAgents(prev => [...prev.filter(a => a.agentUid !== 9992), challengerAgentObj]);
-
-            remoteAudioTracksRef.current.get(9992)?.setVolume(100);
-            remoteAudioTracksRef.current.get(9991)?.setVolume(0);
-
-            addLog('Turn Arbiter', `Panel Introduction: ${challengerInfo?.name || 'Specialist'} speaking greeting via Gemini Live (${challengerInfo?.voice || 'Charon'}).`);
-
-            // Safety timeout: if Challenger greeting is not marked is_final in 12 seconds, yield floor
-            setTimeout(() => {
-              if (introPhaseRef.current === 'CHALLENGER_GREETING' && testStateRef.current === 'RUNNING') {
-                activateCandidateFloor('Challenger intro window elapsed');
-              }
-            }, 12000);
-          } else {
-            activateCandidateFloor('Challenger spawn fallback');
-          }
-        } catch (err: any) {
-          console.warn('Error starting challenger agent for intro:', err);
-          activateCandidateFloor('Challenger spawn error fallback');
-        }
+        addLog('Turn Arbiter', `Panel opening concluded. Floor active for candidate and panel.`);
+        activateCandidateFloor('Panel greeting complete');
       };
 
       // Attach event listeners BEFORE joining the channel
@@ -1828,17 +1839,11 @@ CRITICAL RULES & SCOPE:
         ANS: true,
         AGC: true
       });
-      if (isMultiAgentPanel) {
-        // During initial greeting phase in Multi-Agent panel (Round 2), keep local audio muted to eliminate speaker-to-mic bleed
-        localAudioTrackRef.current.setEnabled(false);
-        await clientRef.current.publish([localAudioTrackRef.current]);
-        addLog('RTC', 'Local microphone published (Echo-gated during panel introduction).');
-      } else {
-        // Single-Agent (Round 1 Workspace & Round 3 HR): Enable mic immediately so candidate can speak freely
-        await localAudioTrackRef.current.setEnabled(!isMuted);
-        await clientRef.current.publish([localAudioTrackRef.current]);
-        addLog('RTC', 'Local microphone published & active for candidate.');
-      }
+      // Echo-gate candidate microphone during opening greeting across all rounds (Round 1, 2, and 3)
+      // This completely eliminates speaker-to-mic acoustic feedback barge-in / speech stuttering
+      localAudioTrackRef.current.setEnabled(false);
+      await clientRef.current.publish([localAudioTrackRef.current]);
+      addLog('RTC', 'Local microphone published (Echo-gated during interviewer greeting).');
 
       setTestState('RUNNING');
       addLog('System', `Round ${currentRound + 1} is running with active panel.`);
@@ -1847,10 +1852,17 @@ CRITICAL RULES & SCOPE:
       if (isMultiAgentPanel) {
         setTimeout(() => {
           if (introPhaseRef.current === 'PRIMARY_GREETING' && testStateRef.current === 'RUNNING') {
-            addLog('Turn Arbiter', `Lead Interviewer intro window elapsed (~16s). Advancing to Specialist introduction...`);
+            addLog('Turn Arbiter', `Panel opening greeting window elapsed (~14s). Activating floor for candidate...`);
             triggerChallengerIntro();
           }
-        }, 16000);
+        }, 14000);
+      } else {
+        setTimeout(() => {
+          if (introPhaseRef.current === 'SOLO_GREETING' && testStateRef.current === 'RUNNING') {
+            addLog('Turn Arbiter', `Solo interviewer greeting window elapsed (~12s). Activating floor for candidate...`);
+            activateCandidateFloor('Solo greeting elapsed');
+          }
+        }, 12000);
       }
 
     } catch (e: any) {
@@ -2100,6 +2112,76 @@ CRITICAL RULES & SCOPE:
       addLog('Error', `Round completion failed: ${e.message}`);
       stopAllMediaTracks();
       isFinishingRoundRef.current = false;
+    }
+  };
+
+  /**
+   * Dedicated End Meeting Handler
+   * Instantly stops hardware media tracks (camera & microphone lights turn OFF immediately),
+   * clears all pending transitions and timeouts, terminates backend MLLM agent sessions,
+   * synthesizes final evaluation data, and navigates candidate directly to completed summary.
+   */
+  const handleEndMeeting = async () => {
+    console.log('[InterviewRoom] handleEndMeeting triggered by candidate');
+    addLog('Orchestrator', 'Candidate clicked End Call. Concluding interview session immediately...');
+
+    // 1. Instantly kill all camera and mic tracks (hardware lights OFF immediately)
+    stopAllMediaTracks();
+
+    // 2. Clear all timers so no transitions or auto-finishes can execute
+    if (introTimerRef.current) {
+      clearTimeout(introTimerRef.current);
+      introTimerRef.current = null;
+    }
+    if (transitionTimerRef.current) {
+      clearTimeout(transitionTimerRef.current);
+      transitionTimerRef.current = null;
+    }
+
+    // 3. Immediately transition testState to ENDED to block further round actions
+    isFinishingRoundRef.current = true;
+    setTestState('ENDED');
+
+    // 4. Clean up speech recognition & Agora client
+    if (recognitionRef.current) {
+      try { recognitionRef.current.abort(); } catch (e) {}
+      recognitionRef.current = null;
+    }
+    if (localAudioTrackRef.current) {
+      try {
+        localAudioTrackRef.current.stop();
+        localAudioTrackRef.current.close();
+      } catch (e) {}
+      localAudioTrackRef.current = null;
+    }
+    if (clientRef.current) {
+      try { await clientRef.current.leave(); } catch (e) {}
+    }
+
+    // 5. Fire backend stop-mllm to kill AI agents
+    if (sessionInfo?.sessionId) {
+      fetch('/api/agora-mllm/stop-mllm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          session_id: sessionInfo.sessionId, 
+          agent_ids: sessionInfo.agentIds || [] 
+        })
+      }).catch(err => console.warn('Stop mllm error:', err));
+    }
+
+    // 6. Trigger final composite scorecard evaluation asynchronously
+    fetch(`/api/interviews/${interviewId}/evaluate-final`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ transcript })
+    }).catch(err => console.warn('Final evaluation post error:', err));
+
+    // 7. Route immediately to completed summary page (clean thank-you screen, no score displayed)
+    if (interviewId === 'demo-interview-test' || (typeof window !== 'undefined' && window.location.pathname.includes('interview-test'))) {
+      router.push('/interview-test-result');
+    } else {
+      router.push(`/interview/${interviewId}/completed`);
     }
   };
 
@@ -2604,13 +2686,8 @@ CRITICAL RULES & SCOPE:
 
               <button 
                 type="button"
-                onClick={() => finishRound('USER_ENDED')} 
-                disabled={testState !== 'RUNNING' && testState !== 'STARTING'}
-                className={`px-5 h-11 rounded-full font-semibold text-xs flex items-center gap-2 transition-all ${
-                  testState !== 'RUNNING' && testState !== 'STARTING'
-                    ? 'bg-white/[0.03] text-zinc-600 border border-white/[0.04] cursor-not-allowed'
-                    : 'bg-rose-600/90 hover:bg-rose-600 text-white cursor-pointer shadow-[0_0_20px_rgba(225,29,72,0.3)]'
-                }`}
+                onClick={handleEndMeeting} 
+                className="px-5 h-11 rounded-full font-semibold text-xs flex items-center gap-2 transition-all bg-rose-600/90 hover:bg-rose-600 text-white cursor-pointer shadow-[0_0_20px_rgba(225,29,72,0.3)]"
                 title="End Meeting"
               >
                 <PhoneOff className="w-3.5 h-3.5" />

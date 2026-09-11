@@ -69,15 +69,15 @@ You MUST return ONLY valid JSON matching this exact structure:
           "color": "${panel.technicalPrimary.color}",
           "is_primary": true,
           "agent_uid": 9991,
-          "instructions": "Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}. Observe their code/diagram changes as structured work events. Prompt them conversationally to explain their approach, complexity, and trade-offs.",
-          "greeting_message": "Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. In this first round, we will evaluate your practical problem-solving in our interactive workspace. Take a look at the problem and walk me through your initial thoughts!"
+          "instructions": "Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}. You are the very first interviewer. Open with a warm, formal welcome thanking them for applying to Plantra Labs and taking the time to meet today. Observe their code/diagram changes as structured work events. Prompt them conversationally to explain their approach, complexity, and trade-offs.",
+          "greeting_message": "Hello ${candidate.name}, thank you for applying to Plantra Labs and taking the time to meet with us today! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. In this first round, we will focus on practical problem solving in your interactive workspace. You'll find your assigned problem right in your editor. Take a look, take your time, and walk me through your initial thoughts whenever you're ready!"
         }
       ],
       "interviewer": {
         "name": "${panel.technicalPrimary.name}",
         "role": "${panel.technicalPrimary.role}",
         "instructions": "Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}.",
-        "greeting_message": "Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}."
+        "greeting_message": "Hello ${candidate.name}, thank you for applying to Plantra Labs and taking the time to meet with us today! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}."
       },
       "topics": ["Problem Solving", "Algorithm Selection", "System Architecture", "Complexity Trade-offs"]
     },
@@ -94,8 +94,8 @@ You MUST return ONLY valid JSON matching this exact structure:
           "color": "${panel.technicalPrimary.color}",
           "is_primary": true,
           "agent_uid": 9991,
-          "instructions": "You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at Plantra Labs leading this panel interview with your co-interviewer ${panel.technicalChallenger.name} (${panel.technicalChallenger.role}). Open the interview by warmly introducing yourself and ${panel.technicalChallenger.name}. Lead the technical architecture discussion. Both you and ${panel.technicalChallenger.name} can hear each other and the candidate in real-time. You can invite ${panel.technicalChallenger.name} to explore specific topics (e.g. '${panel.technicalChallenger.name}, do you want to dig into their scaling design?'). When ${panel.technicalChallenger.name} speaks, listen politely and do not interrupt. When ${panel.technicalChallenger.name} hands back to you, continue smoothly with the next topic. Keep responses concise (1-3 sentences).",
-          "greeting_message": "Hello ${candidate.name}, welcome to Plantra Labs! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}, and joining me today is ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}. We're excited to learn more about your technical background and architecture today. To get started, could you briefly introduce yourself and walk us through your recent engineering work?"
+          "instructions": "You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at Plantra Labs leading this panel interview with your co-interviewer ${panel.technicalChallenger.name} (${panel.technicalChallenger.role}). You already conducted Round 1 with candidate ${candidate.name}. DO NOT introduce yourself from scratch or say 'welcome to Plantra Labs'. Greet them warmly as a returning candidate ('Nice to see you again!'), introduce ${panel.technicalChallenger.name}, and lead the technical architecture discussion. Both you and ${panel.technicalChallenger.name} can hear each other and the candidate in real-time. Keep responses concise (1-3 sentences).",
+          "greeting_message": "Nice to see you again, ${candidate.name}! Hope Round 1 went smoothly. Joining me for this second round is ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}. Together, we're excited to dive into your systems architecture and concurrency experience today. To get started, could you walk us through a recent project you built?"
         },
         {
           "interviewer_id": "${panel.technicalChallenger.interviewerId}",
@@ -113,7 +113,7 @@ You MUST return ONLY valid JSON matching this exact structure:
         "name": "${panel.technicalPrimary.name}",
         "role": "${panel.technicalPrimary.role}",
         "instructions": "You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at Plantra Labs leading the technical interview. Guide the candidate conversationally through their verified architecture and projects.",
-        "greeting_message": "Hello ${candidate.name}, welcome to Plantra Labs! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}, and I'm joined by ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}. We're excited to learn more about your technical background today. To get started, could you briefly introduce yourself?"
+        "greeting_message": "Nice to see you again, ${candidate.name}! Hope Round 1 went smoothly. Joining me for this second round is ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}."
       },
       "topics": ["Architecture & State", "Concurrency & Throughput", "Scalability Trade-offs"]
     },
@@ -264,15 +264,15 @@ Generate the personalized 3-round JSON Interview Blueprint containing Round 1 (C
                 color: panel.technicalPrimary.color,
                 is_primary: true,
                 agent_uid: 9991,
-                instructions: `Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}. Observe their code/diagram changes as structured work events. Prompt them conversationally to explain their approach, complexity, and trade-offs in ${topProjects}.`,
-                greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. In this first round, we will evaluate your practical problem-solving in our interactive workspace. Take a look at the problem and walk me through your initial thoughts!`
+                instructions: `Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}. You are the very first interviewer. Open with a warm, formal welcome thanking them for applying to Plantra Labs and taking the time to meet today. Observe their code/diagram changes as structured work events. Prompt them conversationally to explain their approach, complexity, and trade-offs in ${topProjects}.`,
+                greeting_message: `Hello ${candidate.name}, thank you for applying to Plantra Labs and taking the time to meet with us today! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. In this first round, we will focus on practical problem solving in your interactive workspace. You'll find your assigned problem right in your editor. Take a look, take your time, and walk me through your initial thoughts whenever you're ready!`
               }
             ],
             interviewer: {
               name: panel.technicalPrimary.name,
               role: panel.technicalPrimary.role,
               instructions: `Lead Round 1 (Practical Workspace Assessment) with candidate ${candidate.name}.`,
-              greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}.`
+              greeting_message: `Hello ${candidate.name}, thank you for applying to Plantra Labs and taking the time to meet with us today! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}.`
             },
             topics: ["Problem Solving", "Algorithm Selection", "System Architecture", "Complexity Trade-offs"]
           },
@@ -289,8 +289,8 @@ Generate the personalized 3-round JSON Interview Blueprint containing Round 1 (C
                 color: panel.technicalPrimary.color,
                 is_primary: true,
                 agent_uid: 9991,
-                instructions: `You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at Plantra Labs leading this panel interview with your co-interviewer ${panel.technicalChallenger.name} (${panel.technicalChallenger.role}). Open the interview by warmly introducing yourself and ${panel.technicalChallenger.name}. Lead the technical architecture discussion on projects like ${topProjects}. You and ${panel.technicalChallenger.name} can hear each other and the candidate in real-time. Invite ${panel.technicalChallenger.name} to probe deep trade-offs when relevant. When ${panel.technicalChallenger.name} speaks, listen politely and do not interrupt. When ${panel.technicalChallenger.name} hands back to you, continue smoothly with the next topic. Keep responses concise (1-3 sentences).`,
-                greeting_message: `Hello ${candidate.name}, welcome to Plantra Labs! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}, and joining me today is ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}. We've been reviewing your background with ${topProjects}. Today we will explore your technical architecture and problem solving together. To get started, could you briefly introduce yourself?`
+                instructions: `You are ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role} at Plantra Labs leading this panel interview with your co-interviewer ${panel.technicalChallenger.name} (${panel.technicalChallenger.role}). You already conducted Round 1 with candidate ${candidate.name}. DO NOT introduce yourself from scratch or say 'welcome to Plantra Labs'. Greet them warmly as a returning candidate ('Nice to see you again!'), introduce ${panel.technicalChallenger.name}, and lead the technical architecture discussion on projects like ${topProjects}. You and ${panel.technicalChallenger.name} can hear each other and the candidate in real-time. Invite ${panel.technicalChallenger.name} to probe deep trade-offs when relevant. When ${panel.technicalChallenger.name} speaks, listen politely and do not interrupt. When ${panel.technicalChallenger.name} hands back to you, continue smoothly with the next topic. Keep responses concise (1-3 sentences).`,
+                greeting_message: `Nice to see you again, ${candidate.name}! Hope Round 1 went smoothly. Joining me for this second round is ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}. We've been reviewing your background with ${topProjects}. Together, we're excited to explore your technical architecture and problem solving. To get started, could you walk us through a recent project you built?`
               },
               {
                 interviewer_id: panel.technicalChallenger.interviewerId,
@@ -308,7 +308,7 @@ Generate the personalized 3-round JSON Interview Blueprint containing Round 1 (C
               name: panel.technicalPrimary.name,
               role: panel.technicalPrimary.role,
               instructions: `Speak naturally and concisely. Ask one question at a time. Explore ${candidate.name}'s technical depth in ${topProjects}.`,
-              greeting_message: `Hello ${candidate.name}, welcome! I'm ${panel.technicalPrimary.name}, ${panel.technicalPrimary.role}. Let's dive into technical architecture.`
+              greeting_message: `Nice to see you again, ${candidate.name}! Hope Round 1 went smoothly. Joining me for this second round is ${panel.technicalChallenger.name}, our ${panel.technicalChallenger.role}.`
             },
             topics: ["Core Architecture", "Data Structures & Concurrency", "System Scale", "Engineering Trade-offs"]
           },

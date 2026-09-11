@@ -243,10 +243,27 @@ export default function ProctorEngine({
       }
     }
 
-    return () => {
+    const handleForceStop = () => {
       active = false;
       if (mediaStreamRef.current) {
-        mediaStreamRef.current.getTracks().forEach(t => t.stop());
+        mediaStreamRef.current.getTracks().forEach(t => {
+          try { t.stop(); } catch (e) {}
+        });
+        mediaStreamRef.current = null;
+      }
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+    };
+    window.addEventListener('plantra-stop-all-media', handleForceStop);
+
+    return () => {
+      active = false;
+      window.removeEventListener('plantra-stop-all-media', handleForceStop);
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getTracks().forEach(t => {
+          try { t.stop(); } catch (e) {}
+        });
         mediaStreamRef.current = null;
       }
       if (videoRef.current) {

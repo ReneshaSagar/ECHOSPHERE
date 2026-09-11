@@ -61,7 +61,7 @@ ${codeSnippet ? `\nCandidate Current IDE Source Code (${language}):\n\`\`\`${lan
           text: formattedText,
           on_listening_action: 'inject',
           on_thinking_action: 'append',
-          on_speaking_action: 'append'
+          on_speaking_action: 'ignore'
         });
 
         console.log(`[WORKSPACE_SYNC_AGENT_THINK_SUCCESS] Successfully injected workspace update (${isExcalidraw ? 'Excalidraw' : 'Code'}) to agent ${agent_id}`);

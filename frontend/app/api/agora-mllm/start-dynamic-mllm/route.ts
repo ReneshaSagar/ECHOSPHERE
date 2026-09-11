@@ -65,6 +65,14 @@ export async function POST(req: NextRequest) {
     const enhancedInstructions = `${instructions || ''}
 
 ================================================================================
+CRITICAL FLUENCY & SPEECH INVARIANTS:
+- Speak in a smooth, continuous, natural, and confident professional tone.
+- NEVER stutter, hesitate, or restart sentences mid-way.
+- NEVER use repetitive filler phrases like "so as I was saying", "so as-", "as I said", or "like I was saying".
+- When you begin a sentence or thought, complete it smoothly to the end without self-interrupting.
+================================================================================
+
+================================================================================
 CRITICAL OPENING GREETING INVARIANT:
 You MUST speak your full opening greeting message from start to finish naturally, clearly, and warmly.
 NEVER stop midway through your introduction or cut yourself off.
