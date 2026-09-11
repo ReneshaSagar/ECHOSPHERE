@@ -4,8 +4,7 @@ import AdminDashboardClient, {
   DashboardStats,
   InterviewCardItem,
   RecentApplicantItem,
-  JobOverviewItem,
-  PipelineStageItem
+  JobOverviewItem
 } from './AdminDashboardClient';
 
 export default async function AdminDashboardPage() {
@@ -93,52 +92,12 @@ export default async function AdminDashboardPage() {
     };
   });
 
-  const totalAppsCount = Math.max(db.applications.length, 1);
-  const pipelineStages: PipelineStageItem[] = [
-    {
-      name: 'Resume & GitHub Screening',
-      roundKey: 'APPLIED',
-      count: inReviewCount,
-      percentage: Math.round((inReviewCount / totalAppsCount) * 100),
-      color: 'bg-amber-400'
-    },
-    {
-      name: 'Round 1: Practical Workspace Assessment',
-      roundKey: 'R1_WORKSPACE',
-      count: scheduledCount,
-      percentage: Math.round((scheduledCount / totalAppsCount) * 100),
-      color: 'bg-cyan-400'
-    },
-    {
-      name: 'Round 2: Technical Architecture Panel',
-      roundKey: 'R2_ARCH',
-      count: scheduledCount,
-      percentage: Math.round((scheduledCount / totalAppsCount) * 100),
-      color: 'bg-purple-400'
-    },
-    {
-      name: 'Round 3: Engineering Leadership & Culture',
-      roundKey: 'R3_LEADERSHIP',
-      count: scheduledCount,
-      percentage: Math.round((scheduledCount / totalAppsCount) * 100),
-      color: 'bg-pink-400'
-    },
-    {
-      name: 'Offer Extended / Priority Talent Pool',
-      roundKey: 'OFFER_POOL',
-      count: selectedCount + waitlistCount,
-      percentage: Math.round(((selectedCount + waitlistCount) / totalAppsCount) * 100),
-      color: 'bg-emerald-400'
-    }
-  ];
-
   return (
     <AdminDashboardClient
       stats={stats}
       interviews={interviews}
       recentApplicants={recentApplicants}
       jobs={jobs}
-      pipelineStages={pipelineStages}
     />
   );
 }

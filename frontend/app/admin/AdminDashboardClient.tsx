@@ -17,7 +17,6 @@ import {
   Check,
   Search,
   Filter,
-  Layers,
   Radio,
   ShieldCheck,
   Award,
@@ -84,26 +83,16 @@ export interface JobOverviewItem {
   activeInterviewsCount: number;
 }
 
-export interface PipelineStageItem {
-  name: string;
-  roundKey: string;
-  count: number;
-  percentage: number;
-  color: string;
-}
-
 export default function AdminDashboardClient({
   stats,
   interviews,
   recentApplicants,
-  jobs,
-  pipelineStages
+  jobs
 }: {
   stats: DashboardStats;
   interviews: InterviewCardItem[];
   recentApplicants: RecentApplicantItem[];
   jobs: JobOverviewItem[];
-  pipelineStages: PipelineStageItem[];
 }) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [interviewFilter, setInterviewFilter] = useState<'ALL' | 'UPCOMING' | 'COMPLETED'>('ALL');
@@ -266,45 +255,6 @@ export default function AdminDashboardClient({
             <ArrowRight className="w-3 h-3 text-emerald-400 group-hover:translate-x-1 transition-transform" />
           </div>
         </Link>
-      </div>
-
-      {/* ── 3-Round Pipeline Funnel Velocity ──────────────────────────────────── */}
-      <div className="bg-[#0a0a0e] rounded-2xl border border-white/[0.08] p-5 sm:p-6 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 mb-4 border-b border-white/[0.06]">
-          <div className="flex items-center gap-2.5">
-            <Layers className="w-4 h-4 text-purple-400" />
-            <h2 className="text-sm font-bold text-white tracking-tight uppercase font-mono">
-              3-Round Technical Evaluation Pipeline
-            </h2>
-          </div>
-          <span className="text-xs font-mono text-white/40">
-            Autonomous Panel Distribution
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-          {pipelineStages.map((stage, idx) => (
-            <div 
-              key={idx} 
-              className="bg-[#0e0e13] p-4 rounded-xl border border-white/[0.05] hover:border-white/[0.12] transition flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between text-[11px] font-mono text-white/40 uppercase mb-2">
-                  <span>Step 0{idx + 1}</span>
-                  <span className={`w-2 h-2 rounded-full ${stage.color}`}></span>
-                </div>
-                <div className="text-xs font-bold text-white leading-snug line-clamp-2">
-                  {stage.name}
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-white/[0.04] flex items-baseline justify-between">
-                <span className="text-2xl font-bold text-white font-mono">{stage.count}</span>
-                <span className="text-[11px] font-mono text-white/40">{stage.percentage}% active</span>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* ── Main Section: Live Interview Command Center & Recent Applicants ──── */}
