@@ -21,6 +21,8 @@ import {
   ShieldCheck,
   Award,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   TrendingUp,
   FileText,
   Clock,
@@ -97,6 +99,7 @@ export default function AdminDashboardClient({
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [interviewFilter, setInterviewFilter] = useState<'ALL' | 'UPCOMING' | 'COMPLETED'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showAllInterviews, setShowAllInterviews] = useState(false);
 
   const handleCopyLink = (blueprintId: string, id: string) => {
     const url = `${window.location.origin}/interview/${blueprintId}`;
@@ -118,6 +121,8 @@ export default function AdminDashboardClient({
 
     return matchesFilter && matchesSearch;
   });
+
+  const visibleInterviews = showAllInterviews ? filteredInterviews : filteredInterviews.slice(0, 5);
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 font-sans pb-16">
@@ -307,7 +312,7 @@ export default function AdminDashboardClient({
 
           {/* Interview Cards List */}
           <div className="space-y-3">
-            {filteredInterviews.map((interview) => {
+            {visibleInterviews.map((interview) => {
               const isCompleted = interview.status === 'COMPLETED';
               const isCopied = copiedId === interview.id;
 
@@ -418,6 +423,36 @@ export default function AdminDashboardClient({
             {filteredInterviews.length === 0 && (
               <div className="p-8 text-center bg-[#060608] rounded-xl border border-white/[0.04] text-white/40 text-xs font-mono">
                 No interview sessions found matching your criteria.
+              </div>
+            )}
+
+            {/* View More / Show Less Toggle Button after 5 Candidates */}
+            {filteredInterviews.length > 5 && (
+              <div className="pt-2 flex items-center justify-between border-t border-white/[0.04]">
+                <button
+                  type="button"
+                  onClick={() => setShowAllInterviews(!showAllInterviews)}
+                  className="px-4 py-2 bg-white/[0.04] hover:bg-white/[0.08] text-white/80 hover:text-white rounded-xl text-xs font-mono border border-white/[0.08] transition flex items-center gap-2"
+                >
+                  <span>
+                    {showAllInterviews
+                      ? 'Show Less'
+                      : `View More (${filteredInterviews.length - 5} more sessions)`}
+                  </span>
+                  {showAllInterviews ? (
+                    <ChevronUp className="w-3.5 h-3.5 text-white/50" />
+                  ) : (
+                    <ChevronDown className="w-3.5 h-3.5 text-white/50" />
+                  )}
+                </button>
+
+                <Link
+                  href="/admin/schedule"
+                  className="text-xs font-mono text-purple-400 hover:text-purple-300 flex items-center gap-1"
+                >
+                  <span>Full Calendar View</span>
+                  <ChevronRight className="w-3 h-3" />
+                </Link>
               </div>
             )}
           </div>
