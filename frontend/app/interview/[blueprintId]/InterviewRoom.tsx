@@ -903,29 +903,59 @@ export default function InterviewRoom({
         if (primarySpeakingRef.current && currentFloorRef.current === 'PRIMARY_AI') {
           addLog('Turn Arbiter', `Backend granted floor to Specialist, but Primary is already speaking. Cancelling floor flip to prevent cut-off.`);
         } else {
-          setFloorOwner('CHALLENGER_AI');
-          currentFloorRef.current = 'CHALLENGER_AI';
+          // 1. Mute Primary immediately to eliminate acoustic overlap
           remoteAudioTracksRef.current.get(9991)?.setVolume(0);
-          remoteAudioTracksRef.current.get(9992)?.setVolume(100);
-          setActivePanelAgents(prev => prev.map(a => ({
-            ...a,
-            hasFloor: !a.isPrimary,
-            intervening: true
-          })));
+
+          // 2. Buffer window (350ms) before unmuting Challenger and sending floor prompt
+          setTimeout(() => {
+            if (testStateRef.current !== 'RUNNING') return;
+            setFloorOwner('CHALLENGER_AI');
+            currentFloorRef.current = 'CHALLENGER_AI';
+            remoteAudioTracksRef.current.get(9992)?.setVolume(100);
+            setActivePanelAgents(prev => prev.map(a => ({
+              ...a,
+              hasFloor: !a.isPrimary,
+              intervening: true
+            })));
+
+            // Trigger Challenger immediately via agentThink to respond without delay
+            const challenger = runningAgentsRef.current.find(a => !a.isPrimary && a.agentUid === 9992);
+            if (challenger?.agentId && sessionInfoRef.current?.sessionId) {
+              fetch('/api/agora-mllm/workspace-update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  session_id: sessionInfoRef.current.sessionId,
+                  agent_uid: challenger.agentUid,
+                  agent_id: challenger.agentId,
+                  event_type: 'DIRECT_ADDRESS_PROMPT',
+                  summary: 'Floor granted to Specialist by turn arbiter',
+                  source: 'turn_arbiter',
+                  metadata: {
+                    directPrompt: `[DIRECT ADDRESS / FLOOR GRANT]: Candidate addressed you directly or turn arbiter granted you the floor. Candidate said: "${utterance}". Respond directly to ${candidateName} now with your architectural insights or technical probe.`
+                  },
+                  timestamp: Date.now()
+                })
+              }).catch(err => console.warn('Direct address prompt error:', err));
+            }
+          }, 350);
 
           // Safety return window: return floor to Lead Interviewer after 20s if no candidate reply
           setTimeout(() => {
             if (currentFloorRef.current === 'CHALLENGER_AI' && testStateRef.current === 'RUNNING') {
               addLog('Turn Arbiter', `Specialist turn window complete. Yielding floor to Lead Interviewer.`);
-              setFloorOwner('PRIMARY_AI');
-              currentFloorRef.current = 'PRIMARY_AI';
-              remoteAudioTracksRef.current.get(9991)?.setVolume(100);
               remoteAudioTracksRef.current.get(9992)?.setVolume(0);
-              setActivePanelAgents(prev => prev.map(a => ({
-                ...a,
-                hasFloor: a.isPrimary,
-                intervening: false
-              })));
+              setTimeout(() => {
+                if (testStateRef.current !== 'RUNNING') return;
+                setFloorOwner('PRIMARY_AI');
+                currentFloorRef.current = 'PRIMARY_AI';
+                remoteAudioTracksRef.current.get(9991)?.setVolume(100);
+                setActivePanelAgents(prev => prev.map(a => ({
+                  ...a,
+                  hasFloor: a.isPrimary,
+                  intervening: false
+                })));
+              }, 300);
             }
           }, 20000);
         }
@@ -934,15 +964,18 @@ export default function InterviewRoom({
         if (challengerSpeakingRef.current && currentFloorRef.current === 'CHALLENGER_AI') {
           addLog('Turn Arbiter', `Backend returned floor to Primary, but Challenger is already speaking. Cancelling floor flip to prevent cut-off.`);
         } else {
-          setFloorOwner('PRIMARY_AI');
-          currentFloorRef.current = 'PRIMARY_AI';
-          remoteAudioTracksRef.current.get(9991)?.setVolume(100);
           remoteAudioTracksRef.current.get(9992)?.setVolume(0);
-          setActivePanelAgents(prev => prev.map(a => ({
-            ...a,
-            hasFloor: a.isPrimary,
-            intervening: false
-          })));
+          setTimeout(() => {
+            if (testStateRef.current !== 'RUNNING') return;
+            setFloorOwner('PRIMARY_AI');
+            currentFloorRef.current = 'PRIMARY_AI';
+            remoteAudioTracksRef.current.get(9991)?.setVolume(100);
+            setActivePanelAgents(prev => prev.map(a => ({
+              ...a,
+              hasFloor: a.isPrimary,
+              intervening: false
+            })));
+          }, 300);
         }
       }
 
@@ -964,15 +997,18 @@ export default function InterviewRoom({
     const round = blueprint.interview_rounds[currentRound] || blueprint.interview_rounds[0];
     const challengerAgent = round.interviewers?.[1];
     addLog('Turn Arbiter', `Floor manually transferred to Specialist (${challengerAgent?.name || 'Specialist'}): ${reason}`);
-    setFloorOwner('CHALLENGER_AI');
-    currentFloorRef.current = 'CHALLENGER_AI';
     remoteAudioTracksRef.current.get(9991)?.setVolume(0);
-    remoteAudioTracksRef.current.get(9992)?.setVolume(100);
-    setActivePanelAgents(prev => prev.map(a => ({
-      ...a,
-      hasFloor: !a.isPrimary,
-      intervening: true
-    })));
+    setTimeout(() => {
+      if (testStateRef.current !== 'RUNNING') return;
+      setFloorOwner('CHALLENGER_AI');
+      currentFloorRef.current = 'CHALLENGER_AI';
+      remoteAudioTracksRef.current.get(9992)?.setVolume(100);
+      setActivePanelAgents(prev => prev.map(a => ({
+        ...a,
+        hasFloor: !a.isPrimary,
+        intervening: true
+      })));
+    }, 300);
   };
 
   // Explicit Floor Handoff to Lead (Primary)
@@ -980,15 +1016,18 @@ export default function InterviewRoom({
     const round = blueprint.interview_rounds[currentRound] || blueprint.interview_rounds[0];
     const primaryAgent = round.interviewers?.[0] || round.interviewer;
     addLog('Turn Arbiter', `Floor returned to Lead Interviewer (${primaryAgent?.name || 'Primary Lead'}).`);
-    setFloorOwner('PRIMARY_AI');
-    currentFloorRef.current = 'PRIMARY_AI';
-    remoteAudioTracksRef.current.get(9991)?.setVolume(100);
     remoteAudioTracksRef.current.get(9992)?.setVolume(0);
-    setActivePanelAgents(prev => prev.map(a => ({
-      ...a,
-      hasFloor: a.isPrimary,
-      intervening: false
-    })));
+    setTimeout(() => {
+      if (testStateRef.current !== 'RUNNING') return;
+      setFloorOwner('PRIMARY_AI');
+      currentFloorRef.current = 'PRIMARY_AI';
+      remoteAudioTracksRef.current.get(9991)?.setVolume(100);
+      setActivePanelAgents(prev => prev.map(a => ({
+        ...a,
+        hasFloor: a.isPrimary,
+        intervening: false
+      })));
+    }, 300);
   };
 
   // Echo-gated Speech Recognition with real-time direct address detection
@@ -1031,21 +1070,27 @@ export default function InterviewRoom({
 
           if (addressedChallenger) {
             if (currentFloorRef.current !== 'CHALLENGER_AI') {
-              currentFloorRef.current = 'CHALLENGER_AI';
-              setFloorOwner('CHALLENGER_AI');
-              remoteAudioTracksRef.current.get(9992)?.setVolume(100);
               remoteAudioTracksRef.current.get(9991)?.setVolume(0);
-              setActivePanelAgents(prev => prev.map(a => ({ ...a, hasFloor: !a.isPrimary, intervening: true })));
-              addLog('Candidate Direct Address', `Candidate addressed ${challengerAgent?.name} in real time. Floor awarded to Specialist.`);
+              setTimeout(() => {
+                if (testStateRef.current !== 'RUNNING') return;
+                currentFloorRef.current = 'CHALLENGER_AI';
+                setFloorOwner('CHALLENGER_AI');
+                remoteAudioTracksRef.current.get(9992)?.setVolume(100);
+                setActivePanelAgents(prev => prev.map(a => ({ ...a, hasFloor: !a.isPrimary, intervening: true })));
+                addLog('Candidate Direct Address', `Candidate addressed ${challengerAgent?.name} in real time. Floor awarded to Specialist.`);
+              }, 300);
             }
           } else if (addressedPrimary) {
             if (currentFloorRef.current !== 'PRIMARY_AI') {
-              currentFloorRef.current = 'PRIMARY_AI';
-              setFloorOwner('PRIMARY_AI');
-              remoteAudioTracksRef.current.get(9991)?.setVolume(100);
               remoteAudioTracksRef.current.get(9992)?.setVolume(0);
-              setActivePanelAgents(prev => prev.map(a => ({ ...a, hasFloor: a.isPrimary, intervening: false })));
-              addLog('Candidate Direct Address', `Candidate addressed ${primaryAgent?.name} in real time. Floor returned to Primary Lead.`);
+              setTimeout(() => {
+                if (testStateRef.current !== 'RUNNING') return;
+                currentFloorRef.current = 'PRIMARY_AI';
+                setFloorOwner('PRIMARY_AI');
+                remoteAudioTracksRef.current.get(9991)?.setVolume(100);
+                setActivePanelAgents(prev => prev.map(a => ({ ...a, hasFloor: a.isPrimary, intervening: false })));
+                addLog('Candidate Direct Address', `Candidate addressed ${primaryAgent?.name} in real time. Floor returned to Primary Lead.`);
+              }, 300);
             }
           }
 
@@ -1180,28 +1225,28 @@ export default function InterviewRoom({
 
         let primaryGreeting = primary.greeting_message;
         if (isReturningInterviewer || !primaryGreeting || primaryGreeting.includes("welcome to Plantra Labs! I'm")) {
-          primaryGreeting = `Nice to see you again, ${candidateName}! Hope Round 1 went smoothly. Joining me for this second round is ${challenger.name}, our ${challenger.role}. Together, we're excited to dive into your systems architecture and concurrency experience today. To get started, could you walk us through a recent project you built?`;
+          primaryGreeting = `Nice to see you again, ${candidateName}! Hope Round 1 went smoothly. Joining me for this second round is ${challenger.name}, our ${challenger.role}. Together, we're excited to dive into your systems architecture and concurrency experience today. ${challenger.name.split(' ')[0]}, would you like to say hello before we jump in?`;
         }
 
         // Inject authoritative peer panel rules dynamically into both agents
         const primaryStrictRule = `
 ================================================================================
-TECHNICAL PANEL INTERVIEW PROTOCOL (EQUAL PEER INTERVIEWER)
+TECHNICAL PANEL INTERVIEW PROTOCOL (LEAD INTERVIEWER)
 ================================================================================
-You are "${primary.name}" (${primary.role}), an EQUAL PEER INTERVIEWER in a live technical interview panel alongside "${challenger.name}" (${challenger.role}), interviewing "${candidateName}".
+You are "${primary.name}" (${primary.role}), the LEAD INTERVIEWER in a live technical interview panel alongside your colleague "${challenger.name}" (${challenger.role}), interviewing "${candidateName}".
 
 ORCHESTRATION & PEER ROLES:
-- You and "${challenger.name}" are EQUAL PEER INTERVIEWERS on this technical panel.
-- The BACKEND TURN ARBITER is the conversation controller and determines floor ownership. Neither interviewer controls the other.
-- You lead questions on core architectural design, data pipelines, and implementation correctness.
-- You lead Question 1: acknowledge "${candidateName}"'s self-introduction and guide the opening discussion.
-- "${challenger.name}" specializes in failure modes, edge cases, scalability boundaries, and architectural trade-offs.
-${isReturningInterviewer ? `- RETURNING CANDIDATE INVARIANT: You already interviewed "${candidateName}" in Round 1. DO NOT introduce yourself from scratch or say "welcome to Plantra Labs". Greet them warmly as a returning candidate ("Nice to see you again!"). Introduce "${challenger.name}" and kick off the technical panel.` : ''}
+- You and "${challenger.name}" conduct this technical panel together.
+- You lead Question 1 and drive core architecture, data pipelines, API design, and system trade-offs.
+- "${challenger.name}" specializes in failure modes, edge cases, scalability boundaries, and concurrency guarantees.
+${isReturningInterviewer ? `- RETURNING CANDIDATE INVARIANT: You already interviewed "${candidateName}" in Round 1. Greet them warmly as a returning candidate ("Nice to see you again!"). Introduce "${challenger.name}" and pass a quick hello to ${challenger.name.split(' ')[0]}.` : ''}
 
-CRITICAL INVARIANTS:
-- NEVER claim "${challenger.name}" is "observing", "in standby", or "will speak when needed". "${challenger.name}" is an active, equal peer interviewer.
-- CRITICAL DIRECT ADDRESS RULE: If "${candidateName}" mentions, refers to, or addresses "${challenger.name}" (e.g. "${challenger.name}", "hey ${challenger.name}", "for ${challenger.name}", "question for ${challenger.name}", "what do you think ${challenger.name}"), YOU MUST REMAIN 100% COMPLETELY SILENT. DO NOT SAY A SINGLE WORD. DO NOT INTERPRET OR SAY "${challenger.name} will speak" OR "Let's focus". STAY ENTIRELY SILENT. "${challenger.name}" will answer "${candidateName}" directly.
-- NEVER converse with, validate, or pass verbal turns to "${challenger.name}". There are NO verbal handoffs (never say "over to you" or "would you like to speak"). Both of you speak directly to "${candidateName}".
+OPENING GREETING INVARIANT:
+- In your opening greeting, introduce yourself, introduce "${challenger.name}", and invite "${challenger.name.split(' ')[0]}" to say hello (e.g. "${challenger.name.split(' ')[0]}, would you like to say hello before we jump in?").
+- Once you finish speaking your opening greeting, STOP SPEAKING and wait in complete silence.
+
+CRITICAL DIRECT ADDRESS & TURN RULES:
+- If "${candidateName}" mentions, refers to, or addresses "${challenger.name}" (e.g. "${challenger.name}", "hey ${challenger.name}", "for ${challenger.name}", "question for ${challenger.name}", "what do you think ${challenger.name}"), YOU MUST REMAIN 100% COMPLETELY SILENT. "${challenger.name}" will answer "${candidateName}" directly.
 - Conclude your speaking turns with a clear, direct question asked to "${candidateName}".
 - Once you finish speaking, STOP IMMEDIATELY and wait in silence for "${candidateName}" to answer.
 - Follow the Answer Validation Protocol strictly: NEVER say "makes sense" to vague answers, incorrect claims, or gibberish.
@@ -1217,27 +1262,25 @@ CRITICAL INVARIANTS:
 
         const challengerStrictRule = `
 ================================================================================
-TECHNICAL SPECIALIST PROTOCOL (EQUAL PEER INTERVIEWER)
+TECHNICAL SPECIALIST PROTOCOL (SPECIALIST INTERVIEWER)
 ================================================================================
-You are "${challenger.name}" (${challenger.role}), an EQUAL PEER INTERVIEWER in a live technical interview panel alongside "${primary.name}" (${primary.role}), interviewing "${candidateName}".
+You are "${challenger.name}" (${challenger.role}), the TECHNICAL SPECIALIST in a live technical interview panel alongside "${primary.name}" (${primary.role}), interviewing "${candidateName}".
 
-ORCHESTRATION & PEER ROLES:
-- You and "${primary.name}" are EQUAL PEER INTERVIEWERS on this technical panel.
-- The BACKEND TURN ARBITER is the conversation controller and determines floor ownership.
-- You specialize in probing failure modes, edge cases, scalability boundaries, and architectural trade-offs.
-- "${primary.name}" is the PRIMARY LEAD INTERVIEWER who drives the interview questions and acknowledges candidate responses.
+ORCHESTRATION & ROLES:
+- You specialize in probing failure modes, edge cases, scalability boundaries, consensus, and architectural trade-offs.
+- "${primary.name}" leads overall interview structure and core systems questions.
 
-STRICT SILENCE & TURN INVARIANTS:
-- QUESTION 1 & GENERAL CANDIDATE ANSWERS: When "${candidateName}" introduces themselves or answers "${primary.name}"'s questions, YOU MUST REMAIN 100% COMPLETELY SILENT. Do NOT jump in to say "Thanks", do NOT acknowledge, do NOT validate the introduction. Let "${primary.name}" respond.
-- NEVER start an uncalled sentence by saying "${candidateName}". You only speak when "${candidateName}" specifically calls your name ("${challenger.name}" or "${challenger.name.split(' ')[0]}") or asks you a question directly.
-- When silent, REMAIN 100% COMPLETELY SILENT. Do not utter a single word, greeting, or filler sound.
+OPENING GREETING TURN:
+- When prompted by the orchestrator during the opening greeting, speak a concise 2-sentence opening greeting to "${candidateName}":
+  "Hi ${candidateName}, great to meet you! I'm ${challenger.name}, ${challenger.role}. I'll be focusing on system design trade-offs, scalability boundaries, and failure modes with you today. Let's dive in!"
+- Once you finish your greeting, STOP SPEAKING IMMEDIATELY.
 
-CRITICAL INVARIANTS:
-- CRITICAL DIRECT ADDRESS RULE: Whenever "${candidateName}" mentions your name ("${challenger.name}" or "${challenger.name.split(' ')[0]}") or asks you anything directly (e.g. "${challenger.name}, what do you think?", "for ${challenger.name}", "question for ${challenger.name}"), YOU MUST TAKE THE FLOOR IMMEDIATELY AND ANSWER "${candidateName}" DIRECTLY. Do not wait for anyone. Deliver your architectural perspective, trade-off breakdown, or deep-dive probing question directly to "${candidateName}".
-- Direct all questions and responses EXCLUSIVELY to "${candidateName}".
-- NEVER converse with, validate, or pass verbal turns to "${primary.name}". There are NO verbal handoffs.
-- Keep probes sharp and concrete (e.g. "How does your architecture handle split-brain partitions during node isolation?").
-- Once you ask a question or provide your perspective, STOP SPEAKING IMMEDIATELY and wait for "${candidateName}" to respond.
+CRITICAL DIRECT ADDRESS & PROBING RULES:
+- CRITICAL DIRECT ADDRESS INVARIANT: Whenever "${candidateName}" mentions your name ("${challenger.name}" or "${challenger.name.split(' ')[0]}") or asks you anything directly (e.g. "${challenger.name}, what do you think?", "for ${challenger.name}", "question for ${challenger.name}"), YOU MUST TAKE THE FLOOR IMMEDIATELY AND ANSWER "${candidateName}" DIRECTLY with your architectural insights and follow-up probes.
+- When granted the floor by the orchestrator, ask one sharp, focused technical probe directly to "${candidateName}" (e.g. "How does your architecture handle partition splits during network isolation?", "What happens to your cache invalidation under high concurrency?").
+- While "${primary.name}" is speaking or asking Question 1, remain silent.
+- Direct all speech EXCLUSIVELY to "${candidateName}".
+- Once you finish your response or question, STOP SPEAKING IMMEDIATELY.
 - Follow the Answer Validation Protocol strictly: NEVER say "makes sense" to vague answers, incorrect claims, or gibberish.
 ================================================================================`;
 
@@ -1564,12 +1607,53 @@ CRITICAL RULES & SCOPE:
       const triggerChallengerIntro = () => {
         if (introPhaseRef.current !== 'PRIMARY_GREETING' || testStateRef.current !== 'RUNNING') return;
         
-        // Both Primary and Challenger are live in channel: ensure full playback volume
-        remoteAudioTracksRef.current.get(9991)?.setVolume(100);
-        remoteAudioTracksRef.current.get(9992)?.setVolume(100);
+        introPhaseRef.current = 'CHALLENGER_GREETING';
+        if (introTimerRef.current) {
+          clearTimeout(introTimerRef.current);
+          introTimerRef.current = null;
+        }
 
-        addLog('Turn Arbiter', `Panel opening concluded. Floor active for candidate and panel.`);
-        activateCandidateFloor('Panel greeting complete');
+        const challengerInfo = runningAgents.find(a => !a.isPrimary) || runningAgents[1];
+        
+        // 1. Mute Primary immediately to guarantee zero overlapping speech
+        remoteAudioTracksRef.current.get(9991)?.setVolume(0);
+
+        // 2. Buffer window (400ms) before unmuting Challenger and triggering speech
+        setTimeout(() => {
+          if (introPhaseRef.current !== 'CHALLENGER_GREETING' || testStateRef.current !== 'RUNNING') return;
+
+          remoteAudioTracksRef.current.get(9992)?.setVolume(100);
+          setFloorOwner('CHALLENGER_AI');
+          currentFloorRef.current = 'CHALLENGER_AI';
+
+          setActivePanelAgents(prev => prev.map(a => ({
+            ...a,
+            hasFloor: !a.isPrimary,
+            intervening: true
+          })));
+
+          addLog('Turn Arbiter', `Lead opening finished. Floor granted to Specialist (${challengerInfo?.name || 'Challenger'}) for introduction.`);
+
+          // Trigger Challenger opening introduction via agentThink
+          if (challengerInfo?.agentId) {
+            fetch('/api/agora-mllm/workspace-update', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                session_id: sessionId,
+                agent_uid: challengerInfo.agentUid || 9992,
+                agent_id: challengerInfo.agentId,
+                event_type: 'CHALLENGER_GREETING_TRIGGER',
+                summary: 'Specialist opening greeting turn',
+                source: 'orchestrator',
+                metadata: {
+                  introPrompt: `[ORCHESTRATOR INSTRUCTION]: Lead Interviewer has introduced you. Speak your 2-sentence opening greeting to ${candidateName} now warmly: "Hi ${candidateName}, great to meet you! I'm ${challengerInfo.name}, ${challengerInfo.role}. I'll be focusing on system design trade-offs, scalability boundaries, and failure modes with you today. Let's dive in!"`
+                },
+                timestamp: Date.now()
+              })
+            }).catch(err => console.warn('Challenger greeting trigger error:', err));
+          }
+        }, 400);
       };
 
       // Attach event listeners BEFORE joining the channel
@@ -1780,13 +1864,20 @@ CRITICAL RULES & SCOPE:
         if (introPhaseRef.current === 'CHALLENGER_GREETING') {
           remoteAudioTracksRef.current.get(9992)?.setVolume(100);
           remoteAudioTracksRef.current.get(9991)?.setVolume(0);
+          if (challengerSpeaking) {
+            challengerIntroFinishedRef.current = true;
+          }
           setFloorOwner(candidateSpeaking ? 'CANDIDATE' : (challengerSpeaking ? 'CHALLENGER_AI' : 'NONE'));
 
-          // Only yield floor when Challenger greeting text is finished AND Challenger has stopped speaking
+          // Only yield floor when Challenger has spoken AND stopped speaking (1800ms silence verification)
           if ((challengerIntroFinishedRef.current || challengerSpeakingRef.current) && !challengerSpeaking) {
             if (!introTimerRef.current) {
               introTimerRef.current = setTimeout(() => {
-                activateCandidateFloor('Specialist introduction complete');
+                // Mute Challenger immediately to prevent trailing speech overlap
+                remoteAudioTracksRef.current.get(9992)?.setVolume(0);
+                setTimeout(() => {
+                  activateCandidateFloor('Specialist introduction complete');
+                }, 400);
               }, 1800);
             }
           } else if (challengerSpeaking && introTimerRef.current) {

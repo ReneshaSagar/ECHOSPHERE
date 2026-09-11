@@ -39,7 +39,9 @@ export async function POST(req: NextRequest) {
         const isExcalidraw = source === 'excalidraw';
 
         let formattedText = '';
-        if (isExcalidraw) {
+        if (metadata?.introPrompt || metadata?.directPrompt || metadata?.customText) {
+          formattedText = metadata.introPrompt || metadata.directPrompt || metadata.customText;
+        } else if (isExcalidraw) {
           formattedText = `[ACTIVE CANDIDATE SCREEN: SYSTEM DESIGN WHITEBOARD (EXCALIDRAW)]
 Candidate is CURRENTLY VIEWING AND WORKING ON THE WHITEBOARD.
 Activity: ${summary}

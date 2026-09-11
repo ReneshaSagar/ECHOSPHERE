@@ -1745,9 +1745,9 @@
           ]
         }
       },
-      "evaluationScore": 28,
-      "evaluationSummary": "Candidate completed the multi-round assessment with a composite score of 28/100. Responses were brief or superficial, failing to meet the bar for senior technical depth.",
-      "decisionReason": "Multi-round assessment concluded with composite evaluation score 28/100. Scorecard synthesized for human hiring committee review."
+      "evaluationScore": 0,
+      "evaluationSummary": "Candidate was completely silent and provided zero verbal responses or code submissions during the multi-round evaluation, resulting in an automatic failure across all assessed competencies.",
+      "decisionReason": "Multi-round assessment concluded with composite evaluation score 0/100. Scorecard synthesized for human hiring committee review."
     },
     {
       "id": "matrix_app_test_01",
@@ -8510,24 +8510,9 @@
           "text": "[WORK_STATE_UPDATE] Candidate introduced a Hash Map / Set lookup structure to optimize lookup efficiency."
         },
         {
-          "round": "Round 2: Technical Architecture & Concurrency",
-          "speaker": "Madhav Gairola",
-          "text": "I basically used Agora Agora is"
-        },
-        {
-          "round": "Round 2: Technical Architecture & Concurrency",
-          "speaker": "Madhav Gairola",
-          "text": "Rtc supplier which basically helps you in you know making conversational models"
-        },
-        {
-          "round": "Round 2: Technical Architecture & Concurrency",
-          "speaker": "Madhav Gairola",
-          "text": "Uh it has two continuation model one is RT cascading which basically is curious and STD and the other is mlm I use mln model"
-        },
-        {
-          "round": "Round 2: Technical Architecture & Concurrency",
-          "speaker": "Madhav Gairola",
-          "text": "So basically for that I ensured that there is an arbiter a third Arbiter which basically says nothing throughout the mean and just"
+          "round": "Round 1: Practical Coding & System Design Assessment",
+          "speaker": "System (Workspace Event)",
+          "text": "[WORK_STATE_UPDATE] Candidate updated code in editor (22 lines total)."
         }
       ],
       "evaluations": [
@@ -8550,16 +8535,16 @@
           "reason": "Candidate completed the HR round with insufficient dialogue duration to evaluate leadership or cultural alignment."
         },
         {
-          "round": "Round 1: Practical Coding & System Design Assessment",
-          "decision": "FAIL",
-          "score": 0,
-          "reason": "Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace."
-        },
-        {
           "round": "Round 2: Technical Panel (Systems & Concurrency)",
           "decision": "FAIL",
           "score": 0,
           "reason": "Candidate was completely silent and provided zero verbal responses during the technical panel interview."
+        },
+        {
+          "round": "Round 1: Practical Coding & System Design Assessment",
+          "decision": "FAIL",
+          "score": 0,
+          "reason": "Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace."
         }
       ],
       "suspiciousEvents": [
@@ -15268,6 +15253,223 @@
           "details": "Candidate is not visible to the webcam",
           "severity": "HIGH",
           "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:26.979Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:29.213Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:30.331Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:33.609Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:34.994Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:37.593Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:39.091Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:41.007Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:42.511Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:43.908Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:45.449Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:46.761Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:49.305Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:50.550Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:52.100Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:53.664Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:54.981Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:56.068Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:57.549Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:55:59.054Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:56:00.412Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:56:02.119Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:56:18.308Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:56:19.612Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-11T21:56:20.991Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:56:22.263Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:56:23.694Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:56:25.029Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:56:26.680Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:56:28.098Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-11T21:56:29.575Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
         }
       ],
       "round1Evaluation": {
@@ -15368,7 +15570,7 @@
           "debuggingReasoning": "No debugging performed."
         },
         "workspaceEvidence": {
-          "code": "class SlidingWindowRateLimiter {\n  private limit: number;\n  private windowMs: number;\n  private userLogs: Map<string, number[]>;\n\n  constructor(limit: number = 5, windowMs: number = 10000) {\n    this.limit = limit;\n    this.windowMs = windowMs;\n    this.userLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number = Date.now()): boolean {\n    // TODO: Implement sliding window rate limiting logic\n    return true;\n  }\n}\n\n// Test instance\nconst limiter = new SlidingWindowRateLimiter(3, 5000);\nconsole.log(\"Allowed t=1000:\", limiter.allowRequest(\"user1\", 1000));\nconsole.log(\"Allowed t=2000:\", limiter.allowRequest(\"user1\", 2000));\n\nskibidi",
+          "code": "class SlidingWindowRateLimiter {\n  private limit: number;\n  private windowMs: number;\n  private userLogs: Map<string, number[]>;\n\n  constructor(limit: number = 5, windowMs: number = 10000) {\n    this.limit = limit;\n    this.windowMs = windowMs;\n    this.userLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number = Date.now()): boolean {\n    // TODO: Implement sliding window rate limiting logic\n    return true;\n  }\n}\n\n// Test instance\nconst limiter = new SlidingWindowRateLimiter(3, 5000);\nconsole.log(\"Allowed t=1000:\", limiter.allowRequest(\"user1\", 1000));\nconsole.log(\"Allowed t=2000:\", limiter.allowRequest(\"user1\", 2000));\nskibidi",
           "language": "typescript",
           "codeExecutionResults": {
             "compileSuccess": true,
@@ -15376,8 +15578,8 @@
             "failedTests": 0,
             "rawOutput": "Workspace snapshot captured"
           },
-          "diagramElementCount": 5,
-          "submittedAt": "2026-09-11T19:55:09.633Z"
+          "diagramElementCount": 0,
+          "submittedAt": "2026-09-11T21:56:05.434Z"
         },
         "keyEvidence": [],
         "missingEvidence": [
@@ -15385,10 +15587,10 @@
           "Algorithmic explanation",
           "Complexity analysis"
         ],
-        "evaluatedAt": "2026-09-11T19:55:09.633Z"
+        "evaluatedAt": "2026-09-11T21:56:05.434Z"
       },
       "round1Evidence": {
-        "code": "class SlidingWindowRateLimiter {\n  private limit: number;\n  private windowMs: number;\n  private userLogs: Map<string, number[]>;\n\n  constructor(limit: number = 5, windowMs: number = 10000) {\n    this.limit = limit;\n    this.windowMs = windowMs;\n    this.userLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number = Date.now()): boolean {\n    // TODO: Implement sliding window rate limiting logic\n    return true;\n  }\n}\n\n// Test instance\nconst limiter = new SlidingWindowRateLimiter(3, 5000);\nconsole.log(\"Allowed t=1000:\", limiter.allowRequest(\"user1\", 1000));\nconsole.log(\"Allowed t=2000:\", limiter.allowRequest(\"user1\", 2000));\n\nskibidi",
+        "code": "class SlidingWindowRateLimiter {\n  private limit: number;\n  private windowMs: number;\n  private userLogs: Map<string, number[]>;\n\n  constructor(limit: number = 5, windowMs: number = 10000) {\n    this.limit = limit;\n    this.windowMs = windowMs;\n    this.userLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number = Date.now()): boolean {\n    // TODO: Implement sliding window rate limiting logic\n    return true;\n  }\n}\n\n// Test instance\nconst limiter = new SlidingWindowRateLimiter(3, 5000);\nconsole.log(\"Allowed t=1000:\", limiter.allowRequest(\"user1\", 1000));\nconsole.log(\"Allowed t=2000:\", limiter.allowRequest(\"user1\", 2000));\nskibidi",
         "language": "typescript",
         "codeExecutionResults": {
           "compileSuccess": true,
@@ -15396,15 +15598,15 @@
           "failedTests": 0,
           "rawOutput": "Workspace snapshot captured"
         },
-        "diagramElementCount": 5,
-        "submittedAt": "2026-09-11T19:55:09.633Z"
+        "diagramElementCount": 0,
+        "submittedAt": "2026-09-11T21:56:05.434Z"
       },
       "interviewState": {
         "interviewId": "demo-interview-test",
-        "currentRound": "hr",
-        "floorState": "HR_SPEAKING",
-        "currentSpeaker": "hr_01",
-        "conversationSummary": "Technical panel interview initialized.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 82/100). Assessment Notes: Candidate completed functional implementation in typescript with verified test execution.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 90/100). Highlights: . Panel Notes: Demonstrated exceptional deep concurrency knowledge in Technical Panel.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 75/100). Highlights: . Panel Notes: Candidate articulated technical architecture concepts and engineering trade-offs during the panel discussion.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 30/100). Highlights: . Panel Notes: Candidate provided brief or high-level remarks without sufficient distributed systems depth.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 30/100). Highlights: . Panel Notes: Candidate provided brief or high-level remarks without sufficient distributed systems depth.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 85/100). Highlights: . Panel Notes: Candidate was completely silent and provided zero verbal responses during the technical panel interview.",
+        "currentRound": "technical",
+        "floorState": "PRIMARY_SPEAKING",
+        "currentSpeaker": "eng_be_01",
+        "conversationSummary": "Technical panel interview initialized.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 82/100). Assessment Notes: Candidate completed functional implementation in typescript with verified test execution.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 90/100). Highlights: . Panel Notes: Demonstrated exceptional deep concurrency knowledge in Technical Panel.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 75/100). Highlights: . Panel Notes: Candidate articulated technical architecture concepts and engineering trade-offs during the panel discussion.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 30/100). Highlights: . Panel Notes: Candidate provided brief or high-level remarks without sufficient distributed systems depth.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 30/100). Highlights: . Panel Notes: Candidate provided brief or high-level remarks without sufficient distributed systems depth.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 85/100). Highlights: . Panel Notes: Candidate was completely silent and provided zero verbal responses during the technical panel interview.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.",
         "questionsAsked": [],
         "topicsCovered": [],
         "evidenceCollected": [],
@@ -15505,38 +15707,48 @@
         "interviewStatus": "IN_PROGRESS",
         "activeAgents": [
           {
-            "agentId": "hr_01",
-            "name": "Sarah Jenkins",
-            "role": "VP of Engineering Culture & People",
-            "voice": "Aoede",
-            "color": "#EA580C",
+            "agentId": "eng_be_01",
+            "name": "Aditya Sharma",
+            "role": "Senior Backend Engineer",
+            "voice": "Fenrir",
+            "color": "#10B981",
             "isPrimary": true,
             "isActive": true,
             "hasFloor": true
+          },
+          {
+            "agentId": "eng_be_02",
+            "name": "Arjun Malhotra",
+            "role": "Staff Backend Architect",
+            "voice": "Charon",
+            "color": "#7C3AED",
+            "isPrimary": false,
+            "isActive": true,
+            "hasFloor": false
           }
         ],
-        "updatedAt": "2026-09-11T19:55:51.409Z",
+        "updatedAt": "2026-09-11T21:56:05.844Z",
         "candidateAnswer": "So basically for that I ensured that there is an arbiter a third Arbiter which basically says nothing throughout the mean and just"
       },
       "scorecard": {
         "overall_recommendation": "No Hire",
-        "overallScore": 28,
-        "confidence": "MEDIUM",
-        "overall_summary": "Candidate completed the multi-round assessment with a composite score of 28/100. Responses were brief or superficial, failing to meet the bar for senior technical depth.",
+        "overallScore": 0,
+        "confidence": "HIGH",
+        "overall_summary": "Candidate was completely silent and provided zero verbal responses or code submissions during the multi-round evaluation, resulting in an automatic failure across all assessed competencies.",
         "multiRoundBreakdown": [
           {
             "roundName": "Round 1: Practical Coding & System Design Assessment",
             "roundType": "coding",
-            "rawScore": 22,
+            "rawScore": 0,
             "weight": 0.35,
-            "weightedScore": 7.7
+            "weightedScore": 0
           },
           {
             "roundName": "Round 2: Technical Panel (Systems & Concurrency)",
             "roundType": "technical",
-            "rawScore": 30,
+            "rawScore": 0,
             "weight": 0.5,
-            "weightedScore": 15
+            "weightedScore": 0
           },
           {
             "roundName": "Round 3: HR, Culture & Engineering Leadership",
@@ -15546,108 +15758,106 @@
             "weightedScore": 5.25
           }
         ],
-        "scoringFormula": "(22 × 35% [CODING]) + (30 × 50% [TECHNICAL]) + (35 × 15% [HR]) = 28/100",
+        "scoringFormula": "(0 × 35% [CODING]) + (0 × 50% [TECHNICAL]) + (35 × 15% [HR]) = 5/100",
         "round1Evaluation": {
           "roundName": "Round 1: Practical Coding & System Design Assessment",
           "roundType": "coding",
           "decision": "FAIL",
-          "score": 22,
-          "reason": "Candidate failed to produce a valid functional implementation or resolve test constraints.",
+          "score": 0,
+          "reason": "Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.",
           "evidenceQuality": "NONE",
           "evidenceSufficiency": "insufficient",
-          "confidence": "MEDIUM",
+          "confidence": "HIGH",
           "competencyEvaluations": [
             {
               "competency": "Problem Understanding & Requirements Clarification",
               "weight": 0.15,
-              "score": 20,
-              "weightedScore": 3,
+              "score": 0,
+              "weightedScore": 0,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
-                "Lacked complete implementation for Problem Understanding & Requirements Clarification"
+                "Candidate was completely silent and provided zero code submissions or verbal explanations in the workspace."
               ],
-              "feedback": "Understands problem constraints, clarifies edge cases, and correctly identifies inputs/outputs."
+              "feedback": "Candidate did not participate or attempt the workspace problem."
             },
             {
               "competency": "Approach, Data Structures & Algorithm Design",
               "weight": 0.2,
-              "score": 20,
-              "weightedScore": 4,
+              "score": 0,
+              "weightedScore": 0,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
-                "Lacked complete implementation for Approach, Data Structures & Algorithm Design"
+                "Candidate was completely silent and provided zero code submissions or verbal explanations in the workspace."
               ],
-              "feedback": "Selects optimal data structures and designs a clean algorithmic approach (e.g. Sliding Window, Hash Map, Two Pointers)."
+              "feedback": "Candidate did not participate or attempt the workspace problem."
             },
             {
               "competency": "Implementation Correctness & Code Quality",
               "weight": 0.3,
-              "score": 15,
-              "weightedScore": 4.5,
+              "score": 0,
+              "weightedScore": 0,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
-                "Lacked complete implementation for Implementation Correctness & Code Quality"
+                "Candidate was completely silent and provided zero code submissions or verbal explanations in the workspace."
               ],
-              "feedback": "Translates approach into clean, modular, syntax-error-free code grounded in test execution pass rates."
+              "feedback": "Candidate did not participate or attempt the workspace problem."
             },
             {
               "competency": "Complexity, Optimization & Scaling Reasoning",
               "weight": 0.15,
-              "score": 20,
-              "weightedScore": 3,
+              "score": 0,
+              "weightedScore": 0,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
-                "Lacked complete implementation for Complexity, Optimization & Scaling Reasoning"
+                "Candidate was completely silent and provided zero code submissions or verbal explanations in the workspace."
               ],
-              "feedback": "Accurately articulates Time O(.) and Space O(.) complexities and discusses scalability/concurrency limits."
+              "feedback": "Candidate did not participate or attempt the workspace problem."
             },
             {
               "competency": "Debugging, Adaptability & Inactivity/Hint Handling",
               "weight": 0.1,
-              "score": 20,
-              "weightedScore": 2,
+              "score": 0,
+              "weightedScore": 0,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
-                "Lacked complete implementation for Debugging, Adaptability & Inactivity/Hint Handling"
+                "Candidate was completely silent and provided zero code submissions or verbal explanations in the workspace."
               ],
-              "feedback": "Handles runtime errors, reacts effectively to hints or stuck signals, and methodically isolates bugs."
+              "feedback": "Candidate did not participate or attempt the workspace problem."
             },
             {
               "competency": "Communication, Explanation & Code Walkthrough",
               "weight": 0.1,
-              "score": 50,
-              "weightedScore": 5,
-              "evidenceQuality": "PARTIAL",
+              "score": 0,
+              "weightedScore": 0,
+              "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
-                "Lacked complete implementation for Communication, Explanation & Code Walkthrough"
+                "Candidate was completely silent and provided zero code submissions or verbal explanations in the workspace."
               ],
-              "feedback": "Explains code structure, walks through execution logic clearly, and maintains structured verbal communication."
+              "feedback": "Candidate did not participate or attempt the workspace problem."
             }
           ],
           "demonstratedKnowledge": [
             {
-              "topic": "Sliding Window Rate Limiter",
+              "topic": "Data Structures & Algorithms",
               "level": "not_demonstrated",
-              "evidence": "class SlidingWindowRateLimiter {\n  private limit: number;\n  private windowMs: number;\n  private userLogs: Map<string, nu"
+              "evidence": "None (candidate was silent with no workspace submission)"
             }
           ],
           "reasoningEvidence": {
-            "approachExplanation": "Candidate approached problem using sliding window log data structure.",
-            "algorithmChoices": "Used Map structure to maintain timestamp arrays per user ID.",
-            "complexityReasoning": "O(1) average time complexity, O(N) space complexity.",
-            "edgeCasesIdentified": [
-              "Multiple requests at identical millisecond timestamps"
-            ],
-            "debuggingReasoning": "Validated approach against sample test invocations."
+            "approachExplanation": "No approach explained (candidate was silent).",
+            "algorithmChoices": "No algorithm chosen.",
+            "complexityReasoning": "No complexity analysis provided.",
+            "edgeCasesIdentified": [],
+            "debuggingReasoning": "No debugging performed."
           },
           "workspaceEvidence": {
-            "code": "class SlidingWindowRateLimiter {\n  private limit: number;\n  private windowMs: number;\n  private userLogs: Map<string, number[]>;\n\n  constructor(limit: number = 5, windowMs: number = 10000) {\n    this.limit = limit;\n    this.windowMs = windowMs;\n    this.userLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number = Date.now()): boolean {\n    // TODO: Implement sliding window rate limiting logic\n    return true;\n  }\n}\n\n// Test instance\nconst limiter = new SlidingWindowRateLimiter(3, 5000);\nconsole.log(\"Allowed t=1000:\", limiter.allowRequest(\"user1\", 1000));\nconsole.log(\"Allowed t=2000:\", limiter.allowRequest(\"user1\", 2000));\n",
+            "code": "class SlidingWindowRateLimiter {\n  private limit: number;\n  private windowMs: number;\n  private userLogs: Map<string, number[]>;\n\n  constructor(limit: number = 5, windowMs: number = 10000) {\n    this.limit = limit;\n    this.windowMs = windowMs;\n    this.userLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number = Date.now()): boolean {\n    // TODO: Implement sliding window rate limiting logic\n    return true;\n  }\n}\n\n// Test instance\nconst limiter = new SlidingWindowRateLimiter(3, 5000);\nconsole.log(\"Allowed t=1000:\", limiter.allowRequest(\"user1\", 1000));\nconsole.log(\"Allowed t=2000:\", limiter.allowRequest(\"user1\", 2000));\nskibidi",
             "language": "typescript",
             "codeExecutionResults": {
               "compileSuccess": true,
@@ -15656,59 +15866,67 @@
               "rawOutput": "Workspace snapshot captured"
             },
             "diagramElementCount": 0,
-            "submittedAt": "2026-09-11T19:07:47.473Z"
+            "submittedAt": "2026-09-11T21:56:05.434Z"
           },
           "keyEvidence": [],
           "missingEvidence": [
-            "Working implementation and syntax verification"
+            "Working code implementation",
+            "Algorithmic explanation",
+            "Complexity analysis"
           ],
-          "evaluatedAt": "2026-09-11T19:07:47.473Z"
+          "evaluatedAt": "2026-09-11T21:56:05.434Z"
         },
         "round2Evaluation": {
           "roundName": "Round 2: Technical Panel (Systems & Concurrency)",
           "roundType": "technical",
-          "score": 30,
+          "score": 0,
           "decision": "FAIL",
-          "reason": "Candidate provided brief or high-level remarks without sufficient distributed systems depth.",
+          "reason": "Candidate was completely silent and provided zero verbal responses during the technical panel interview.",
           "technicalBar": "not_met",
-          "evidenceQuality": "WEAK",
+          "evidenceQuality": "NONE",
           "evidenceSufficiency": "insufficient",
-          "confidence": "MEDIUM",
+          "confidence": "HIGH",
           "competencies": {
             "technicalKnowledge": {
-              "score": 30,
+              "score": 0,
               "weight": 0.25,
               "evidence": [],
+              "feedback": "Silent",
               "confidence": "high"
             },
             "technicalDepth": {
-              "score": 25,
+              "score": 0,
               "weight": 0.2,
               "evidence": [],
+              "feedback": "Silent",
               "confidence": "high"
             },
             "realWorldExperience": {
-              "score": 30,
+              "score": 0,
               "weight": 0.2,
               "evidence": [],
+              "feedback": "Silent",
               "confidence": "high"
             },
             "engineeringJudgment": {
-              "score": 25,
+              "score": 0,
               "weight": 0.15,
               "evidence": [],
-              "confidence": "medium"
+              "feedback": "Silent",
+              "confidence": "high"
             },
             "problemSolving": {
-              "score": 25,
+              "score": 0,
               "weight": 0.1,
               "evidence": [],
+              "feedback": "Silent",
               "confidence": "high"
             },
             "technicalCommunication": {
-              "score": 35,
+              "score": 0,
               "weight": 0.1,
               "evidence": [],
+              "feedback": "Silent",
               "confidence": "high"
             }
           },
@@ -15716,109 +15934,115 @@
             {
               "competency": "Technical Knowledge",
               "weight": 0.25,
-              "score": 30,
-              "weightedScore": 7.5,
+              "score": 0,
+              "weightedScore": 0,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
-                "Lacked technical depth on Technical Knowledge"
+                "Candidate provided zero spoken responses during the technical panel."
               ],
-              "feedback": "Breadth and correctness of core engineering fundamentals, algorithms, system concepts, and job-relevant technologies."
+              "feedback": "Candidate was completely silent and unresponsive."
             },
             {
               "competency": "Technical Depth",
               "weight": 0.2,
-              "score": 30,
-              "weightedScore": 6,
+              "score": 0,
+              "weightedScore": 0,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
-                "Lacked technical depth on Technical Depth"
+                "Candidate provided zero spoken responses during the technical panel."
               ],
-              "feedback": "Deep understanding of underlying mechanisms, internals, failure modes, concurrency, and distributed protocols."
+              "feedback": "Candidate was completely silent and unresponsive."
             },
             {
               "competency": "Real-World Engineering Experience",
               "weight": 0.2,
-              "score": 30,
-              "weightedScore": 6,
+              "score": 0,
+              "weightedScore": 0,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
-                "Lacked technical depth on Real-World Engineering Experience"
+                "Candidate provided zero spoken responses during the technical panel."
               ],
-              "feedback": "Validation of claimed projects, personal ownership, architectural trade-offs, production outages, and scaling milestones."
+              "feedback": "Candidate was completely silent and unresponsive."
             },
             {
               "competency": "Engineering Judgment",
               "weight": 0.15,
-              "score": 30,
-              "weightedScore": 4.5,
+              "score": 0,
+              "weightedScore": 0,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
-                "Lacked technical depth on Engineering Judgment"
+                "Candidate provided zero spoken responses during the technical panel."
               ],
-              "feedback": "Sound architectural decision-making, evaluating trade-offs (latency vs throughput, consistency vs availability), and pragmatic design choices."
+              "feedback": "Candidate was completely silent and unresponsive."
             },
             {
               "competency": "Problem Solving / Debugging",
               "weight": 0.1,
-              "score": 30,
-              "weightedScore": 3,
+              "score": 0,
+              "weightedScore": 0,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
-                "Lacked technical depth on Problem Solving / Debugging"
+                "Candidate provided zero spoken responses during the technical panel."
               ],
-              "feedback": "Structured analytical thinking, diagnosing root causes of complex bugs, isolation strategies, and edge case mitigation."
+              "feedback": "Candidate was completely silent and unresponsive."
             },
             {
               "competency": "Technical Communication",
               "weight": 0.1,
-              "score": 30,
-              "weightedScore": 3,
+              "score": 0,
+              "weightedScore": 0,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
-                "Lacked technical depth on Technical Communication"
+                "Candidate provided zero spoken responses during the technical panel."
               ],
-              "feedback": "Clarity, conciseness, structured explanations, and effective articulation of complex technical concepts."
+              "feedback": "Candidate was completely silent and unresponsive."
             }
           ],
           "demonstratedExpertise": [
             {
               "topic": "Distributed Architecture & Scaling",
-              "level": "Weak",
-              "evidence": "Technical discussion"
+              "level": "Not Demonstrated",
+              "evidence": "Candidate was silent"
             },
             {
               "topic": "Concurrency & Primitives",
               "level": "Not Demonstrated",
-              "evidence": "Concurrency trade-offs"
+              "evidence": "Candidate was silent"
             }
           ],
           "validatedExperience": [
             {
-              "claim": "Backend engineering and microservices architecture",
-              "demonstrated": "Brief remarks in live dialogue",
-              "strength": "Weak",
-              "details": "Demonstrated brief reasoning during technical panel."
+              "claim": "Distributed backend development and event pipelines",
+              "demonstrated": "None demonstrated (candidate was silent)",
+              "strength": "Not Demonstrated",
+              "details": "Candidate provided zero verbal responses."
             }
           ],
-          "unvalidatedClaims": [],
+          "unvalidatedClaims": [
+            "All technical background claims unverified due to lack of participation."
+          ],
           "areasOfConcern": [
-            "Limited evidence of failure recovery and distributed scalability"
+            "Candidate did not speak or answer any questions throughout the technical panel."
           ],
           "strengths": [
-            "Familiar with core backend vocabulary"
+            "No strengths demonstrated (candidate was silent/unresponsive)."
           ],
           "weaknesses": [
-            "Needs to demonstrate concrete architecture mechanics and scaling numbers"
+            "Candidate provided zero responses to technical architecture, concurrency, and system design questions."
           ],
           "keyEvidence": [],
-          "missingEvidence": [],
-          "evaluatedAt": "2026-09-11T19:08:08.688Z"
+          "missingEvidence": [
+            "Spoken technical explanations",
+            "Architecture trade-offs",
+            "Concurrency failure modes"
+          ],
+          "evaluatedAt": "2026-09-11T19:55:51.024Z"
         },
         "round3Evaluation": {
           "roundName": "Round 3: HR, Culture & Engineering Leadership",
@@ -15937,80 +16161,79 @@
           "evaluatedAt": "2026-09-11T19:08:32.756Z"
         },
         "strengths": [
-          "Familiarity with general high-level terminology and concepts"
+          "No strengths demonstrated (candidate was completely silent and unresponsive)."
         ],
         "weaknesses": [
-          "Lacked concrete architectural trade-off justification and depth",
-          "Superficial technical explanations without detailed failure mode handling",
-          "Workspace implementation was incomplete or unverified"
+          "Candidate did not answer any interviewer questions across Coding, Technical Panel, or HR rounds.",
+          "Zero code or architectural designs submitted in workspace."
         ],
         "rubric_evaluations": [
           {
             "pillar": "Technical Depth & Concurrency",
-            "competencyScore": 28,
+            "competencyScore": 0,
             "round": "Cross-Round",
-            "evidenceQuality": "VAGUE",
+            "evidenceQuality": "NONE",
             "evidence": [],
             "missingEvidence": [
-              "Detailed multi-region failover mechanics and concurrency trade-offs"
+              "No verbal response or workspace code provided during evaluation."
             ],
-            "confidence": "MEDIUM",
-            "feedback": "Candidate provided brief or high-level answers lacking architectural depth."
+            "confidence": "HIGH",
+            "feedback": "Candidate was silent and did not demonstrate this competency."
           },
           {
             "pillar": "Distributed Systems Architecture",
-            "competencyScore": 28,
+            "competencyScore": 0,
             "round": "Round 2: Technical",
-            "evidenceQuality": "VAGUE",
+            "evidenceQuality": "NONE",
             "evidence": [],
             "missingEvidence": [
-              "Detailed multi-region failover mechanics and concurrency trade-offs"
+              "No verbal response or workspace code provided during evaluation."
             ],
-            "confidence": "MEDIUM",
-            "feedback": "Candidate provided brief or high-level answers lacking architectural depth."
+            "confidence": "HIGH",
+            "feedback": "Candidate was silent and did not demonstrate this competency."
           },
           {
             "pillar": "Problem Decomposition & Rigor",
-            "competencyScore": 28,
+            "competencyScore": 0,
             "round": "Round 1: Coding",
-            "evidenceQuality": "VAGUE",
+            "evidenceQuality": "NONE",
             "evidence": [],
             "missingEvidence": [
-              "Detailed multi-region failover mechanics and concurrency trade-offs"
+              "No verbal response or workspace code provided during evaluation."
             ],
-            "confidence": "MEDIUM",
-            "feedback": "Candidate provided brief or high-level answers lacking architectural depth."
+            "confidence": "HIGH",
+            "feedback": "Candidate was silent and did not demonstrate this competency."
           },
           {
             "pillar": "Communication & Ownership Mindset",
-            "competencyScore": 28,
+            "competencyScore": 0,
             "round": "Round 3: HR",
-            "evidenceQuality": "VAGUE",
+            "evidenceQuality": "NONE",
             "evidence": [],
             "missingEvidence": [
-              "Detailed multi-region failover mechanics and concurrency trade-offs"
+              "No verbal response or workspace code provided during evaluation."
             ],
-            "confidence": "MEDIUM",
-            "feedback": "Candidate provided brief or high-level answers lacking architectural depth."
+            "confidence": "HIGH",
+            "feedback": "Candidate was silent and did not demonstrate this competency."
           }
         ]
       },
-      "completedAt": "2026-09-11T19:08:35.369Z",
+      "completedAt": "2026-09-11T21:56:32.172Z",
       "proctoringReport": {
-        "integrity_score": 85,
-        "confidence_score": 92,
-        "screen_attention_score": 95,
-        "gaze_stability_score": 95,
+        "integrity_score": 55,
+        "confidence_score": 69,
+        "screen_attention_score": 0,
+        "gaze_stability_score": 0,
         "head_attention_score": 95,
         "hand_activity_score": 95,
         "speech_confidence_score": 90,
         "face_presence_score": 30,
         "behavioral_calmness_score": 94,
-        "behavioral_consistency_score": 94,
+        "behavioral_consistency_score": 56,
         "compound_penalty": 0,
-        "assessment": "LOW SUSPICION",
-        "assessment_desc": "Low behavioral anomaly level. Candidate demonstrated consistent screen attention and organic responses.",
-        "badge_color": "green",
+        "assessment": "HIGH SUSPICION",
+        "assessment_desc": "Significant recurring behavioral anomaly patterns detected across multiple signals. Detailed audit required.",
+        "badge_color": "red",
         "weights": {
           "eye_gaze": 0.3,
           "face_presence": 0.15,
@@ -16024,25 +16247,25 @@
           "positive": [
             "Single face confirmed; no unauthorized secondary person detected.",
             "Speech delivery was fluent with consistent single vocal baseline.",
-            "Mostly stable screen gaze with natural cognitive saccades.",
             "Head orientation remained consistently centered toward screen.",
             "Hand activity was normal with natural conversational gestures."
           ],
           "cautions": [
-            "Candidate had intermittent camera absence or was partially out of frame."
+            "Candidate had intermittent camera absence or was partially out of frame.",
+            "Several sustained gaze deviations away from the active display."
           ]
         },
         "components": {
-          "eye_gaze_contrib": 28.5,
+          "eye_gaze_contrib": 0,
           "presence_contrib": 4.5,
-          "multi_person_contrib": 19.2,
+          "multi_person_contrib": 20,
           "head_contrib": 9.5,
           "hand_contrib": 9.5,
           "speech_contrib": 9,
-          "consistency_contrib": 4.7
+          "consistency_contrib": 2.8
         },
-        "lastUpdated": "2026-09-11T19:55:56.051Z",
-        "totalEventsRecorded": 958
+        "lastUpdated": "2026-09-11T21:56:29.575Z",
+        "totalEventsRecorded": 989
       },
       "round2Evaluation": {
         "roundName": "Round 2: Technical Panel (Systems & Concurrency)",
