@@ -1,8 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { getDb, resolveInterview } from '@/lib/db';
-import { CheckCircle2, ShieldCheck, Clock, FileCheck, ArrowRight, Home, Sparkles } from 'lucide-react';
-import ScorecardDisplay from '@/components/ScorecardDisplay';
+import { CheckCircle2, ShieldCheck, Mail, FileCheck, ArrowRight, Home, Sparkles } from 'lucide-react';
 
 export default async function InterviewCompletedPage({ params }: { params: Promise<{ blueprintId: string }> }) {
   const resolvedParams = await params;
@@ -33,7 +32,7 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
             <div className="font-sans font-bold text-white text-base tracking-tight flex items-center gap-2">
               <span>OMNIPANEL</span>
             </div>
-            <div className="text-xs font-mono text-white/40">Plantra Labs · autonomous evaluation</div>
+            <div className="text-xs font-mono text-white/40">Plantra Labs · interview completed</div>
           </div>
         </div>
         <span className="text-xs font-mono px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
@@ -52,8 +51,8 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
           <h1 className="text-3xl sm:text-4xl font-sans font-bold text-white tracking-tight">
             interview session completed!
           </h1>
-          <p className="text-white/60 text-sm sm:text-base max-w-xl mx-auto leading-relaxed font-sans">
-            Thank you, <strong className="text-white font-semibold">{candidate?.name || 'Candidate'}</strong>. Your multi-round conversational interview for <strong className="text-white font-semibold">{job?.title || 'the target position'}</strong> at <strong>Plantra Labs</strong> has concluded successfully.
+          <p className="text-white/70 text-sm sm:text-base max-w-xl mx-auto leading-relaxed font-sans">
+            Thank you, <strong className="text-white font-semibold">{candidate?.name || 'Candidate'}</strong>. Your interview session for <strong className="text-white font-semibold">{job?.title || 'the target position'}</strong> at <strong>Plantra Labs</strong> has concluded successfully.
           </p>
         </div>
 
@@ -61,27 +60,20 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
         <div className="bg-white/[0.02] rounded-2xl p-5 border border-white/[0.06] grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
           <div className="p-4 bg-white/[0.02] rounded-xl border border-white/[0.06]">
             <FileCheck className="w-5 h-5 text-purple-400 mx-auto mb-1.5" />
-            <div className="text-xs font-mono text-white/40">audio & dialogue</div>
+            <div className="text-xs font-mono text-white/40">session data</div>
             <div className="text-sm font-sans font-bold text-white mt-0.5">captured & saved</div>
           </div>
           <div className="p-4 bg-white/[0.02] rounded-xl border border-white/[0.06]">
             <ShieldCheck className="w-5 h-5 text-emerald-400 mx-auto mb-1.5" />
-            <div className="text-xs font-mono text-white/40">integrity proctor</div>
-            <div className="text-sm font-sans font-bold text-white mt-0.5">telemetry verified</div>
+            <div className="text-xs font-mono text-white/40">verification</div>
+            <div className="text-sm font-sans font-bold text-white mt-0.5">telemetry recorded</div>
           </div>
           <div className="p-4 bg-white/[0.02] rounded-xl border border-white/[0.06]">
-            <Clock className="w-5 h-5 text-cyan-400 mx-auto mb-1.5" />
-            <div className="text-xs font-mono text-white/40">evaluation phase</div>
-            <div className="text-sm font-sans font-bold text-white mt-0.5">synthesis in progress</div>
+            <Mail className="w-5 h-5 text-cyan-400 mx-auto mb-1.5" />
+            <div className="text-xs font-mono text-white/40">updates</div>
+            <div className="text-sm font-sans font-bold text-white mt-0.5">email notifications</div>
           </div>
         </div>
-
-        {/* Multi-Round Evaluated Scorecard Display */}
-        {interview?.scorecard && (
-          <div className="pt-4 border-t border-white/[0.08]">
-            <ScorecardDisplay scorecard={interview.scorecard} />
-          </div>
-        )}
 
         {/* Next Steps */}
         <div className="space-y-4 pt-2 border-t border-white/[0.08]">
@@ -96,9 +88,9 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
                 1
               </div>
               <div className="text-sm space-y-1">
-                <div className="font-bold text-white">OmniPanel Multi-Agent Synthesis</div>
+                <div className="font-bold text-white">Application Review</div>
                 <div className="text-white/50 text-xs leading-relaxed">
-                  The evaluation arbiter synthesizes your responses, technical depth, system architecture trade-offs, and communication clarity against our standardized engineering rubric.
+                  Our engineering panel and hiring team are reviewing your interview discussion, problem solving, and responses.
                 </div>
               </div>
             </div>
@@ -108,21 +100,9 @@ export default async function InterviewCompletedPage({ params }: { params: Promi
                 2
               </div>
               <div className="text-sm space-y-1">
-                <div className="font-bold text-white">Plantra Labs Hiring Committee Review</div>
+                <div className="font-bold text-white">Direct Email Updates</div>
                 <div className="text-white/50 text-xs leading-relaxed">
-                  Engineering and product leads review the complete session scorecard, verified telemetry, and corroborated background to make stage determinations.
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
-              <div className="w-7 h-7 rounded-full bg-white/[0.05] text-white font-mono font-bold text-xs flex items-center justify-center shrink-0 border border-white/[0.1]">
-                3
-              </div>
-              <div className="text-sm space-y-1">
-                <div className="font-bold text-white">Direct Email Notification with Next Steps</div>
-                <div className="text-white/50 text-xs leading-relaxed">
-                  You will receive an official email update at <strong className="text-white">{candidate?.email || 'your registered email address'}</strong> regarding your evaluation outcome and interview debrief.
+                  You will be hearing from our team soon regarding next steps and status updates directly at <strong className="text-white">{candidate?.email || 'your registered email address'}</strong>.
                 </div>
               </div>
             </div>

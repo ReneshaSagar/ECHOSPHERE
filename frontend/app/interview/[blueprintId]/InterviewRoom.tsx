@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import ProctorEngine from './ProctorEngine';
@@ -105,10 +105,15 @@ export default function InterviewRoom({
   const [wrapUpWarning, setWrapUpWarning] = useState(false);
   const [isTelemetryOpen, setIsTelemetryOpen] = useState(false);
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  const localStreamRef = useRef<MediaStream | null>(null);
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [isDeafened, setIsDeafened] = useState(false);
   const isDeafenedRef = useRef(false);
+
+  useEffect(() => {
+    localStreamRef.current = localStream;
+  }, [localStream]);
 
   useEffect(() => {
     isDeafenedRef.current = isDeafened;
@@ -381,6 +386,32 @@ export default function InterviewRoom({
     mic: 'checking'
   });
 
+  const stopAllMediaTracks = useCallback(() => {
+    try {
+      if (localStreamRef.current) {
+        localStreamRef.current.getTracks().forEach(track => {
+          try {
+            track.stop();
+          } catch (e) {}
+        });
+        localStreamRef.current = null;
+      }
+      if (localStream) {
+        localStream.getTracks().forEach(track => {
+          try {
+            track.stop();
+          } catch (e) {}
+        });
+      }
+      setLocalStream(null);
+      if (localVideoRef.current) {
+        localVideoRef.current.srcObject = null;
+      }
+    } catch (e) {
+      console.warn('[InterviewRoom] Error stopping media tracks:', e);
+    }
+  }, [localStream]);
+
   const checkDevices = () => {
     setDeviceCheckStatus({ camera: 'checking', mic: 'checking' });
     
@@ -395,6 +426,7 @@ export default function InterviewRoom({
 
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then(stream => {
+        localStreamRef.current = stream;
         setLocalStream(stream);
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
@@ -430,8 +462,26 @@ export default function InterviewRoom({
 
   useEffect(() => {
     checkDevices();
+
+    const handleBeforeUnload = () => {
+      if (localStreamRef.current) {
+        localStreamRef.current.getTracks().forEach(track => {
+          try { track.stop(); } catch (e) {}
+        });
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('pagehide', handleBeforeUnload);
+
     return () => {
-      localStream?.getTracks().forEach(track => track.stop());
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('pagehide', handleBeforeUnload);
+      if (localStreamRef.current) {
+        localStreamRef.current.getTracks().forEach(track => {
+          try { track.stop(); } catch (e) {}
+        });
+        localStreamRef.current = null;
+      }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -1831,6 +1881,10 @@ CRITICAL RULES & SCOPE:
     const isExplicitInterviewEnd = triggerReason === 'USER_ENDED' || triggerReason === 'MANUAL_END';
     const isLastRound = isExplicitInterviewEnd || (activeRoundIdx + 1 >= totalRounds);
 
+    if (isExplicitInterviewEnd) {
+      stopAllMediaTracks();
+    }
+
     addLog('Orchestrator', `Concluding ${isRound1 ? 'Round 1 (Workspace Assessment)' : isTechnicalRound ? 'Technical' : 'HR'} round [Trigger: ${triggerReason}] (Round ${activeRoundIdx + 1} of ${totalRounds})...`);
 
     // ── Phase 1: Closing State ─────────────────────────────────────────────
@@ -1908,6 +1962,9 @@ CRITICAL RULES & SCOPE:
       remoteAudioTracksRef.current.clear();
       setSessionInfo(null);
       setActivePanelAgents([]);
+      if (isLastRound || isExplicitInterviewEnd) {
+        stopAllMediaTracks();
+      }
 
       // ── Phase 4: Decision Gate (Evaluate Round) ────────────────────────
       setTestState('EVALUATING');
@@ -2034,12 +2091,14 @@ CRITICAL RULES & SCOPE:
         }
         
         setTestState('ENDED');
+        stopAllMediaTracks();
         isFinishingRoundRef.current = false;
       }
 
     } catch (e: any) {
       setTestState('ERROR');
       addLog('Error', `Round completion failed: ${e.message}`);
+      stopAllMediaTracks();
       isFinishingRoundRef.current = false;
     }
   };

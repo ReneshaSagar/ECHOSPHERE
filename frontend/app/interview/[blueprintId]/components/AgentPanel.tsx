@@ -408,9 +408,9 @@ export default function AgentPanel({
       {testState === 'INTERVIEW_COMPLETE' && (
         <div className="absolute inset-0 bg-[#030304]/90 z-20 flex flex-col items-center justify-center text-white backdrop-blur-xl rounded-2xl p-6">
           <div className="w-10 h-10 border-2 border-emerald-500/30 border-t-emerald-400 rounded-full animate-spin mb-4"></div>
-          <h3 className="text-lg font-sans font-semibold">Generating Final Scorecard</h3>
+          <h3 className="text-lg font-sans font-semibold">Finalizing Interview Session</h3>
           <p className="text-zinc-400 mt-2 text-center max-w-sm text-xs leading-relaxed font-sans">
-            Synthesizing evidence across all rounds to produce your evaluation dossier...
+            Synthesizing session evidence and saving your submission...
           </p>
         </div>
       )}
@@ -421,15 +421,22 @@ export default function AgentPanel({
           <div className="w-14 h-14 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mb-4 border border-emerald-500/30">
             <UserCheck className="w-7 h-7" />
           </div>
-          <h3 className="text-xl font-sans font-semibold text-white mb-2">Interview Completed</h3>
+          <h3 className="text-xl font-sans font-semibold text-white mb-2">interview session completed!</h3>
           <p className="text-zinc-400 max-w-sm text-xs mb-5 font-sans">
-            All session telemetry and signals captured. You can now view your candidate summary report.
+            Thank you for meeting with our panel. Your interview session has concluded.
           </p>
           <button 
-            onClick={() => router.push(`/interview/${interviewId}/completed`)}
+            onClick={() => {
+              if (localStream) {
+                localStream.getTracks().forEach(t => {
+                  try { t.stop(); } catch (e) {}
+                });
+              }
+              router.push(`/interview/${interviewId}/completed`);
+            }}
             className="px-6 py-3 bg-white text-black font-semibold rounded-full text-xs transition hover:bg-zinc-200 shadow-[0_0_25px_rgba(255,255,255,0.2)] cursor-pointer"
           >
-            View Session Summary →
+            View Completion Status →
           </button>
         </div>
       )}

@@ -207,16 +207,19 @@ export default function ProctorEngine({
         console.error("Mediapipe initialization failed", err);
       }
 
-      if (activeScenario !== 'live') return;
+      if (!active || !isRunning || activeScenario !== 'live') return;
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30 } },
           audio: false
         });
-        if (active && videoRef.current) {
+        if (active && isRunning && videoRef.current) {
           videoRef.current.srcObject = stream;
           videoRef.current.play().catch(() => {});
           mediaStreamRef.current = stream;
+        } else {
+          // Stream acquired after unmount/stop
+          stream.getTracks().forEach(t => t.stop());
         }
       } catch (err) {
         console.warn('[ProctorEngine] Camera access blocked, falling back to simulator:', err);
@@ -225,14 +228,19 @@ export default function ProctorEngine({
       }
     }
 
-    if (activeScenario === 'live') {
+    if (isRunning && activeScenario === 'live') {
       init();
     } else {
       if (mediaStreamRef.current) {
         mediaStreamRef.current.getTracks().forEach(t => t.stop());
         mediaStreamRef.current = null;
       }
-      simulatorRef.current.setScenario(activeScenario);
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+      if (activeScenario !== 'live') {
+        simulatorRef.current.setScenario(activeScenario);
+      }
     }
 
     return () => {
@@ -241,8 +249,11 @@ export default function ProctorEngine({
         mediaStreamRef.current.getTracks().forEach(t => t.stop());
         mediaStreamRef.current = null;
       }
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
     };
-  }, [activeScenario]);
+  }, [isRunning, activeScenario]);
 
   // Render Loop & Inference
   useEffect(() => {
@@ -387,11 +398,14 @@ export default function ProctorEngine({
       animationFrameRef.current = requestAnimationFrame(renderLoop);
     }
 
-    animationFrameRef.current = requestAnimationFrame(renderLoop);
+    if (isRunning) {
+      animationFrameRef.current = requestAnimationFrame(renderLoop);
+    }
+
     return () => {
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     };
-  }, [onTelemetryUpdate, logEvent, currentAudio]);
+  }, [isRunning, onTelemetryUpdate, logEvent, currentAudio]);
 
   useEffect(() => {
     if (!isRunning) return;
@@ -409,6 +423,15 @@ export default function ProctorEngine({
     }, 8000);
     return () => clearInterval(interval);
   }, [interviewId, isRunning, currentScores, currentVision, currentAudio]);
+
+  if (!isRunning) {
+    return (
+      <>
+        <video ref={videoRef} playsInline muted className="hidden" />
+        <canvas ref={canvasRef} width={640} height={480} className="hidden" />
+      </>
+    );
+  }
 
   return (
     <>
