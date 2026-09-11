@@ -90,7 +90,12 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
       />
 
       {/* ── Hiring Decision — always last */}
-      <ApplicationActions applicationId={application.id} currentStatus={application.status} />
+      <ApplicationActions 
+        applicationId={application.id} 
+        currentStatus={application.status}
+        hasInterview={Boolean(interview)}
+        interviewStatus={interview?.status}
+      />
 
     </div>
   );

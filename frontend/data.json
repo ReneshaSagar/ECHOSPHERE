@@ -5872,7 +5872,7 @@
       "linkedinUrl": "https://www.linkedin.com/in/madhavgairola/",
       "githubUrl": "https://github.com/madhavgairola",
       "relevantExperience": "",
-      "status": "UNDER_REVIEW",
+      "status": "SELECTED",
       "candidateContext": {
         "resume": {
           "textSnippet": "Madhav Gairola\n(+91) 7895936487| madhavgairola05@gmail.com| linkedin.com/in/madhavgairola|\ngithub.com/madhavgairola\nEducation\nJaypee Institute of Information TechnologyNoida, Uttar Pradesh\nBachelor of Technology, Information TechnologyJul. 2024 – May. 2028\nExperience\nRHA TechnologiesJun 2026 – Present\nSoftware Engineering Intern\n•\nLed end-to-end validation of RAG pipelines, AI agents, semantic search, and data connectors on the RHA\nOne platform, uncovering critical edge cases across diverse enterprise use cases\n•\nEngineered and executed comprehensive testing strategies for CSV, PDF, DOCX, MySQL, and PostgreSQL\nintegrations, analyzing retrieval accuracy, data ingestion behavior, and system reliability\n•\nBuilt and maintained a quality assurance framework for 250+ AI skills and workflows, producing detailed bug\nreports, validating feature releases, and accelerating issue resolution through close collaboration with engineering\nteams\nProjects\nExpensWise (Personal Financial Assistant)| Node.",
@@ -8520,7 +8520,7 @@
         {
           "round": "Round 3: HR, Culture & Engineering Leadership",
           "decision": "FAIL",
-          "score": 35,
+          "score": 28,
           "reason": "Candidate completed the HR round with insufficient dialogue duration to evaluate leadership or cultural alignment."
         },
         {
@@ -16953,7 +16953,7 @@
         "round3Evaluation": {
           "roundName": "Round 3: HR, Culture & Engineering Leadership",
           "roundType": "hr",
-          "score": 35,
+          "score": 28,
           "decision": "FAIL",
           "reason": "Candidate completed the HR round with insufficient dialogue duration to evaluate leadership or cultural alignment.",
           "overallRecommendation": "No Hire",
@@ -16965,8 +16965,8 @@
               "competency": "Communication & Clarity",
               "key": "communication_clarity",
               "weight": 0.2,
-              "score": 35,
-              "weightedScore": 7,
+              "score": 34,
+              "weightedScore": 6.8,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
@@ -16978,8 +16978,8 @@
               "competency": "Ownership & Accountability",
               "key": "ownership_accountability",
               "weight": 0.2,
-              "score": 35,
-              "weightedScore": 7,
+              "score": 26,
+              "weightedScore": 5.2,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
@@ -16991,8 +16991,8 @@
               "competency": "Collaboration & Teamwork",
               "key": "collaboration_teamwork",
               "weight": 0.15,
-              "score": 35,
-              "weightedScore": 5.25,
+              "score": 32,
+              "weightedScore": 4.8,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
@@ -17004,8 +17004,8 @@
               "competency": "Conflict Resolution",
               "key": "conflict_resolution",
               "weight": 0.15,
-              "score": 35,
-              "weightedScore": 5.25,
+              "score": 22,
+              "weightedScore": 3.3,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
@@ -17017,8 +17017,8 @@
               "competency": "Adaptability & Learning",
               "key": "adaptability_learning",
               "weight": 0.1,
-              "score": 35,
-              "weightedScore": 3.5,
+              "score": 28,
+              "weightedScore": 2.8,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
@@ -17030,8 +17030,8 @@
               "competency": "Initiative / Leadership",
               "key": "initiative_leadership",
               "weight": 0.1,
-              "score": 35,
-              "weightedScore": 3.5,
+              "score": 24,
+              "weightedScore": 2.4,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
@@ -17043,8 +17043,8 @@
               "competency": "Cultural Alignment",
               "key": "cultural_alignment",
               "weight": 0.1,
-              "score": 35,
-              "weightedScore": 3.5,
+              "score": 30,
+              "weightedScore": 3.0,
               "evidenceQuality": "NONE",
               "evidence": [],
               "missingEvidence": [
@@ -17345,7 +17345,7 @@
       "round3Evaluation": {
         "roundName": "Round 3: HR, Culture & Engineering Leadership",
         "roundType": "hr",
-        "score": 35,
+        "score": 28,
         "decision": "FAIL",
         "reason": "Candidate completed the HR round with insufficient dialogue duration to evaluate leadership or cultural alignment.",
         "overallRecommendation": "No Hire",
@@ -17357,8 +17357,8 @@
             "competency": "Communication & Clarity",
             "key": "communication_clarity",
             "weight": 0.2,
-            "score": 35,
-            "weightedScore": 7,
+            "score": 34,
+            "weightedScore": 6.8,
             "evidenceQuality": "NONE",
             "evidence": [],
             "missingEvidence": [
@@ -17370,8 +17370,8 @@
             "competency": "Ownership & Accountability",
             "key": "ownership_accountability",
             "weight": 0.2,
-            "score": 35,
-            "weightedScore": 7,
+            "score": 26,
+            "weightedScore": 5.2,
             "evidenceQuality": "NONE",
             "evidence": [],
             "missingEvidence": [
@@ -17383,8 +17383,8 @@
             "competency": "Collaboration & Teamwork",
             "key": "collaboration_teamwork",
             "weight": 0.15,
-            "score": 35,
-            "weightedScore": 5.25,
+            "score": 32,
+            "weightedScore": 4.8,
             "evidenceQuality": "NONE",
             "evidence": [],
             "missingEvidence": [
@@ -17396,8 +17396,8 @@
             "competency": "Conflict Resolution",
             "key": "conflict_resolution",
             "weight": 0.15,
-            "score": 35,
-            "weightedScore": 5.25,
+            "score": 22,
+            "weightedScore": 3.3,
             "evidenceQuality": "NONE",
             "evidence": [],
             "missingEvidence": [
@@ -17409,8 +17409,8 @@
             "competency": "Adaptability & Learning",
             "key": "adaptability_learning",
             "weight": 0.1,
-            "score": 35,
-            "weightedScore": 3.5,
+            "score": 28,
+            "weightedScore": 2.8,
             "evidenceQuality": "NONE",
             "evidence": [],
             "missingEvidence": [
@@ -17422,8 +17422,8 @@
             "competency": "Initiative / Leadership",
             "key": "initiative_leadership",
             "weight": 0.1,
-            "score": 35,
-            "weightedScore": 3.5,
+            "score": 24,
+            "weightedScore": 2.4,
             "evidenceQuality": "NONE",
             "evidence": [],
             "missingEvidence": [
@@ -17435,8 +17435,8 @@
             "competency": "Cultural Alignment",
             "key": "cultural_alignment",
             "weight": 0.1,
-            "score": 35,
-            "weightedScore": 3.5,
+            "score": 30,
+            "weightedScore": 3.0,
             "evidenceQuality": "NONE",
             "evidence": [],
             "missingEvidence": [
@@ -35718,6 +35718,20 @@
         "scheduledAt": "2026-09-11T21:28:00.000Z",
         "interviewLink": "http://localhost:3000/interview/int_tk9nait",
         "deliveryId": "<91175a8f-29cf-4360-b9e2-2c6229cd5e40@gmail.com>",
+        "provider": "gmail_smtp"
+      }
+    },
+    {
+      "id": "email_c0n2vze",
+      "recipientEmail": "madhavgairola05@gmail.com",
+      "recipientName": "Madhav Gairola",
+      "type": "APPLICATION_OFFER",
+      "subject": "Congratulations! Offer & Selection Update: Senior Full Stack Engineer — Next.js & Developer Platform at Plantra Labs",
+      "bodyText": "Hi Madhav Gairola,\n\nCongratulations! We are delighted to extend an offer for the Senior Full Stack Engineer — Next.js & Developer Platform position at Plantra Labs.\n\nOur team was thoroughly impressed by your performance throughout the interview process and we are excited about the prospect of having you join our engineering team.\n\nNext Steps:\n1. Our Talent Operations team will reach out within 24–48 hours with your formal offer letter, compensation package, and equity details.\n2. We will also coordinate a call to answer any questions you may have regarding benefits, equipment, and your start date.\n\nIn the meantime, please feel free to reply directly to this email if you have any immediate questions.\n\nWelcome to Plantra Labs!\n\nWarm regards,\nThe Plantra Labs Talent & Engineering Team",
+      "sentAt": "2026-09-11T22:26:30.654Z",
+      "metadata": {
+        "jobTitle": "Senior Full Stack Engineer — Next.js & Developer Platform",
+        "deliveryId": "<9dd221e1-2fe6-58af-6a06-3087a259e522@gmail.com>",
         "provider": "gmail_smtp"
       }
     }

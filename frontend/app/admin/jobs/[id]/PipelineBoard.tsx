@@ -86,10 +86,21 @@ export default function PipelineBoard({ applicants }: { applicants: Applicant[] 
                   {app.status === 'SELECTED' && (
                     <div className="mt-3">
                       <Link 
+                        href={`/admin/applications/${app.id}`}
+                        className="block text-center w-full py-2 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-sans font-bold text-xs rounded-full hover:bg-emerald-500/30 transition-all shadow-[0_0_15px_rgba(16,185,129,0.15)]"
+                      >
+                        ✓ View Hired Review & Offer →
+                      </Link>
+                    </div>
+                  )}
+
+                  {app.status === 'INTERVIEW_SCHEDULED' && (
+                    <div className="mt-3">
+                      <Link 
                         href={`/admin/applications/${app.id}/schedule`}
                         className="block text-center w-full py-2 bg-white text-black font-sans font-bold text-xs rounded-full hover:bg-neutral-200 transition-all shadow-[0_0_15px_rgba(255,255,255,0.15)]"
                       >
-                        Schedule Interview →
+                        Manage Interview →
                       </Link>
                     </div>
                   )}
