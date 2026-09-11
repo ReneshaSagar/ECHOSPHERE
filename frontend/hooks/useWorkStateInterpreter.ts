@@ -43,7 +43,7 @@ export function useWorkStateInterpreter({
         onWorkStateEvent(event);
       }
       lastCodeRef.current = code;
-    }, 1500); // 1.5s debounce: raw keystrokes are NOT continuously sent
+    }, 1200); // 1.2s debounce: reliable code capture without saturating network
 
     return () => clearTimeout(timer);
   }, [code, language, mode, enabled, onWorkStateEvent]);

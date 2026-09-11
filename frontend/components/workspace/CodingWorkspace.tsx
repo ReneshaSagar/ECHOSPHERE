@@ -13,7 +13,7 @@ export interface Problem {
   initialCode?: Record<string, string>;
 }
 
-const DEFAULT_PROBLEM: Problem = {
+export const DEFAULT_PROBLEM: Problem = {
   title: "1. High-Throughput Rate Limiter & Event Throttler",
   difficulty: "Medium",
   description: "Implement a sliding window rate limiter class that tracks incoming user requests and enforces a maximum threshold of requests per sliding window in TypeScript or Python. The implementation must support high concurrency and handle edge cases where multiple requests arrive at identical millisecond timestamps.",

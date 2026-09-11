@@ -35,7 +35,7 @@ export function interpretCodeStateChange(
         : `Candidate encountered code execution error: ${executionResult.output.slice(0, 100)}`,
       competency: 'code_execution_and_debugging',
       significance: executionResult.success ? 'medium' : 'high',
-      metadata: { success: executionResult.success, code: newCode.slice(0, 400) }
+      metadata: { success: executionResult.success, code: newCode.slice(0, 1500), fullCode: newCode }
     };
   }
 
@@ -53,7 +53,7 @@ export function interpretCodeStateChange(
       summary: 'Candidate introduced a Hash Map / Set lookup structure to optimize lookup efficiency.',
       competency: 'algorithmic_efficiency',
       significance: 'high',
-      metadata: { code: newCode.slice(0, 400) }
+      metadata: { code: newCode.slice(0, 1500), fullCode: newCode }
     };
   }
 
@@ -68,7 +68,7 @@ export function interpretCodeStateChange(
       summary: 'Candidate replaced nested-loop iteration with a hash map lookup approach.',
       competency: 'algorithmic_efficiency',
       significance: 'high',
-      metadata: { code: newCode.slice(0, 400) }
+      metadata: { code: newCode.slice(0, 1500), fullCode: newCode }
     };
   }
 
@@ -83,20 +83,32 @@ export function interpretCodeStateChange(
       summary: 'Candidate defined a new helper function or modular component.',
       competency: 'code_structure',
       significance: 'medium',
-      metadata: { code: newCode.slice(0, 400) }
+      metadata: { code: newCode.slice(0, 1500), fullCode: newCode }
     };
   }
 
   // Substantial Code Insertion (> 50 chars diff)
   const charDiff = Math.abs(newCode.length - (previousCode || '').length);
-  if (charDiff > 80) {
+  if (charDiff > 50) {
     return {
       type: 'WORK_STATE_UPDATE',
       source: 'coding',
-      summary: `Candidate made substantial implementation progress (${newCode.split('\n').length} lines total).`,
+      summary: `Candidate made implementation progress in editor (${newCode.split('\n').length} lines total).`,
       competency: 'implementation_progress',
       significance: 'medium',
-      metadata: { code: newCode.slice(0, 400) }
+      metadata: { code: newCode.slice(0, 1500), fullCode: newCode }
+    };
+  }
+
+  // Any other code edit / typing update
+  if (previousCode !== newCode) {
+    return {
+      type: 'WORK_STATE_UPDATE',
+      source: 'coding',
+      summary: `Candidate updated code in editor (${newCode.split('\n').length} lines total).`,
+      competency: 'implementation_progress',
+      significance: 'low',
+      metadata: { code: newCode.slice(0, 1500), fullCode: newCode }
     };
   }
 

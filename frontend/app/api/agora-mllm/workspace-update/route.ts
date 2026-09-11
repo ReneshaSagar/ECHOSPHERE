@@ -45,14 +45,18 @@ Candidate is CURRENTLY VIEWING AND WORKING ON THE WHITEBOARD.
 Activity: ${summary}
 ${diagramSummary ? `\nLive Architecture Diagram Components & Relationships:\n${diagramSummary}` : '\n(Canvas is currently empty or in progress)'}
 
-[INTERVIEWER INSTRUCTION]: The candidate is on the System Design Whiteboard canvas. If the candidate asks what is on their screen, if you can see their diagram, or asks for architecture feedback, YOU MUST discuss the whiteboard components (e.g. API Gateway, Services, Queues, Databases, Caches) and their connections from the diagram above. DO NOT talk about writing code or code editor unless they switch to Coding view.`;
+[CRITICAL INTERVIEWER INSTRUCTION]:
+You have 100% real-time visual telemetry of the candidate's whiteboard canvas.
+If the candidate asks what is on their screen, if you can see their diagram, or asks for architecture feedback, YOU MUST discuss the whiteboard components (e.g. API Gateway, Services, Queues, Databases, Caches) and their connections from the diagram above. NEVER claim you cannot see their screen.`;
         } else {
           formattedText = `[ACTIVE CANDIDATE SCREEN: MONACO CODE EDITOR (${language.toUpperCase()})]
 Candidate is CURRENTLY VIEWING AND CODING IN THE IDE.
 Activity: ${summary}
 ${codeSnippet ? `\nCandidate Current IDE Source Code (${language}):\n\`\`\`${language}\n${codeSnippet.slice(0, 1500)}\n\`\`\`` : '\n(Code editor is currently empty)'}
 
-[INTERVIEWER INSTRUCTION]: The candidate is on the Monaco Code Editor (${language}). If the candidate asks what is on their screen, what you see, or asks for code feedback, YOU MUST quote and reference their exact source code constructs, algorithms, and logic from the code snapshot above.`;
+[CRITICAL INTERVIEWER INSTRUCTION]:
+You have 100% real-time visual telemetry of the candidate's Monaco Code Editor (${language}).
+If the candidate asks what is on their screen, what you see, or asks for code feedback, YOU MUST directly quote and reference their exact source code constructs, algorithms, class definitions, and logic from the code snapshot above. NEVER claim you cannot see their screen or code.`;
         }
 
         await client.agentManagement.agentThink({
@@ -61,7 +65,7 @@ ${codeSnippet ? `\nCandidate Current IDE Source Code (${language}):\n\`\`\`${lan
           text: formattedText,
           on_listening_action: 'inject',
           on_thinking_action: 'append',
-          on_speaking_action: 'ignore'
+          on_speaking_action: 'append'
         });
 
         console.log(`[WORKSPACE_SYNC_AGENT_THINK_SUCCESS] Successfully injected workspace update (${isExcalidraw ? 'Excalidraw' : 'Code'}) to agent ${agent_id}`);

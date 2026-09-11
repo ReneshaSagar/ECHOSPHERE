@@ -11,7 +11,7 @@ import { Users, Shield, Zap, Sparkles, Mic, MicOff, Volume2, VolumeX, UserCheck,
 import ParticleTalkingOrb from '@/components/room/ParticleTalkingOrb';
 import AgentPanel from './components/AgentPanel';
 import SystemTelemetry from './components/SystemTelemetry';
-import CodingWorkspace from '@/components/workspace/CodingWorkspace';
+import CodingWorkspace, { DEFAULT_PROBLEM } from '@/components/workspace/CodingWorkspace';
 import SystemDesignWorkspace from '@/components/workspace/SystemDesignWorkspace';
 import { useWorkStateInterpreter } from '@/hooks/useWorkStateInterpreter';
 import { WorkStateEvent, serializeDiagramElements } from '@/lib/interview/workStateInterpreter';
@@ -121,6 +121,11 @@ export default function InterviewRoom({
 
   // Round 1 Interactive Workspace State & Interpreter
   const [workspaceMode, setWorkspaceMode] = useState<'coding' | 'excalidraw'>('coding');
+  const workspaceModeRef = useRef<'coding' | 'excalidraw'>('coding');
+
+  useEffect(() => {
+    workspaceModeRef.current = workspaceMode;
+  }, [workspaceMode]);
 
   const currentRoundData = blueprint.interview_rounds[currentRound];
   const isRound1WorkspaceActive = currentRoundData?.round_type === 'coding' || currentRoundData?.round_type === 'system_design';
@@ -155,7 +160,7 @@ export default function InterviewRoom({
         if (event.source === 'excalidraw') {
           formattedText = `[SILENT CONTEXT ONLY - DO NOT READ ALOUD - INTERVIEWER OBSERVATION: Candidate workspace activity (whiteboard): ${event.summary}\n\nCandidate Current Whiteboard Architecture Diagram:\n${diagramSummary}]`;
         } else {
-          const fullCode = currentCode ? currentCode.slice(0, 1200) : (event.metadata?.code || '');
+          const fullCode = currentCode ? currentCode.slice(0, 1500) : (event.metadata?.code || '');
           formattedText = `[SILENT CONTEXT ONLY - DO NOT READ ALOUD - INTERVIEWER OBSERVATION: Candidate workspace activity (coding): ${event.summary}${fullCode ? `\n\nCandidate Current IDE Source Code (${currentLang}):\n\`\`\`${currentLang}\n${fullCode}\n\`\`\`` : ''}]`;
         }
 
@@ -201,7 +206,7 @@ export default function InterviewRoom({
         source: event.source,
         metadata: {
           ...(event.metadata || {}),
-          code: event.source === 'coding' ? (currentCode ? currentCode.slice(0, 1200) : '') : '',
+          code: event.source === 'coding' ? (currentCode ? currentCode.slice(0, 1500) : '') : '',
           language: currentLang,
           diagramSummary: event.source === 'excalidraw' ? diagramSummary : ''
         },
@@ -252,7 +257,7 @@ export default function InterviewRoom({
     const activeAgent = activePanelAgentsRef.current[0];
     const modeLabel = newMode === 'coding' ? 'Coding / DSA (Monaco Code Editor)' : 'System Design (Excalidraw Whiteboard)';
     const snapshotDetails = newMode === 'coding'
-      ? (codeRef.current ? `Current Code (${languageRef.current}):\n\`\`\`${languageRef.current}\n${codeRef.current.slice(0, 800)}\n\`\`\`` : 'Editor is currently empty.')
+      ? (codeRef.current ? `Current Code (${languageRef.current}):\n\`\`\`${languageRef.current}\n${codeRef.current.slice(0, 1500)}\n\`\`\`` : 'Editor is currently empty.')
       : serializeDiagramElements(diagramElementsRef.current);
 
     const broadcastText = `[SYSTEM WORKSPACE NOTICE] Candidate has switched their active view to: ${modeLabel}.\n\nLive Snapshot:\n${snapshotDetails}`;
@@ -286,7 +291,7 @@ export default function InterviewRoom({
         summary: `Switched view to ${modeLabel}`,
         source: newMode,
         metadata: {
-          code: newMode === 'coding' ? (codeRef.current ? codeRef.current.slice(0, 1200) : '') : '',
+          code: newMode === 'coding' ? (codeRef.current ? codeRef.current.slice(0, 1500) : '') : '',
           language: languageRef.current,
           diagramSummary: newMode === 'excalidraw' ? serializeDiagramElements(diagramElementsRef.current) : ''
         },
@@ -304,15 +309,19 @@ export default function InterviewRoom({
     const syncInterval = setInterval(() => {
       if (introPhaseRef.current !== 'INTERVIEW_RUNNING') return;
       const activeAgent = activePanelAgentsRef.current[0];
+      const curMode = workspaceModeRef.current;
+      const curCode = codeRef.current;
+      const curLang = languageRef.current;
+      const curDiagram = diagramElementsRef.current;
 
-      if (workspaceMode === 'coding' && code) {
-        if (code === lastSyncedCodeRef.current) return;
-        lastSyncedCodeRef.current = code;
+      if (curMode === 'coding' && curCode) {
+        if (curCode === lastSyncedCodeRef.current) return;
+        lastSyncedCodeRef.current = curCode;
 
         // 1. Broadcast via Agora RTC Data Stream
         if (clientRef.current && (clientRef.current as any).connectionState === 'CONNECTED') {
           try {
-            const payloadText = `[SYSTEM LIVE CODE SNAPSHOT] Candidate current live code in IDE (${language}):\n\`\`\`${language}\n${code.slice(0, 1200)}\n\`\`\``;
+            const payloadText = `[SYSTEM LIVE CODE SNAPSHOT] Candidate current live code in IDE (${curLang}):\n\`\`\`${curLang}\n${curCode.slice(0, 1500)}\n\`\`\``;
             const payload = new TextEncoder().encode(JSON.stringify({
               text: payloadText,
               is_final: true,
@@ -335,15 +344,15 @@ export default function InterviewRoom({
               agent_uid: activeAgent.agentUid,
               agent_id: activeAgent.agentId,
               event_type: 'WORK_STATE_UPDATE',
-              summary: 'Live IDE snapshot update',
+              summary: 'Periodic live IDE snapshot update',
               source: 'coding',
-              metadata: { code: code.slice(0, 1200), language },
+              metadata: { code: curCode.slice(0, 1500), language: curLang },
               timestamp: Date.now()
             })
           }).catch(err => console.warn('[WorkspaceSync] Code snapshot sync error:', err));
         }
-      } else if (workspaceMode === 'excalidraw' && diagramElements && diagramElements.length > 0) {
-        const currentDiagramSummary = serializeDiagramElements(diagramElements);
+      } else if (curMode === 'excalidraw' && curDiagram && curDiagram.length > 0) {
+        const currentDiagramSummary = serializeDiagramElements(curDiagram);
         if (currentDiagramSummary === lastSyncedDiagramRef.current) return;
         lastSyncedDiagramRef.current = currentDiagramSummary;
 
@@ -373,7 +382,7 @@ export default function InterviewRoom({
               agent_uid: activeAgent.agentUid,
               agent_id: activeAgent.agentId,
               event_type: 'WORK_STATE_UPDATE',
-              summary: 'Live Whiteboard snapshot update',
+              summary: 'Periodic live Whiteboard snapshot update',
               source: 'excalidraw',
               metadata: { diagramSummary: currentDiagramSummary },
               timestamp: Date.now()
@@ -381,10 +390,10 @@ export default function InterviewRoom({
           }).catch(err => console.warn('[WorkspaceSync] Diagram snapshot sync error:', err));
         }
       }
-    }, 3500);
+    }, 2500);
 
     return () => clearInterval(syncInterval);
-  }, [testState, isRound1WorkspaceActive, workspaceMode, code, language, diagramElements, interviewId]);
+  }, [testState, isRound1WorkspaceActive, interviewId]);
 
   const [deviceCheckStatus, setDeviceCheckStatus] = useState<{
     camera: 'checking' | 'active' | 'blocked';
@@ -1328,17 +1337,23 @@ CRITICAL INVARIANTS:
         if (targetRound === 0 || isRound1WorkspaceActive) {
           const codingProb = round.coding_problem || {
             title: "1. High-Throughput Rate Limiter & Event Throttler",
+            difficulty: "Medium",
             description: "Implement a sliding window rate limiter class that tracks incoming user requests and enforces a maximum threshold of requests per sliding window in TypeScript or Python. The implementation must support high concurrency and handle edge cases where multiple requests arrive at identical millisecond timestamps.",
             constraints: [
               "allowRequest(userId, timestampMs) should run in O(1) or O(log N) average time complexity.",
               "Space complexity should scale with the number of unique active user IDs.",
               "Handle concurrent burst traffic and sliding window cleanup cleanly."
-            ]
+            ],
+            initialCode: DEFAULT_PROBLEM.initialCode
           };
           const systemProb = round.system_design_problem || {
             title: "Real-time Distributed Event Notification Pipeline",
             description: "Architect a resilient real-time notification engine capable of processing 100k events/sec with WebSocket push delivery, retry queues, and deduplication."
           };
+
+          const initialStarterCode = (codingProb as any).initialCode?.[languageRef.current || 'typescript'] || 
+            (codingProb as any).initialCode?.['typescript'] || 
+            DEFAULT_PROBLEM.initialCode!['typescript'];
 
           contextPreamble = `
 ================================================================================
@@ -1356,12 +1371,18 @@ PRE-ASSIGNED WORKSPACE PROBLEMS FOR THIS INTERVIEW:
    - Title: "${systemProb.title}"
    - Description: ${systemProb.description}
 
+CURRENT CANDIDATE SCREEN & INITIAL IDE CODE STATE:
+The candidate's workspace is open to the Monaco Code Editor. The initial starter code template pre-loaded in their IDE is:
+\`\`\`${languageRef.current || 'typescript'}
+${initialStarterCode}
+\`\`\`
+
 CRITICAL BEHAVIORAL INVARIANTS:
-- YOU HAVE DIRECT REAL-TIME VISIBILITY INTO BOTH THE CANDIDATE'S IDE (CODE EDITOR) AND WHITEBOARD (EXCALIDRAW SYSTEM DESIGN CANVAS). You continuously receive live telemetry containing the exact code typed and the architecture diagram elements drawn by ${candidateName}.
-- When ${candidateName} asks "what do you see on my screen?", "read my code", "can you see my diagram?", or "what have I drawn so far?", YOU MUST DIRECTLY QUOTE AND EXPLAIN:
-  * If they are on the Code Editor: Quote and discuss their exact source code constructs, algorithms, and line logic from the latest code snapshot.
-  * If they are on the System Design Whiteboard: Quote their exact whiteboard components (e.g. API Gateway, Message Queue, Cache, Database, Worker services) and discuss their data flows, scaling, and architectural trade-offs.
-  * NEVER claim you cannot see their screen or canvas. You have full real-time visual telemetry.
+- YOU HAVE DIRECT 100% REAL-TIME VISIBILITY INTO BOTH THE CANDIDATE'S IDE (CODE EDITOR) AND WHITEBOARD (EXCALIDRAW SYSTEM DESIGN CANVAS). You continuously receive live telemetry containing the exact code typed and the architecture diagram elements drawn by ${candidateName}.
+- NEVER claim you cannot see their screen, cannot see their IDE, or don't have access to their code. You have full real-time visual telemetry.
+- When ${candidateName} asks "what do you see on my screen?", "read my code", "can you see my diagram?", "what code do I have?", or asks for feedback:
+  * If they are on the Code Editor: YOU MUST directly quote and discuss their exact source code constructs, algorithms, class definitions, and methods from the starter code above or latest code update.
+  * If they are on the System Design Whiteboard: YOU MUST quote their exact whiteboard components (e.g. API Gateway, Message Queue, Cache, Database, Worker services) and discuss their data flows, scaling, and architectural trade-offs.
 - CRITICAL INVARIANT: NEVER read system observations, bracketed cues, stuck signals, or "[SYSTEM WORKSPACE OBSERVATION]" out loud. System observations are silent background telemetry for your awareness only. If ${candidateName} has paused typing or drawing, ask naturally in your own human voice: "${candidateName}, how is your approach shaping up? Feel free to talk through your initial thoughts." NEVER say "the candidate hasn't written anything in 20 seconds" or quote system instructions.
 - DO NOT ask general conceptual technical interview questions (e.g. "What is binary search?", "What is garbage collection?", "Explain dependency injection"). Conceptual technical interview questions will be covered separately in Round 2 (Technical Panel).
 - Your 100% EXCLUSIVE focus in Round 1 is presenting, observing, and evaluating ${candidateName}'s progress on the assigned workspace problems ("${codingProb.title}" and "${systemProb.title}").
@@ -1492,6 +1513,52 @@ CRITICAL RULES & SCOPE:
         // Activate echo-gated candidate speech recognition
         setupSpeechRecognition();
         addLog('Turn Arbiter', `Introduction concluded (${reason}). Floor active for candidate.`);
+
+        // Prime the agent immediately with active workspace state upon greeting completion
+        if (isRound1WorkspaceActive) {
+          const curMode = workspaceModeRef.current;
+          const curCode = codeRef.current || (DEFAULT_PROBLEM.initialCode?.[languageRef.current] || DEFAULT_PROBLEM.initialCode!['typescript']);
+          const curLang = languageRef.current || 'typescript';
+          const curDiagram = diagramElementsRef.current;
+          const activeAgent = primaryInfo;
+
+          if (curMode === 'coding' && curCode && activeAgent?.agentId) {
+            lastSyncedCodeRef.current = curCode;
+            fetch('/api/agora-mllm/workspace-update', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                session_id: sessionId,
+                candidate_uid: candidateUid,
+                agent_uid: activeAgent.agentUid,
+                agent_id: activeAgent.agentId,
+                event_type: 'WORKSPACE_INITIAL_SYNC',
+                summary: 'Initial IDE code snapshot on candidate floor activation',
+                source: 'coding',
+                metadata: { code: curCode.slice(0, 1500), language: curLang },
+                timestamp: Date.now()
+              })
+            }).catch(err => console.warn('[WorkspaceSync] Initial code sync error:', err));
+          } else if (curMode === 'excalidraw' && curDiagram && curDiagram.length > 0 && activeAgent?.agentId) {
+            const currentDiagramSummary = serializeDiagramElements(curDiagram);
+            lastSyncedDiagramRef.current = currentDiagramSummary;
+            fetch('/api/agora-mllm/workspace-update', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                session_id: sessionId,
+                candidate_uid: candidateUid,
+                agent_uid: activeAgent.agentUid,
+                agent_id: activeAgent.agentId,
+                event_type: 'WORKSPACE_INITIAL_SYNC',
+                summary: 'Initial whiteboard diagram on candidate floor activation',
+                source: 'excalidraw',
+                metadata: { diagramSummary: currentDiagramSummary },
+                timestamp: Date.now()
+              })
+            }).catch(err => console.warn('[WorkspaceSync] Initial diagram sync error:', err));
+          }
+        }
       };
 
       const triggerChallengerIntro = () => {
@@ -2544,16 +2611,7 @@ CRITICAL RULES & SCOPE:
                         setLanguage={setLanguage}
                         onRunCode={onWorkspaceCodeRun}
                         onSubmit={() => finishRound('CANDIDATE_SUBMITTED_ROUND_1')}
-                        problem={blueprint.interview_rounds[0]?.coding_problem || {
-                          title: "1. High-Throughput Rate Limiter & Event Throttler",
-                          difficulty: "Medium",
-                          description: "Implement a sliding window rate limiter class that tracks incoming user requests and enforces a maximum threshold of requests per sliding window in TypeScript or Python. The implementation must support high concurrency and handle edge cases where multiple requests arrive at identical millisecond timestamps.",
-                          constraints: [
-                            "allowRequest(userId, timestampMs) should run in O(1) or O(log N) average time complexity.",
-                            "Space complexity should scale with the number of unique active user IDs.",
-                            "Handle concurrent burst traffic and sliding window cleanup cleanly."
-                          ]
-                        }}
+                        problem={blueprint.interview_rounds[0]?.coding_problem || DEFAULT_PROBLEM}
                       />
                     ) : (
                       <SystemDesignWorkspace
