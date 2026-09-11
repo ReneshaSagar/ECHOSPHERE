@@ -20,31 +20,26 @@ import {
 } from '@/lib/interview/scoringConfig';
 
 /**
- * Heuristically extracts candidate utterances and verifies verbatim technical evidence.
+ * Heuristically extracts candidate utterances and verifies verbatim technical and behavioral evidence.
  */
-function analyzeCandidateTranscript(transcript: any[]) {
+function analyzeCandidateTranscript(transcript: any[], isExplicitHr: boolean = false) {
+  const interviewerTokens = [
+    'priya', 'arjun', 'sarah', 'vikram', 'marcus', 'elena', 'aryan', 'maya', 'rohan', 'ananya',
+    'interviewer', 'ai', 'system', 'lead', 'specialist', 'panel', 'hr', 'talent', 'proctor', 'agent'
+  ];
+
   const candidateUtterances = transcript.filter((t: any) => {
     const sp = (t.speaker || '').toLowerCase();
-    return !sp.includes('priya') && 
-           !sp.includes('arjun') && 
-           !sp.includes('sarah') && 
-           !sp.includes('vikram') && 
-           !sp.includes('marcus') && 
-           !sp.includes('elena') && 
-           !sp.includes('interviewer') && 
-           !sp.includes('ai') && 
-           !sp.includes('system') && 
-           !sp.includes('lead') && 
-           !sp.includes('specialist') && 
-           !sp.includes('panel');
+    return !interviewerTokens.some(token => sp.includes(token));
   });
 
   const totalCandidateWords = candidateUtterances.reduce((acc, t) => acc + (t.text || '').split(/\s+/).filter(Boolean).length, 0);
   const isCompletelySilent = candidateUtterances.length === 0 || totalCandidateWords === 0;
   const isVirtuallySilent = totalCandidateWords < 5;
 
-  const techPattern = /\b(api|array|async|await|batch|binary|buffer|cache|channel|cluster|complexity|concurrency|database|deadlock|dict|distributed|event|goroutine|grpc|hash|hashmap|http|index|json|kafka|latency|limiter|list|lock|log|map|memory|message|microservice|mutex|network|node|optimize|packet|partition|pipeline|pointer|postgres|process|proto|pubsub|query|queue|raft|rate|redis|replica|request|scale|server|service|set|sliding|socket|stream|sync|tcp|thread|throttle|throughput|timeout|transaction|tree|vector|webrtc|websocket|window)\b/gi;
-  const reasoningPattern = /\b(because|tradeoff|trade-off|latency|throughput|bottleneck|failure|failover|partition|replicate|consistent|isolated|asynchronous|concurrency|mutex|lock|deadlock|index|overhead|benchmark|complexity|o\(1\)|o\(n\)|distributed|handling|recovery|mitigate)\b/gi;
+  const techPattern = /\b(api|array|async|await|batch|binary|buffer|cache|channel|cluster|complexity|concurrency|database|deadlock|dict|distributed|event|goroutine|grpc|hash|hashmap|http|index|json|kafka|latency|limiter|list|lock|log|map|memory|message|microservice|mutex|network|node|optimize|packet|partition|pipeline|pointer|postgres|process|proto|pubsub|query|queue|raft|rate|redis|replica|request|scale|server|service|set|sliding|socket|stream|sync|tcp|thread|throttle|throughput|timeout|transaction|tree|vector|webrtc|websocket|window|code|function|class|method)\b/gi;
+  const behavioralPattern = /\b(team|collab|collaboration|lead|leadership|conflict|agree|disagree|feedback|learn|learned|mistake|failure|ownership|responsible|responsibility|project|deadline|challenge|pressure|resolved|worked|helped|mentor|culture|stakeholder|manager|decision|situation|result|impact|initiative|engineering|deliver|delivery|production|incident|communicate|communication|handled|prioritize)\b/gi;
+  const reasoningPattern = /\b(because|tradeoff|trade-off|latency|throughput|bottleneck|failure|failover|partition|replicate|consistent|isolated|asynchronous|concurrency|mutex|lock|deadlock|index|overhead|benchmark|complexity|o\(1\)|o\(n\)|distributed|handling|recovery|mitigate|reason|why|decided|approach|action|outcome|result|improved|solution)\b/gi;
 
   const verbatimQuotes: string[] = [];
   let substantiveCount = 0;
@@ -55,22 +50,25 @@ function analyzeCandidateTranscript(transcript: any[]) {
     const txt = (u.text || '').trim();
     const words = txt.split(/\s+/).filter(Boolean);
     const techMatches = txt.match(techPattern) || [];
+    const behMatches = txt.match(behavioralPattern) || [];
     const reasoningMatches = txt.match(reasoningPattern) || [];
 
-    // Substantive answer: at least 14+ words, mentions technical terms AND includes reasoning/trade-off markers
-    if (words.length >= 14 && techMatches.length >= 1 && reasoningMatches.length >= 1) {
+    const domainMatches = isExplicitHr ? behMatches : techMatches;
+
+    // Substantive answer: at least 10+ words with relevant domain matches or reasoning markers
+    if (words.length >= 10 && (domainMatches.length >= 1 || reasoningMatches.length >= 1 || behMatches.length >= 1)) {
       substantiveCount++;
       const quote = txt.slice(0, 140) + (txt.length > 140 ? '...' : '');
       if (!verbatimQuotes.includes(quote)) {
         verbatimQuotes.push(quote);
       }
-    } else if (words.length >= 6 && techMatches.length >= 1) {
+    } else if (words.length >= 5) {
       vagueCount++;
       const quote = txt.slice(0, 140) + (txt.length > 140 ? '...' : '');
       if (!verbatimQuotes.includes(quote)) {
         verbatimQuotes.push(quote);
       }
-    } else if (words.length > 3 && techMatches.length === 0 && !/[a-zA-Z]{4,}/.test(txt)) {
+    } else if (words.length > 3 && domainMatches.length === 0 && !/[a-zA-Z]{4,}/.test(txt)) {
       gibberishCount++;
     }
   }
@@ -84,8 +82,8 @@ function analyzeCandidateTranscript(transcript: any[]) {
     vagueCount,
     gibberishCount,
     verbatimQuotes,
-    hasSubstantialEvidence: substantiveCount >= 2 && totalCandidateWords >= 50,
-    hasPartialEvidence: (substantiveCount >= 1 || vagueCount >= 2) && totalCandidateWords >= 25
+    hasSubstantialEvidence: (substantiveCount >= 2 && totalCandidateWords >= 35) || totalCandidateWords >= 60,
+    hasPartialEvidence: (substantiveCount >= 1 || vagueCount >= 1) && totalCandidateWords >= 15
   };
 }
 
@@ -100,7 +98,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const interview = resolveInterview(db, interviewId);
 
     const cleanTranscript = Array.isArray(transcript) ? transcript : [];
-    const stats = analyzeCandidateTranscript(cleanTranscript);
 
     // Disambiguate round classification clearly
     const isExplicitCoding = roundType === 'coding' || roundType === 'dsa' || roundType === 'problem_solving';
@@ -108,6 +105,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const isExplicitHr = roundType === 'hr' || roundType === 'behavioral' || roundType === 'culture';
 
     const isHrRound = isExplicitHr || Boolean(roundName && (roundName.toLowerCase().includes('hr') || roundName.toLowerCase().includes('culture') || roundName.toLowerCase().includes('leadership') || roundName.toLowerCase().includes('round 3')));
+
+    const stats = analyzeCandidateTranscript(cleanTranscript, isHrRound);
 
     const isTechnicalRound = !isHrRound && (isExplicitTechnical || Boolean(roundName && (roundName.toLowerCase().includes('round 2') || roundName.toLowerCase().includes('technical'))));
 

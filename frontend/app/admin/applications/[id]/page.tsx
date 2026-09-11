@@ -2,7 +2,6 @@ import React from 'react';
 import { getDb } from '@/lib/db';
 import Link from 'next/link';
 import ApplicationActions from './ApplicationActions';
-import ScorecardViewer from './ScorecardViewer';
 import ApplicationTabView from './ApplicationTabView';
 
 export default async function ApplicationReviewPage({ params }: { params: Promise<{ id: string }> }) {
@@ -46,9 +45,11 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
         id: interview.id,
         status: interview.status,
         scheduledAt: interview.scheduledAt,
+        completedAt: (interview as any).completedAt || null,
         suspiciousEvents: interview.suspiciousEvents || [],
         proctoringReport: interview.proctoringReport || null,
         scorecard: interview.scorecard || null,
+        transcript: interview.transcript || [],
       }
     : null;
 
@@ -76,7 +77,7 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
         </div>
       </div>
 
-      {/* ── Tabbed content (client component) */}
+      {/* ── Tabbed content (client component with embedded Live Session & Scorecard) */}
       <ApplicationTabView
         application={application}
         candidate={candidate ?? null}
@@ -87,11 +88,6 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
         parsedBlueprint={parsedBlueprint}
         hasSuspiciousEvents={hasSuspiciousEvents}
       />
-
-      {/* ── AI Scorecard (post-interview) — shown first */}
-      {interview && (interview.status === 'COMPLETED' || !!interview.scorecard || application.evaluationScore !== undefined) && (
-        <ScorecardViewer interviewId={interview.id} initialScorecard={interview.scorecard} />
-      )}
 
       {/* ── Hiring Decision — always last */}
       <ApplicationActions applicationId={application.id} currentStatus={application.status} />

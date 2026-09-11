@@ -55,26 +55,6 @@ export default function ApplicationTabView({
 
   return (
     <div className="space-y-6">
-      {/* Proctoring Banner */}
-      {hasSuspiciousEvents && (
-        <div className="p-4 bg-rose-950/30 border border-rose-500/30 rounded-2xl flex items-center justify-between gap-4 flex-wrap">
-          <div className="flex items-center gap-2.5 text-rose-300 font-bold text-sm">
-            <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
-            </span>
-            ⚠️ Proctoring Violations Detected During Interview
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-1 bg-rose-500/20 border border-rose-500/30 text-rose-300 rounded-full font-mono text-[10px] font-bold">{highCount} HIGH SEVERITY</span>
-            <span className="px-2.5 py-1 bg-white/[0.04] border border-white/[0.08] text-white/50 rounded-full font-mono text-[10px]">{suspiciousEvents.length} total</span>
-            <button onClick={() => setActiveTab('session')} className="px-3 py-1 bg-rose-500/10 border border-rose-500/20 text-rose-300 hover:bg-rose-500/20 rounded-full font-mono text-[10px] font-bold transition-colors">
-              View Logs →
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Tab Navigation */}
       <div className="flex gap-2 border-b border-white/[0.08] pb-4 flex-wrap">
         {tabs.map(({ id, label, icon: Icon, color }) => {
@@ -124,6 +104,8 @@ export default function ApplicationTabView({
       {activeTab === 'session' && (
         <LiveSessionTab
           interview={interview}
+          candidate={candidate}
+          job={job}
           suspiciousEvents={suspiciousEvents}
           dedupedEvents={dedupedEvents}
           highCount={highCount}

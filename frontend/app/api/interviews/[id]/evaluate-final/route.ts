@@ -10,31 +10,23 @@ import {
  * Heuristically analyzes candidate responses from full multi-round transcript.
  */
 function analyzeCandidateFullTranscript(transcript: any[]) {
+  const interviewerTokens = [
+    'priya', 'arjun', 'sarah', 'vikram', 'marcus', 'elena', 'aryan', 'maya', 'rohan', 'ananya',
+    'interviewer', 'ai', 'system', 'lead', 'specialist', 'panel', 'hr', 'talent', 'proctor', 'agent'
+  ];
+
   const candidateUtterances = transcript.filter((t: any) => {
     const sp = (t.speaker || '').toLowerCase();
-    return !sp.includes('priya') && 
-           !sp.includes('arjun') && 
-           !sp.includes('sarah') && 
-           !sp.includes('vikram') && 
-           !sp.includes('marcus') && 
-           !sp.includes('elena') && 
-           !sp.includes('interviewer') && 
-           !sp.includes('ai') && 
-           !sp.includes('system') && 
-           !sp.includes('specialist') && 
-           !sp.includes('lead') && 
-           !sp.includes('panel') && 
-           !sp.includes('proctor') && 
-           !sp.includes('hr') && 
-           !sp.includes('agent');
+    return !interviewerTokens.some(token => sp.includes(token));
   });
 
   const totalCandidateWords = candidateUtterances.reduce((acc, t) => acc + (t.text || '').split(/\s+/).filter(Boolean).length, 0);
   const isCompletelySilent = candidateUtterances.length === 0 || totalCandidateWords === 0;
-  const isVirtuallySilent = candidateUtterances.length <= 1 && totalCandidateWords <= 5;
+  const isVirtuallySilent = totalCandidateWords < 5;
   
-  const techPattern = /\b(api|array|async|await|batch|binary|buffer|cache|channel|cluster|complexity|concurrency|database|deadlock|dict|distributed|event|goroutine|grpc|hash|hashmap|http|index|json|kafka|latency|limiter|list|lock|log|map|memory|message|microservice|mutex|network|node|optimize|packet|partition|pipeline|pointer|postgres|process|proto|pubsub|query|queue|raft|rate|redis|replica|request|scale|server|service|set|sliding|socket|stream|sync|tcp|thread|throttle|throughput|timeout|transaction|tree|vector|webrtc|websocket|window)\b/gi;
-  const reasoningPattern = /\b(because|tradeoff|trade-off|latency|throughput|bottleneck|failure|failover|partition|replicate|consistent|isolated|asynchronous|concurrency|mutex|lock|deadlock|index|overhead|benchmark|complexity|o\(1\)|o\(n\)|distributed|handling|recovery|mitigate)\b/gi;
+  const techPattern = /\b(api|array|async|await|batch|binary|buffer|cache|channel|cluster|complexity|concurrency|database|deadlock|dict|distributed|event|goroutine|grpc|hash|hashmap|http|index|json|kafka|latency|limiter|list|lock|log|map|memory|message|microservice|mutex|network|node|optimize|packet|partition|pipeline|pointer|postgres|process|proto|pubsub|query|queue|raft|rate|redis|replica|request|scale|server|service|set|sliding|socket|stream|sync|tcp|thread|throttle|throughput|timeout|transaction|tree|vector|webrtc|websocket|window|code|function|class|method)\b/gi;
+  const behavioralPattern = /\b(team|collab|collaboration|lead|leadership|conflict|agree|disagree|feedback|learn|learned|mistake|failure|ownership|responsible|responsibility|project|deadline|challenge|pressure|resolved|worked|helped|mentor|culture|stakeholder|manager|decision|situation|result|impact|initiative|engineering|deliver|delivery|production|incident|communicate|communication|handled|prioritize)\b/gi;
+  const reasoningPattern = /\b(because|tradeoff|trade-off|latency|throughput|bottleneck|failure|failover|partition|replicate|consistent|isolated|asynchronous|concurrency|mutex|lock|deadlock|index|overhead|benchmark|complexity|o\(1\)|o\(n\)|distributed|handling|recovery|mitigate|reason|why|decided|approach|action|outcome|result|improved|solution)\b/gi;
 
   const verbatimQuotes: string[] = [];
   let substantiveCount = 0;
@@ -45,22 +37,23 @@ function analyzeCandidateFullTranscript(transcript: any[]) {
     const txt = (u.text || '').trim();
     const words = txt.split(/\s+/).filter(Boolean);
     const techMatches = txt.match(techPattern) || [];
+    const behMatches = txt.match(behavioralPattern) || [];
     const reasoningMatches = txt.match(reasoningPattern) || [];
 
-    // Substantive answer: at least 14+ words, mentions technical terms AND includes reasoning/trade-off markers
-    if (words.length >= 14 && techMatches.length >= 1 && reasoningMatches.length >= 1) {
+    // Substantive answer: at least 10+ words with technical or behavioral or reasoning markers
+    if (words.length >= 10 && (techMatches.length >= 1 || behMatches.length >= 1 || reasoningMatches.length >= 1)) {
       substantiveCount++;
       const quote = txt.slice(0, 140) + (txt.length > 140 ? '...' : '');
       if (!verbatimQuotes.includes(quote)) {
         verbatimQuotes.push(quote);
       }
-    } else if (words.length >= 6 && techMatches.length >= 1) {
+    } else if (words.length >= 5) {
       vagueCount++;
       const quote = txt.slice(0, 140) + (txt.length > 140 ? '...' : '');
       if (!verbatimQuotes.includes(quote)) {
         verbatimQuotes.push(quote);
       }
-    } else if (words.length > 3 && techMatches.length === 0 && !/[a-zA-Z]{4,}/.test(txt)) {
+    } else if (words.length > 3 && techMatches.length === 0 && behMatches.length === 0 && !/[a-zA-Z]{4,}/.test(txt)) {
       gibberishCount++;
     }
   }
@@ -74,8 +67,8 @@ function analyzeCandidateFullTranscript(transcript: any[]) {
     vagueCount,
     gibberishCount,
     verbatimQuotes,
-    hasSubstantialEvidence: substantiveCount >= 2 && totalCandidateWords >= 50,
-    hasPartialEvidence: (substantiveCount >= 1 || vagueCount >= 2) && totalCandidateWords >= 25
+    hasSubstantialEvidence: (substantiveCount >= 2 && totalCandidateWords >= 35) || totalCandidateWords >= 60,
+    hasPartialEvidence: (substantiveCount >= 1 || vagueCount >= 1) && totalCandidateWords >= 15
   };
 }
 
@@ -125,13 +118,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         (e.round || '').toLowerCase().includes('round 1') ||
         (e.round || '').toLowerCase().includes('sliding')
       );
-      const r1Score = r1 ? r1.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 75 : stats.hasPartialEvidence ? 28 : stats.totalCandidateWords >= 15 ? 25 : 0);
+      const r1Score = r1 ? r1.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 78 : stats.hasPartialEvidence ? 48 : stats.totalCandidateWords >= 15 ? 28 : 0);
       round1Eval = {
         roundName: r1?.round || 'Round 1: Practical Problem Solving & Codecraft',
         roundType: 'coding',
         score: r1Score,
         decision: r1Score >= 60 ? 'PASS' : 'FAIL',
-        reason: r1?.reason || (r1Score >= 60 ? 'Candidate demonstrated algorithmic problem solving and system design in workspace.' : r1Score === 0 ? 'Candidate was completely silent and submitted zero code or architectural design in workspace.' : 'Insufficient practical implementation or algorithmic justification demonstrated in workspace.'),
+        reason: r1?.reason || (r1Score >= 60 ? 'Candidate demonstrated algorithmic problem solving and system design in workspace.' : r1Score === 0 ? 'Candidate was completely silent and submitted zero code or architectural design in workspace.' : 'Candidate participated in practical workspace assessment on algorithm choice and design.'),
         workspaceEvidence: interview.round1Evidence || null
       };
       interview.round1Evaluation = round1Eval;
@@ -144,15 +137,15 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         (e.round || '').toLowerCase().includes('round 2') ||
         (e.round || '').toLowerCase().includes('panel')
       );
-      const r2Score = r2 ? r2.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 72 : stats.hasPartialEvidence ? 27 : stats.totalCandidateWords >= 15 ? 22 : 0);
+      const r2Score = r2 ? r2.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 76 : stats.hasPartialEvidence ? 45 : stats.totalCandidateWords >= 15 ? 25 : 0);
       round2Eval = {
         roundName: r2?.round || 'Round 2: Technical Interview Assessment',
         roundType: 'technical',
         score: r2Score,
         decision: r2Score >= 60 ? 'PASS' : 'FAIL',
         technicalBar: r2Score >= 70 ? 'met' : r2Score >= 55 ? 'borderline' : 'not_met',
-        summary: r2?.reason || (r2Score >= 60 ? 'Candidate addressed distributed systems architecture and concurrency fundamentals.' : r2Score === 0 ? 'Candidate was completely silent during technical panel inquiries.' : 'Candidate provided superficial or brief answers without architectural depth or trade-off analysis.'),
-        reason: r2?.reason || (r2Score >= 60 ? 'Candidate addressed distributed systems architecture and concurrency fundamentals.' : r2Score === 0 ? 'Candidate was completely silent during technical panel inquiries.' : 'Candidate provided superficial or brief answers without architectural depth or trade-off analysis.')
+        summary: r2?.reason || (r2Score >= 60 ? 'Candidate addressed distributed systems architecture and concurrency fundamentals.' : r2Score === 0 ? 'Candidate was completely silent during technical panel inquiries.' : 'Candidate participated in technical panel discussion covering core architecture and engineering trade-offs.'),
+        reason: r2?.reason || (r2Score >= 60 ? 'Candidate addressed distributed systems architecture and concurrency fundamentals.' : r2Score === 0 ? 'Candidate was completely silent during technical panel inquiries.' : 'Candidate participated in technical panel discussion covering core architecture and engineering trade-offs.')
       };
       interview.round2Evaluation = round2Eval;
     }
@@ -165,14 +158,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         (e.round || '').toLowerCase().includes('behavioral') ||
         (e.round || '').toLowerCase().includes('round 3')
       );
-      const r3Score = r3 ? r3.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 75 : stats.hasPartialEvidence ? 30 : stats.totalCandidateWords >= 15 ? 25 : 0);
+      const r3Score = r3 ? r3.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 80 : stats.hasPartialEvidence ? 52 : stats.totalCandidateWords >= 15 ? 32 : 0);
       round3Eval = {
         roundName: r3?.round || 'Round 3: Behavioral & Cultural Alignment',
         roundType: 'hr',
         score: r3Score,
         decision: r3Score >= 60 ? 'PASS' : 'FAIL',
         overallRecommendation: r3Score >= 75 ? 'Hire' : r3Score >= 60 ? 'Leaning Hire' : 'No Hire',
-        reason: r3?.reason || (r3Score >= 60 ? 'Candidate demonstrated engineering ownership, communication, and team alignment.' : r3Score === 0 ? 'Candidate was completely silent during HR behavioral inquiries.' : 'Candidate provided brief or high-level answers lacking specific behavioural examples or project ownership.')
+        reason: r3?.reason || (r3Score >= 60 ? 'Candidate demonstrated engineering ownership, communication, and team alignment.' : r3Score === 0 ? 'Candidate was completely silent during HR behavioral inquiries.' : 'Candidate completed the HR behavioral discussion on collaboration and ownership.')
       };
       interview.round3Evaluation = round3Eval;
     }
