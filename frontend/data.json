@@ -241,9 +241,9 @@
           ]
         }
       },
-      "evaluationScore": 0,
-      "evaluationSummary": "Candidate was completely silent and provided zero verbal responses or code submissions during the multi-round evaluation, resulting in an automatic failure across all assessed competencies.",
-      "decisionReason": "Multi-round assessment concluded with composite evaluation score 0/100. Scorecard synthesized for human hiring committee review."
+      "evaluationScore": 15,
+      "evaluationSummary": "Candidate Alex Rivera demonstrated a critical lack of technical proficiency and engagement, scoring 0 in the highly-weighted Technical Architecture round and 11 in the Coding round. Furthermore, extensive proctoring flags, including 'NO_FACE_DETECTED', 'HEAVY_TYPING during oral interview (possible external AI consultation)', and 'MULTIPLE_FACES' detected across rounds, raise serious integrity concerns that invalidate the behavioral assessment. The aggregate score of 15/100 aligns with a disqualification.",
+      "decisionReason": "Multi-round assessment concluded with composite evaluation score 15/100. Scorecard synthesized for human hiring committee review."
     },
     {
       "id": "matrix_app_test_01",
@@ -1408,85 +1408,23 @@
       "transcript": [
         {
           "round": "Round 1: Practical Coding & System Design Assessment",
+          "speaker": "Matrix Test Candidate",
+          "text": "I don't understand"
+        },
+        {
+          "round": "Round 1: Practical Coding & System Design Assessment",
           "speaker": "System (Workspace Event)",
           "text": "[WORK_STATE_UPDATE] Candidate introduced a Hash Map / Set lookup structure to optimize lookup efficiency."
         },
         {
           "round": "Round 1: Practical Coding & System Design Assessment",
-          "speaker": "Madhav Gairola",
-          "text": "Can you listen can you listen can you hear me"
+          "speaker": "Matrix Test Candidate",
+          "text": "Yeah I was thinking of our University"
         },
         {
-          "speaker": "Sarah Jenkins",
-          "text": "Welcome to the culture round. Can you tell me about a time you handled a difficult conflict in a software team?"
-        },
-        {
-          "speaker": "Candidate",
-          "text": "In my previous role at Stripe, we had a major architectural disagreement regarding database migration to DynamoDB. The senior team lead wanted immediate cutover while I advocated for dual-writing with shadow verification because of zero-downtime SLA constraints. I organized a blameless spike where we benchmarked error rates under shadow traffic, which proved that dual-writing prevented data drift. We delivered the migration on schedule with 100% uptime and the team adopted our shadow verification protocol for all future service splits."
-        },
-        {
-          "speaker": "Sarah Jenkins",
-          "text": "Tell me about a challenging project and how you resolved team conflicts."
-        },
-        {
-          "speaker": "Candidate",
-          "text": "Yeah I agree with that."
-        },
-        {
-          "speaker": "Sarah Jenkins",
-          "text": "Tell me about a challenging project and how you resolved team conflicts."
-        },
-        {
-          "speaker": "Candidate",
-          "text": "At Datadog, I led the distributed tracing ingest pipeline migration across 4 cross-functional squads. When two senior engineers vehemently disagreed on whether to use Apache Pulsar vs Kafka Streams, I designed an objective decision matrix measuring end-to-end tail latency, operational complexity, and partition rebalancing overhead. We ran parallel staging load tests simulating 500k events/sec. When the benchmarks demonstrated Kafka Streams had 40% lower P99 latency and our SRE team was already certified in Kafka operations, the team achieved unanimous alignment. The migration was completed 2 weeks ahead of Q3 deadline with zero customer incidents."
-        },
-        {
-          "speaker": "Priya Nair",
-          "text": "Welcome to Round 1! Walk me through your rate limiter."
-        },
-        {
-          "speaker": "Candidate",
-          "text": "I implemented an in-memory sliding window rate limiter using a Hash Map that stores request timestamps per user ID. For every request, we filter out timestamps outside the current window in O(N) where N is max allowed requests per window, ensuring average O(1) operational overhead and O(U * N) space complexity across unique users."
-        },
-        {
-          "speaker": "Priya Nair",
-          "text": "How do you handle partition tolerance and consistency in high-scale distributed systems?"
-        },
-        {
-          "speaker": "Candidate",
-          "text": "In our payment ingestion pipeline handling 80,000 TPS, we adopted a tunable consistency model. We partitioned transactions by account ID using consistent hashing with virtual nodes on Kafka topics. For idempotency and double-spend prevention, we implemented distributed optimistic locking backed by Redis distributed locks with Redlock algorithm and Postgres serializable snapshot isolation. When network partitions occurred, we favored consistency (CP) for balances while maintaining AP availability for read-only statement queries with read replicas and asynchronous change-data-capture via Debezium."
-        },
-        {
-          "speaker": "Arjun Mehta",
-          "text": "What happens when the leader node crashes during a 2-phase commit?"
-        },
-        {
-          "speaker": "Candidate",
-          "text": "To avoid 2PC coordinator crash deadlocks, we replaced 2PC with a Saga orchestration pattern with compensating transactions and outbox event streaming. Every transaction state transition writes to an immutable transactional outbox table in Postgres in the exact same ACID transaction as the state update, polled by a Debezium CDC connector publishing to partitioned Kafka topics with dead letter queue retries and exponential jitter backoff."
-        },
-        {
-          "speaker": "Priya Nair",
-          "text": "Welcome to Round 1! Walk me through your rate limiter implementation."
-        },
-        {
-          "speaker": "Candidate",
-          "text": "I implemented an in-memory sliding window rate limiter using a Hash Map that stores request timestamps per user ID. For every request, we filter out timestamps outside the current window in O(N) where N is max allowed requests per window, ensuring average O(1) operational overhead and O(U * N) space complexity across unique users."
-        },
-        {
-          "speaker": "Priya Nair",
-          "text": "How do you handle partition tolerance and consistency in high-scale distributed systems?"
-        },
-        {
-          "speaker": "Candidate",
-          "text": "In our payment ingestion pipeline handling 80,000 TPS, we adopted a tunable consistency model. We partitioned transactions by account ID using consistent hashing with virtual nodes on Kafka topics. For idempotency and double-spend prevention, we implemented distributed optimistic locking backed by Redis distributed locks with Redlock algorithm and Postgres serializable snapshot isolation. When network partitions occurred, we favored consistency (CP) for balances while maintaining AP availability for read-only statement queries with read replicas and asynchronous change-data-capture via Debezium."
-        },
-        {
-          "speaker": "Arjun Mehta",
-          "text": "What happens when the leader node crashes during a 2-phase commit?"
-        },
-        {
-          "speaker": "Candidate",
-          "text": "To avoid 2PC coordinator crash deadlocks, we replaced 2PC with a Saga orchestration pattern with compensating transactions and outbox event streaming. Every transaction state transition writes to an immutable transactional outbox table in Postgres in the exact same ACID transaction as the state update, polled by a Debezium CDC connector publishing to partitioned Kafka topics with dead letter queue retries and exponential jitter backoff."
+          "round": "Round 1: Practical Coding & System Design Assessment",
+          "speaker": "Matrix Test Candidate",
+          "text": "Basically"
         }
       ],
       "evaluations": [
@@ -1509,12 +1447,6 @@
           "reason": "Candidate was completely silent and provided zero verbal responses during the technical panel interview."
         },
         {
-          "round": "Round 1: Practical Coding & System Design Assessment",
-          "decision": "FAIL",
-          "score": 0,
-          "reason": "Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace."
-        },
-        {
           "round": "Round 3: Behavioral & Cultural Alignment",
           "decision": "PASS",
           "score": 74,
@@ -1527,10 +1459,16 @@
           "reason": "The candidate provided a functional, clean implementation of a sliding window rate limiter that passed all test cases. While the code correctly leverages a Hash Map for user-specific logs, the approach uses an O(N) filter operation per request, and the candidate's verbal explanation incorrectly claimed \"average O(1) operational overhead\" for this approach."
         },
         {
+          "round": "Round 1: Practical Coding & System Design Assessment",
+          "decision": "FAIL",
+          "score": 11,
+          "reason": "The candidate failed to implement the core rate limiting logic, explicitly stating a lack of understanding. The submitted code contains only boilerplate with a 'TODO' comment for the main functionality, resulting in a non-functional solution and minimal communication."
+        },
+        {
           "round": "Round 2: Technical Architecture & Concurrency",
-          "decision": "PASS",
-          "score": 90,
-          "reason": "The candidate demonstrated exceptional technical depth and verified experience in designing and implementing high-scale distributed systems, particularly in consistency models, fault tolerance, and event-driven architectures. Their precise articulation of complex patterns like Saga with Outbox, combined with practical application of CAP principles and robust failure handling, indicates a strong fit for the role."
+          "decision": "FAIL",
+          "score": 0,
+          "reason": "Candidate was completely silent and provided zero verbal responses during the technical panel interview."
         }
       ],
       "suspiciousEvents": [
@@ -10171,196 +10109,1068 @@
           "details": "Candidate is not visible to the webcam",
           "severity": "HIGH",
           "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:23:14.981Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:23:15.817Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:23:17.343Z",
+          "type": "FOCUS_REGAINED",
+          "details": "Candidate returned to interview tab after 1.5s",
+          "severity": "INFO",
+          "score_impact": 0
+        },
+        {
+          "timestamp": "2026-09-12T05:23:28.730Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:23:29.059Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:23:30.887Z",
+          "type": "FOCUS_REGAINED",
+          "details": "Candidate returned to interview tab after 1.8s",
+          "severity": "INFO",
+          "score_impact": 0
+        },
+        {
+          "timestamp": "2026-09-12T05:23:43.461Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:23:55.681Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:23:55.842Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:23:57.175Z",
+          "type": "FOCUS_REGAINED",
+          "details": "Candidate returned to interview tab after 1.3s",
+          "severity": "INFO",
+          "score_impact": 0
+        },
+        {
+          "timestamp": "2026-09-12T05:24:30.577Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:24:31.790Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:24:33.031Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:24:34.207Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-12T05:24:45.521Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-12T05:25:02.768Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:25:02.901Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:25:24.190Z",
+          "type": "FOCUS_REGAINED",
+          "details": "Candidate returned to interview tab after 21.3s",
+          "severity": "INFO",
+          "score_impact": 0
+        },
+        {
+          "timestamp": "2026-09-12T05:25:28.327Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:25:28.520Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:26:03.638Z",
+          "type": "FOCUS_REGAINED",
+          "details": "Candidate returned to interview tab after 35.2s",
+          "severity": "INFO",
+          "score_impact": 0
+        },
+        {
+          "timestamp": "2026-09-12T05:26:03.962Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:26:07.863Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:26:11.853Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:26:12.002Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:26:13.799Z",
+          "type": "FOCUS_REGAINED",
+          "details": "Candidate returned to interview tab after 1.8s",
+          "severity": "INFO",
+          "score_impact": 0
+        },
+        {
+          "timestamp": "2026-09-12T05:26:17.708Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:26:22.462Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:26:22.914Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:26:23.102Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:26:25.647Z",
+          "type": "FOCUS_REGAINED",
+          "details": "Candidate returned to interview tab after 2.5s",
+          "severity": "INFO",
+          "score_impact": 0
+        },
+        {
+          "timestamp": "2026-09-12T05:26:28.379Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:26:29.584Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:26:33.537Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:26:33.678Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:27:23.543Z",
+          "type": "FOCUS_REGAINED",
+          "details": "Candidate returned to interview tab after 49.9s",
+          "severity": "INFO",
+          "score_impact": 0
+        },
+        {
+          "timestamp": "2026-09-12T05:28:30.510Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:29:24.504Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:29:25.846Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:29:27.721Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:29:29.560Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:29:36.753Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:29:42.917Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:29:44.178Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:29:46.717Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:29:48.010Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:29:50.559Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:29:53.090Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:29:54.399Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:29:55.827Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:30:09.159Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-12T05:30:30.957Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-12T05:30:49.471Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:30:50.770Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:31:26.481Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-12T05:31:27.748Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-12T05:31:32.540Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-12T05:31:37.596Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:31:40.255Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:32:04.516Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:32:14.585Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:32:45.309Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:32:46.765Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:33:26.429Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:33:26.485Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:33:28.151Z",
+          "type": "FOCUS_REGAINED",
+          "details": "Candidate returned to interview tab after 1.7s",
+          "severity": "INFO",
+          "score_impact": 0
+        },
+        {
+          "timestamp": "2026-09-12T05:33:30.602Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:33:31.834Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-12T05:33:45.549Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:33:45.618Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:33:47.908Z",
+          "type": "FOCUS_REGAINED",
+          "details": "Candidate returned to interview tab after 2.3s",
+          "severity": "INFO",
+          "score_impact": 0
+        },
+        {
+          "timestamp": "2026-09-12T05:33:49.135Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:33:59.810Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:34:00.671Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:35:08.579Z",
+          "type": "FOCUS_REGAINED",
+          "details": "Candidate returned to interview tab after 67.9s",
+          "severity": "INFO",
+          "score_impact": 0
+        },
+        {
+          "timestamp": "2026-09-12T05:39:16.011Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:39:24.064Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:39:39.590Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:39:39.735Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:39:42.411Z",
+          "type": "FOCUS_REGAINED",
+          "details": "Candidate returned to interview tab after 2.7s",
+          "severity": "INFO",
+          "score_impact": 0
+        },
+        {
+          "timestamp": "2026-09-12T05:42:21.082Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-12T05:42:23.313Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-12T05:42:25.783Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:42:42.228Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:43:01.983Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:43:03.466Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:43:04.565Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:43:14.631Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:43:14.770Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:44:31.436Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:44:31.592Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:44:46.529Z",
+          "type": "FOCUS_REGAINED",
+          "details": "Candidate returned to interview tab after 14.9s",
+          "severity": "INFO",
+          "score_impact": 0
+        },
+        {
+          "timestamp": "2026-09-12T05:49:13.693Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-12T05:49:20.618Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:49:20.765Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:49:25.695Z",
+          "type": "FOCUS_REGAINED",
+          "details": "Candidate returned to interview tab after 4.9s",
+          "severity": "INFO",
+          "score_impact": 0
+        },
+        {
+          "timestamp": "2026-09-12T05:49:28.668Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:49:28.784Z",
+          "type": "TAB_SWITCH",
+          "details": "Candidate switched tabs or minimized interview window",
+          "severity": "HIGH",
+          "score_impact": -15
+        },
+        {
+          "timestamp": "2026-09-12T05:50:32.250Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-12T05:50:56.745Z",
+          "type": "NO_FACE_DETECTED",
+          "details": "Candidate is not visible to the webcam",
+          "severity": "HIGH",
+          "score_impact": -20
+        },
+        {
+          "timestamp": "2026-09-12T05:51:12.580Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-12T05:51:29.536Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-12T05:51:44.325Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-12T05:52:09.823Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-12T05:55:39.666Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:55:40.890Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:55:42.222Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:55:44.718Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:55:48.399Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:55:49.764Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:55:53.620Z",
+          "type": "GAZE_OUT_OF_BOUNDS",
+          "details": "Candidate is looking away from the screen",
+          "severity": "MEDIUM",
+          "score_impact": -5
+        },
+        {
+          "timestamp": "2026-09-12T05:56:10.957Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:56:12.233Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:56:13.561Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:56:14.881Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:56:18.737Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:56:19.952Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:56:21.279Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:56:22.524Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:56:23.828Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:56:25.166Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:56:26.454Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:56:27.713Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:56:29.088Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
+        },
+        {
+          "timestamp": "2026-09-12T05:56:30.389Z",
+          "type": "MULTIPLE_FACES",
+          "details": "Another person detected in the camera frame",
+          "severity": "HIGH",
+          "score_impact": -25
         }
       ],
       "round1Evaluation": {
-        "roundName": "Round 1: Practical Problem Solving & Codecraft",
+        "roundName": "Round 1: Practical Coding & System Design Assessment",
         "roundType": "coding",
-        "decision": "PASS",
-        "score": 66,
-        "reason": "The candidate provided a functional, clean implementation of a sliding window rate limiter that passed all test cases. While the code correctly leverages a Hash Map for user-specific logs, the approach uses an O(N) filter operation per request, and the candidate's verbal explanation incorrectly claimed \"average O(1) operational overhead\" for this approach.",
-        "evidenceQuality": "STRONG",
-        "evidenceSufficiency": "sufficient",
-        "confidence": "MEDIUM",
+        "decision": "FAIL",
+        "score": 11,
+        "reason": "The candidate failed to implement the core rate limiting logic, explicitly stating a lack of understanding. The submitted code contains only boilerplate with a 'TODO' comment for the main functionality, resulting in a non-functional solution and minimal communication.",
+        "evidenceQuality": "WEAK",
+        "evidenceSufficiency": "insufficient",
+        "confidence": "HIGH",
         "competencyEvaluations": [
           {
             "competency": "Problem Understanding & Requirements Clarification",
             "weight": 0.15,
-            "score": 72,
-            "weightedScore": 10.8,
-            "evidenceQuality": "STRONG",
+            "score": 15,
+            "weightedScore": 2.25,
+            "evidenceQuality": "WEAK",
             "evidence": [
-              "class SlidingWindowRateLimiter {...}",
-              "public allowRequest(userId: string, timestampMs: number): boolean {...}"
+              "I don't understand",
+              "// TODO: Implement sliding window rate limiting logic"
             ],
             "missingEvidence": [
-              "Explicit verbal clarification of edge cases (e.g., zero window size, negative max requests)."
+              "Detailed problem constraints identified",
+              "Clarification questions regarding edge cases or input/output formats"
             ],
-            "feedback": "The candidate clearly understood the problem requirements and implemented the core logic for a sliding window rate limiter effectively."
+            "feedback": "The candidate explicitly stated a lack of understanding and did not implement the core problem logic."
           },
           {
             "competency": "Approach, Data Structures & Algorithm Design",
             "weight": 0.2,
-            "score": 58,
-            "weightedScore": 11.6,
+            "score": 25,
+            "weightedScore": 5,
             "evidenceQuality": "PARTIAL",
             "evidence": [
-              "private requestLogs: Map<string, number[]>;",
-              "const validTimestamps = timestamps.filter(t => t > windowStart);"
+              "private userLogs: Map<string, number[]>;",
+              "Candidate introduced a Hash Map / Set lookup structure to optimize lookup efficiency."
             ],
             "missingEvidence": [
-              "Consideration of a more optimal O(1) amortized sliding window implementation (e.g., using a Deque or two pointers on a sorted list).",
-              "Justification for choosing filtering over a more performant data structure for time-based eviction."
+              "Sliding window algorithm logic",
+              "Explanation of data structure choice for storing timestamps"
             ],
-            "feedback": "The use of a Hash Map is appropriate, but the sliding window mechanism via filtering an array results in an O(N) operation per request, which is not optimal for a typical sliding window and was mischaracterized verbally."
+            "feedback": "A correct data structure (Map) for user logs was chosen, but no specific algorithmic approach for sliding window was designed or implemented."
           },
           {
             "competency": "Implementation Correctness & Code Quality",
             "weight": 0.3,
-            "score": 82,
-            "weightedScore": 24.6,
-            "evidenceQuality": "STRONG",
+            "score": 10,
+            "weightedScore": 3,
+            "evidenceQuality": "WEAK",
             "evidence": [
-              "Passed Tests: 4",
-              "Failed Tests: 0",
-              "Compile Success: true",
-              "All 4 test suites passed successfully.",
-              "if (validTimestamps.length < this.maxRequests) { validTimestamps.push(timestampMs); this.requestLogs.set(userId, validTimestamps); return true; }"
+              "public allowRequest(userId: string, timestampMs: number = Date.now()): boolean { // TODO: Implement sliding window rate limiting logic return true; }"
             ],
-            "missingEvidence": [],
-            "feedback": "The code is clean, syntactically correct, and passes all provided test cases, demonstrating solid implementation skills for the chosen approach."
+            "missingEvidence": [
+              "Functional rate limiting logic",
+              "Handling of edge cases (e.g., empty logs, window boundaries)"
+            ],
+            "feedback": "The core `allowRequest` method was not implemented, containing only a placeholder `return true;` and a 'TODO' comment, despite compiling successfully."
           },
           {
             "competency": "Complexity, Optimization & Scaling Reasoning",
             "weight": 0.15,
-            "score": 55,
-            "weightedScore": 8.25,
-            "evidenceQuality": "PARTIAL",
+            "score": 0,
+            "weightedScore": 0,
+            "evidenceQuality": "NONE",
             "evidence": [
-              "For every request, we filter out timestamps outside the current window in O(N) where N is max allowed requests per window, ensuring average O(1) operational overhead and O(U * N) space complexity across unique users."
+              "Yeah I was thinking of our University"
             ],
             "missingEvidence": [
-              "A clear, accurate explanation of the time complexity of their specific `filter` based implementation, without claiming 'average O(1) operational overhead'.",
-              "Discussion of actual scaling limits or concurrency considerations beyond basic O() notation."
+              "Time complexity analysis (O(N) or O(log N) operations)",
+              "Space complexity analysis (O(N) data storage)",
+              "Discussion on scaling for high traffic or concurrency"
             ],
-            "feedback": "The candidate correctly identified space complexity but misstated the operational time complexity as 'average O(1)' despite implementing an O(N) filtering mechanism, indicating a gap in fully analyzing their own code's performance."
+            "feedback": "No discussion or reasoning regarding time/space complexity, optimization, or scaling was provided."
           },
           {
             "competency": "Debugging, Adaptability & Inactivity/Hint Handling",
             "weight": 0.1,
-            "score": 60,
-            "weightedScore": 6,
+            "score": 0,
+            "weightedScore": 0,
             "evidenceQuality": "NONE",
             "evidence": [
-              "\nclass SlidingWindowRateLimiter {\n  private windowSizeMs: number;\n  private maxRequests: number;\n  p"
+              "Yeah I was thinking of our University"
             ],
             "missingEvidence": [
-              "Demonstration of debugging skills or reaction to errors, as all tests passed on first submission."
+              "Identification and resolution of runtime errors",
+              "Adaptation to new requirements or hints",
+              "Methodical bug isolation"
             ],
-            "feedback": "No opportunities arose to evaluate debugging or adaptability skills as the solution was complete and correct for the provided tests without intervention."
+            "feedback": "There was no opportunity to observe debugging skills as the code contained no functional logic and no bugs were identified or addressed."
           },
           {
             "competency": "Communication, Explanation & Code Walkthrough",
             "weight": 0.1,
-            "score": 48,
-            "weightedScore": 4.8,
-            "evidenceQuality": "PARTIAL",
+            "score": 10,
+            "weightedScore": 1,
+            "evidenceQuality": "WEAK",
             "evidence": [
-              "I implemented an in-memory sliding window rate limiter using a Hash Map that stores request timestamps per user ID. For every request, we filter out timestamps outside the current window in O(N) where N is max allowed requests per window, ensuring average O(1) operational overhead and O(U * N) space complexity across unique users."
+              "I don't understand",
+              "Yeah I was thinking of our University",
+              "Basically"
             ],
             "missingEvidence": [
-              "A more detailed step-by-step walkthrough of the `allowRequest` method's logic.",
-              "Precise verbal distinction between their implementation's complexity and theoretical optimal complexity."
+              "Clear explanation of proposed solution",
+              "Step-by-step code walkthrough",
+              "Structured communication of thought process"
             ],
-            "feedback": "Communication was brief, covering key components and complexity estimates, but lacked depth in the walkthrough and contained an inaccuracy regarding the operational time complexity of their solution."
+            "feedback": "Communication was extremely minimal and unfocused, failing to explain any aspect of the problem or solution."
           }
         ],
         "demonstratedKnowledge": [
           {
-            "topic": "Sliding Window Algorithm",
+            "topic": "Hash Map Data Structure",
             "level": "moderate",
-            "evidence": "class SlidingWindowRateLimiter {...}; const validTimestamps = timestamps.filter(t => t > windowStart);",
-            "notes": "Implemented a functional but not optimally efficient sliding window."
+            "evidence": "private userLogs: Map<string, number[]>;",
+            "notes": "Correctly chosen data structure for tracking user requests, but not utilized in an algorithm."
           },
           {
-            "topic": "Hash Map Data Structure",
-            "level": "strong",
-            "evidence": "private requestLogs: Map<string, number[]>;",
-            "notes": "Used correctly for user-specific data storage."
+            "topic": "Sliding Window Algorithm",
+            "level": "not_demonstrated",
+            "evidence": "// TODO: Implement sliding window rate limiting logic",
+            "notes": "Explicitly marked as 'TODO' and not implemented."
           },
           {
             "topic": "Time Complexity Analysis",
-            "level": "weak",
-            "evidence": "For every request, we filter out timestamps outside the current window in O(N) ... ensuring average O(1) operational overhead",
-            "notes": "Identified O(N) for filter but incorrectly claimed average O(1) for their specific implementation."
-          },
-          {
-            "topic": "Space Complexity Analysis",
-            "level": "strong",
-            "evidence": "O(U * N) space complexity across unique users.",
-            "notes": "Correctly identified the space complexity."
-          },
-          {
-            "topic": "Rate Limiting",
-            "level": "strong",
-            "evidence": "I implemented an in-memory sliding window rate limiter...",
-            "notes": "Understood the core problem and provided a working solution."
+            "level": "not_demonstrated",
+            "evidence": "",
+            "notes": "No discussion or analysis provided."
           },
           {
             "topic": "Edge Case Handling",
             "level": "not_demonstrated",
             "evidence": "",
-            "notes": "No explicit verbal discussion of edge cases, though code implicitly handles initial empty logs."
+            "notes": "No functional logic implies no edge case handling was implemented or discussed."
           }
         ],
         "reasoningEvidence": {
-          "approachExplanation": "I implemented an in-memory sliding window rate limiter using a Hash Map that stores request timestamps per user ID. For every request, we filter out timestamps outside the current window.",
-          "algorithmChoices": "Hash Map that stores request timestamps per user ID.",
-          "complexityReasoning": "For every request, we filter out timestamps outside the current window in O(N) where N is max allowed requests per window, ensuring average O(1) operational overhead and O(U * N) space complexity across unique users.",
+          "approachExplanation": "The candidate stated 'I don't understand' and provided no further verbal explanation of an approach. The code indicates an intent to use a map for user logs but lacks any actual algorithm.",
+          "algorithmChoices": "The system event noted 'Candidate introduced a Hash Map / Set lookup structure to optimize lookup efficiency.' This suggests an intention to use a Map for user-specific logs.",
+          "complexityReasoning": "No complexity reasoning was provided by the candidate.",
           "edgeCasesIdentified": [],
-          "debuggingReasoning": ""
+          "debuggingReasoning": "No debugging reasoning was observed as there was no functional logic to debug."
         },
         "workspaceEvidence": {
-          "code": "\nclass SlidingWindowRateLimiter {\n  private windowSizeMs: number;\n  private maxRequests: number;\n  private requestLogs: Map<string, number[]>;\n\n  constructor(windowSizeMs: number, maxRequests: number) {\n    this.windowSizeMs = windowSizeMs;\n    this.maxRequests = maxRequests;\n    this.requestLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number): boolean {\n    const timestamps = this.requestLogs.get(userId) || [];\n    const windowStart = timestampMs - this.windowSizeMs;\n    const validTimestamps = timestamps.filter(t => t > windowStart);\n\n    if (validTimestamps.length < this.maxRequests) {\n      validTimestamps.push(timestampMs);\n      this.requestLogs.set(userId, validTimestamps);\n      return true;\n    }\n    return false;\n  }\n}\n",
+          "code": "class SlidingWindowRateLimiter {\n  private limit: number;\n  private windowMs: number;\n  private userLogs: Map<string, number[]>;\n\n  constructor(limit: number = 5, windowMs: number = 10000) {\n    this.limit = limit;\n    this.windowMs = windowMs;\n    this.userLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number = Date.now()): boolean {\n    // TODO: Implement sliding window rate limiting logic\n    return true;\n  }\n}\n\n// Test instance\nconst limiter = new SlidingWindowRateLimiter(3, 5000);\nconsole.log(\"Allowed t=1000:\", limiter.allowRequest(\"user1\", 1000));\nconsole.log(\"Allowed t=2000:\", limiter.allowRequest(\"user1\", 2000));\nfor(int i=",
           "language": "typescript",
           "codeExecutionResults": {
-            "passedTests": 4,
-            "failedTests": 0,
             "compileSuccess": true,
-            "rawOutput": "All 4 test suites passed successfully."
+            "passedTests": 1,
+            "failedTests": 0,
+            "rawOutput": "Workspace snapshot captured"
           },
-          "diagramElementCount": 0,
-          "submittedAt": "2026-09-12T04:09:09.408Z"
+          "diagramElementCount": 6,
+          "submittedAt": "2026-09-12T05:54:19.730Z"
         },
         "keyEvidence": [
-          "class SlidingWindowRateLimiter { private windowSizeMs: number; private maxRequests: number; private requestLogs: Map<string, number[]>; constructor(windowSizeMs: number, maxRequests: number) { this.windowSizeMs = windowSizeMs; this.maxRequests = maxRequests; this.requestLogs = new Map(); } public allowRequest(userId: string, timestampMs: number): boolean { const timestamps = this.requestLogs.get(userId) || []; const windowStart = timestampMs - this.windowSizeMs; const validTimestamps = timestamps.filter(t => t > windowStart); if (validTimestamps.length < this.maxRequests) { validTimestamps.push(timestampMs); this.requestLogs.set(userId, validTimestamps); return true; } return false; } }",
-          "Candidate: I implemented an in-memory sliding window rate limiter using a Hash Map that stores request timestamps per user ID. For every request, we filter out timestamps outside the current window in O(N) where N is max allowed requests per window, ensuring average O(1) operational overhead and O(U * N) space complexity across unique users."
+          "I don't understand",
+          "public allowRequest(userId: string, timestampMs: number = Date.now()): boolean { // TODO: Implement sliding window rate limiting logic return true; }",
+          "Passed Tests: 1"
         ],
         "missingEvidence": [
-          "Detailed walkthrough of the 'allowRequest' method's logic.",
-          "Discussion of more optimal O(1) amortized sliding window data structures (e.g., Deque).",
-          "Specific edge case handling discussion (e.g., `windowSizeMs` = 0)."
+          "Working implementation of sliding window rate limiting logic",
+          "Explanation of algorithmic steps",
+          "Discussion of time and space complexity",
+          "Identification and handling of edge cases",
+          "Clear, structured communication about the problem or solution"
         ],
-        "evaluatedAt": "2026-09-12T04:09:09.408Z"
+        "evaluatedAt": "2026-09-12T05:54:19.730Z"
       },
       "round1Evidence": {
-        "code": "\nclass SlidingWindowRateLimiter {\n  private windowSizeMs: number;\n  private maxRequests: number;\n  private requestLogs: Map<string, number[]>;\n\n  constructor(windowSizeMs: number, maxRequests: number) {\n    this.windowSizeMs = windowSizeMs;\n    this.maxRequests = maxRequests;\n    this.requestLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number): boolean {\n    const timestamps = this.requestLogs.get(userId) || [];\n    const windowStart = timestampMs - this.windowSizeMs;\n    const validTimestamps = timestamps.filter(t => t > windowStart);\n\n    if (validTimestamps.length < this.maxRequests) {\n      validTimestamps.push(timestampMs);\n      this.requestLogs.set(userId, validTimestamps);\n      return true;\n    }\n    return false;\n  }\n}\n",
+        "code": "class SlidingWindowRateLimiter {\n  private limit: number;\n  private windowMs: number;\n  private userLogs: Map<string, number[]>;\n\n  constructor(limit: number = 5, windowMs: number = 10000) {\n    this.limit = limit;\n    this.windowMs = windowMs;\n    this.userLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number = Date.now()): boolean {\n    // TODO: Implement sliding window rate limiting logic\n    return true;\n  }\n}\n\n// Test instance\nconst limiter = new SlidingWindowRateLimiter(3, 5000);\nconsole.log(\"Allowed t=1000:\", limiter.allowRequest(\"user1\", 1000));\nconsole.log(\"Allowed t=2000:\", limiter.allowRequest(\"user1\", 2000));\nfor(int i=",
         "language": "typescript",
         "codeExecutionResults": {
-          "passedTests": 4,
-          "failedTests": 0,
           "compileSuccess": true,
-          "rawOutput": "All 4 test suites passed successfully."
+          "passedTests": 1,
+          "failedTests": 0,
+          "rawOutput": "Workspace snapshot captured"
         },
-        "diagramElementCount": 0,
-        "submittedAt": "2026-09-12T04:09:09.408Z"
+        "diagramElementCount": 6,
+        "submittedAt": "2026-09-12T05:54:19.730Z"
       },
       "interviewState": {
         "interviewId": "demo-interview-test",
-        "currentRound": "technical",
-        "floorState": "PRIMARY_SPEAKING",
-        "currentSpeaker": "eng_be_01",
-        "conversationSummary": "Technical panel interview initialized.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 82/100). Assessment Notes: Candidate completed functional implementation in typescript with verified test execution.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 90/100). Highlights: . Panel Notes: Demonstrated exceptional deep concurrency knowledge in Technical Panel.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 75/100). Highlights: . Panel Notes: Candidate articulated technical architecture concepts and engineering trade-offs during the panel discussion.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 30/100). Highlights: . Panel Notes: Candidate provided brief or high-level remarks without sufficient distributed systems depth.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 30/100). Highlights: . Panel Notes: Candidate provided brief or high-level remarks without sufficient distributed systems depth.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 85/100). Highlights: . Panel Notes: Candidate was completely silent and provided zero verbal responses during the technical panel interview.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 85/100). Highlights: . Panel Notes: Candidate was completely silent and provided zero verbal responses during the technical panel interview.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.",
+        "currentRound": "hr",
+        "floorState": "HR_SPEAKING",
+        "currentSpeaker": "hr_01",
+        "conversationSummary": "Technical panel interview initialized.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 82/100). Assessment Notes: Candidate completed functional implementation in typescript with verified test execution.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 90/100). Highlights: . Panel Notes: Demonstrated exceptional deep concurrency knowledge in Technical Panel.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 75/100). Highlights: . Panel Notes: Candidate articulated technical architecture concepts and engineering trade-offs during the panel discussion.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 30/100). Highlights: . Panel Notes: Candidate provided brief or high-level remarks without sufficient distributed systems depth.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 22/100). Assessment Notes: Candidate failed to produce a valid functional implementation or resolve test constraints.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 30/100). Highlights: . Panel Notes: Candidate provided brief or high-level remarks without sufficient distributed systems depth.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 85/100). Highlights: . Panel Notes: Candidate was completely silent and provided zero verbal responses during the technical panel interview.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 85/100). Highlights: . Panel Notes: Candidate was completely silent and provided zero verbal responses during the technical panel interview.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 85/100). Assessment Notes: Candidate was completely silent and submitted zero functional code or architectural diagrams in the workspace.\n--- ROUND 1 (WORKSPACE ASSESSMENT) COMPLETED ---\nRound 1 (Practical Workspace Assessment) Passed (Score: 11/100). Assessment Notes: The candidate failed to implement the core rate limiting logic, explicitly stating a lack of understanding. The submitted code contains only boilerplate with a 'TODO' comment for the main functionality, resulting in a non-functional solution and minimal communication.\n--- TECHNICAL ROUND COMPLETED ---\nTechnical Round Passed (Score: 85/100). Highlights: . Panel Notes: Candidate was completely silent and provided zero verbal responses during the technical panel interview.",
         "questionsAsked": [],
         "topicsCovered": [],
         "evidenceCollected": [],
@@ -10424,6 +11234,206 @@
             "candidateUtterance": "Can you listen can you listen can you hear me",
             "classification": "VAGUE",
             "qualityScore": 35
+          },
+          {
+            "id": "ev_5nst1",
+            "timestamp": 1789190669527,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "Can you hear me",
+            "classification": "VAGUE",
+            "qualityScore": 35
+          },
+          {
+            "id": "ev_q0s6x",
+            "timestamp": 1789190697021,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "One thing very special that we did for you today is we have an amazing photo booth can you hear me can click a picture and you will get",
+            "classification": "VAGUE",
+            "qualityScore": 35
+          },
+          {
+            "id": "ev_edb1y",
+            "timestamp": 1789190703620,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "Maybe a quickly or you want it you have to",
+            "classification": "VAGUE",
+            "qualityScore": 35
+          },
+          {
+            "id": "ev_pvczo",
+            "timestamp": 1789190724725,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "I thought and what you have to do you have to pose that photo okay of this okay uh two things that you have to do is you have to tag Nautic",
+            "classification": "VAGUE",
+            "qualityScore": 35
+          },
+          {
+            "id": "ev_6iqk4",
+            "timestamp": 1789190743690,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "Will get some or many excess",
+            "classification": "VAGUE",
+            "qualityScore": 35
+          },
+          {
+            "id": "ev_xt2ci",
+            "timestamp": 1789190759547,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "That sounds fair accident",
+            "classification": "VAGUE",
+            "qualityScore": 35
+          },
+          {
+            "id": "ev_qbt1u",
+            "timestamp": 1789190945467,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "No no no",
+            "classification": "VAGUE",
+            "qualityScore": 25
+          },
+          {
+            "id": "ev_0cia1",
+            "timestamp": 1789191044605,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "60 20 seconds",
+            "classification": "VAGUE",
+            "qualityScore": 35
+          },
+          {
+            "id": "ev_ghi3h",
+            "timestamp": 1789191049023,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "Would have written on the 22nd",
+            "classification": "VAGUE",
+            "qualityScore": 35
+          },
+          {
+            "id": "ev_wkhfy",
+            "timestamp": 1789191084006,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "Should we move on to the system design canvas",
+            "classification": "VAGUE",
+            "qualityScore": 35
+          },
+          {
+            "id": "ev_cn6lp",
+            "timestamp": 1789191162967,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "Yeah I actually wanted to discuss this problem in the canvas",
+            "classification": "VAGUE",
+            "qualityScore": 35
+          },
+          {
+            "id": "ev_pupl1",
+            "timestamp": 1789191176813,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "I was actually thinking",
+            "classification": "VAGUE",
+            "qualityScore": 35
+          },
+          {
+            "id": "ev_nylye",
+            "timestamp": 1789191568180,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "Can you hear me",
+            "classification": "VAGUE",
+            "qualityScore": 35
+          },
+          {
+            "id": "ev_heqhf",
+            "timestamp": 1789191580176,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "Can you hear me",
+            "classification": "VAGUE",
+            "qualityScore": 35
+          },
+          {
+            "id": "ev_2t5v3",
+            "timestamp": 1789191775216,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "Okay so I was just",
+            "classification": "VAGUE",
+            "qualityScore": 25
+          },
+          {
+            "id": "ev_bphx4",
+            "timestamp": 1789191800703,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "Hello hello can you hear me can you hear me",
+            "classification": "VAGUE",
+            "qualityScore": 35
+          },
+          {
+            "id": "ev_ormmi",
+            "timestamp": 1789191878159,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "Foreign",
+            "classification": "VAGUE",
+            "qualityScore": 35
+          },
+          {
+            "id": "ev_96nj0",
+            "timestamp": 1789192261624,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "I don't understand",
+            "classification": "VAGUE",
+            "qualityScore": 35
+          },
+          {
+            "id": "ev_4scil",
+            "timestamp": 1789192324055,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "Yeah I was thinking of our University",
+            "classification": "VAGUE",
+            "qualityScore": 35
+          },
+          {
+            "id": "ev_0a06a",
+            "timestamp": 1789192406011,
+            "round": "technical",
+            "speaker": "Candidate",
+            "questionAsked": "Core Technical Architecture",
+            "candidateUtterance": "Basically",
+            "classification": "VAGUE",
+            "qualityScore": 35
           }
         ],
         "competencyTrackers": [
@@ -10436,7 +11446,27 @@
               "Uh it has two continuation model one is RT cascading which basically is curious and STD and the other is mlm I use mln model",
               "So basically for that I ensured that there is an arbiter a third Arbiter which basically says nothing throughout the mean and just",
               "Hey there what is your post here",
-              "Can you listen can you listen can you hear me"
+              "Can you listen can you listen can you hear me",
+              "Can you hear me",
+              "One thing very special that we did for you today is we have an amazing photo booth can you hear me can click a picture and you will get",
+              "Maybe a quickly or you want it you have to",
+              "I thought and what you have to do you have to pose that photo okay of this okay uh two things that you have to do is you have to tag Nautic",
+              "Will get some or many excess",
+              "That sounds fair accident",
+              "No no no",
+              "60 20 seconds",
+              "Would have written on the 22nd",
+              "Should we move on to the system design canvas",
+              "Yeah I actually wanted to discuss this problem in the canvas",
+              "I was actually thinking",
+              "Can you hear me",
+              "Can you hear me",
+              "Okay so I was just",
+              "Hello hello can you hear me can you hear me",
+              "Foreign",
+              "I don't understand",
+              "Yeah I was thinking of our University",
+              "Basically"
             ],
             "evidence": [],
             "evidenceQuality": "NONE",
@@ -10483,157 +11513,191 @@
         "interviewStatus": "IN_PROGRESS",
         "activeAgents": [
           {
-            "agentId": "eng_be_01",
-            "name": "Aditya Sharma",
-            "role": "Senior Backend Engineer",
-            "voice": "Fenrir",
-            "color": "#10B981",
+            "agentId": "hr_01",
+            "name": "Sarah Jenkins",
+            "role": "VP of Engineering Culture & People",
+            "voice": "Aoede",
+            "color": "#EA580C",
             "isPrimary": true,
             "isActive": true,
             "hasFloor": true
-          },
-          {
-            "agentId": "eng_be_02",
-            "name": "Arjun Malhotra",
-            "role": "Staff Backend Architect",
-            "voice": "Charon",
-            "color": "#7C3AED",
-            "isPrimary": false,
-            "isActive": true,
-            "hasFloor": false
           }
         ],
-        "updatedAt": "2026-09-12T03:52:18.927Z",
-        "candidateAnswer": "Can you listen can you listen can you hear me"
+        "updatedAt": "2026-09-12T05:55:25.378Z",
+        "candidateAnswer": "Basically"
       },
       "scorecard": {
-        "overall_recommendation": "No Hire",
-        "overallScore": 9,
+        "overall_recommendation": "Disqualified / No Hire",
+        "overallScore": 15,
         "confidence": "HIGH",
-        "overall_summary": "Candidate completed the multi-round assessment with minimal verbal and technical participation, resulting in a baseline composite score of 9/100 (No Hire).",
+        "overall_summary": "Candidate Alex Rivera demonstrated a critical lack of technical proficiency and engagement, scoring 0 in the highly-weighted Technical Architecture round and 11 in the Coding round. Furthermore, extensive proctoring flags, including 'NO_FACE_DETECTED', 'HEAVY_TYPING during oral interview (possible external AI consultation)', and 'MULTIPLE_FACES' detected across rounds, raise serious integrity concerns that invalidate the behavioral assessment. The aggregate score of 15/100 aligns with a disqualification.",
         "multiRoundBreakdown": [
           {
             "roundName": "Round 1: Practical Coding & System Design Assessment",
             "roundType": "coding",
-            "rawScore": 8,
+            "rawScore": 11,
             "weight": 0.35,
-            "weightedScore": 2.8
+            "weightedScore": 3.85
           },
           {
             "roundName": "Round 2: Technical Architecture & Concurrency",
             "roundType": "technical",
-            "rawScore": 7,
+            "rawScore": 0,
             "weight": 0.5,
-            "weightedScore": 3.5
+            "weightedScore": 0
           },
           {
-            "roundName": "Round 3: HR, Culture & Engineering Leadership",
+            "roundName": "Round 3: Behavioral & Cultural Alignment",
             "roundType": "hr",
-            "rawScore": 18,
+            "rawScore": 74,
             "weight": 0.15,
-            "weightedScore": 2.7
+            "weightedScore": 11.1
           }
         ],
-        "scoringFormula": "(8 × 35% [CODING]) + (7 × 50% [TECHNICAL]) + (18 × 15% [HR]) = 9/100",
+        "scoringFormula": "(11 × 35% [CODING]) + (0 × 50% [TECHNICAL]) + (74 × 15% [HR]) = 15/100",
         "round1Evaluation": {
           "roundName": "Round 1: Practical Coding & System Design Assessment",
           "roundType": "coding",
           "decision": "FAIL",
-          "score": 8,
-          "reason": "Candidate provided minimal workspace progress and initial dialogue without completed algorithm implementation.",
-          "evidenceQuality": "NONE",
+          "score": 11,
+          "reason": "The candidate failed to implement the core rate limiting logic, explicitly stating a lack of understanding. The submitted code contains only boilerplate with a 'TODO' comment for the main functionality, resulting in a non-functional solution and minimal communication.",
+          "evidenceQuality": "WEAK",
           "evidenceSufficiency": "insufficient",
           "confidence": "HIGH",
           "competencyEvaluations": [
             {
               "competency": "Problem Understanding & Requirements Clarification",
               "weight": 0.15,
-              "score": 10,
-              "weightedScore": 1.5,
-              "evidenceQuality": "NONE",
-              "evidence": [],
-              "missingEvidence": [
-                "Candidate provided initial remarks but did not clarify problem constraints."
+              "score": 15,
+              "weightedScore": 2.25,
+              "evidenceQuality": "WEAK",
+              "evidence": [
+                "I don't understand",
+                "// TODO: Implement sliding window rate limiting logic"
               ],
-              "feedback": "Initial problem familiarity demonstrated."
+              "missingEvidence": [
+                "Detailed problem constraints identified",
+                "Clarification questions regarding edge cases or input/output formats"
+              ],
+              "feedback": "The candidate explicitly stated a lack of understanding and did not implement the core problem logic."
             },
             {
               "competency": "Approach, Data Structures & Algorithm Design",
               "weight": 0.2,
-              "score": 8,
-              "weightedScore": 1.6,
-              "evidenceQuality": "NONE",
-              "evidence": [],
-              "missingEvidence": [
-                "Detailed sliding window data structure design."
+              "score": 25,
+              "weightedScore": 5,
+              "evidenceQuality": "PARTIAL",
+              "evidence": [
+                "private userLogs: Map<string, number[]>;",
+                "Candidate introduced a Hash Map / Set lookup structure to optimize lookup efficiency."
               ],
-              "feedback": "Baseline algorithm familiarity."
+              "missingEvidence": [
+                "Sliding window algorithm logic",
+                "Explanation of data structure choice for storing timestamps"
+              ],
+              "feedback": "A correct data structure (Map) for user logs was chosen, but no specific algorithmic approach for sliding window was designed or implemented."
             },
             {
               "competency": "Implementation Correctness & Code Quality",
               "weight": 0.3,
-              "score": 6,
-              "weightedScore": 1.8,
-              "evidenceQuality": "NONE",
-              "evidence": [],
-              "missingEvidence": [
-                "Full functional sliding window rate limiter implementation."
+              "score": 10,
+              "weightedScore": 3,
+              "evidenceQuality": "WEAK",
+              "evidence": [
+                "public allowRequest(userId: string, timestampMs: number = Date.now()): boolean { // TODO: Implement sliding window rate limiting logic return true; }"
               ],
-              "feedback": "Starter template unmodified."
+              "missingEvidence": [
+                "Functional rate limiting logic",
+                "Handling of edge cases (e.g., empty logs, window boundaries)"
+              ],
+              "feedback": "The core `allowRequest` method was not implemented, containing only a placeholder `return true;` and a 'TODO' comment, despite compiling successfully."
             },
             {
               "competency": "Complexity, Optimization & Scaling Reasoning",
               "weight": 0.15,
-              "score": 6,
-              "weightedScore": 0.9,
+              "score": 0,
+              "weightedScore": 0,
               "evidenceQuality": "NONE",
-              "evidence": [],
-              "missingEvidence": [
-                "Time and space Big-O complexity analysis."
+              "evidence": [
+                "Yeah I was thinking of our University"
               ],
-              "feedback": "No complexity analysis provided."
+              "missingEvidence": [
+                "Time complexity analysis (O(N) or O(log N) operations)",
+                "Space complexity analysis (O(N) data storage)",
+                "Discussion on scaling for high traffic or concurrency"
+              ],
+              "feedback": "No discussion or reasoning regarding time/space complexity, optimization, or scaling was provided."
             },
             {
               "competency": "Debugging, Adaptability & Inactivity/Hint Handling",
               "weight": 0.1,
-              "score": 8,
-              "weightedScore": 0.8,
+              "score": 0,
+              "weightedScore": 0,
               "evidenceQuality": "NONE",
-              "evidence": [],
-              "missingEvidence": [
-                "Local test executions and edge-case handling."
+              "evidence": [
+                "Yeah I was thinking of our University"
               ],
-              "feedback": "No debugging performed."
+              "missingEvidence": [
+                "Identification and resolution of runtime errors",
+                "Adaptation to new requirements or hints",
+                "Methodical bug isolation"
+              ],
+              "feedback": "There was no opportunity to observe debugging skills as the code contained no functional logic and no bugs were identified or addressed."
             },
             {
               "competency": "Communication, Explanation & Code Walkthrough",
               "weight": 0.1,
-              "score": 12,
-              "weightedScore": 1.2,
-              "evidenceQuality": "NONE",
-              "evidence": [],
-              "missingEvidence": [
-                "Step-by-step code walkthrough."
+              "score": 10,
+              "weightedScore": 1,
+              "evidenceQuality": "WEAK",
+              "evidence": [
+                "I don't understand",
+                "Yeah I was thinking of our University",
+                "Basically"
               ],
-              "feedback": "Initial verbal greeting captured."
+              "missingEvidence": [
+                "Clear explanation of proposed solution",
+                "Step-by-step code walkthrough",
+                "Structured communication of thought process"
+              ],
+              "feedback": "Communication was extremely minimal and unfocused, failing to explain any aspect of the problem or solution."
             }
           ],
           "demonstratedKnowledge": [
             {
-              "topic": "Data Structures & Algorithms",
+              "topic": "Hash Map Data Structure",
+              "level": "moderate",
+              "evidence": "private userLogs: Map<string, number[]>;",
+              "notes": "Correctly chosen data structure for tracking user requests, but not utilized in an algorithm."
+            },
+            {
+              "topic": "Sliding Window Algorithm",
               "level": "not_demonstrated",
-              "evidence": "Minimal workspace submission"
+              "evidence": "// TODO: Implement sliding window rate limiting logic",
+              "notes": "Explicitly marked as 'TODO' and not implemented."
+            },
+            {
+              "topic": "Time Complexity Analysis",
+              "level": "not_demonstrated",
+              "evidence": "",
+              "notes": "No discussion or analysis provided."
+            },
+            {
+              "topic": "Edge Case Handling",
+              "level": "not_demonstrated",
+              "evidence": "",
+              "notes": "No functional logic implies no edge case handling was implemented or discussed."
             }
           ],
           "reasoningEvidence": {
-            "approachExplanation": "Initial problem review.",
-            "algorithmChoices": "Starter Map structure template.",
-            "complexityReasoning": "No complexity analysis provided.",
+            "approachExplanation": "The candidate stated 'I don't understand' and provided no further verbal explanation of an approach. The code indicates an intent to use a map for user logs but lacks any actual algorithm.",
+            "algorithmChoices": "The system event noted 'Candidate introduced a Hash Map / Set lookup structure to optimize lookup efficiency.' This suggests an intention to use a Map for user-specific logs.",
+            "complexityReasoning": "No complexity reasoning was provided by the candidate.",
             "edgeCasesIdentified": [],
-            "debuggingReasoning": "No debugging performed."
+            "debuggingReasoning": "No debugging reasoning was observed as there was no functional logic to debug."
           },
           "workspaceEvidence": {
-            "code": "class SlidingWindowRateLimiter {\n  private limit: number;\n  private windowMs: number;\n  private userLogs: Map<string, number[]>;\n\n  constructor(limit: number = 5, windowMs: number = 10000) {\n    this.limit = limit;\n    this.windowMs = windowMs;\n    this.userLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number = Date.now()): boolean {\n    // TODO: Implement sliding window rate limiting logic\n    return true;\n  }\n}\n\n// Test instance\nconst limiter = new SlidingWindowRateLimiter(3, 5000);\nconsole.log(\"Allowed t=1000:\", limiter.allowRequest(\"user1\", 1000));\nconsole.log(\"Allowed t=2000:\", limiter.allowRequest(\"user1\", 2000));\nskibidi skdi",
+            "code": "class SlidingWindowRateLimiter {\n  private limit: number;\n  private windowMs: number;\n  private userLogs: Map<string, number[]>;\n\n  constructor(limit: number = 5, windowMs: number = 10000) {\n    this.limit = limit;\n    this.windowMs = windowMs;\n    this.userLogs = new Map();\n  }\n\n  public allowRequest(userId: string, timestampMs: number = Date.now()): boolean {\n    // TODO: Implement sliding window rate limiting logic\n    return true;\n  }\n}\n\n// Test instance\nconst limiter = new SlidingWindowRateLimiter(3, 5000);\nconsole.log(\"Allowed t=1000:\", limiter.allowRequest(\"user1\", 1000));\nconsole.log(\"Allowed t=2000:\", limiter.allowRequest(\"user1\", 2000));\nfor(int i=",
             "language": "typescript",
             "codeExecutionResults": {
               "compileSuccess": true,
@@ -10641,51 +11705,57 @@
               "failedTests": 0,
               "rawOutput": "Workspace snapshot captured"
             },
-            "diagramElementCount": 5,
-            "submittedAt": "2026-09-12T03:52:15.444Z"
+            "diagramElementCount": 6,
+            "submittedAt": "2026-09-12T05:54:19.730Z"
           },
-          "keyEvidence": [],
-          "missingEvidence": [
-            "Working code implementation",
-            "Algorithmic explanation",
-            "Complexity analysis"
+          "keyEvidence": [
+            "I don't understand",
+            "public allowRequest(userId: string, timestampMs: number = Date.now()): boolean { // TODO: Implement sliding window rate limiting logic return true; }",
+            "Passed Tests: 1"
           ],
-          "evaluatedAt": "2026-09-12T03:52:15.445Z"
+          "missingEvidence": [
+            "Working implementation of sliding window rate limiting logic",
+            "Explanation of algorithmic steps",
+            "Discussion of time and space complexity",
+            "Identification and handling of edge cases",
+            "Clear, structured communication about the problem or solution"
+          ],
+          "evaluatedAt": "2026-09-12T05:54:19.730Z"
         },
         "round2Evaluation": {
           "roundName": "Round 2: Technical Architecture & Concurrency",
           "roundType": "technical",
-          "score": 7,
+          "score": 0,
           "decision": "FAIL",
-          "reason": "Candidate provided brief dialogue without substantive distributed systems trade-offs or concurrency mechanisms.",
+          "reason": "Candidate was completely silent and provided zero verbal responses during the technical panel interview.",
           "technicalBar": "not_met",
           "evidenceQuality": "NONE",
           "evidenceSufficiency": "insufficient",
           "confidence": "HIGH",
           "competencies": {
             "technicalKnowledge": {
-              "score": 8,
+              "score": 0,
               "weight": 0.25,
               "evidence": [],
-              "feedback": "Baseline terminology",
+              "feedback": "Silent",
               "confidence": "high"
             },
             "technicalDepth": {
-              "score": 6,
+              "score": 0,
               "weight": 0.2,
               "evidence": [],
-              "feedback": "Minimal depth",
+              "feedback": "Silent",
               "confidence": "high"
             },
             "realWorldExperience": {
-              "score": 7,
+              "score": 0,
               "weight": 0.2,
               "evidence": [],
-              "feedback": "Unverified claims",
+              "feedback": "Silent",
               "confidence": "high"
             },
             "engineeringJudgment": {
-              "score": 6,
+              "score": 0,
               "weight": 0.15,
               "evidence": [],
               "feedback": "Silent",
@@ -10818,197 +11888,283 @@
             "Architecture trade-offs",
             "Concurrency failure modes"
           ],
-          "evaluatedAt": "2026-09-11T22:22:21.631Z"
+          "evaluatedAt": "2026-09-12T05:55:25.241Z"
         },
         "round3Evaluation": {
-          "roundName": "Round 3: HR, Culture & Engineering Leadership",
+          "roundName": "Round 3: Behavioral & Cultural Alignment",
           "roundType": "hr",
-          "score": 28,
-          "decision": "FAIL",
-          "reason": "Candidate completed the HR round with insufficient dialogue duration to evaluate leadership or cultural alignment.",
-          "overallRecommendation": "No Hire",
-          "evidenceQuality": "NONE",
-          "evidenceSufficiency": "insufficient",
+          "score": 74,
+          "decision": "PASS",
+          "reason": "Candidate communicated constructively and demonstrated good cultural alignment with engineering practices.",
+          "overallRecommendation": "Leaning Hire",
+          "evidenceQuality": "STRONG",
+          "evidenceSufficiency": "sufficient",
           "confidence": "MEDIUM",
           "competencies": [
             {
-              "competency": "Communication & Clarity",
               "key": "communication_clarity",
+              "competency": "Communication & Clarity",
               "weight": 0.2,
-              "score": 34,
-              "weightedScore": 6.8,
-              "evidenceQuality": "NONE",
-              "evidence": [],
-              "missingEvidence": [
-                "Detailed STAR examples of navigating team conflicts, ownership, and engineering leadership."
+              "score": 78,
+              "weightedScore": 15.6,
+              "evidenceQuality": "STRONG",
+              "evidence": [
+                {
+                  "summary": "Demonstrated in behavioral discussion",
+                  "quote": "At Datadog, I led the distributed tracing ingest pipeline migration across 4 cross-functional squads. When two senior engineers vehemently d...",
+                  "source": "transcript"
+                }
               ],
-              "feedback": "Candidate provided minimal behavioral depth during the session."
+              "missingEvidence": [],
+              "feedback": "Demonstrated communication & clarity in discussion."
             },
             {
-              "competency": "Ownership & Accountability",
               "key": "ownership_accountability",
+              "competency": "Ownership & Accountability",
               "weight": 0.2,
-              "score": 26,
-              "weightedScore": 5.2,
-              "evidenceQuality": "NONE",
-              "evidence": [],
-              "missingEvidence": [
-                "Detailed STAR examples of navigating team conflicts, ownership, and engineering leadership."
+              "score": 74,
+              "weightedScore": 14.8,
+              "evidenceQuality": "STRONG",
+              "evidence": [
+                {
+                  "summary": "Demonstrated in behavioral discussion",
+                  "quote": "At Datadog, I led the distributed tracing ingest pipeline migration across 4 cross-functional squads. When two senior engineers vehemently d...",
+                  "source": "transcript"
+                }
               ],
-              "feedback": "Candidate provided minimal behavioral depth during the session."
+              "missingEvidence": [],
+              "feedback": "Demonstrated ownership & accountability in discussion."
             },
             {
-              "competency": "Collaboration & Teamwork",
               "key": "collaboration_teamwork",
+              "competency": "Collaboration & Teamwork",
               "weight": 0.15,
-              "score": 32,
-              "weightedScore": 4.8,
-              "evidenceQuality": "NONE",
-              "evidence": [],
-              "missingEvidence": [
-                "Detailed STAR examples of navigating team conflicts, ownership, and engineering leadership."
+              "score": 76,
+              "weightedScore": 11.4,
+              "evidenceQuality": "STRONG",
+              "evidence": [
+                {
+                  "summary": "Demonstrated in behavioral discussion",
+                  "quote": "At Datadog, I led the distributed tracing ingest pipeline migration across 4 cross-functional squads. When two senior engineers vehemently d...",
+                  "source": "transcript"
+                }
               ],
-              "feedback": "Candidate provided minimal behavioral depth during the session."
+              "missingEvidence": [],
+              "feedback": "Demonstrated collaboration & teamwork in discussion."
             },
             {
-              "competency": "Conflict Resolution",
               "key": "conflict_resolution",
+              "competency": "Conflict Resolution",
               "weight": 0.15,
-              "score": 22,
-              "weightedScore": 3.3,
-              "evidenceQuality": "NONE",
-              "evidence": [],
-              "missingEvidence": [
-                "Detailed STAR examples of navigating team conflicts, ownership, and engineering leadership."
+              "score": 70,
+              "weightedScore": 10.5,
+              "evidenceQuality": "STRONG",
+              "evidence": [
+                {
+                  "summary": "Demonstrated in behavioral discussion",
+                  "quote": "At Datadog, I led the distributed tracing ingest pipeline migration across 4 cross-functional squads. When two senior engineers vehemently d...",
+                  "source": "transcript"
+                }
               ],
-              "feedback": "Candidate provided minimal behavioral depth during the session."
+              "missingEvidence": [],
+              "feedback": "Demonstrated conflict resolution in discussion."
             },
             {
-              "competency": "Adaptability & Learning",
               "key": "adaptability_learning",
+              "competency": "Adaptability & Learning",
               "weight": 0.1,
-              "score": 28,
-              "weightedScore": 2.8,
-              "evidenceQuality": "NONE",
-              "evidence": [],
-              "missingEvidence": [
-                "Detailed STAR examples of navigating team conflicts, ownership, and engineering leadership."
+              "score": 72,
+              "weightedScore": 7.2,
+              "evidenceQuality": "STRONG",
+              "evidence": [
+                {
+                  "summary": "Demonstrated in behavioral discussion",
+                  "quote": "At Datadog, I led the distributed tracing ingest pipeline migration across 4 cross-functional squads. When two senior engineers vehemently d...",
+                  "source": "transcript"
+                }
               ],
-              "feedback": "Candidate provided minimal behavioral depth during the session."
+              "missingEvidence": [],
+              "feedback": "Demonstrated adaptability & learning in discussion."
             },
             {
-              "competency": "Initiative / Leadership",
               "key": "initiative_leadership",
+              "competency": "Initiative / Leadership",
               "weight": 0.1,
-              "score": 24,
-              "weightedScore": 2.4,
-              "evidenceQuality": "NONE",
-              "evidence": [],
-              "missingEvidence": [
-                "Detailed STAR examples of navigating team conflicts, ownership, and engineering leadership."
+              "score": 70,
+              "weightedScore": 7,
+              "evidenceQuality": "STRONG",
+              "evidence": [
+                {
+                  "summary": "Demonstrated in behavioral discussion",
+                  "quote": "At Datadog, I led the distributed tracing ingest pipeline migration across 4 cross-functional squads. When two senior engineers vehemently d...",
+                  "source": "transcript"
+                }
               ],
-              "feedback": "Candidate provided minimal behavioral depth during the session."
+              "missingEvidence": [],
+              "feedback": "Demonstrated initiative / leadership in discussion."
             },
             {
-              "competency": "Cultural Alignment",
               "key": "cultural_alignment",
+              "competency": "Cultural Alignment",
               "weight": 0.1,
-              "score": 30,
-              "weightedScore": 3,
-              "evidenceQuality": "NONE",
-              "evidence": [],
-              "missingEvidence": [
-                "Detailed STAR examples of navigating team conflicts, ownership, and engineering leadership."
+              "score": 75,
+              "weightedScore": 7.5,
+              "evidenceQuality": "STRONG",
+              "evidence": [
+                {
+                  "summary": "Demonstrated in behavioral discussion",
+                  "quote": "At Datadog, I led the distributed tracing ingest pipeline migration across 4 cross-functional squads. When two senior engineers vehemently d...",
+                  "source": "transcript"
+                }
               ],
-              "feedback": "Candidate provided minimal behavioral depth during the session."
+              "missingEvidence": [],
+              "feedback": "Demonstrated cultural alignment in discussion."
             }
           ],
           "behavioralStrengths": [
-            "Polite initial introduction"
+            "Structured verbal communication",
+            "Collaborative attitude and accountability"
           ],
-          "behavioralConcerns": [
-            "No substantiated STAR situations or demonstrated conflict resolution"
+          "behavioralConcerns": [],
+          "keyMoments": [
+            {
+              "situation": "Discussion on engineering values and team workflow",
+              "action": "Explained past team project experience and collaboration methods",
+              "outcome": "Confirmed engagement and ownership",
+              "competency": "Collaboration & Teamwork",
+              "quote": "At Datadog, I led the distributed tracing ingest pipeline migration across 4 cross-functional squads. When two senior engineers vehemently d..."
+            }
           ],
-          "keyMoments": [],
-          "culturalFitSummary": "Insufficient behavioral evidence collected to verify culture fit or engineering ownership.",
-          "missingEvidence": [
-            "Concrete behavioral examples on conflict resolution, ownership, and cross-functional alignment"
-          ],
-          "evaluatedAt": "2026-09-11T19:08:32.756Z"
+          "culturalFitSummary": "Well-aligned with collaborative engineering norms and ownership principles.",
+          "missingEvidence": [],
+          "evaluatedAt": "2026-09-12T04:07:24.523Z"
         },
-        "strengths": [
-          "No strengths demonstrated (candidate was completely silent and unresponsive)."
-        ],
+        "strengths": [],
         "weaknesses": [
-          "Candidate did not answer any interviewer questions across Coding, Technical Panel, or HR rounds.",
-          "Zero code or architectural designs submitted in workspace."
+          "Complete silence and non-participation in the Technical Architecture round, directly failing critical role requirements.",
+          "Extremely limited coding ability, producing incomplete code that passed only 1 out of an unknown number of tests.",
+          "Significant integrity violations observed through proctoring logs, including prolonged periods of no face detection, suspicious heavy typing during verbal questions, and multiple faces detected.",
+          "Lack of foundational problem-solving and algorithmic understanding.",
+          "Inability to articulate technical concepts or engage in design discussions."
         ],
         "rubric_evaluations": [
           {
-            "pillar": "Technical Depth & Concurrency",
-            "competencyScore": 0,
-            "round": "Cross-Round",
-            "evidenceQuality": "NONE",
-            "evidence": [],
+            "pillar": "Problem Solving & Algorithms",
+            "competencyScore": 20,
+            "round": "Round 1: Coding",
+            "evidenceQuality": "PARTIAL",
+            "evidence": [
+              "Code Snippet: 'class SlidingWindowRateLimiter { private limit: number; private windowMs: number; private userLogs: Map<string, number[]>; constructor(limit: number = 5, windowMs: number = 10000) { this.limit = limit; this.windowMs = windowMs; this.userLogs = new Map(); } public allowReque'",
+              "Test Results: passedTests: 1",
+              "Candidate: 'I don't understand'"
+            ],
             "missingEvidence": [
-              "No verbal response or workspace code provided during evaluation."
+              "Incomplete solution to the coding problem.",
+              "Lack of verbal explanation or thought process during coding.",
+              "Unable to debug or extend the partial solution."
             ],
             "confidence": "HIGH",
-            "feedback": "Candidate was silent and did not demonstrate this competency."
+            "feedback": "Candidate submitted an incomplete solution for the coding problem, demonstrating minimal problem-solving capacity and an inability to complete basic algorithmic tasks. Verbal engagement was minimal and unhelpful."
           },
           {
-            "pillar": "Distributed Systems Architecture",
+            "pillar": "Distributed Architecture",
             "competencyScore": 0,
             "round": "Round 2: Technical",
             "evidenceQuality": "NONE",
-            "evidence": [],
+            "evidence": [
+              "Candidate was silent throughout the technical panel. Zero verbal responses.",
+              "Demonstrated Expertise: 'Not Demonstrated'"
+            ],
             "missingEvidence": [
-              "No verbal response or workspace code provided during evaluation."
+              "No architectural designs or discussions were presented.",
+              "No understanding of event pipelines, transactional services, or low-latency APIs was shown.",
+              "Failed to address any aspects of scaling, fault-tolerance, or distributed system components relevant to the role."
             ],
             "confidence": "HIGH",
-            "feedback": "Candidate was silent and did not demonstrate this competency."
+            "feedback": "No evidence of distributed architecture knowledge was demonstrated as the candidate was entirely silent throughout this critical technical round."
           },
           {
-            "pillar": "Problem Decomposition & Rigor",
+            "pillar": "Engineering Judgment",
             "competencyScore": 0,
-            "round": "Round 1: Coding",
+            "round": "Round 2: Technical",
             "evidenceQuality": "NONE",
-            "evidence": [],
+            "evidence": [
+              "Candidate was silent throughout the technical panel. Zero verbal responses."
+            ],
             "missingEvidence": [
-              "No verbal response or workspace code provided during evaluation."
+              "No trade-off analysis or design choices were discussed.",
+              "No real-world experience or judgment was articulated for scaling or optimizing backend services."
             ],
             "confidence": "HIGH",
-            "feedback": "Candidate was silent and did not demonstrate this competency."
+            "feedback": "Without any verbal participation, the candidate provided no basis to assess engineering judgment or decision-making in complex systems."
           },
           {
-            "pillar": "Communication & Ownership Mindset",
-            "competencyScore": 0,
+            "pillar": "Ownership & Accountability",
+            "competencyScore": 30,
+            "round": "Cross-Round",
+            "evidenceQuality": "VAGUE",
+            "evidence": [
+              "Round 3: 'At Datadog, I led the distributed tracing ingest pipeline migration across 4 cross-functional squads. When two senior engineers vehemently d...'",
+              "Round 3: 'Confirmed engagement and ownership'"
+            ],
+            "missingEvidence": [
+              "The integrity violations in the proctoring log (heavy typing during verbal, multiple faces) compromise the authenticity of verbal claims in Round 3.",
+              "Lack of technical delivery and complete silence in Round 2 contradict a sense of technical ownership and accountability."
+            ],
+            "confidence": "MEDIUM",
+            "feedback": "While behavioral responses in Round 3 indicated a propensity for ownership, the lack of technical output, silence in a key round, and significant integrity flags cast serious doubt on the demonstrated accountability in a real-world engineering context."
+          },
+          {
+            "pillar": "Collaboration & Culture",
+            "competencyScore": 35,
             "round": "Round 3: HR",
-            "evidenceQuality": "NONE",
-            "evidence": [],
+            "evidenceQuality": "VAGUE",
+            "evidence": [
+              "Round 3: 'Collaborative attitude and teamwork'"
+            ],
             "missingEvidence": [
-              "No verbal response or workspace code provided during evaluation."
+              "The proctoring log raises significant concerns about the genuine nature of responses in Round 3, which focused on collaboration.",
+              "No evidence of collaborative problem-solving or technical discussion was present in the technical rounds."
+            ],
+            "confidence": "MEDIUM",
+            "feedback": "Behavioral responses suggested collaborative alignment; however, the technical silence and integrity concerns make it impossible to genuinely assess this competency in a practical setting."
+          },
+          {
+            "pillar": "Communication",
+            "competencyScore": 25,
+            "round": "Cross-Round",
+            "evidenceQuality": "PARTIAL",
+            "evidence": [
+              "Round 1: 'I don't understand'",
+              "Round 1: 'Yeah I was thinking of our University'",
+              "Round 1: 'Basically'",
+              "Round 2: 'Candidate was silent'"
+            ],
+            "missingEvidence": [
+              "No technical communication during the dedicated technical interview.",
+              "Inability to articulate thought processes or clarify approaches in the coding round.",
+              "The 'structured verbal communication' noted in Round 3 is questionable given the 'HEAVY_TYPING' and 'MULTIPLE_FACES' proctoring flags, indicating potential external assistance for verbal responses."
             ],
             "confidence": "HIGH",
-            "feedback": "Candidate was silent and did not demonstrate this competency."
+            "feedback": "Communication in technical rounds was severely lacking, characterized by silence or vague, unhelpful statements. The positive assessment from the HR round is critically undermined by evidence of potential external assistance."
           }
         ]
       },
-      "completedAt": "2026-09-12T03:55:07.609Z",
+      "completedAt": "2026-09-12T05:56:56.628Z",
       "proctoringReport": {
-        "integrity_score": 43,
-        "confidence_score": 69,
-        "screen_attention_score": 0,
-        "gaze_stability_score": 0,
+        "integrity_score": 33,
+        "confidence_score": 92,
+        "screen_attention_score": 95,
+        "gaze_stability_score": 95,
         "head_attention_score": 95,
         "hand_activity_score": 95,
         "speech_confidence_score": 90,
-        "face_presence_score": 53,
+        "face_presence_score": 92,
         "behavioral_calmness_score": 94,
-        "behavioral_consistency_score": 56,
-        "compound_penalty": 0,
+        "behavioral_consistency_score": 94,
+        "compound_penalty": 45,
         "assessment": "HIGH SUSPICION",
-        "assessment_desc": "Significant recurring behavioral anomaly patterns detected across multiple signals. Detailed audit required.",
+        "assessment_desc": "CRITICAL VIOLATION: Unauthorized second person detected in camera view! Immediate proctor review required.",
         "badge_color": "red",
         "weights": {
           "eye_gaze": 0.3,
@@ -11022,90 +12178,79 @@
         "observations": {
           "positive": [
             "Speech delivery was fluent with consistent single vocal baseline.",
+            "Candidate remained clearly visible throughout the recorded duration.",
+            "Mostly stable screen gaze with natural cognitive saccades.",
             "Head orientation remained consistently centered toward screen.",
             "Hand activity was normal with natural conversational gestures."
           ],
           "cautions": [
-            "Multiple faces detected in camera frame during session.",
-            "Candidate had intermittent camera absence or was partially out of frame.",
-            "Several sustained gaze deviations away from the active display."
+            "CRITICAL: Unauthorized secondary person detected in candidate perimeter.",
+            "Multi-modal compound alignment observed (correlated gaze/head/speech/context deviations)."
           ]
         },
         "components": {
-          "eye_gaze_contrib": 0,
-          "presence_contrib": 8,
-          "multi_person_contrib": 4,
+          "eye_gaze_contrib": 28.5,
+          "presence_contrib": 13.8,
+          "multi_person_contrib": 3,
           "head_contrib": 9.5,
           "hand_contrib": 9.5,
           "speech_contrib": 9,
-          "consistency_contrib": 2.8
+          "consistency_contrib": 4.7
         },
-        "lastUpdated": "2026-09-12T03:54:29.899Z",
-        "totalEventsRecorded": 1234
+        "lastUpdated": "2026-09-12T05:56:30.389Z",
+        "totalEventsRecorded": 1359
       },
       "round2Evaluation": {
         "roundName": "Round 2: Technical Architecture & Concurrency",
         "roundType": "technical",
-        "score": 90,
-        "decision": "PASS",
-        "reason": "The candidate demonstrated exceptional technical depth and verified experience in designing and implementing high-scale distributed systems, particularly in consistency models, fault tolerance, and event-driven architectures. Their precise articulation of complex patterns like Saga with Outbox, combined with practical application of CAP principles and robust failure handling, indicates a strong fit for the role.",
-        "technicalBar": "met",
-        "evidenceQuality": "STRONG",
-        "evidenceSufficiency": "sufficient",
+        "score": 0,
+        "decision": "FAIL",
+        "reason": "Candidate was completely silent and provided zero verbal responses during the technical panel interview.",
+        "technicalBar": "not_met",
+        "evidenceQuality": "NONE",
+        "evidenceSufficiency": "insufficient",
         "confidence": "HIGH",
         "competencies": {
           "technicalKnowledge": {
-            "score": 90,
+            "score": 0,
             "weight": 0.25,
-            "evidence": [
-              "We partitioned transactions by account ID using consistent hashing with virtual nodes on Kafka topics."
-            ],
-            "feedback": "Demonstrated comprehensive and accurate knowledge of advanced distributed systems patterns and technologies.",
+            "evidence": [],
+            "feedback": "Silent",
             "confidence": "high"
           },
           "technicalDepth": {
-            "score": 88,
+            "score": 0,
             "weight": 0.2,
-            "evidence": [
-              "Every transaction state transition writes to an immutable transactional outbox table in Postgres in the exact same ACID transaction as the state update, polled by a Debezium CDC connector publishing to partitioned Kafka topics with dead letter queue retries and exponential jitter backoff."
-            ],
-            "feedback": "Showed deep understanding of underlying mechanisms, resilience strategies, and failure mitigation.",
+            "evidence": [],
+            "feedback": "Silent",
             "confidence": "high"
           },
           "realWorldExperience": {
-            "score": 92,
+            "score": 0,
             "weight": 0.2,
-            "evidence": [
-              "In our payment ingestion pipeline handling 80,000 TPS, we adopted a tunable consistency model."
-            ],
-            "feedback": "Clearly articulated practical application and personal ownership of complex distributed systems at high scale.",
+            "evidence": [],
+            "feedback": "Silent",
             "confidence": "high"
           },
           "engineeringJudgment": {
-            "score": 89,
+            "score": 0,
             "weight": 0.15,
-            "evidence": [
-              "When network partitions occurred, we favored consistency (CP) for balances while maintaining AP availability for read-only statement queries with read replicas and asynchronous change-data-capture via Debezium."
-            ],
-            "feedback": "Exhibited sound decision-making, especially in balancing CAP theorem trade-offs and choosing robust architectural patterns.",
+            "evidence": [],
+            "feedback": "Silent",
             "confidence": "high"
           },
           "problemSolving": {
-            "score": 85,
+            "score": 0,
             "weight": 0.1,
-            "evidence": [
-              "To avoid 2PC coordinator crash deadlocks, we replaced 2PC with a Saga orchestration pattern with compensating transactions and outbox event streaming."
-            ],
-            "feedback": "Effectively identified distributed systems challenges and presented well-structured, fault-tolerant design solutions.",
+            "evidence": [],
+            "feedback": "Silent",
             "confidence": "high"
           },
           "technicalCommunication": {
-            "score": 95,
+            "score": 0,
             "weight": 0.1,
-            "evidence": [
-              "Every transaction state transition writes to an immutable transactional outbox table in Postgres in the exact same ACID transaction as the state update, polled by a Debezium CDC connector publishing to partitioned Kafka topics with dead letter queue retries and exponential jitter backoff."
-            ],
-            "feedback": "Communicated complex technical concepts concisely and clearly with precise terminology.",
+            "evidence": [],
+            "feedback": "Silent",
             "confidence": "high"
           }
         },
@@ -11113,154 +12258,115 @@
           {
             "competency": "Technical Knowledge",
             "weight": 0.25,
-            "score": 90,
-            "weightedScore": 22.5,
-            "evidenceQuality": "STRONG",
-            "evidence": [
-              "In our payment ingestion pipeline handling 80,000 TPS, we adopted a tunable consistency model. We partitioned transactions by account ID using consistent hashing with virtual nodes on Kafka topics. For idempotency and double-spend prevention, we implemented distributed optimistic locking backed by Redis distributed locks with Redlock algorithm and Postgres serializable snapshot isolation. When network partitions occurred, we favored consistency (CP) for balances while maintaining AP availability for read-only statement queries with read replicas and asynchronous change-data-capture via Debezium.",
-              "To avoid 2PC coordinator crash deadlocks, we replaced 2PC with a Saga orchestration pattern with compensating transactions and outbox event streaming. Every transaction state transition writes to an immutable transactional outbox table in Postgres in the exact same ACID transaction as the state update, polled by a Debezium CDC connector publishing to partitioned Kafka topics with dead letter queue retries and exponential jitter backoff."
+            "score": 0,
+            "weightedScore": 0,
+            "evidenceQuality": "NONE",
+            "evidence": [],
+            "missingEvidence": [
+              "Candidate provided zero spoken responses during the technical panel."
             ],
-            "missingEvidence": [],
-            "feedback": "Demonstrated extensive and accurate knowledge of core and advanced distributed systems concepts and technologies."
+            "feedback": "Candidate was completely silent and unresponsive."
           },
           {
             "competency": "Technical Depth",
             "weight": 0.2,
-            "score": 88,
-            "weightedScore": 17.6,
-            "evidenceQuality": "STRONG",
-            "evidence": [
-              "For idempotency and double-spend prevention, we implemented distributed optimistic locking backed by Redis distributed locks with Redlock algorithm and Postgres serializable snapshot isolation.",
-              "Every transaction state transition writes to an immutable transactional outbox table in Postgres in the exact same ACID transaction as the state update, polled by a Debezium CDC connector publishing to partitioned Kafka topics with dead letter queue retries and exponential jitter backoff."
-            ],
+            "score": 0,
+            "weightedScore": 0,
+            "evidenceQuality": "NONE",
+            "evidence": [],
             "missingEvidence": [
-              "Discussion on the specific trade-offs or known issues with Redlock in a high-contention distributed environment.",
-              "Deeper exploration of performance implications and contention strategies for Postgres serializable snapshot isolation."
+              "Candidate provided zero spoken responses during the technical panel."
             ],
-            "feedback": "Exhibited deep understanding of system internals, specific algorithms, and complex resilience mechanisms."
+            "feedback": "Candidate was completely silent and unresponsive."
           },
           {
             "competency": "Real-World Engineering Experience",
             "weight": 0.2,
-            "score": 92,
-            "weightedScore": 18.4,
-            "evidenceQuality": "STRONG",
-            "evidence": [
-              "In our payment ingestion pipeline handling 80,000 TPS, we adopted a tunable consistency model.",
-              "We partitioned transactions by account ID using consistent hashing with virtual nodes on Kafka topics.",
-              "For idempotency and double-spend prevention, we implemented distributed optimistic locking backed by Redis distributed locks with Redlock algorithm and Postgres serializable snapshot isolation.",
-              "When network partitions occurred, we favored consistency (CP) for balances while maintaining AP availability for read-only statement queries with read replicas and asynchronous change-data-capture via Debezium.",
-              "To avoid 2PC coordinator crash deadlocks, we replaced 2PC with a Saga orchestration pattern with compensating transactions and outbox event streaming."
+            "score": 0,
+            "weightedScore": 0,
+            "evidenceQuality": "NONE",
+            "evidence": [],
+            "missingEvidence": [
+              "Candidate provided zero spoken responses during the technical panel."
             ],
-            "missingEvidence": [],
-            "feedback": "Provided robust evidence of hands-on experience in building and scaling complex distributed systems, citing specific architectural choices and production metrics."
+            "feedback": "Candidate was completely silent and unresponsive."
           },
           {
             "competency": "Engineering Judgment",
             "weight": 0.15,
-            "score": 89,
-            "weightedScore": 13.35,
-            "evidenceQuality": "STRONG",
-            "evidence": [
-              "When network partitions occurred, we favored consistency (CP) for balances while maintaining AP availability for read-only statement queries with read replicas and asynchronous change-data-capture via Debezium.",
-              "To avoid 2PC coordinator crash deadlocks, we replaced 2PC with a Saga orchestration pattern with compensating transactions and outbox event streaming."
+            "score": 0,
+            "weightedScore": 0,
+            "evidenceQuality": "NONE",
+            "evidence": [],
+            "missingEvidence": [
+              "Candidate provided zero spoken responses during the technical panel."
             ],
-            "missingEvidence": [],
-            "feedback": "Demonstrated excellent judgment in making architectural trade-offs (CP vs AP) and selecting appropriate patterns (Saga over 2PC) for robustness and scalability."
+            "feedback": "Candidate was completely silent and unresponsive."
           },
           {
             "competency": "Problem Solving / Debugging",
             "weight": 0.1,
-            "score": 85,
-            "weightedScore": 8.5,
-            "evidenceQuality": "STRONG",
-            "evidence": [
-              "For idempotency and double-spend prevention, we implemented distributed optimistic locking backed by Redis distributed locks with Redlock algorithm and Postgres serializable snapshot isolation.",
-              "To avoid 2PC coordinator crash deadlocks, we replaced 2PC with a Saga orchestration pattern with compensating transactions and outbox event streaming."
+            "score": 0,
+            "weightedScore": 0,
+            "evidenceQuality": "NONE",
+            "evidence": [],
+            "missingEvidence": [
+              "Candidate provided zero spoken responses during the technical panel."
             ],
-            "missingEvidence": [],
-            "feedback": "Effectively articulated solutions to critical distributed systems problems like double-spend, 2PC deadlocks, and network partitions with robust design choices."
+            "feedback": "Candidate was completely silent and unresponsive."
           },
           {
             "competency": "Technical Communication",
             "weight": 0.1,
-            "score": 95,
-            "weightedScore": 9.5,
-            "evidenceQuality": "STRONG",
-            "evidence": [
-              "In our payment ingestion pipeline handling 80,000 TPS, we adopted a tunable consistency model. We partitioned transactions by account ID using consistent hashing with virtual nodes on Kafka topics. For idempotency and double-spend prevention, we implemented distributed optimistic locking backed by Redis distributed locks with Redlock algorithm and Postgres serializable snapshot isolation. When network partitions occurred, we favored consistency (CP) for balances while maintaining AP availability for read-only statement queries with read replicas and asynchronous change-data-capture via Debezium.",
-              "To avoid 2PC coordinator crash deadlocks, we replaced 2PC with a Saga orchestration pattern with compensating transactions and outbox event streaming. Every transaction state transition writes to an immutable transactional outbox table in Postgres in the exact same ACID transaction as the state update, polled by a Debezium CDC connector publishing to partitioned Kafka topics with dead letter queue retries and exponential jitter backoff."
+            "score": 0,
+            "weightedScore": 0,
+            "evidenceQuality": "NONE",
+            "evidence": [],
+            "missingEvidence": [
+              "Candidate provided zero spoken responses during the technical panel."
             ],
-            "missingEvidence": [],
-            "feedback": "Communicated highly complex distributed systems architectures and concepts with exceptional clarity, conciseness, and precision."
+            "feedback": "Candidate was completely silent and unresponsive."
           }
         ],
         "demonstratedExpertise": [
           {
-            "topic": "Distributed Systems Consistency & Partitioning",
-            "level": "Strong",
-            "evidence": "When network partitions occurred, we favored consistency (CP) for balances while maintaining AP availability for read-only statement queries with read replicas and asynchronous change-data-capture via Debezium."
+            "topic": "Distributed Architecture & Scaling",
+            "level": "Not Demonstrated",
+            "evidence": "Candidate was silent"
           },
           {
-            "topic": "Transactional Integrity & Idempotency",
-            "level": "Strong",
-            "evidence": "For idempotency and double-spend prevention, we implemented distributed optimistic locking backed by Redis distributed locks with Redlock algorithm and Postgres serializable snapshot isolation."
-          },
-          {
-            "topic": "Event-Driven Architecture & Sagas",
-            "level": "Strong",
-            "evidence": "To avoid 2PC coordinator crash deadlocks, we replaced 2PC with a Saga orchestration pattern with compensating transactions and outbox event streaming. Every transaction state transition writes to an immutable transactional outbox table in Postgres in the exact same ACID transaction as the state update, polled by a Debezium CDC connector publishing to partitioned Kafka topics with dead letter queue retries and exponential jitter backoff."
-          },
-          {
-            "topic": "Kafka & CDC",
-            "level": "Strong",
-            "evidence": "We partitioned transactions by account ID using consistent hashing with virtual nodes on Kafka topics."
+            "topic": "Concurrency & Primitives",
+            "level": "Not Demonstrated",
+            "evidence": "Candidate was silent"
           }
         ],
         "validatedExperience": [
           {
-            "claim": "Building and scaling distributed systems in production.",
-            "demonstrated": "Designed and implemented a payment ingestion pipeline handling 80,000 TPS with robust consistency and fault tolerance.",
-            "strength": "Strong",
-            "details": "Utilized consistent hashing, Redlock, Postgres serializable isolation, CAP-aware consistency, Saga pattern with outbox, Debezium CDC, Kafka, DLQ, and exponential jitter backoff."
-          },
-          {
-            "claim": "Deep hands-on experience with relational databases and caching layers.",
-            "demonstrated": "Applied Postgres serializable snapshot isolation for transactional integrity and Redis distributed locks for idempotency.",
-            "strength": "Strong",
-            "details": "Explicitly mentioned specific database isolation levels and distributed locking mechanisms."
-          },
-          {
-            "claim": "Strong understanding of distributed systems principles.",
-            "demonstrated": "Applied CAP theorem principles to balances (CP) vs. read-only queries (AP) and chose Saga over 2PC to avoid deadlocks.",
-            "strength": "Strong",
-            "details": "Demonstrated practical application of complex theoretical concepts in real-world scenarios, including failure mitigation."
+            "claim": "Distributed backend development and event pipelines",
+            "demonstrated": "None demonstrated (candidate was silent)",
+            "strength": "Not Demonstrated",
+            "details": "Candidate provided zero verbal responses."
           }
         ],
-        "unvalidatedClaims": [],
+        "unvalidatedClaims": [
+          "All technical background claims unverified due to lack of participation."
+        ],
         "areasOfConcern": [
-          "Lack of discussion on the trade-offs or known complexities of the Redlock algorithm.",
-          "Absence of deeper quantitative performance metrics beyond 80,000 TPS (e.g., latency, error rates, resource utilization for specific components)."
+          "Candidate did not speak or answer any questions throughout the technical panel."
         ],
         "strengths": [
-          "Exceptional ability to articulate complex distributed systems architectures with specific technologies and patterns.",
-          "Strong understanding and practical application of consistency models and fault-tolerance (CAP theorem, Saga pattern, Outbox, DLQ).",
-          "Proven experience in designing high-throughput, transactional systems with robust idempotency and double-spend prevention."
+          "No strengths demonstrated (candidate was silent/unresponsive)."
         ],
         "weaknesses": [
-          "Did not explicitly discuss the trade-offs or potential pitfalls of using Redlock for distributed locking.",
-          "Limited discussion on quantitative performance benchmarks beyond peak TPS for the overall system."
+          "Candidate provided zero responses to technical architecture, concurrency, and system design questions."
         ],
-        "keyEvidence": [
-          "In our payment ingestion pipeline handling 80,000 TPS, we adopted a tunable consistency model. We partitioned transactions by account ID using consistent hashing with virtual nodes on Kafka topics. For idempotency and double-spend prevention, we implemented distributed optimistic locking backed by Redis distributed locks with Redlock algorithm and Postgres serializable snapshot isolation. When network partitions occurred, we favored consistency (CP) for balances while maintaining AP availability for read-only statement queries with read replicas and asynchronous change-data-capture via Debezium.",
-          "To avoid 2PC coordinator crash deadlocks, we replaced 2PC with a Saga orchestration pattern with compensating transactions and outbox event streaming. Every transaction state transition writes to an immutable transactional outbox table in Postgres in the exact same ACID transaction as the state update, polled by a Debezium CDC connector publishing to partitioned Kafka topics with dead letter queue retries and exponential jitter backoff."
-        ],
+        "keyEvidence": [],
         "missingEvidence": [
-          "Discussion on the specific trade-offs or known issues with Redlock in a high-contention distributed environment.",
-          "Deeper exploration of performance implications and contention strategies for Postgres serializable snapshot isolation.",
-          "More detailed quantitative performance metrics beyond peak TPS (e.g., latency percentiles, error rates for critical path components)."
+          "Spoken technical explanations",
+          "Architecture trade-offs",
+          "Concurrency failure modes"
         ],
-        "evaluatedAt": "2026-09-12T04:09:53.144Z"
+        "evaluatedAt": "2026-09-12T05:55:25.241Z"
       },
       "round3Evaluation": {
         "roundName": "Round 3: Behavioral & Cultural Alignment",
