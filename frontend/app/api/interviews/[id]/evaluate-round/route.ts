@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { getDb, saveDb, resolveInterview } from '@/lib/db';
+import { getAiClient } from '@/lib/aiClient';
 import {
   CODING_COMPETENCIES,
   SYSTEM_DESIGN_COMPETENCIES,
@@ -270,13 +271,10 @@ Candidate Dialogue Stats: totalWords: ${stats.totalCandidateWords}, substantiveC
 
 Evaluate competencies strictly, calculate weighted score, and return the JSON evaluation.`;
 
-          const openai = new OpenAI({
-            apiKey: process.env.GEMINI_DIRECT_API_KEY || process.env.REQUESTY_API_KEY || process.env.GEMINI_API_KEY || '',
-            baseURL: 'https://router.requesty.ai/v1'
-          });
+          const { client: openai, model } = getAiClient();
 
           const response = await openai.chat.completions.create({
-            model: "google/gemini-2.0-flash-exp",
+            model,
             messages: [
               { role: "system", content: systemInstruction },
               { role: "user", content: userPrompt }
@@ -289,12 +287,12 @@ Evaluate competencies strictly, calculate weighted score, and return the JSON ev
 
           // Process competencies and compute strict weighted score
           const compVarianceMap: Record<string, number> = {
-            problem_understanding: hasValidCode ? 65 : stats.totalCandidateWords >= 15 ? 30 : 0,
-            approach_and_algorithm: hasValidCode ? 60 : stats.totalCandidateWords >= 15 ? 25 : 0,
-            implementation_correctness: hasValidCode ? (testPassedCount > 0 ? 80 : 45) : 15,
-            complexity_and_scaling: hasValidCode ? 55 : stats.totalCandidateWords >= 15 ? 20 : 0,
-            debugging_and_adaptability: hasValidCode ? 60 : stats.totalCandidateWords >= 15 ? 20 : 0,
-            communication_and_explanation: stats.hasSubstantialEvidence ? 75 : stats.totalCandidateWords >= 15 ? 35 : 0
+            problem_understanding: hasValidCode ? 65 : stats.totalCandidateWords >= 15 ? 30 : 10,
+            approach_and_algorithm: hasValidCode ? 60 : stats.totalCandidateWords >= 15 ? 25 : 8,
+            implementation_correctness: hasValidCode ? (testPassedCount > 0 ? 80 : 45) : 6,
+            complexity_and_scaling: hasValidCode ? 55 : stats.totalCandidateWords >= 15 ? 20 : 6,
+            debugging_and_adaptability: hasValidCode ? 60 : stats.totalCandidateWords >= 15 ? 20 : 8,
+            communication_and_explanation: stats.hasSubstantialEvidence ? 75 : stats.totalCandidateWords >= 15 ? 35 : 12
           };
 
           const competencyScores: CompetencyScoreItem[] = activeCompetencies.map(comp => {
@@ -302,7 +300,7 @@ Evaluate competencies strictly, calculate weighted score, and return the JSON ev
               (c.competency || '').toLowerCase().includes(comp.key.replace(/_/g, ' ')) ||
               (c.competency || '').toLowerCase().includes(comp.name.toLowerCase().slice(0, 15))
             );
-            const defaultScore = compVarianceMap[comp.key] ?? (hasValidCode ? 60 : stats.totalCandidateWords >= 15 ? 25 : 0);
+            const defaultScore = compVarianceMap[comp.key] ?? (hasValidCode ? 60 : stats.totalCandidateWords >= 15 ? 25 : 8);
             const score = typeof matching?.score === 'number' ? Math.max(0, Math.min(100, matching.score)) : defaultScore;
             return {
               competency: comp.name,
@@ -370,17 +368,17 @@ Evaluate competencies strictly, calculate weighted score, and return the JSON ev
           } else if (stats.totalCandidateWords >= 15) {
             baseScore = 28;
           } else {
-            baseScore = 0;
+            baseScore = 8;
           }
           const decision = baseScore >= 60 ? 'PASS' : 'FAIL';
 
           const compFallbackVariance: Record<string, number> = {
-            problem_understanding: hasValidCode ? 55 : stats.totalCandidateWords >= 15 ? 30 : 0,
-            approach_and_algorithm: hasValidCode ? 50 : stats.totalCandidateWords >= 15 ? 25 : 0,
-            implementation_correctness: hasValidCode ? (testPassedCount > 0 ? 80 : 40) : (stats.totalCandidateWords >= 15 ? 15 : 0),
-            complexity_and_scaling: hasValidCode ? 45 : stats.totalCandidateWords >= 15 ? 20 : 0,
-            debugging_and_adaptability: hasValidCode ? 45 : stats.totalCandidateWords >= 15 ? 20 : 0,
-            communication_and_explanation: stats.hasSubstantialEvidence ? 75 : stats.totalCandidateWords >= 15 ? 35 : 0
+            problem_understanding: hasValidCode ? 55 : stats.totalCandidateWords >= 15 ? 30 : 10,
+            approach_and_algorithm: hasValidCode ? 50 : stats.totalCandidateWords >= 15 ? 25 : 8,
+            implementation_correctness: hasValidCode ? (testPassedCount > 0 ? 80 : 40) : (stats.totalCandidateWords >= 15 ? 15 : 6),
+            complexity_and_scaling: hasValidCode ? 45 : stats.totalCandidateWords >= 15 ? 20 : 6,
+            debugging_and_adaptability: hasValidCode ? 45 : stats.totalCandidateWords >= 15 ? 20 : 8,
+            communication_and_explanation: stats.hasSubstantialEvidence ? 75 : stats.totalCandidateWords >= 15 ? 35 : 12
           };
 
           const competencyScores: CompetencyScoreItem[] = activeCompetencies.map(comp => {
@@ -629,13 +627,10 @@ Candidate Dialogue Stats: totalWords: ${stats.totalCandidateWords}, substantiveC
 
 Evaluate the 6 technical competencies strictly, derive the weighted score, and return the JSON evaluation.`;
 
-          const openai = new OpenAI({
-            apiKey: process.env.GEMINI_DIRECT_API_KEY || process.env.REQUESTY_API_KEY || process.env.GEMINI_API_KEY || '',
-            baseURL: 'https://router.requesty.ai/v1'
-          });
+          const { client: openai, model } = getAiClient();
 
           const response = await openai.chat.completions.create({
-            model: "google/gemini-2.0-flash-exp",
+            model,
             messages: [
               { role: "system", content: systemInstruction },
               { role: "user", content: userPrompt }
@@ -647,12 +642,12 @@ Evaluate the 6 technical competencies strictly, derive the weighted score, and r
           const parsed = JSON.parse(resultText.replace(/```json/g, '').replace(/```/g, '').trim());
 
           const techCompVarianceDefaults: Record<string, number> = {
-            technical_knowledge: stats.hasSubstantialEvidence ? 75 : stats.hasPartialEvidence ? 35 : stats.totalCandidateWords >= 15 ? 30 : 0,
-            technical_depth: stats.hasSubstantialEvidence ? 70 : stats.hasPartialEvidence ? 20 : stats.totalCandidateWords >= 15 ? 18 : 0,
-            real_world_experience: stats.hasSubstantialEvidence ? 72 : stats.hasPartialEvidence ? 25 : stats.totalCandidateWords >= 15 ? 22 : 0,
-            engineering_judgment: stats.hasSubstantialEvidence ? 70 : stats.hasPartialEvidence ? 20 : stats.totalCandidateWords >= 15 ? 18 : 0,
-            problem_solving_debugging: stats.hasSubstantialEvidence ? 68 : stats.hasPartialEvidence ? 25 : stats.totalCandidateWords >= 15 ? 22 : 0,
-            technical_communication: stats.hasSubstantialEvidence ? 76 : stats.hasPartialEvidence ? 35 : stats.totalCandidateWords >= 15 ? 35 : 0
+            technical_knowledge: stats.hasSubstantialEvidence ? 75 : stats.hasPartialEvidence ? 35 : stats.totalCandidateWords >= 15 ? 30 : 8,
+            technical_depth: stats.hasSubstantialEvidence ? 70 : stats.hasPartialEvidence ? 20 : stats.totalCandidateWords >= 15 ? 18 : 6,
+            real_world_experience: stats.hasSubstantialEvidence ? 72 : stats.hasPartialEvidence ? 25 : stats.totalCandidateWords >= 15 ? 22 : 7,
+            engineering_judgment: stats.hasSubstantialEvidence ? 70 : stats.hasPartialEvidence ? 20 : stats.totalCandidateWords >= 15 ? 18 : 6,
+            problem_solving_debugging: stats.hasSubstantialEvidence ? 68 : stats.hasPartialEvidence ? 25 : stats.totalCandidateWords >= 15 ? 22 : 7,
+            technical_communication: stats.hasSubstantialEvidence ? 76 : stats.hasPartialEvidence ? 35 : stats.totalCandidateWords >= 15 ? 35 : 10
           };
 
           const competencyScores: CompetencyScoreItem[] = techCompetencies.map((comp: any) => {
@@ -660,7 +655,7 @@ Evaluate the 6 technical competencies strictly, derive the weighted score, and r
               (c.competency || '').toLowerCase().includes(comp.key.replace(/_/g, ' ')) ||
               (c.competency || '').toLowerCase().includes(comp.name.toLowerCase().slice(0, 15))
             );
-            const defaultScore = techCompVarianceDefaults[comp.key] ?? (stats.hasSubstantialEvidence ? 70 : stats.totalCandidateWords >= 15 ? 25 : 0);
+            const defaultScore = techCompVarianceDefaults[comp.key] ?? (stats.hasSubstantialEvidence ? 70 : stats.totalCandidateWords >= 15 ? 25 : 7);
             const compScore = typeof matching?.score === 'number' ? Math.max(0, Math.min(100, matching.score)) : defaultScore;
             return {
               competency: comp.name,
@@ -690,12 +685,12 @@ Evaluate the 6 technical competencies strictly, derive the weighted score, and r
             evidenceSufficiency: parsed.evidenceSufficiency || (stats.hasSubstantialEvidence ? 'sufficient' : stats.hasPartialEvidence ? 'partial' : 'insufficient'),
             confidence: parsed.confidence || 'HIGH',
             competencies: parsed.competencies || {
-              technicalKnowledge: { score: competencyScores[0]?.score || 35, weight: 0.25, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
-              technicalDepth: { score: competencyScores[1]?.score || 20, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
-              realWorldExperience: { score: competencyScores[2]?.score || 25, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
-              engineeringJudgment: { score: competencyScores[3]?.score || 20, weight: 0.15, evidence: [], confidence: 'medium' },
-              problemSolving: { score: competencyScores[4]?.score || 25, weight: 0.10, evidence: [], confidence: 'high' },
-              technicalCommunication: { score: competencyScores[5]?.score || 35, weight: 0.10, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' }
+              technicalKnowledge: { score: competencyScores[0]?.score || 8, weight: 0.25, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
+              technicalDepth: { score: competencyScores[1]?.score || 6, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
+              realWorldExperience: { score: competencyScores[2]?.score || 7, weight: 0.20, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' },
+              engineeringJudgment: { score: competencyScores[3]?.score || 6, weight: 0.15, evidence: [], confidence: 'medium' },
+              problemSolving: { score: competencyScores[4]?.score || 7, weight: 0.10, evidence: [], confidence: 'high' },
+              technicalCommunication: { score: competencyScores[5]?.score || 10, weight: 0.10, evidence: stats.verbatimQuotes.slice(0, 1), confidence: 'high' }
             },
             competencyEvaluations: competencyScores,
             demonstratedExpertise: Array.isArray(parsed.demonstratedExpertise) && parsed.demonstratedExpertise.length > 0
@@ -731,7 +726,7 @@ Evaluate the 6 technical competencies strictly, derive the weighted score, and r
             ? { technical_knowledge: 35, technical_depth: 20, real_world_experience: 25, engineering_judgment: 20, problem_solving_debugging: 25, technical_communication: 35 }
             : stats.totalCandidateWords >= 15
             ? { technical_knowledge: 30, technical_depth: 18, real_world_experience: 22, engineering_judgment: 18, problem_solving_debugging: 20, technical_communication: 32 }
-            : { technical_knowledge: 0, technical_depth: 0, real_world_experience: 0, engineering_judgment: 0, problem_solving_debugging: 0, technical_communication: 0 };
+            : { technical_knowledge: 8, technical_depth: 6, real_world_experience: 7, engineering_judgment: 6, problem_solving_debugging: 7, technical_communication: 10 };
 
           const competencyScores: CompetencyScoreItem[] = techCompetencies.map((comp: any) => {
             const compScore = compFallbackVariance[comp.key] ?? 0;
@@ -852,63 +847,6 @@ Evaluate the 6 technical competencies strictly, derive the weighted score, and r
         keyMoments: [],
         culturalFitSummary: 'Candidate was completely silent and provided zero behavioral evidence during the session.',
         missingEvidence: ['Spoken communication', 'STAR behavioral examples', 'Conflict resolution and ownership details'],
-        evaluatedAt: new Date().toISOString()
-      };
-    } else if (stats.candidateUtteranceCount <= 1 && stats.totalCandidateWords < 25) {
-      // Minimal dialogue (< 25 words) with realistic competency variance
-      const hrCompMinimalVariance: Record<string, number> = {
-        communication_clarity: 35,
-        ownership_accountability: 25,
-        collaboration_teamwork: 30,
-        conflict_resolution: 20,
-        adaptability_learning: 25,
-        initiative_leadership: 20,
-        cultural_alignment: 30
-      };
-
-      const defaultComps: HRCompetencyScoreItem[] = hrCompetencies.map(c => {
-        const cScore = hrCompMinimalVariance[c.key] ?? 25;
-        return {
-          competency: c.name,
-          key: c.key,
-          weight: c.weight,
-          score: cScore,
-          weightedScore: Number((cScore * c.weight).toFixed(2)),
-          evidenceQuality: 'NONE',
-          evidence: stats.verbatimQuotes.length > 0 ? [
-            { summary: 'Candidate participated in brief introductory dialogue', quote: stats.verbatimQuotes[0], source: 'transcript' }
-          ] : [],
-          missingEvidence: ['Detailed STAR examples of navigating team conflicts, ownership, and engineering leadership.'],
-          feedback: 'Candidate provided minimal or monosyllabic behavioral depth.'
-        };
-      });
-
-      const computedScore = calculateHRRoundScore(defaultComps);
-
-      round3Result = {
-        roundName: roundName || 'Round 3: Behavioral & Cultural Alignment',
-        roundType: 'hr',
-        score: computedScore,
-        decision: 'FAIL',
-        reason: 'Candidate provided minimal dialogue during the HR round, failing to substantiate behavioral ownership or culture alignment.',
-        overallRecommendation: 'No Hire',
-        evidenceQuality: 'NONE',
-        evidenceSufficiency: 'insufficient',
-        confidence: 'HIGH',
-        competencies: defaultComps,
-        behavioralStrengths: stats.verbatimQuotes.length > 0 ? ['Polite initial greeting'] : ['None demonstrated'],
-        behavioralConcerns: ['No substantiated STAR situations or demonstrated conflict resolution'],
-        keyMoments: stats.verbatimQuotes.length > 0 ? [
-          {
-            situation: 'HR introductory interaction',
-            action: 'Responded briefly to initial prompt',
-            outcome: 'Brief dialogue captured',
-            competency: 'Communication & Clarity',
-            quote: stats.verbatimQuotes[0]
-          }
-        ] : [],
-        culturalFitSummary: 'Insufficient behavioral evidence collected to verify culture fit or engineering ownership.',
-        missingEvidence: ['Concrete behavioral examples on conflict resolution, ownership, and cross-functional alignment'],
         evaluatedAt: new Date().toISOString()
       };
     } else {
@@ -1082,13 +1020,10 @@ ${cleanTranscript.map((t: any) => `[${t.speaker || 'Speaker'}]: ${t.text || ''}`
 
 Evaluate candidate behavioral competencies, ownership, collaboration, and cultural alignment, and return the complete JSON result.`;
 
-        const openai = new OpenAI({
-          apiKey: process.env.GEMINI_DIRECT_API_KEY || process.env.REQUESTY_API_KEY || process.env.GEMINI_API_KEY || '',
-          baseURL: 'https://router.requesty.ai/v1'
-        });
+        const { client: openai, model } = getAiClient();
 
         const response = await openai.chat.completions.create({
-          model: "google/gemini-2.0-flash-exp",
+          model,
           messages: [
             { role: "system", content: systemInstruction },
             { role: "user", content: userPrompt }
@@ -1101,13 +1036,13 @@ Evaluate candidate behavioral competencies, ownership, collaboration, and cultur
 
         // Map parsed competencies ensuring all 7 HR competencies exist with correct weights
         const hrCompDefaultVariance: Record<string, number> = {
-          communication_clarity: stats.hasSubstantialEvidence ? 78 : stats.hasPartialEvidence ? 35 : 30,
-          ownership_accountability: stats.hasSubstantialEvidence ? 74 : stats.hasPartialEvidence ? 25 : 22,
-          collaboration_teamwork: stats.hasSubstantialEvidence ? 76 : stats.hasPartialEvidence ? 30 : 25,
-          conflict_resolution: stats.hasSubstantialEvidence ? 70 : stats.hasPartialEvidence ? 20 : 18,
-          adaptability_learning: stats.hasSubstantialEvidence ? 72 : stats.hasPartialEvidence ? 25 : 20,
-          initiative_leadership: stats.hasSubstantialEvidence ? 70 : stats.hasPartialEvidence ? 20 : 18,
-          cultural_alignment: stats.hasSubstantialEvidence ? 75 : stats.hasPartialEvidence ? 30 : 25
+          communication_clarity: stats.hasSubstantialEvidence ? 78 : stats.hasPartialEvidence ? 26 : 22,
+          ownership_accountability: stats.hasSubstantialEvidence ? 74 : stats.hasPartialEvidence ? 20 : 18,
+          collaboration_teamwork: stats.hasSubstantialEvidence ? 76 : stats.hasPartialEvidence ? 22 : 20,
+          conflict_resolution: stats.hasSubstantialEvidence ? 70 : stats.hasPartialEvidence ? 16 : 14,
+          adaptability_learning: stats.hasSubstantialEvidence ? 72 : stats.hasPartialEvidence ? 20 : 18,
+          initiative_leadership: stats.hasSubstantialEvidence ? 70 : stats.hasPartialEvidence ? 16 : 16,
+          cultural_alignment: stats.hasSubstantialEvidence ? 75 : stats.hasPartialEvidence ? 22 : 20
         };
 
         const parsedCompetencies: HRCompetencyScoreItem[] = hrCompetencies.map(def => {
@@ -1115,7 +1050,7 @@ Evaluate candidate behavioral competencies, ownership, collaboration, and cultur
             (c.key && c.key === def.key) || 
             (c.competency && c.competency.toLowerCase().includes(def.name.toLowerCase().slice(0, 8)))
           );
-          const defaultScore = hrCompDefaultVariance[def.key] ?? (stats.hasSubstantialEvidence ? 75 : 25);
+          const defaultScore = hrCompDefaultVariance[def.key] ?? (stats.hasSubstantialEvidence ? 75 : 20);
           const score = typeof found?.score === 'number' ? Math.max(0, Math.min(100, found.score)) : defaultScore;
           
           let structuredEvidence: any[] = [];
@@ -1190,10 +1125,10 @@ Evaluate candidate behavioral competencies, ownership, collaboration, and cultur
         const hrCompCatchVariance: Record<string, number> = stats.hasSubstantialEvidence
           ? { communication_clarity: 78, ownership_accountability: 74, collaboration_teamwork: 76, conflict_resolution: 70, adaptability_learning: 72, initiative_leadership: 70, cultural_alignment: 75 }
           : stats.hasPartialEvidence
-          ? { communication_clarity: 35, ownership_accountability: 25, collaboration_teamwork: 30, conflict_resolution: 20, adaptability_learning: 25, initiative_leadership: 20, cultural_alignment: 30 }
+          ? { communication_clarity: 26, ownership_accountability: 20, collaboration_teamwork: 22, conflict_resolution: 16, adaptability_learning: 20, initiative_leadership: 16, cultural_alignment: 22 }
           : stats.totalCandidateWords >= 15
-          ? { communication_clarity: 30, ownership_accountability: 22, collaboration_teamwork: 25, conflict_resolution: 18, adaptability_learning: 20, initiative_leadership: 18, cultural_alignment: 25 }
-          : { communication_clarity: 0, ownership_accountability: 0, collaboration_teamwork: 0, conflict_resolution: 0, adaptability_learning: 0, initiative_leadership: 0, cultural_alignment: 0 };
+          ? { communication_clarity: 22, ownership_accountability: 18, collaboration_teamwork: 20, conflict_resolution: 14, adaptability_learning: 18, initiative_leadership: 16, cultural_alignment: 20 }
+          : { communication_clarity: 18, ownership_accountability: 14, collaboration_teamwork: 16, conflict_resolution: 10, adaptability_learning: 14, initiative_leadership: 12, cultural_alignment: 16 };
 
         const fallbackComps: HRCompetencyScoreItem[] = hrCompetencies.map(c => {
           const cScore = hrCompCatchVariance[c.key] ?? 0;

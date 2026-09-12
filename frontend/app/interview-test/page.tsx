@@ -18,7 +18,7 @@ export default async function InterviewTestPage() {
 
   const panel = selectPanelForJob(job?.title || 'Senior Software Engineer');
   const candidateContext = application?.candidateContext || candidate?.candidateContext;
-  const candidateName = candidate?.name || 'Madhav Gairola';
+  const candidateName = candidate?.name || 'Alex Rivera';
 
   // Build 3-Round Blueprint with Round 1 Coding/System Design & Round 2 Multi-Agent Technical Panel
   const testBlueprint = {

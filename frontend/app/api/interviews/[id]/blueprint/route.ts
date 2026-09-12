@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb, saveDb, resolveInterview } from '@/lib/db';
 import OpenAI from 'openai';
+import { getAiClient } from '@/lib/aiClient';
 import { selectPanelForJob } from '@/lib/interview/interviewerPool';
 import { createInitialInterviewState } from '@/lib/interview/interviewState';
 
@@ -202,10 +203,7 @@ ${interviewContextStr}
 
 Generate the personalized 3-round JSON Interview Blueprint containing Round 1 (Coding Assessment with ${panel.technicalPrimary.name}), Round 2 (Technical Panel with Primary: ${panel.technicalPrimary.name} and Challenger: ${panel.technicalChallenger.name}), and Round 3 (HR with ${panel.hrInterviewer.name}) for ${job.title}.`;
 
-    const openai = new OpenAI({
-      apiKey: process.env.GEMINI_DIRECT_API_KEY || process.env.REQUESTY_API_KEY || process.env.GEMINI_API_KEY || '',
-      baseURL: 'https://router.requesty.ai/v1'
-    });
+    const { client: openai, model } = getAiClient();
 
     let blueprintJsonText = '';
     try {
@@ -214,7 +212,7 @@ Generate the personalized 3-round JSON Interview Blueprint containing Round 1 (C
       while (attempts < 2) {
         try {
           const response = await openai.chat.completions.create({
-            model: "google/gemini-2.0-flash-exp",
+            model,
             messages: [
               { role: "system", content: systemInstruction },
               { role: "user", content: userPrompt }

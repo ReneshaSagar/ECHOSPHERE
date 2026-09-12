@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb, saveDb, resolveInterview } from '@/lib/db';
 import OpenAI from 'openai';
+import { getAiClient } from '@/lib/aiClient';
 import {
   calculateFinalAggregateScore,
   FinalScoreAggregation
@@ -118,13 +119,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         (e.round || '').toLowerCase().includes('round 1') ||
         (e.round || '').toLowerCase().includes('sliding')
       );
-      const r1Score = r1 ? r1.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 78 : stats.hasPartialEvidence ? 48 : stats.totalCandidateWords >= 15 ? 28 : 0);
+      const r1Score = r1 ? r1.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 78 : stats.hasPartialEvidence ? 48 : stats.totalCandidateWords >= 15 ? 28 : 8);
       round1Eval = {
         roundName: r1?.round || 'Round 1: Practical Problem Solving & Codecraft',
         roundType: 'coding',
         score: r1Score,
         decision: r1Score >= 60 ? 'PASS' : 'FAIL',
-        reason: r1?.reason || (r1Score >= 60 ? 'Candidate demonstrated algorithmic problem solving and system design in workspace.' : r1Score === 0 ? 'Candidate was completely silent and submitted zero code or architectural design in workspace.' : 'Candidate participated in practical workspace assessment on algorithm choice and design.'),
+        reason: r1?.reason || (r1Score >= 60 ? 'Candidate demonstrated algorithmic problem solving and system design in workspace.' : r1Score === 0 ? 'Candidate was completely silent and submitted zero code or architectural design in workspace.' : 'Candidate participated in practical workspace assessment with initial baseline engagement.'),
         workspaceEvidence: interview.round1Evidence || null
       };
       interview.round1Evaluation = round1Eval;
@@ -137,15 +138,15 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         (e.round || '').toLowerCase().includes('round 2') ||
         (e.round || '').toLowerCase().includes('panel')
       );
-      const r2Score = r2 ? r2.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 76 : stats.hasPartialEvidence ? 45 : stats.totalCandidateWords >= 15 ? 25 : 0);
+      const r2Score = r2 ? r2.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 76 : stats.hasPartialEvidence ? 45 : stats.totalCandidateWords >= 15 ? 25 : 7);
       round2Eval = {
         roundName: r2?.round || 'Round 2: Technical Interview Assessment',
         roundType: 'technical',
         score: r2Score,
         decision: r2Score >= 60 ? 'PASS' : 'FAIL',
         technicalBar: r2Score >= 70 ? 'met' : r2Score >= 55 ? 'borderline' : 'not_met',
-        summary: r2?.reason || (r2Score >= 60 ? 'Candidate addressed distributed systems architecture and concurrency fundamentals.' : r2Score === 0 ? 'Candidate was completely silent during technical panel inquiries.' : 'Candidate participated in technical panel discussion covering core architecture and engineering trade-offs.'),
-        reason: r2?.reason || (r2Score >= 60 ? 'Candidate addressed distributed systems architecture and concurrency fundamentals.' : r2Score === 0 ? 'Candidate was completely silent during technical panel inquiries.' : 'Candidate participated in technical panel discussion covering core architecture and engineering trade-offs.')
+        summary: r2?.reason || (r2Score >= 60 ? 'Candidate addressed distributed systems architecture and concurrency fundamentals.' : r2Score === 0 ? 'Candidate was completely silent during technical panel inquiries.' : 'Candidate participated in technical panel discussion covering baseline architecture concepts.'),
+        reason: r2?.reason || (r2Score >= 60 ? 'Candidate addressed distributed systems architecture and concurrency fundamentals.' : r2Score === 0 ? 'Candidate was completely silent during technical panel inquiries.' : 'Candidate participated in technical panel discussion covering baseline architecture concepts.')
       };
       interview.round2Evaluation = round2Eval;
     }
@@ -158,14 +159,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         (e.round || '').toLowerCase().includes('behavioral') ||
         (e.round || '').toLowerCase().includes('round 3')
       );
-      const r3Score = r3 ? r3.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 80 : stats.hasPartialEvidence ? 52 : stats.totalCandidateWords >= 15 ? 32 : 0);
+      const r3Score = r3 ? r3.score : (stats.isCompletelySilent ? 0 : stats.hasSubstantialEvidence ? 80 : stats.hasPartialEvidence ? 38 : stats.totalCandidateWords >= 15 ? 22 : 18);
       round3Eval = {
         roundName: r3?.round || 'Round 3: Behavioral & Cultural Alignment',
         roundType: 'hr',
         score: r3Score,
         decision: r3Score >= 60 ? 'PASS' : 'FAIL',
         overallRecommendation: r3Score >= 75 ? 'Hire' : r3Score >= 60 ? 'Leaning Hire' : 'No Hire',
-        reason: r3?.reason || (r3Score >= 60 ? 'Candidate demonstrated engineering ownership, communication, and team alignment.' : r3Score === 0 ? 'Candidate was completely silent during HR behavioral inquiries.' : 'Candidate completed the HR behavioral discussion on collaboration and ownership.')
+        reason: r3?.reason || (r3Score >= 60 ? 'Candidate demonstrated engineering ownership, communication, and team alignment.' : r3Score === 0 ? 'Candidate was completely silent during HR behavioral inquiries.' : 'Candidate completed the HR behavioral discussion with baseline communication.')
       };
       interview.round3Evaluation = round3Eval;
     }
@@ -314,13 +315,10 @@ ${formattedTranscript}
 
 Generate the JSON Scorecard.`;
 
-      const openai = new OpenAI({
-        apiKey: process.env.GEMINI_DIRECT_API_KEY || process.env.REQUESTY_API_KEY || process.env.GEMINI_API_KEY || '',
-        baseURL: 'https://router.requesty.ai/v1'
-      });
+      const { client: openai, model } = getAiClient();
       
       const response = await openai.chat.completions.create({
-        model: "google/gemini-2.0-flash-exp",
+        model,
         messages: [
           { role: "system", content: systemInstruction },
           { role: "user", content: prompt }

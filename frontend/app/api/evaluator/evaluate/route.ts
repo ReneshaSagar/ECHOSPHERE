@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { getAiClient } from '@/lib/aiClient';
 
 export async function POST(req: NextRequest) {
   try {
@@ -50,13 +51,10 @@ ${formattedTranscript}
 
 Analyze the transcript and generate the JSON Scorecard.`;
 
-    const openai = new OpenAI({
-      apiKey: process.env.GEMINI_DIRECT_API_KEY || process.env.REQUESTY_API_KEY || process.env.GEMINI_API_KEY || '',
-      baseURL: 'https://router.requesty.ai/v1'
-    });
+    const { client: openai, model } = getAiClient();
 
     const response = await openai.chat.completions.create({
-      model: "google/gemini-2.0-flash-exp",
+      model,
       messages: [
         { role: "system", content: systemInstruction },
         { role: "user", content: userPrompt }

@@ -217,12 +217,12 @@ export default function ScorecardDisplay({ scorecard: sc }: ScorecardDisplayProp
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {(round1.competencyEvaluations && round1.competencyEvaluations.length > 0 ? round1.competencyEvaluations : [
-                    { competency: 'Problem Understanding & Requirements Clarification', score: round1.score, weight: '15%', feedback: round1.score === 0 ? 'No requirements clarification or questions asked.' : 'Understood sliding window constraints and concurrency bounds.' },
-                    { competency: 'Approach, Data Structures & Algorithm Design', score: round1.score, weight: '20%', feedback: round1.score === 0 ? 'No data structures or algorithm design provided.' : 'Structured Map/Queue sliding window state tracking.' },
-                    { competency: 'Implementation Correctness & Test Pass Rate', score: round1.score, weight: '30%', feedback: round1.score === 0 ? 'No code written or executed in workspace.' : 'Evaluated code modularity and runtime syntax cleanliness.' },
-                    { competency: 'Complexity & Scaling Reasoning', score: round1.score, weight: '15%', feedback: round1.score === 0 ? 'No complexity or scaling analysis provided.' : 'Articulated O(1) average lookup and memory cleanup trade-offs.' },
-                    { competency: 'System Design & Whiteboard Architecture', score: round1.score, weight: '10%', feedback: round1.score === 0 ? 'No system design diagram created.' : 'Visualized event notification pipeline on Excalidraw.' },
-                    { competency: 'Communication, Explanation & Code Walkthrough', score: round1.score, weight: '10%', feedback: round1.score === 0 ? 'Candidate was silent and provided no verbal walkthrough.' : 'Maintained structured verbal walkthrough of implementation steps.' }
+                    { competency: 'Problem Understanding & Requirements Clarification', score: round1.score === 0 ? 0 : Math.max(1, Math.round(round1.score * 1.25)), weight: '15%', feedback: round1.score === 0 ? 'No requirements clarification or questions asked.' : 'Understood sliding window constraints and concurrency bounds.' },
+                    { competency: 'Approach, Data Structures & Algorithm Design', score: round1.score === 0 ? 0 : Math.max(1, Math.round(round1.score * 1.00)), weight: '20%', feedback: round1.score === 0 ? 'No data structures or algorithm design provided.' : 'Structured Map/Queue sliding window state tracking.' },
+                    { competency: 'Implementation Correctness & Test Pass Rate', score: round1.score === 0 ? 0 : Math.max(1, Math.round(round1.score * 0.75)), weight: '30%', feedback: round1.score === 0 ? 'No code written or executed in workspace.' : 'Evaluated code modularity and runtime syntax cleanliness.' },
+                    { competency: 'Complexity & Scaling Reasoning', score: round1.score === 0 ? 0 : Math.max(1, Math.round(round1.score * 0.75)), weight: '15%', feedback: round1.score === 0 ? 'No complexity or scaling analysis provided.' : 'Articulated O(1) average lookup and memory cleanup trade-offs.' },
+                    { competency: 'System Design & Whiteboard Architecture', score: round1.score === 0 ? 0 : Math.max(1, Math.round(round1.score * 1.00)), weight: '10%', feedback: round1.score === 0 ? 'No system design diagram created.' : 'Visualized event notification pipeline on Excalidraw.' },
+                    { competency: 'Communication, Explanation & Code Walkthrough', score: round1.score === 0 ? 0 : Math.max(1, Math.round(round1.score * 1.50)), weight: '10%', feedback: round1.score === 0 ? 'Candidate was silent and provided no verbal walkthrough.' : 'Maintained structured verbal walkthrough of implementation steps.' }
                   ]).map((c: any, idx: number) => (
                     <div key={idx} className="bg-[#030304] p-3.5 rounded-2xl border border-white/[0.06] text-xs space-y-2">
                       <div className="flex justify-between items-start gap-2">
@@ -313,12 +313,12 @@ export default function ScorecardDisplay({ scorecard: sc }: ScorecardDisplayProp
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {(round2.competencies && round2.competencies.length > 0 ? round2.competencies : [
-                    { name: 'Technical Knowledge & Core Architecture', score: round2.score, weight: '25%', feedback: round2.score === 0 ? 'No technical answers provided.' : 'Evaluated depth in messaging queues, DB indexes, and cache layers.' },
-                    { name: 'Problem Solving & Architecture Trade-offs', score: round2.score, weight: '25%', feedback: round2.score === 0 ? 'No architectural trade-offs discussed.' : 'Analyzed CAP consistency, replication lag, and partition isolation.' },
-                    { name: 'Real-World Application & Project Validation', score: round2.score, weight: '20%', feedback: round2.score === 0 ? 'No project experience demonstrated.' : 'Validated claimed experience against production scale metrics.' },
-                    { name: 'Scalability, Concurrency & Failure Modes', score: round2.score, weight: '15%', feedback: round2.score === 0 ? 'No failure modes or concurrency discussed.' : 'Probed split-brain mitigation and backpressure handling.' },
-                    { name: 'Communication & Direct Address Collaboration', score: round2.score, weight: '15%', feedback: round2.score === 0 ? 'Candidate was silent during technical panel.' : 'Addressed specialist and lead interviewers with structured clarity.' }
+                  {((round2.competencyEvaluations && round2.competencyEvaluations.length > 0) ? round2.competencyEvaluations : (Array.isArray(round2.competencies) && round2.competencies.length > 0) ? round2.competencies : [
+                    { name: 'Technical Knowledge & Core Architecture', score: round2.score === 0 ? 0 : Math.max(1, Math.round(round2.score * 1.15)), weight: '25%', feedback: round2.score === 0 ? 'No technical answers provided.' : 'Evaluated depth in messaging queues, DB indexes, and cache layers.' },
+                    { name: 'Problem Solving & Architecture Trade-offs', score: round2.score === 0 ? 0 : Math.max(1, Math.round(round2.score * 0.85)), weight: '25%', feedback: round2.score === 0 ? 'No architectural trade-offs discussed.' : 'Analyzed CAP consistency, replication lag, and partition isolation.' },
+                    { name: 'Real-World Application & Project Validation', score: round2.score === 0 ? 0 : Math.max(1, Math.round(round2.score * 1.00)), weight: '20%', feedback: round2.score === 0 ? 'No project experience demonstrated.' : 'Validated claimed experience against production scale metrics.' },
+                    { name: 'Scalability, Concurrency & Failure Modes', score: round2.score === 0 ? 0 : Math.max(1, Math.round(round2.score * 0.85)), weight: '15%', feedback: round2.score === 0 ? 'No failure modes or concurrency discussed.' : 'Probed split-brain mitigation and backpressure handling.' },
+                    { name: 'Communication & Direct Address Collaboration', score: round2.score === 0 ? 0 : Math.max(1, Math.round(round2.score * 1.45)), weight: '15%', feedback: round2.score === 0 ? 'Candidate was silent during technical panel.' : 'Addressed specialist and lead interviewers with structured clarity.' }
                   ]).map((c: any, idx: number) => (
                     <div key={idx} className="bg-[#030304] p-3.5 rounded-2xl border border-white/[0.06] text-xs space-y-2">
                       <div className="flex justify-between items-start gap-2">
@@ -420,11 +420,11 @@ export default function ScorecardDisplay({ scorecard: sc }: ScorecardDisplayProp
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {(round3.competencies && round3.competencies.length > 0 ? round3.competencies : [
-                    { competency: 'Ownership & Accountability', score: round3.score, weight: '25%', feedback: round3.score === 0 ? 'No behavioral responses provided.' : 'Takes full responsibility for delivery outcomes and system failures.' },
-                    { competency: 'Collaboration & Teamwork', score: round3.score, weight: '25%', feedback: round3.score === 0 ? 'No teamwork responses provided.' : 'Demonstrates active listening, team empathy, and constructive conflict resolution.' },
-                    { competency: 'Growth Mindset & Adaptability', score: round3.score, weight: '20%', feedback: round3.score === 0 ? 'No growth mindset responses provided.' : 'Receptive to critical feedback and continuous learning.' },
-                    { competency: 'Communication & Articulation', score: round3.score, weight: '15%', feedback: round3.score === 0 ? 'Candidate was silent during HR interview.' : 'Maintains clear, concise verbal structure across complex discussions.' },
-                    { competency: 'Values & Engineering Culture Alignment', score: round3.score, weight: '15%', feedback: round3.score === 0 ? 'No culture alignment responses provided.' : 'Aligned with transparent, blameless engineering culture.' }
+                    { competency: 'Communication & Articulation', score: round3.score === 0 ? 0 : Math.max(1, Math.round(round3.score * 1.25)), weight: '20%', feedback: round3.score === 0 ? 'Candidate was silent during HR interview.' : 'Maintains clear, concise verbal structure across complex discussions.' },
+                    { competency: 'Collaboration & Teamwork', score: round3.score === 0 ? 0 : Math.max(1, Math.round(round3.score * 1.10)), weight: '20%', feedback: round3.score === 0 ? 'No teamwork responses provided.' : 'Demonstrates active listening, team empathy, and constructive conflict resolution.' },
+                    { competency: 'Ownership & Accountability', score: round3.score === 0 ? 0 : Math.max(1, Math.round(round3.score * 1.00)), weight: '20%', feedback: round3.score === 0 ? 'No behavioral responses provided.' : 'Takes full responsibility for delivery outcomes and system failures.' },
+                    { competency: 'Growth Mindset & Adaptability', score: round3.score === 0 ? 0 : Math.max(1, Math.round(round3.score * 1.00)), weight: '20%', feedback: round3.score === 0 ? 'No growth mindset responses provided.' : 'Receptive to critical feedback and continuous learning.' },
+                    { competency: 'Values & Engineering Culture Alignment', score: round3.score === 0 ? 0 : Math.max(1, Math.round(round3.score * 0.90)), weight: '20%', feedback: round3.score === 0 ? 'No culture alignment responses provided.' : 'Aligned with transparent, blameless engineering culture.' }
                   ]).map((c: any, idx: number) => (
                     <div key={idx} className="bg-[#030304] p-3.5 rounded-2xl border border-white/[0.06] text-xs space-y-2">
                       <div className="flex justify-between items-start gap-2">
